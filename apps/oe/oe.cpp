@@ -21,9 +21,23 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 */
 
+/*
+Dev comment
+- main function은 최대한 가볍고 단조롭게 갈 것.
+*/
+
 #include <openedge/core.hpp>
+#include <openedge/log.hpp>
+
+using namespace oe;
 
 int main(int argc, char* argv[])
 {
-    return 0;
+    //pseudo code
+    //1. initialization
+    //oe::oe_initialize();
+
+    //2. read oe configuration file
+
+    return 0
 }

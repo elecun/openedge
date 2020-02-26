@@ -1,27 +1,35 @@
 
+# Makefile for OpenEdge Software Framework for Application Gateway
+# Author : Byunghun Hwang <bh.hwang@iae.re.kr>
+# Usage : make ARCH=arm 
 
 # Makefile
 
 OS := $(shell uname)
 
-ifeq ($(OS), Darwin) #for Mac
-	LDFLAGS = -dynamiclib
-	LDLIBS = 
-	INCLUDE_DIR = -I./include/
-	LD_LIBRARY_PATH += -L/usr/local/opt/openssl/lib/
+#Set Architecutre
+ARCH := arm
+
+#Compilers
+ifeq ($(ARCH),arm)
+	CC := /usr/bin/arm-linux-gnueabihf-g++
+	GCC := /usr/bin/arm-linux-gnueabihf-gcc
+else
+	CC := g++
+	GCC := gcc
 endif
 
+# OS
 ifeq ($(OS),Linux) #for Linux
 	LDFLAGS = -Wl,--export-dynamic -pthread
 	LDLIBS = 
-	INCLUDE_DIR = -I./include/
+	INCLUDE_DIR = -I./ -I./include/
 	LD_LIBRARY_PATH += -L/usr/local/opt/openssl/lib/ -L/usr/local/lib
 endif
 
 DIRS=bin
 $(shell mkdir -p $(DIRS))
 
-CXX = g++
 CXXFLAGS = -O3 -fPIC -Wall -std=c++17 -D__cplusplus=201703L
 
 #custom definition
@@ -30,13 +38,15 @@ RM	= rm -rf
 
 #directories
 OUTDIR		= ./bin/
+
+
 INCLUDE_FILES = ./include/
 SOURCE_FILES = ./
 INSTALL_DIR = /usr/local/bin/
 
 # Make
 openedge:	$(OUTDIR)openedge.o \
-		$(CXX) $(LDFLAGS) $(LD_LIBRARY_PATH) -o $(OUTDIR)$@ $^ $(LDLIBS)
+		$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -o $(OUTDIR)$@ $^ $(LDLIBS)
 
 
 #$(OUTDIR)format.o: $(INCLUDE_FILES)format.cc
