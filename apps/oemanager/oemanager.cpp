@@ -29,16 +29,13 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 #include <openedge/core.hpp>
 #include <openedge/log.hpp>
+#include <external/opt.hpp>
 
 using namespace oe;
 
 int main(int argc, char* argv[])
 {
-    //pseudo code
-    //1. initialization
-    //oe::oe_initialize();
-
-    //2. read oe configuration file
+    oe::logger::info("OpenEdge Service Component Manager (Built {} {})", __DATE__, __TIME__);
 
     return 0
 }
