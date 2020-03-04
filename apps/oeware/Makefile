@@ -1,5 +1,5 @@
 
-# Makefile for OpenEdge Software Framework for Application Gateway
+# Makefile for oeware application
 # Author : Byunghun Hwang <bh.hwang@iae.re.kr>
 # Usage : make ARCH=arm 
 
@@ -14,19 +14,17 @@ OS := $(shell uname)
 ifeq ($(ARCH),arm)
 	CC := /usr/bin/arm-linux-gnueabihf-g++
 	GCC := /usr/bin/arm-linux-gnueabihf-gcc
-	LD_LIBRARY_PATH += -L./lib/arm
 else
 	CC := g++
 	GCC := gcc
-	LD_LIBRARY_PATH += -L./lib/x86_64
 endif
 
 # OS
 ifeq ($(OS),Linux) #for Linux
-	LDFLAGS = -Wl,--export-dynamic
-	LDLIBS = -pthread -lgtest
-	INCLUDE_DIR = -I./ -I./include/
-	LD_LIBRARY_PATH += -L/usr/local/lib
+	LDFLAGS = -Wl,--export-dynamic -pthread
+	LDLIBS = -L./lib
+	INCLUDE_DIR = -I../../ -I../../include/
+	LD_LIBRARY_PATH += -L/usr/local/opt/openssl/lib/ -L/usr/local/lib
 endif
 
 DIRS=bin
@@ -41,33 +39,23 @@ RM	= rm -rf
 #directories
 OUTDIR		= ./bin/
 
+
 INCLUDE_FILES = ./include/
 SOURCE_FILES = ./
-APP_SOURCE_FILES = ./apps/
 INSTALL_DIR = /usr/local/bin/
 
 # Make
-openedge:	$(OUTDIR)openedge.o
-		$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -o $(OUTDIR)$@ $^ $(LDLIBS)
 
 oeware:	$(OUTDIR)oeware.o
 		$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -o $(OUTDIR)$@ $^ $(LDLIBS)
 
-oeware_test:	$(OUTDIR)oeware_test.o
-		$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -o $(OUTDIR)$@ $^ $(LDLIBS)
-
-$(OUTDIR)oeware.o: $(APP_SOURCE_FILES)oeware/oeware.cc
-	$(CXX) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
-
-$(OUTDIR)oeware_test.o: $(APP_SOURCE_FILES)oeware/oeware_test.cc
+$(OUTDIR)oeware.o: $(SOURCE_FILES)oeware.cc
 	$(CXX) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
 
 
-all : openedge oeware
-
-test : oeware_test
+all : oeware
 
 clean : FORCE
-		$(RM) $(OUTDIR)*.o $(OUTDIR)openedge $(OUTDIR)oeware
+		$(RM) $(OUTDIR)*.o $(OUTDIR)oeware
 FORCE : 
