@@ -24,7 +24,8 @@ endif
 # OS
 ifeq ($(OS),Linux) #for Linux
 	LDFLAGS = -Wl,--export-dynamic
-	LDLIBS = -pthread -lgtest
+	LDLIBS = -pthread
+	GTEST_LDLIBS = -lgtest
 	INCLUDE_DIR = -I./ -I./include/
 	LD_LIBRARY_PATH += -L/usr/local/lib
 endif
@@ -48,15 +49,19 @@ INSTALL_DIR = /usr/local/bin/
 
 # Make
 openedge:	$(OUTDIR)openedge.o
-		$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -o $(OUTDIR)$@ $^ $(LDLIBS)
+			$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -o $(OUTDIR)$@ $^ $(LDLIBS)
 
-oeware:	$(OUTDIR)oeware.o
+oeware:	$(OUTDIR)oeware.o \
+		$(OUTDIR)instance.o
 		$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -o $(OUTDIR)$@ $^ $(LDLIBS)
 
 oeware_test:	$(OUTDIR)oeware_test.o
-		$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -o $(OUTDIR)$@ $^ $(LDLIBS)
+				$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -o $(OUTDIR)$@ $^ $(LDLIBS) $(GTEST_LDLIBS)
 
+# for oeware
 $(OUTDIR)oeware.o: $(APP_SOURCE_FILES)oeware/oeware.cc
+	$(CXX) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+$(OUTDIR)instance.o: $(APP_SOURCE_FILES)oeware/instance.cc
 	$(CXX) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
 $(OUTDIR)oeware_test.o: $(APP_SOURCE_FILES)oeware/oeware_test.cc

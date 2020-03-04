@@ -29,33 +29,54 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include <external/cxxopts.hpp>
 #include <external/spdlog/spdlog.h>
 #include <external/spdlog/sinks/stdout_color_sinks.h>
+#include <csignal>
+
+#include "instance.hpp"
 
 using namespace std;
+using namespace oe;
+
+void terminate() {
+    spdlog::info("Successfully terminated");
+    exit(EXIT_SUCCESS);
+}
+void sig_interrupt(int param) { ::terminate(); }
 
 int main(int argc, char* argv[])
 {
+  signal(SIGINT, sig_interrupt);
+	signal(SIGTERM, sig_interrupt);
+  signal(SIGKILL, sig_interrupt);
+  signal(SIGTSTP, sig_interrupt);
+
   spdlog::stdout_color_st("console");
-  spdlog::info("Starting OEWARE {}.{}.{} (built {}/{})", __MAJOR__, __MINOR__, __REV__, __DATE__, __TIME__);
+  spdlog::info("Starting OEware {}.{}.{} (built {}/{})", __MAJOR__, __MINOR__, __REV__, __DATE__, __TIME__);
 
   cxxopts::Options options(argv[0], "");
 	options.add_options()
-        ("c,config", "configuration file(*.conf)", cxxopts::value<std::string>(), "FILE")
+        ("c,config", "configuration file(*.conf, *.json)", cxxopts::value<std::string>(), "FILE")
         ("h,help", "Print Usage");
 
-  auto arguments = options.parse(argc, argv);
-
   try {
+    auto arguments = options.parse(argc, argv);
 
+    if(arguments.count("config")){
+      string config_file = arguments["config"].as<std::string>();
+      if(oe::ware::init(config_file.c_str()))
+        oe::ware::run();
+      else {
+        spdlog::error("OEware initialization error");
+        ::terminate();
+      }
+      
+    }
+
+    pause();
   }
   catch(const cxxopts::OptionException& e) {
-        spdlog::error("Argument Parse Error : {}", e.what());
+        spdlog::error("{}", e.what());
+        ::terminate();
   }
-
-  // if(arguments.count("help")){ spdlog::info("{}", options.help());  exit(EXIT_SUCCESS); }
-  // else if(arguments.count("config")) {
-  //   string config_file = arguments["config"].as<std::string>();
-  // }
-  // else { spdlog::info("{}", options.help()); exit(EXIT_SUCCESS); }
-
-    return 0;
+    ::terminate();
+    return EXIT_SUCCESS;
 }
