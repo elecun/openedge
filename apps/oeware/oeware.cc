@@ -30,6 +30,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include <external/spdlog/spdlog.h>
 #include <external/spdlog/sinks/stdout_color_sinks.h>
 #include <csignal>
+#include <sys/mman.h>
 
 #include "instance.hpp"
 
@@ -49,34 +50,41 @@ int main(int argc, char* argv[])
   signal(SIGKILL, sig_interrupt);
   signal(SIGTSTP, sig_interrupt);
 
+  mlockall(MCL_CURRENT|MCL_FUTURE); //avoid swaping
+
   spdlog::stdout_color_st("console");
   spdlog::info("Starting OEware {}.{}.{} (built {}/{})", __MAJOR__, __MINOR__, __REV__, __DATE__, __TIME__);
 
   cxxopts::Options options(argv[0], "");
 	options.add_options()
         ("c,config", "configuration file(*.conf, *.json)", cxxopts::value<std::string>(), "FILE")
+        ("v,version", "Open Edge Ware Version")
+        ("r,with-rt", "enable realtime tasking", cxxopts::value<bool>(), "Enable RT")
         ("h,help", "Print Usage");
 
+  string config_file;
+
   try {
-    auto arguments = options.parse(argc, argv);
+    auto args = options.parse(argc, argv);
 
-    if(arguments.count("config")){
-      string config_file = arguments["config"].as<std::string>();
-      if(oe::ware::init(config_file.c_str()))
-        oe::ware::run();
-      else {
-        spdlog::error("OEware initialization error");
-        ::terminate();
-      }
-      
+    if(args.count("version")) { spdlog::info("OEWare Version {}.{}.{}", __MAJOR__, __MINOR__, __REV__); ::terminate(); }
+
+    if(args.count("config")){ config_file = args["config"].as<std::string>(); }
+    else {
+      spdlog::error("No configuration file");
+      ::terminate();
     }
-
-    pause();
   }
   catch(const cxxopts::OptionException& e) {
         spdlog::error("{}", e.what());
         ::terminate();
   }
-    ::terminate();
-    return EXIT_SUCCESS;
+  
+  if(oe::ware::init(config_file.c_str()))
+    oe::ware::start();
+
+  pause();  //waiting for terminating
+
+  ::terminate();
+  return EXIT_SUCCESS;
 }

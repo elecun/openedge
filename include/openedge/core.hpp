@@ -21,6 +21,16 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 */
 
+#ifndef _OPENEDGE_CORE_HPP_
+#define _OPENEDGE_CORE_HPP_
+
+#include <openedge/core.hpp/task.hpp>
+
 namespace oe {
+    namespace core {
+        
+    }
 
 } //namespace oe
+
+#endif

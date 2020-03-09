@@ -15,10 +15,12 @@ ifeq ($(ARCH),arm)
 	CC := /usr/bin/arm-linux-gnueabihf-g++
 	GCC := /usr/bin/arm-linux-gnueabihf-gcc
 	LD_LIBRARY_PATH += -L./lib/arm
+	OUTDIR		= ./bin/arm/
 else
 	CC := g++
 	GCC := gcc
 	LD_LIBRARY_PATH += -L./lib/x86_64
+	OUTDIR		= ./bin/x86_64/
 endif
 
 # OS
@@ -30,8 +32,7 @@ ifeq ($(OS),Linux) #for Linux
 	LD_LIBRARY_PATH += -L/usr/local/lib
 endif
 
-DIRS=bin
-$(shell mkdir -p $(DIRS))
+$(shell mkdir -p $(OUTDIR))
 
 CXXFLAGS = -O3 -fPIC -Wall -std=c++17 -D__cplusplus=201703L
 
@@ -40,11 +41,12 @@ CXXFLAGS += -D__MAJOR__=0 -D__MINOR__=0 -D__REV__=1
 RM	= rm -rf
 
 #directories
-OUTDIR		= ./bin/
+
 
 INCLUDE_FILES = ./include/
 SOURCE_FILES = ./
 APP_SOURCE_FILES = ./apps/
+EXAMPLE_SOURCE_FILES = ./examples/
 INSTALL_DIR = /usr/local/bin/
 
 # Make
@@ -67,10 +69,15 @@ $(OUTDIR)instance.o: $(APP_SOURCE_FILES)oeware/instance.cc
 $(OUTDIR)oeware_test.o: $(APP_SOURCE_FILES)oeware/oeware_test.cc
 	$(CXX) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
+#for example
+simiple.task: $(OUTDIR)simple.task.o 
+	$(CXX) $(LDFLAGS) -shared -o $(OUTDIR)$@ $^ $(LDLIBS) -ldl
+$(OUTDIR)simple.task.o: $(EXAMPLE_SOURCE_FILES)simple.task/simple.task.cc
+	$(CXX) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
 
 all : openedge oeware
-
+example : simple.task
 test : oeware_test
 
 clean : FORCE

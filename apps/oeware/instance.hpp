@@ -14,7 +14,7 @@ namespace oe {
     namespace ware {
 
         extern bool init(const char* config_file);
-        extern bool run(void);
+        extern void start(void);
 
     } //namespace ware
 } //namespace oe
