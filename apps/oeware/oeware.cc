@@ -50,7 +50,7 @@ int main(int argc, char* argv[])
   signal(SIGKILL, sig_interrupt);
   signal(SIGTSTP, sig_interrupt);
 
-  mlockall(MCL_CURRENT|MCL_FUTURE); //avoid swaping
+  mlockall(MCL_CURRENT|MCL_FUTURE); //avoid swaping (use only ram)
 
   spdlog::stdout_color_st("console");
   spdlog::info("Starting OEware {}.{}.{} (built {}/{})", __MAJOR__, __MINOR__, __REV__, __DATE__, __TIME__);
