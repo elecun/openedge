@@ -43,7 +43,6 @@ namespace oe {
             //oe::repo::container("local")
 
             //3. if found, install
-            oe::task::container
 
             return true;
         }

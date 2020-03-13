@@ -32,6 +32,8 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include <csignal>
 #include <sys/mman.h>
 
+#include <sys/sysinfo.h>
+
 #include "instance.hpp"
 
 using namespace std;
@@ -45,6 +47,12 @@ void sig_interrupt(int param) { ::terminate(); }
 
 int main(int argc, char* argv[])
 {
+  int max_cpus =  get_nprocs(); //sysconf(_SC_NPROCESSORS_CONF);
+  spdlog::info("Max cpus : {}", max_cpus);
+
+  long a = sysconf(_SC_CLK_TCK);
+  spdlog::info("Clock Tock : {}", a);
+
   signal(SIGINT, sig_interrupt);
 	signal(SIGTERM, sig_interrupt);
   signal(SIGKILL, sig_interrupt);
