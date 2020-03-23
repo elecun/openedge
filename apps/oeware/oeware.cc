@@ -1,6 +1,6 @@
 /**
  * @file    oeware.cc
- * @breif   OpenEdge Engine running on system background
+ * @brief   OpenEdge Engine running on system background
  * @author  Byunghun Hwang <bh.hwang@iae.re.kr>
  */
 
@@ -31,7 +31,6 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include <external/spdlog/sinks/stdout_color_sinks.h>
 #include <csignal>
 #include <sys/mman.h>
-
 #include <sys/sysinfo.h>
 
 #include "instance.hpp"
@@ -45,14 +44,15 @@ void terminate() {
 }
 void sig_interrupt(int param) { ::terminate(); }
 
+void system_conf(){
+  spdlog::info("--------------------");
+  spdlog::info("System CPUs : {}", get_nprocs());
+  spdlog::info("System Clock Ticks : {}", sysconf(_SC_CLK_TCK));
+  spdlog::info("--------------------");
+}
+
 int main(int argc, char* argv[])
 {
-  int max_cpus =  get_nprocs(); //sysconf(_SC_NPROCESSORS_CONF);
-  spdlog::info("Max cpus : {}", max_cpus);
-
-  long a = sysconf(_SC_CLK_TCK);
-  spdlog::info("Clock Tock : {}", a);
-
   signal(SIGINT, sig_interrupt);
 	signal(SIGTERM, sig_interrupt);
   signal(SIGKILL, sig_interrupt);
@@ -62,6 +62,7 @@ int main(int argc, char* argv[])
 
   spdlog::stdout_color_st("console");
   spdlog::info("Starting OEware {}.{}.{} (built {}/{})", __MAJOR__, __MINOR__, __REV__, __DATE__, __TIME__);
+  system_conf();  //print useful system configurations
 
   cxxopts::Options options(argv[0], "");
 	options.add_options()

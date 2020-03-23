@@ -24,7 +24,7 @@ void timer_handler (int signum)
 
  //count += 1;
  gettimeofday(&ts, NULL);
- printf ("%d.%06d\n", ts.tv_sec, ts.tv_usec);
+ printf ("%ld.%06ld\n", ts.tv_sec, ts.tv_usec);
 }
 
 int main ()
@@ -39,13 +39,16 @@ int main ()
 
  /* Configure the timer to expire after ? msec... */
  timer.it_value.tv_sec = 0;
- timer.it_value.tv_usec = 1000; //1ms
- /* ... and every 500 msec after that. */
+ timer.it_value.tv_usec = 5000; //5ms
+ 
+ //time interval간격을 5000us마다, SIGALRM signal 발생됨.
  timer.it_interval.tv_sec = 0;
- timer.it_interval.tv_usec = 1000;
+ timer.it_interval.tv_usec = 5000;
  /* Start a virtual timer. It counts down whenever this process is
    executing. */
  setitimer (ITIMER_VIRTUAL, &timer, NULL);
+
+ timer_settime();
 
  /* Do busy work. */
  while (1);

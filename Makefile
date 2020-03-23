@@ -26,7 +26,7 @@ endif
 # OS
 ifeq ($(OS),Linux) #for Linux
 	LDFLAGS = -Wl,--export-dynamic
-	LDLIBS = -pthread
+	LDLIBS = -pthread -lrt
 	GTEST_LDLIBS = -lgtest
 	INCLUDE_DIR = -I./ -I./include/
 	LD_LIBRARY_PATH += -L/usr/local/lib
@@ -62,18 +62,18 @@ oeware_test:	$(OUTDIR)oeware_test.o
 
 # for oeware
 $(OUTDIR)oeware.o: $(APP_SOURCE_FILES)oeware/oeware.cc
-	$(CXX) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 $(OUTDIR)instance.o: $(APP_SOURCE_FILES)oeware/instance.cc
-	$(CXX) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
 $(OUTDIR)oeware_test.o: $(APP_SOURCE_FILES)oeware/oeware_test.cc
-	$(CXX) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
 #for example
 simiple.task: $(OUTDIR)simple.task.o 
-	$(CXX) $(LDFLAGS) -shared -o $(OUTDIR)$@ $^ $(LDLIBS) -ldl
+	$(CC) $(LDFLAGS) -shared -o $(OUTDIR)$@ $^ $(LDLIBS) -ldl
 $(OUTDIR)simple.task.o: $(EXAMPLE_SOURCE_FILES)simple.task/simple.task.cc
-	$(CXX) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
 
 all : openedge oeware
