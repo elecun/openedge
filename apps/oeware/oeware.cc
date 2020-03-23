@@ -32,6 +32,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include <csignal>
 #include <sys/mman.h>
 #include <sys/sysinfo.h>
+#include <iostream>
 
 #include "instance.hpp"
 
@@ -58,17 +59,13 @@ int main(int argc, char* argv[])
   signal(SIGKILL, sig_interrupt);
   signal(SIGTSTP, sig_interrupt);
 
-  mlockall(MCL_CURRENT|MCL_FUTURE); //avoid swaping (use only ram)
-
-  spdlog::stdout_color_st("console");
-  spdlog::info("Starting OEware {}.{}.{} (built {}/{})", __MAJOR__, __MINOR__, __REV__, __DATE__, __TIME__);
-  system_conf();  //print useful system configurations
+  mlockall(MCL_CURRENT|MCL_FUTURE); //avoid swaping
 
   cxxopts::Options options(argv[0], "");
 	options.add_options()
         ("c,config", "configuration file(*.conf, *.json)", cxxopts::value<std::string>(), "FILE")
         ("v,version", "Open Edge Ware Version")
-        ("r,with-rt", "enable realtime tasking", cxxopts::value<bool>(), "Enable RT")
+        ("r,rt", "enable realtime tasking", cxxopts::value<bool>(), "Enable RT")
         ("h,help", "Print Usage");
 
   string config_file;
@@ -76,8 +73,12 @@ int main(int argc, char* argv[])
   try {
     auto args = options.parse(argc, argv);
 
-    if(args.count("version")) { spdlog::info("OEWare Version {}.{}.{}", __MAJOR__, __MINOR__, __REV__); ::terminate(); }
-
+    if(args.count("version"))
+    { 
+      cout << __MAJOR__ << "." << __MINOR__ << "." << __REV__ << endl;
+      ::terminate();
+    }
+    
     if(args.count("config")){ config_file = args["config"].as<std::string>(); }
     else {
       spdlog::error("No configuration file");
