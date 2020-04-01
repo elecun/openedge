@@ -60,6 +60,11 @@ oeware:	$(OUTDIR)oeware.o \
 oeware_test:	$(OUTDIR)oeware_test.o
 				$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -o $(OUTDIR)$@ $^ $(LDLIBS) $(GTEST_LDLIBS)
 
+# edge service engine
+edge:	$(OUTDIR)edge.o \
+		$(OUTDIR)edge_instance.o
+		$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -o $(OUTDIR)$@ $^ $(LDLIBS)
+
 # for oeware
 $(OUTDIR)oeware.o: $(APP_SOURCE_FILES)oeware/oeware.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
@@ -69,14 +74,22 @@ $(OUTDIR)instance.o: $(APP_SOURCE_FILES)oeware/instance.cc
 $(OUTDIR)oeware_test.o: $(APP_SOURCE_FILES)oeware/oeware_test.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
-#for example
+#
+# edge service engine
+#
+$(OUTDIR)edge.o: $(APP_SOURCE_FILES)edge/edge.cc
+	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+$(OUTDIR)edge_instance.o: $(APP_SOURCE_FILES)edge/instance.cc
+	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
+# for example
 simiple.task: $(OUTDIR)simple.task.o 
 	$(CC) $(LDFLAGS) -shared -o $(OUTDIR)$@ $^ $(LDLIBS) -ldl
 $(OUTDIR)simple.task.o: $(EXAMPLE_SOURCE_FILES)simple.task/simple.task.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
 
-all : openedge oeware
+all : edge
 example : simple.task
 test : oeware_test
 

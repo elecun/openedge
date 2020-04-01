@@ -35,56 +35,55 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "instance.hpp"
 
 using namespace std;
-using namespace oe;
 
+void terminate() {
+    exit(EXIT_SUCCESS);
+}
+
+void sig_interrupt(int sig) { ::terminate(); }
+void cleanup(int sig) { ::terminate(); }
 
 int main(int argc, char* argv[])
 {
+  signal(SIGINT, cleanup);
+	signal(SIGTERM, cleanup); //pkill, kill (kill -9 cannot handle)
+  signal(SIGKILL, cleanup);
+  signal(SIGTSTP, cleanup);
+  signal(SIGABRT, cleanup); //aborted core dump
 
-
-  long a = sysconf(_SC_CLK_TCK);
-  spdlog::info("Clock Tock : {}", a);
-
-  signal(SIGINT, sig_interrupt);
-	signal(SIGTERM, sig_interrupt);
-  signal(SIGKILL, sig_interrupt);
-  signal(SIGTSTP, sig_interrupt);
-
-  mlockall(MCL_CURRENT|MCL_FUTURE); //avoid swaping (use only ram)
+  mlockall(MCL_CURRENT|MCL_FUTURE); //avoid swaping
 
   spdlog::stdout_color_st("console");
-  spdlog::info("Starting OEware {}.{}.{} (built {}/{})", __MAJOR__, __MINOR__, __REV__, __DATE__, __TIME__);
 
   cxxopts::Options options(argv[0], "");
 	options.add_options()
-        ("c,config", "configuration file(*.conf, *.json)", cxxopts::value<std::string>(), "FILE")
-        ("v,version", "Open Edge Ware Version")
-        ("r,with-rt", "enable realtime tasking", cxxopts::value<bool>(), "Enable RT")
+        ("c,config", "Load Configuration File(*.json)", cxxopts::value<std::string>(), "FILE")
+        ("v,version", "Openedge Service Engine Version")
         ("h,help", "Print Usage");
 
-  string config_file;
-
-  try {
+  try 
+  {
     auto args = options.parse(argc, argv);
 
-    if(args.count("version")) { spdlog::info("OEWare Version {}.{}.{}", __MAJOR__, __MINOR__, __REV__); ::terminate(); }
+    if(args.count("version")) { printf("%d.%d.%d\n",__MAJOR__, __MINOR__, __REV__); ::terminate(); }
+    else if(args.count("config")){
+      string _conf_file = args["config"].as<std::string>();
+      spdlog::info("Starting Openedge Service Engine {}.{}.{} (built {}/{})", __MAJOR__, __MINOR__, __REV__, __DATE__, __TIME__);
+      spdlog::info("Load Configuration File : {}", _conf_file);
 
-    if(args.count("config")){ config_file = args["config"].as<std::string>(); }
-    else {
-      spdlog::error("No configuration file");
-      ::terminate();
+      oe::init(_conf_file.c_str());
+      oe::run();
+
+      pause();  //wait until terminate signal
     }
-  }
-  catch(const cxxopts::OptionException& e) {
-        spdlog::error("{}", e.what());
-        ::terminate();
-  }
-  
-  if(oe::ware::init(config_file.c_str()))
-    oe::ware::start();
 
-  pause();  //waiting for terminating
+  }
+  catch(const cxxopts::OptionException& e){
+    spdlog::error("{}", e.what());
+  }
 
+  spdlog::info("Sucessfully Terminated");
   ::terminate();
+
   return EXIT_SUCCESS;
 }

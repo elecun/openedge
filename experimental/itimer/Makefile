@@ -51,7 +51,7 @@ itimer:	$(OUTDIR)itimer.o
 			$(GCC) $(LDFLAGS) $(LD_LIBRARY_PATH) -o $(OUTDIR)$@ $^ $(LDLIBS)
 
 # for itimer
-$(OUTDIR)itimer.o: $(SOURCE_FILES)itimer2.c
+$(OUTDIR)itimer.o: $(SOURCE_FILES)itimer3.c
 	$(GCC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
 

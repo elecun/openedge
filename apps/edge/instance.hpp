@@ -1,11 +1,19 @@
 /**
  * @file    instance.hpp
  * @brief   Openedge Engine Header
+ * @author  Byunghun Hwang<bh.hwang@iae.re.kr>
  */
 
-void terminate() { 
-    spdlog::info("Successfully terminated");
-    exit(EXIT_SUCCESS);
-}
 
-void sig_interrupt(int param) { ::terminate(); }
+
+#ifndef __EDGE_INSTANCE_HPP__
+#define __EDGE_INSTANCE_HPP__
+
+namespace oe {
+
+    bool init(const char* configfile);
+    void run();
+
+} //namespace oe
+
+#endif
