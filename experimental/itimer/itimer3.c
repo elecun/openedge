@@ -13,7 +13,7 @@
 void itimer_event_thread(void* param)
 {
     struct itimerval itimer;
-    sigset_t sigset;
+    sigset_t sigset; //block 될 시그널set
     int sig_no = 0;
     struct timeval now;
     unsigned int time_gap_sec = 0;
@@ -22,18 +22,20 @@ void itimer_event_thread(void* param)
     printf("%s() start!!\n", __func__);
 
     //block alarm signal, will be waited on explicitly
-    sigemptyset(&sigset);
-    sigaddset(&sigset, SIGALRM);
-    sigprocmask(SIG_BLOCK, &sigset, NULL);
+    sigemptyset(&sigset);  //시그널set을 초기화하고
+    sigaddset(&sigset, SIGALRM); //sigalrm을 sigset에 추가
+    sigprocmask(SIG_BLOCK, &sigset, NULL); //sigset에 있는 signal들을 block한다.
 
     //unblock
-    pthread_sigmask(SIG_UNBLOCK, &sigset, NULL);
+    pthread_sigmask(SIG_UNBLOCK, &sigset, NULL); //thread내의 시그널 처리 : sigset에서 설정한 mask들이 현재 thread의 signal mask에서 제거된다. 즉,  sigset에 설정된 signal을 이 thread에서는 허용하겠다는 것.
 
     //set up periodic interrupt timer * start
     itimer.it_value.tv_sec = 0;
     itimer.it_value.tv_usec = 10*1000;
     itimer.it_interval = itimer.it_value;
 
+//setitimer에서 itimer_real로 설정하면, 타이머가 만료되면 sigarlm 시그널을 프로세스에 전달한다.
+//만약에 setitimer에서 itimer_virutal로 설정하면, 타이머가 만료되면 sigvtalrm 시그널을 프로세스에 전달한다.
     if(setitimer(ITIMER_REAL, &itimer, NULL)!=0){
         printf("could not start interval timer : %s", strerror(errno));
         return;

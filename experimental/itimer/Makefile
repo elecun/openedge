@@ -48,11 +48,11 @@ INSTALL_DIR = /usr/local/bin/
 
 # Make
 itimer:	$(OUTDIR)itimer.o
-			$(GCC) $(LDFLAGS) $(LD_LIBRARY_PATH) -o $(OUTDIR)$@ $^ $(LDLIBS)
+			$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -o $(OUTDIR)$@ $^ $(LDLIBS)
 
 # for itimer
-$(OUTDIR)itimer.o: $(SOURCE_FILES)itimer3.c
-	$(GCC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+$(OUTDIR)itimer.o: $(SOURCE_FILES)itimer4.cc
+	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
 
 all : itimer

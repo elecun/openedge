@@ -16,7 +16,7 @@ void alrm_handler(int signo, siginfo_t *info, void *context) {
 int main() { 
     
     x.tv_sec=0; 
-    x.tv_nsec=100000000L; 
+    x.tv_nsec=10*1000*1000; 
     tid=1; 
     sa.sa_sigaction = alrm_handler; 
     sa.sa_flags = SIGEV_SIGNAL; 
@@ -24,9 +24,9 @@ int main() {
     
     timer_create(CLOCK_REALTIME,NULL,&tid); 
     ispec.it_value.tv_sec = 0; 
-    ispec.it_value.tv_nsec = 100000000L; 
+    ispec.it_value.tv_nsec = 1*1000*1000; 
     ispec.it_interval.tv_sec = 0; 
-    ispec.it_interval.tv_nsec = 1; 
+    ispec.it_interval.tv_nsec = 1*1000*1000; 
     timer_settime(tid, TIMER_ABSTIME, &ispec, &ospec); 
     while(1) 
         sleep(1); 

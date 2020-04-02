@@ -8,7 +8,7 @@
 OS := $(shell uname)
 
 #Set Architecutre
-#ARCH := arm
+ARCH := arm
 
 #Compilers
 ifeq ($(ARCH),arm)
@@ -26,7 +26,7 @@ endif
 # OS
 ifeq ($(OS),Linux) #for Linux
 	LDFLAGS = -Wl,--export-dynamic
-	LDLIBS = -pthread -lrt
+	LDLIBS = -pthread -lrt -lstdc++
 	GTEST_LDLIBS = -lgtest
 	INCLUDE_DIR = -I./ -I./include/
 	LD_LIBRARY_PATH += -L/usr/local/lib
@@ -62,17 +62,9 @@ oeware_test:	$(OUTDIR)oeware_test.o
 
 # edge service engine
 edge:	$(OUTDIR)edge.o \
-		$(OUTDIR)edge_instance.o
+		$(OUTDIR)edge_instance.o \
+		$(OUTDIR)rt_trigger.o \
 		$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -o $(OUTDIR)$@ $^ $(LDLIBS)
-
-# for oeware
-$(OUTDIR)oeware.o: $(APP_SOURCE_FILES)oeware/oeware.cc
-	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
-$(OUTDIR)instance.o: $(APP_SOURCE_FILES)oeware/instance.cc
-	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
-
-$(OUTDIR)oeware_test.o: $(APP_SOURCE_FILES)oeware/oeware_test.cc
-	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
 #
 # edge service engine
@@ -82,11 +74,17 @@ $(OUTDIR)edge.o: $(APP_SOURCE_FILES)edge/edge.cc
 $(OUTDIR)edge_instance.o: $(APP_SOURCE_FILES)edge/instance.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
+
+#openedge base
+$(OUTDIR)rt_trigger.o: $(INCLUDE_FILES)openedge/core/rt_trigger.cc
+	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
 # for example
 simiple.task: $(OUTDIR)simple.task.o 
 	$(CC) $(LDFLAGS) -shared -o $(OUTDIR)$@ $^ $(LDLIBS) -ldl
 $(OUTDIR)simple.task.o: $(EXAMPLE_SOURCE_FILES)simple.task/simple.task.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
 
 
 all : edge

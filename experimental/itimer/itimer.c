@@ -39,11 +39,11 @@ int main ()
 
  /* Configure the timer to expire after ? msec... */
  timer.it_value.tv_sec = 0;
- timer.it_value.tv_usec = 5000; //5ms
+ timer.it_value.tv_usec = 10*1000; //5ms
  
  //time interval간격을 5000us마다, SIGALRM signal 발생됨.
  timer.it_interval.tv_sec = 0;
- timer.it_interval.tv_usec = 5000;
+ timer.it_interval.tv_usec = 10*000;
  /* Start a virtual timer. It counts down whenever this process is
    executing. */
  setitimer (ITIMER_VIRTUAL, &timer, NULL);
