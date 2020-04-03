@@ -26,7 +26,7 @@ endif
 # OS
 ifeq ($(OS),Linux) #for Linux
 	LDFLAGS = -Wl,--export-dynamic
-	LDLIBS = -pthread -lrt -lstdc++
+	LDLIBS = -pthread -lrt
 	GTEST_LDLIBS = -lgtest
 	INCLUDE_DIR = -I./ -I./include/
 	LD_LIBRARY_PATH += -L/usr/local/lib
@@ -37,7 +37,7 @@ $(shell mkdir -p $(OUTDIR))
 CXXFLAGS = -O3 -fPIC -Wall -std=c++17 -D__cplusplus=201703L
 
 #custom definition
-CXXFLAGS += -D__MAJOR__=0 -D__MINOR__=0 -D__REV__=1
+CXXFLAGS += -D__MAJOR__=0 -D__MINOR__=0 -D__REV__=2
 RM	= rm -rf
 
 #directories
@@ -63,7 +63,7 @@ oeware_test:	$(OUTDIR)oeware_test.o
 # edge service engine
 edge:	$(OUTDIR)edge.o \
 		$(OUTDIR)edge_instance.o \
-		$(OUTDIR)rt_trigger.o \
+		$(OUTDIR)rt_timer.o
 		$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -o $(OUTDIR)$@ $^ $(LDLIBS)
 
 #
@@ -85,6 +85,9 @@ simiple.task: $(OUTDIR)simple.task.o
 $(OUTDIR)simple.task.o: $(EXAMPLE_SOURCE_FILES)simple.task/simple.task.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
+# include
+$(OUTDIR)rt_timer.o: $(INCLUDE_FILES)openedge/core/rt_timer.cc
+	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
 
 all : edge
