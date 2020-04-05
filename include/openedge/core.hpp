@@ -24,7 +24,8 @@ OTHER DEALINGS IN THE SOFTWARE.
 #ifndef _OPENEDGE_CORE_HPP_
 #define _OPENEDGE_CORE_HPP_
 
-#include <openedge/core.hpp/task.hpp>
+#include <openedge/core/version.hpp>
+#include <openedge/core/rt_timer.hpp>
 
 namespace oe {
     namespace core {
