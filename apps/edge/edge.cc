@@ -47,6 +47,7 @@ void cleanup(int sig) {
   ::terminate(); 
   }
 
+//for testing
 class thread1 : public oe::core::rt_task::runnable {
   //bool configure(){return true;}
   void run(){
