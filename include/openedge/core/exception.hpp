@@ -18,13 +18,13 @@ namespace oe {
             oe_exception() {}
             ~oe_exception() throw() { }
 
-            virtual const char* what() const throw() {
-                return exception_str.c_str();
+            virtual const char* what() throw() {
+                return _exception_str.c_str();
             }
         protected:
-            void set(const char* msg) { exception_str = msg; }
+            void set(const char* msg) { _exception_str = msg; }
         private:
-            string exception_str;
+            std::string _exception_str;
     };
 
     //core exception

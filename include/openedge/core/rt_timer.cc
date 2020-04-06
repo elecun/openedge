@@ -1,11 +1,14 @@
 
 #include "rt_timer.hpp"
 #include "excode.hpp"
+#include <stdio.h>
 
 namespace oe {
     namespace core {
 
         rt_timer::rt_timer(){
+
+            printf("rt_timer create");
 
             //create handler which catches the signal SIG
             _sig_act.sa_flags = SA_SIGINFO;
@@ -23,12 +26,14 @@ namespace oe {
         }
 
         rt_timer::~rt_timer(){
+            printf("rt_timer terminate");
             stop();
             timer_delete(_timer_id);
             signal(SIG, SIG_IGN);
         }
 
         void rt_timer::start(long nsec, timer_type type) {
+            printf("rt_timer start");
             switch(type){
                 case timer_type::PERIODIC:
                     const long nano = (1000000000L);
@@ -44,6 +49,7 @@ namespace oe {
         }
 
         void rt_timer::stop(){
+            printf("rt_timer stop");
             struct itimerspec _new_time_spec;
             _new_time_spec.it_value.tv_sec = 0;
             _new_time_spec.it_value.tv_nsec = 0;

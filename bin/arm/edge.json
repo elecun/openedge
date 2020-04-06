@@ -1,0 +1,20 @@
+{
+    "environments":{
+        "path":{
+            "config":"/usr/local/openedge/config"
+        }
+    },
+    "gateway":{
+        "devid":"aop-gw-001",
+        "service":{
+            "repository": "localhost"
+        }
+    },
+    "tasks":{
+        "default":["simple.task"],
+        "simple.task":{
+            "cpu":0,
+            "cycle_us":500000
+        }
+    }
+}

@@ -47,6 +47,7 @@ INCLUDE_FILES = ./include/
 SOURCE_FILES = ./
 APP_SOURCE_FILES = ./apps/
 EXAMPLE_SOURCE_FILES = ./examples/
+TASK_SOURCE_FILES = ./tasks/
 INSTALL_DIR = /usr/local/bin/
 
 # Make
@@ -79,21 +80,20 @@ $(OUTDIR)edge_instance.o: $(APP_SOURCE_FILES)edge/instance.cc
 $(OUTDIR)rt_trigger.o: $(INCLUDE_FILES)openedge/core/rt_trigger.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
-# for example
-simiple.task: $(OUTDIR)simple.task.o 
-	$(CC) $(LDFLAGS) -shared -o $(OUTDIR)$@ $^ $(LDLIBS) -ldl
-$(OUTDIR)simple.task.o: $(EXAMPLE_SOURCE_FILES)simple.task/simple.task.cc
-	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
-
 # include
 $(OUTDIR)rt_timer.o: $(INCLUDE_FILES)openedge/core/rt_timer.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
+#tasks
+simple.task: $(OUTDIR)simple.task.o
+	$(CC) $(LDFLAGS) -shared -o $(OUTDIR)$@ $^ $(LDLIBS) -ldl
+$(OUTDIR)simple.task.o: $(TASK_SOURCE_FILES)simple/simple.task.cc
+	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
 
 all : edge
-example : simple.task
 test : oeware_test
-
+task : simple.task
 clean : FORCE
-		$(RM) $(OUTDIR)*.o $(OUTDIR)openedge $(OUTDIR)oeware
+		$(RM) $(OUTDIR)*.o $(OUTDIR)openedge $(OUTDIR)edge $(OUTDIR)*.task
 FORCE : 

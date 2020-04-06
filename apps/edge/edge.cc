@@ -29,18 +29,12 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include <external/cxxopts.hpp>
 #include <external/spdlog/spdlog.h>
 #include <external/spdlog/sinks/stdout_color_sinks.h>
-#include <sys/mman.h>
-#include <openedge/core/rt_timer.hpp>
+#include <csignal>
+#include <sys/mman.h> //for mlock
 #include <openedge/core/version.hpp>
-
-//for timer
-#include <time.h>
-#include <signal.h>
-#include <stdio.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <thread>
-#define SIGTIMER (SIGRTMAX)
+#include "instance.hpp"
+#include "exception.hpp"
+#include <openedge/core/rt_timer.hpp>
 
 using namespace std;
 
@@ -48,27 +42,24 @@ void terminate() {
     exit(EXIT_SUCCESS);
 }
 
-void cleanup(int sig) { ::terminate(); }
+void cleanup(int sig) { 
+  spdlog::info("Sucessfully Terminated");
+  ::terminate(); 
+  }
 
-class thread1 : public oe::core::rt_timer {
-  public:
-    void call(){
-      clock_gettime(CLOCK_REALTIME,&x); 
-      printf("t2 : %ld.%09ld \n",x.tv_sec, x.tv_nsec); 
-    }
+class thread1 : public oe::core::rt_task::runnable {
+  //bool configure(){return true;}
+  void run(){
+    for(int i=0;i<1000000;i++)
+      usleep(1);
+    clock_gettime(CLOCK_REALTIME,&x); 
+    printf("%ld.%09ld \n",x.tv_sec, x.tv_nsec); 
+  }
+  //void cleanup(){}
   private:
-    struct timespec x; 
+  struct timespec x; 
 };
 
-class thread2 : public oe::core::rt_timer {
-  public:
-    void call(){
-      clock_gettime(CLOCK_REALTIME,&x); 
-      printf("t1 : %ld.%09ld \n",x.tv_sec, x.tv_nsec); 
-    }
-  private:
-    struct timespec x; 
-};
 
 int main(int argc, char* argv[])
 {
@@ -80,7 +71,7 @@ int main(int argc, char* argv[])
 
   mlockall(MCL_CURRENT|MCL_FUTURE); //avoid swaping
 
-  spdlog::stdout_color_st("console");
+  spdlog::stdout_color_st("console"); //initialize spdlog
 
   cxxopts::Options options(argv[0], "");
 	options.add_options()
@@ -98,18 +89,17 @@ int main(int argc, char* argv[])
       spdlog::info("Starting Openedge Service Engine {} (built {}/{})", _OE_VER_, __DATE__, __TIME__);
       spdlog::info("Load Configuration File : {}", _conf_file);
 
-      //for test
-      thread1 t1;
-      thread2 t2;
-      t1.start(10*1000*1000);
-      t2.start(100*1000*1000);
+      //start service engine if configuration load is success
+      // if(oe::edge::init(_conf_file.c_str()))
+      //   oe::edge::run();
+
+      oe::core::rt_task task1;
+      thread1 t;
+      task1.regist_runnable(t);
+      task1.start(100*1000*1000);
       
       while(1)
         sleep(1);
-
-      t1.stop();
-      t2.stop();
-      //pause();  //wait until terminate signal  
       
     }
 

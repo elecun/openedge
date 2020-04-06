@@ -12,6 +12,7 @@
 #include <unistd.h>
 #include <signal.h>
 #include <time.h>
+#include <stdio.h>
 
 using namespace std;
 
@@ -44,6 +45,34 @@ namespace oe {
             static void handler(int signo, siginfo_t* info, void* context) {
                 (reinterpret_cast<rt_timer*>(info->si_value.sival_ptr))->call();
             }
+        };
+
+        class rt_task : public rt_timer {
+            public:
+                //rt_task runnable interface
+                class runnable {
+                    public:
+                    virtual void run() = 0;
+                        // virtual bool configure() = 0;
+                        // virtual void execute() = 0;
+                        // virtual void cleanup() = 0;
+                };
+
+                void regist_runnable(runnable& h){
+                    _runnable = &h;
+                }
+
+                void release_runnable() {
+                    _runnable = nullptr;
+                }
+
+                void call() {
+                    printf("call\n");
+                    if(_runnable)
+                        _runnable->run();
+                }
+            private:
+                runnable* _runnable = nullptr;
         };
 
     } //namespace core

@@ -4,17 +4,20 @@
  * @author  Byunghun Hwang<bh.hwang@iae.re.kr>
  */
 
-
-
-#ifndef __EDGE_INSTANCE_HPP__
-#define __EDGE_INSTANCE_HPP__
-
-// #include <csignal>
+#ifndef _EDGE_INSTANCE_HPP_
+#define _EDGE_INSTANCE_HPP_
 
 namespace oe {
+    namespace edge {
 
-    // bool init(const char* configfile);
-    // void run();
+        //initialize
+        bool init(const char* conf_file);
+
+        //start edge
+        void run();
+
+
+    } //namespace edge
 
 } //namespace oe
 

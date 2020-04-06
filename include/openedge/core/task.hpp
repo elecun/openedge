@@ -11,12 +11,19 @@
 #include <string>
 #include <thread>
 #include <memory>
+#include <openedge/core/rt_timer.hpp>
 
 using namespace std;
 
 namespace oe {
     namespace core {
 
+
+
+
+
+
+        //old
         typedef unique_ptr<std::thread> task;
 
         class abstractTask {

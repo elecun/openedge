@@ -1,47 +1,41 @@
 
-// #include "instance.hpp"
-// #include <external/json.hpp>
-// #include <external/spdlog/spdlog.h>
-// #include <fstream>
-// #include <thread>
+#include "instance.hpp"
+#include <fstream>
+#include <openedge/ext/json.hpp>
+#include <external/spdlog/spdlog.h>
+#include "exception.hpp"
 
 using namespace std;
+using json = nlohmann::json;
 
 namespace oe {
+    namespace edge {
 
-    //core thread callback function
-    // void thread1_impl(){ 
-    //     printf("test1 thread\n");
-        
-    //     sigset_t sigset;
-    //     sigemptyset(&sigset);
-    //     sigaddset(&sigset, SIGALRM); //sigalrm을 sigset에 추가
-    //     sigprocmask(SIG_BLOCK, &sigset, NULL); //sigset에 있는 signal들을 block한다.
+        //initialize
+        bool init(const char* conf_file){
+            json config;
+            try {
+                std::ifstream file(conf_file);
+                file >> config;
+            }
+            catch(const json::exception& e){
+                spdlog::error("{}",e.what());   //excode
+                return false;
+            }
 
-    //     pthread_sigmask(SIG_UNBLOCK, &sigset, NULL);
-    // }
-    
-    // bool init(const char* configfile){
+            //load tasks
+            json tasks = config["tasks"]["default"];
+            for(json::iterator itr = tasks.begin(); itr!=tasks.end(); ++itr)
+                spdlog::info("Default Task = {}", (*itr).get<std::string>());
+            
 
-    //     //1. read configuration file
-    //     using json = nlohmann::json;
-    //     json config;
-    //     try {
-    //         std::ifstream file(configfile);
-    //         file >> config;
-    //     }
-    //     catch(json::exception& e){
-    //         spdlog::error("{}() throws exception ({}){}", __func__, e.id, e.what());
-    //         return false;
-    //     }
+            return true;
+        }
 
-    //     return true;
-    // }
+        //start edge
+        void run(){
 
+        }
 
-    // void run(void){
-    //     std::thread _core_thread(thread1_impl);
-    //     _core_thread.join();
-    // }
-
+    } //namespace edge
 } //namespace oe
