@@ -9,41 +9,55 @@
 #define _OPENEDGE_CORE_TASK_HPP_
 
 #include <string>
-#include <thread>
-#include <memory>
-#include <openedge/core/rt_timer.hpp>
 
 using namespace std;
 
 namespace oe {
     namespace core {
 
-
-
-
-
-
-        //old
-        typedef unique_ptr<std::thread> task;
-
-        class abstractTask {
+        class itask {
             public:
-                abstractTask(const char* taskname);
-                virtual ~abstractTask();
+                itask(const char* taskname):_taskname(taskname){}
+                virtual ~itask() {}
 
-                const char* getTaskName() { return _taskname.c_str(); }
-
-                void start();   //start task
-                void stop();    //stop task
+                const char* get_taskname() { return _taskname.c_str(); }
 
                 virtual bool configure() = 0;
-	            virtual void execute() = 0;
-	            virtual void cleanup() = 0;
+                virtual void execute() = 0;
+                virtual void cleanup() = 0;
 
             private:
-                string _taskname;
-                bool _working; 
+            string _taskname;
         };
+
+        class rt_task : public itask {
+            public:
+                class runnable{
+                    public:
+                        virtual void execute() = 0;
+                };
+ 
+                virtual ~rt_task(){
+                    this->release();
+                }
+
+                void regist(runnable& r) { if(!_runnable) _runnable = &r; }
+
+                virtual bool configure() = 0;
+                virtual void execute(){
+                    if(_runnable) _runnable->execute();
+                }
+                virtual void cleanup() = 0;
+
+                protected:
+                    void release() {
+                        if(_runnable)
+                            _runnable = nullptr;
+                    }
+            private:
+                runnable* _runnable = nullptr;
+        };
+        
     } //namespace core
 } //namespace oe
 

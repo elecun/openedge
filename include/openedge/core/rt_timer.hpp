@@ -53,9 +53,6 @@ namespace oe {
                 class runnable {
                     public:
                     virtual void run() = 0;
-                        // virtual bool configure() = 0;
-                        // virtual void execute() = 0;
-                        // virtual void cleanup() = 0;
                 };
 
                 void regist_runnable(runnable& h){
