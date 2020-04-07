@@ -10,10 +10,10 @@
 namespace oe {
     namespace edge {
 
-        //initialize
+        //initialize edge application
         bool init(const char* conf_file);
 
-        //start edge
+        //start to run
         void run();
 
 

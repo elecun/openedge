@@ -9,21 +9,19 @@
 #define _OPENEDGE_TASK_SIMPLE_HPP_
 
 #include <openedge/core/task.hpp>
+#include <time.h>
 
-namespace oe {
-    namespace task {
+class simpletask : public oe::core::rt_task::runnable {
+    public:
+    ~simpletask();
+    bool configure();
+    void execute();
+    void cleanup();
 
-        class simpletask : public oe::core::rt_task::runnable {
-            public:
-            bool configure();
-            void execute();
-            void cleanup();
+    private:
+    struct timespec x; 
+};
 
-            private:
-
-        };
-
-    } //namepspace task
-} //namespace oe
+EXPORT_RT_TASK_API
 
 #endif

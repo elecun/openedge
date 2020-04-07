@@ -14,12 +14,12 @@ namespace oe {
             _sig_act.sa_flags = SA_SIGINFO;
             _sig_act.sa_sigaction = handler;
             sigisemptyset(&_sig_act.sa_mask);
-            if(sigaction(SIG, &_sig_act, nullptr)==-1)
+            if(sigaction(SIG_RUNTIME_TRIGGER, &_sig_act, nullptr)==-1)
                 throw excode::OE_SIGACTION_FAIL;
 
             //create timer
             _sig_evt.sigev_notify = SIGEV_SIGNAL;
-            _sig_evt.sigev_signo = SIG;
+            _sig_evt.sigev_signo = SIG_RUNTIME_TRIGGER;
             _sig_evt.sigev_value.sival_ptr = this;
             if(timer_create(CLOCK_REALTIME, &_sig_evt, &_timer_id)==-1)
                 throw excode::OE_TIMER_CREATE_FAIL;
@@ -29,7 +29,7 @@ namespace oe {
             printf("rt_timer terminate");
             stop();
             timer_delete(_timer_id);
-            signal(SIG, SIG_IGN);
+            signal(SIG_RUNTIME_TRIGGER, SIG_IGN);
         }
 
         void rt_timer::start(long nsec, timer_type type) {

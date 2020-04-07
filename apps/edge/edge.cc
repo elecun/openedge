@@ -34,7 +34,6 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include <openedge/core/version.hpp>
 #include "instance.hpp"
 #include "exception.hpp"
-#include <openedge/core/rt_timer.hpp>
 
 using namespace std;
 
@@ -43,23 +42,9 @@ void terminate() {
 }
 
 void cleanup(int sig) { 
-  spdlog::info("Sucessfully Terminated");
+  spdlog::info("Sucessfully terminated");
   ::terminate(); 
   }
-
-//for testing
-// class thread1 : public oe::core::rt_task::runnable {
-//   //bool configure(){return true;}
-//   void run(){
-//     for(int i=0;i<1000000;i++)
-//       usleep(1);
-//     clock_gettime(CLOCK_REALTIME,&x); 
-//     printf("%ld.%09ld \n",x.tv_sec, x.tv_nsec); 
-//   }
-//   //void cleanup(){}
-//   private:
-//   struct timespec x; 
-// };
 
 
 int main(int argc, char* argv[])
@@ -93,20 +78,14 @@ int main(int argc, char* argv[])
       //start service engine if configuration load is success
       if(oe::edge::init(_conf_file.c_str()))
          oe::edge::run();
-
-      // oe::core::rt_task task1;
-      // thread1 t;
-      // task1.regist_runnable(t);
-      // task1.start(100*1000*1000);
       
-      while(1)
-        sleep(1);
-      
+      //wait until cleanup
+      pause();
     }
 
   }
   catch(const cxxopts::OptionException& e){
-    spdlog::error("{}", e.what());
+    spdlog::error("cxxopt Exception : {}",e.what());
   }
 
   spdlog::info("Sucessfully Terminated");

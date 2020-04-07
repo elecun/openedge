@@ -19,7 +19,7 @@ using namespace std;
 namespace oe {
     namespace core {
 
-        #define SIG (SIGRTMAX)
+        #define SIG_RUNTIME_TRIGGER (SIGRTMAX)
 
         typedef enum timer_type_t : unsigned int {
             PERIODIC = 0,
