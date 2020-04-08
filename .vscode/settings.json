@@ -2,6 +2,7 @@
     "files.associations": {
         "atomic": "cpp",
         "time.h": "c",
-        "iostream": "cpp"
+        "iostream": "cpp",
+        "csignal": "cpp"
     }
 }

@@ -29,7 +29,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include <external/cxxopts.hpp>
 #include <external/spdlog/spdlog.h>
 #include <external/spdlog/sinks/stdout_color_sinks.h>
-#include <csignal>
+#include <csignal> //for signal handling
 #include <sys/mman.h> //for mlock
 #include <openedge/core/version.hpp>
 #include "instance.hpp"
@@ -44,7 +44,7 @@ void terminate() {
 void cleanup(int sig) { 
   spdlog::info("Sucessfully terminated");
   ::terminate(); 
-  }
+}
 
 
 int main(int argc, char* argv[])
@@ -52,8 +52,16 @@ int main(int argc, char* argv[])
   signal(SIGINT, cleanup);
 	signal(SIGTERM, cleanup); //pkill, kill (kill -9 cannot handle)
   signal(SIGKILL, cleanup);
-  signal(SIGTSTP, cleanup);
   signal(SIGABRT, cleanup); //aborted core dump
+
+  //signal masking
+  sigset_t sigmask;
+  sigfillset(&sigmask);
+  sigdelset(&sigmask, SIGINT);
+  sigdelset(&sigmask, SIGTERM);
+  sigdelset(&sigmask, SIGKILL);
+  sigdelset(&sigmask, SIGABRT);
+  pthread_sigmask(SIG_SETMASK, &sigmask, nullptr);    //main thread mask all signal without SIGINT
 
   mlockall(MCL_CURRENT|MCL_FUTURE); //avoid swaping
 
