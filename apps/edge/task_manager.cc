@@ -18,8 +18,7 @@ namespace oe {
                 return false;
 
             //1. insert task into container with uuid
-            spdlog::info("Installing {}", taskname);
-            _container_map.insert(container_t_map::value_type(taskname, util::generate_uuid()));
+            _container_map.insert(container_t_map::value_type(taskname, _uuid_gen.generate()));
             _task_container.insert(container_t::value_type(_container_map[taskname], new core::task_driver(taskname)));
             spdlog::info("{} UUID : {}", taskname, _container_map[taskname].str());
             _task_container[_container_map[taskname]]->configure();
@@ -48,8 +47,11 @@ namespace oe {
                 }
             }
             else {
-                if(_task_container.find(_container_map[taskname])!=_task_container.end())
+                container_t::iterator itr = _task_container.find(_container_map[taskname]);
+                if(itr!=_task_container.end())
                     _task_container[_container_map[taskname]]->execute();
+                else
+                    spdlog::warn("{} is already installed", taskname);
             }
             
         }

@@ -1,6 +1,7 @@
 {
     "files.associations": {
         "atomic": "cpp",
-        "time.h": "c"
+        "time.h": "c",
+        "iostream": "cpp"
     }
 }

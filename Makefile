@@ -69,7 +69,6 @@ edge:	$(OUTDIR)edge.o \
 		$(OUTDIR)edge_instance.o \
 		$(OUTDIR)task_manager.o \
 		$(OUTDIR)driver.o \
-		$(OUTDIR)uuid.o \
 		$(OUTDIR)rt_timer.o
 		$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -o $(OUTDIR)$@ $^ $(LDLIBS)
 
@@ -98,6 +97,11 @@ simple.task: $(OUTDIR)simple.task.o
 $(OUTDIR)simple.task.o: $(TASK_SOURCE_FILES)simple/simple.task.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
+simple2.task: $(OUTDIR)simple2.task.o
+	$(CC) $(LDFLAGS) -shared -o $(OUTDIR)$@ $^ $(LDLIBS) -ldl
+$(OUTDIR)simple2.task.o: $(TASK_SOURCE_FILES)simple2/simple2.task.cc
+	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
 #openedge core
 $(OUTDIR)driver.o:	$(INCLUDE_FILES)openedge/core/driver.cc
 					$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
@@ -109,7 +113,7 @@ $(OUTDIR)uuid.o:	$(INCLUDE_FILES)openedge/util/uuid.cc
 
 all : edge
 test : oeware_test
-task : simple.task
+task : simple.task simple2.task
 clean : FORCE
 		$(RM) $(OUTDIR)*.o $(OUTDIR)openedge $(OUTDIR)edge $(OUTDIR)*.task
 FORCE : 

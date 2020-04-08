@@ -26,7 +26,7 @@ namespace oe {
         class task_manager : public oe::arch::singleton<task_manager> {
             public:
 
-            typedef std::map<util::uuid, oe::core::task_driver*> container_t;
+            typedef std::map<util::uuid_t, oe::core::task_driver*> container_t;
             typedef std::map<string, util::uuid_t> container_t_map;
 
             task_manager();
@@ -49,6 +49,7 @@ namespace oe {
             private:
                 container_t _task_container;
                 container_t_map _container_map;
+                util::uuid_generator _uuid_gen;
 
         };
 

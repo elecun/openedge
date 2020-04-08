@@ -80,7 +80,9 @@ int main(int argc, char* argv[])
          oe::edge::run();
       
       //wait until cleanup
-      pause();
+      //pause(); //if call pause, timer does not work, just terminated. so used sleep function
+      while(1)
+        sleep(1);
     }
 
   }

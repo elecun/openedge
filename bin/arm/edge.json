@@ -12,7 +12,7 @@
         }
     },
     "tasks":{
-        "default":["simple.task"],
+        "default":["simple.task", "simple2.task"],
         "simple.task":{
             "cpu":0,
             "cycle_us":500000

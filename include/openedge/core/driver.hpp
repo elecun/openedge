@@ -20,8 +20,6 @@ using namespace std;
 namespace oe {
     namespace core {
 
-        #define SIG_RUNTIME_TRIGGER SIGRTMAX
-
         typedef enum timer_type_t : unsigned int {
             PERIODIC = 0,
         } timer_type;
@@ -40,13 +38,13 @@ namespace oe {
                 bool load(const char* taskname);
                 void unload();
                 void proc();
-                void call();
+                void call(int signo, siginfo_t* info, void* context);
 
-                void init_timer();
-                void stop_timer();
+                void make_timer(long nsec);
+                void sa_handler_usr(int nSigNum);
 
                 static void timer_handler(int signo, siginfo_t* info, void* context) {
-                (reinterpret_cast<task_driver*>(info->si_value.sival_ptr))->call();
+                (reinterpret_cast<task_driver*>(info->si_value.sival_ptr))->call(signo, info, context);
             }
 
             private:
@@ -63,6 +61,8 @@ namespace oe {
                 struct sigevent _sig_evt;
                 struct sigaction _sig_act;
                 struct itimerspec _time_spec;
+
+                bool _ready = false;
 
 
         };

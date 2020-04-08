@@ -19,7 +19,8 @@ namespace oe {
         //initialize
         bool init(const char* conf_file){
 
-            //1, load configurationf file
+            spdlog::info("Process ID = {}", getpid());
+
             json config;
             try {
                 std::ifstream file(conf_file);
@@ -30,14 +31,16 @@ namespace oe {
                 return false;
             }
 
-            //2. getting default tasks from configuration file
-            vector<string> default_task = config["tasks"]["default"].get<std::vector<string>>();
-            
-            //3. install task into task manager
-            for(string& task:default_task){
+            vector<string> default_tasks = config["tasks"]["default"].get<std::vector<string>>();
+            for(string& task:default_tasks){
                 spdlog::info("installing {}", task);
                 edge_task_manager->install(task.c_str());
             }
+
+            sigset_t sigmask;
+            sigfillset(&sigmask);   //all signal fills into sigmask set
+	        sigdelset(&sigmask, SIGINT);    //revmoe SIGINT from sigmask set
+	        pthread_sigmask(SIG_SETMASK, &sigmask, nullptr);    //main thread mask all signal without SIGINT
         
             return true;
         }
