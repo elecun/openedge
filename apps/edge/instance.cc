@@ -46,5 +46,10 @@ namespace oe {
             edge_task_manager->run();
         }
 
+        void cleanup(){
+            spdlog::info("Destory all tasks");
+            edge_task_manager->uninstall();
+        }
+
     } //namespace edge
 } //namespace oe

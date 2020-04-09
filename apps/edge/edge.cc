@@ -43,6 +43,8 @@ void terminate() {
 
 void cleanup(int sig) { 
   spdlog::info("Sucessfully terminated");
+  oe::edge::cealnup();
+
   ::terminate(); 
 }
 
@@ -87,10 +89,7 @@ int main(int argc, char* argv[])
       if(oe::edge::init(_conf_file.c_str()))
          oe::edge::run();
       
-      //wait until cleanup
-      //pause(); //if call pause, timer does not work, just terminated. so used sleep function
-      while(1)
-        sleep(1);
+      pause();
     }
 
   }
