@@ -32,9 +32,9 @@ bool simpletask::configure(){
 }
 
 void simpletask::execute(){
-    //clock_gettime(CLOCK_REALTIME,&x); 
-    //printf("%ld.%09ld \n",x.tv_sec, x.tv_nsec);
-    spdlog::info("simple task execute");
+    // clock_gettime(CLOCK_REALTIME,&x); 
+    // spdlog::info("{}.{:09d}",x.tv_sec, x.tv_nsec);
+    
 }
 
 void simpletask::cleanup(){

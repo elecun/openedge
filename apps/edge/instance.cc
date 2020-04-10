@@ -33,7 +33,6 @@ namespace oe {
 
             vector<string> default_tasks = config["tasks"]["default"].get<std::vector<string>>();
             for(string& task:default_tasks){
-                spdlog::info("installing {}", task);
                 edge_task_manager->install(task.c_str());
             }
         
@@ -42,12 +41,10 @@ namespace oe {
 
         //start edge
         void run(){
-            spdlog::info("Run All tasks in Realtime");
             edge_task_manager->run();
         }
 
         void cleanup(){
-            spdlog::info("Destory all tasks");
             edge_task_manager->uninstall();
         }
 

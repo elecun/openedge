@@ -42,9 +42,8 @@ void terminate() {
 }
 
 void cleanup(int sig) { 
+  oe::edge::cleanup();
   spdlog::info("Sucessfully terminated");
-  oe::edge::cealnup();
-
   ::terminate(); 
 }
 

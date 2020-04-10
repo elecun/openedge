@@ -16,6 +16,9 @@ namespace oe {
         //start to run
         void run();
 
+        //cleanup
+        void cleanup();
+
 
     } //namespace edge
 

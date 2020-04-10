@@ -1,0 +1,9 @@
+{
+    "md5":"603239CAF2F774498037F944F5592F52",
+    "info":{
+        "taskname":"simple2.task",
+        "version":"0.0.1",
+        "affinity":0,
+        "cycle":1000000000
+    }
+}

@@ -9,6 +9,7 @@
 #define _OPENEDGE_CORE_TASK_DRIVER_HPP_
 
 #include <openedge/core/task.hpp>
+#include <openedge/core/profile.hpp>
 #include <string>
 #include <thread>
 #include <signal.h>
@@ -23,7 +24,12 @@ namespace oe {
         typedef enum timer_type_t : unsigned int {
             PERIODIC = 0,
         } timer_type;
-        
+
+        typedef struct task_stat_t {
+            unsigned long jitter;   //max jitter
+            unsigned long overrun;  //overrun counter
+        };
+
         class task_driver : public oe::core::rt_task::runnable {
             public:
                 task_driver(const char* taskname);
@@ -40,12 +46,7 @@ namespace oe {
                 void proc();
                 void call(int signo, siginfo_t* info, void* context);
 
-                void make_timer(long nsec);
-                void sa_handler_usr(int nSigNum);
-
-                static void timer_handler(int signo, siginfo_t* info, void* context) {
-                (reinterpret_cast<task_driver*>(info->si_value.sival_ptr))->call(signo, info, context);
-            }
+                void set_rt_timer(long nsec);
 
             private:
                 string _taskname;
@@ -59,11 +60,10 @@ namespace oe {
 
                 timer_t _timer_id = 0;
                 struct sigevent _sig_evt;
-                struct sigaction _sig_act;
                 struct itimerspec _time_spec;
+                task_stat_t _stat;
 
-                bool _ready = false;
-
+                oe::core::profile* _profile = nullptr;   //task profile
 
         };
     } //namespace core
