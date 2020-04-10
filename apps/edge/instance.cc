@@ -20,9 +20,9 @@ namespace oe {
         //initialize
         bool init(const char* conf_file){
 
-            spdlog::info("Process ID = {}", getpid());
-            spdlog::info("System CPUs : {}", get_nprocs());
-            spdlog::info("System Clock Ticks : {}", sysconf(_SC_CLK_TCK));
+            spdlog::info("* Process ID = {}", getpid());
+            spdlog::info("* System CPUs : {}", get_nprocs());
+            spdlog::info("* System Clock Ticks : {}", sysconf(_SC_CLK_TCK));
 
             json config;
             try {

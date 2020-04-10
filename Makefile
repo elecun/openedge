@@ -69,6 +69,7 @@ edge:	$(OUTDIR)edge.o \
 		$(OUTDIR)edge_instance.o \
 		$(OUTDIR)task_manager.o \
 		$(OUTDIR)driver.o \
+		$(OUTDIR)profile.o \
 		$(OUTDIR)rt_timer.o
 		$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -o $(OUTDIR)$@ $^ $(LDLIBS)
 
@@ -104,6 +105,8 @@ $(OUTDIR)simple2.task.o: $(TASK_SOURCE_FILES)simple2/simple2.task.cc
 
 #openedge core
 $(OUTDIR)driver.o:	$(INCLUDE_FILES)openedge/core/driver.cc
+					$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+$(OUTDIR)profile.o:	$(INCLUDE_FILES)openedge/core/profile.cc
 					$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 $(OUTDIR)task.o:	$(INCLUDE_FILES)openedge/core/task.cc
 					$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
