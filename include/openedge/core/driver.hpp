@@ -13,7 +13,6 @@
 #include <string>
 #include <thread>
 #include <signal.h>
-#include <condition_variable>
 #include <mutex>
 
 using namespace std;
@@ -43,8 +42,7 @@ namespace oe {
             private:
                 bool load(const char* taskname);
                 void unload();
-                void proc();
-                void call(int signo, siginfo_t* info, void* context);
+                void do_process();
 
                 void set_rt_timer(long nsec);
 
@@ -53,7 +51,6 @@ namespace oe {
                 rt_task::runnable* _task_impl = nullptr;    //concrete implementation
                 void* _task_handle = nullptr;   //for dl
                 std::thread* _ptr_thread;
-                std::condition_variable _cv;
                 std::mutex _mutex;
                 bool done = false;
                 bool notified = false;
@@ -63,7 +60,7 @@ namespace oe {
                 struct itimerspec _time_spec;
                 task_stat_t _stat;
 
-                oe::core::profile* _profile = nullptr;   //task profile
+                oe::core::profile_t _profile;   //profile
 
         };
     } //namespace core

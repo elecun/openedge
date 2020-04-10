@@ -33,7 +33,7 @@ namespace oe {
             spdlog::info("Execute task driver");
             if(_task_impl) {
                 set_rt_timer(10*1000*1000); //driver call via rt timer signal
-                _ptr_thread = new thread{ &oe::core::task_driver::proc, this };
+                _ptr_thread = new thread{ &oe::core::task_driver::do_process, this };
             }
         }
 
@@ -104,7 +104,7 @@ namespace oe {
         }
 
         //concreate process impl.
-        void task_driver::proc() {
+        void task_driver::do_process() {
 
             //signal set for threading
             sigset_t thread_sigmask;

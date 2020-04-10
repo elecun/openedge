@@ -17,6 +17,12 @@ using namespace std;
 namespace oe {
     namespace core {
 
+        typedef struct profile_t {
+            char md5[32] = {0,};
+            int affinity;
+            unsigned long cycle_ns; //cycle time in nanoseconds
+        };
+
         class profile {
             public:
                 profile(const char* profile_path);

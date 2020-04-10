@@ -23,21 +23,7 @@ namespace oe {
                             virtual void execute() = 0;
                             virtual bool configure() = 0;
                             virtual void cleanup() = 0;
-                        protected:
-                            unsigned long _period_ns = 1*1000*1000UL;  // default period : 1ms
                     };
-
-                    void regist(runnable& rtk){
-                        if(!_runnable)
-                            _runnable = &rtk;
-                    }
-
-                    void release() {
-                        _runnable = nullptr;
-                    }
-
-                private:
-                    runnable* _runnable = nullptr;
             };
 
     } //namespace core

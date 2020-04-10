@@ -108,8 +108,6 @@ $(OUTDIR)driver.o:	$(INCLUDE_FILES)openedge/core/driver.cc
 					$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 $(OUTDIR)profile.o:	$(INCLUDE_FILES)openedge/core/profile.cc
 					$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
-$(OUTDIR)task.o:	$(INCLUDE_FILES)openedge/core/task.cc
-					$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 $(OUTDIR)uuid.o:	$(INCLUDE_FILES)openedge/util/uuid.cc
 					$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
