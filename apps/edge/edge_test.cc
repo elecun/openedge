@@ -1,7 +1,7 @@
 
 /**
- * @file    oeware_test.cc
- * @brief   oeware unit test source code
+ * @file    edge_test.cc
+ * @brief   edge unit testing
  * @author  Byunghun Hwang<bh.hwang@iae.re.kr>
  */
 

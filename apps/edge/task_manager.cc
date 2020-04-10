@@ -29,14 +29,11 @@ namespace oe {
             if(!_task_container[_container_map[taskname]]->configure()){
                 uninstall(taskname);
             }
-
             spdlog::info("Totally installed : {}", _task_container.size());
-
             return true;
         }
 
         void task_manager::uninstall(const char* taskname){
-
             if(!taskname){
                 spdlog::info("Uninstalling all tasks...");
                 //all tasks will be uninstalled

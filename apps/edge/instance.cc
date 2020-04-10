@@ -9,6 +9,7 @@
 #include "task_container.hpp"
 #include <openedge/core/task.hpp>
 #include "task_manager.hpp"
+#include <sys/sysinfo.h>
 
 using namespace std;
 using json = nlohmann::json;
@@ -20,6 +21,8 @@ namespace oe {
         bool init(const char* conf_file){
 
             spdlog::info("Process ID = {}", getpid());
+            spdlog::info("System CPUs : {}", get_nprocs());
+            spdlog::info("System Clock Ticks : {}", sysconf(_SC_CLK_TCK));
 
             json config;
             try {

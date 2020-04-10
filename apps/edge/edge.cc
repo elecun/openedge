@@ -88,7 +88,7 @@ int main(int argc, char* argv[])
       if(oe::edge::init(_conf_file.c_str()))
          oe::edge::run();
       
-      pause();
+      pause(); //wait until getting SIGINT
     }
 
   }
