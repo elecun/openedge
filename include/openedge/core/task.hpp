@@ -9,6 +9,7 @@
 #define _OPENEDGE_CORE_TASK_HPP_
 
 #include <string>
+#include <openedge/core/profile.hpp>
 
 using namespace std;
 
@@ -24,6 +25,8 @@ namespace oe {
                             virtual bool configure() = 0;
                             virtual void cleanup() = 0;
                     };
+                protected:
+                    profile_t profile;
             };
 
     } //namespace core
