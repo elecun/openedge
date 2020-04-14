@@ -15,14 +15,15 @@ namespace oe {
 
         task_driver::~task_driver(){
             unload();
-            delete _profile;
         }
 
 
         bool task_driver::configure(){
             spdlog::info("Configured task driver for {}", _taskname);
             if(load(_taskname.c_str())){
-                _profile = new profile(_taskname.c_str());
+                profile reader;
+                string path = "./"+_taskname+".json"; //same dir
+                reader.load(path.c_str(), _profile);
 
                 return _task_impl->configure();
             }
@@ -42,7 +43,7 @@ namespace oe {
                 _task_impl->cleanup();
             unload();
         }
-        
+
         //load task component
         bool task_driver::load(const char* taskname){
             spdlog::info("Loading Task : {}", taskname);

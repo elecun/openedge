@@ -11,27 +11,39 @@
 
 #include <fstream>
 #include <map>
+#include <cstring>
 
 using namespace std;
 
 namespace oe {
     namespace core {
 
-        typedef struct profile_t {
+        struct profile_t {
             char md5[32] = {0,};
-            int affinity;
+            int affinity;   //working cpu
             unsigned long cycle_ns; //cycle time in nanoseconds
+            string taskname;
+            string version;
+
+            profile_t& operator=(const profile_t& other){
+                memcpy(this->md5, other.md5, sizeof(this->md5));
+                this->affinity = other.affinity;
+                this->cycle_ns = other.cycle_ns;
+                this->taskname = other.taskname;
+                this->version = other.version;
+                return *this;
+            }
         };
 
         class profile {
             public:
-                profile(const char* profile_path);
+                profile(){}
+                ~profile(){}
+
+                bool load(const char* profile_path, profile_t& dest);
 
             private:
-                bool load(const char* profile_path);
 
-            private:
-                
 
         }; //class profile
 

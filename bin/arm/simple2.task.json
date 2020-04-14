@@ -4,6 +4,6 @@
         "taskname":"simple2.task",
         "version":"0.0.1",
         "affinity":0,
-        "cycle":1000000000
+        "cycle_ns":1000000000
     }
 }

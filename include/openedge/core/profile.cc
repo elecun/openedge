@@ -10,21 +10,22 @@ using namespace std;
 namespace oe {
     namespace core {
 
-        profile::profile(const char* profile_path){
-            this->load(profile_path);
-        }
-
-        bool profile::load(const char* profile_path){
-            json profile;
+        bool profile::load(const char* profile_path, profile_t& dest){
+            json _profile;
             try {
                 std::ifstream file(profile_path);
-                file >> profile;
+                file >> _profile;
+
+                strncpy(dest.md5, _profile["md5"].get<string>().c_str(), sizeof(dest.md5));
+                dest.affinity = _profile["info"]["affinity"].get<int>();
+                dest.cycle_ns = _profile["info"]["cycle_ns"].get<unsigned long>();
+                dest.taskname = _profile["info"]["taskname"].get<string>();
+                dest.version = _profile["info"]["version"].get<string>();
             }
             catch(const json::exception& e){
                 spdlog::error("{}", e.what());
                 return false;
             }
-
             return true;
 
         }
