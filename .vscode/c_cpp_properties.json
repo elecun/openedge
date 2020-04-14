@@ -4,8 +4,7 @@
             "name": "Linux",
             "includePath": [
                 "${workspaceFolder}/**",
-                "${workspaceFolder}/include/",
-                "${workspaceFolder}/include/external/"
+                "${workspaceFolder}/include/"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/g++",

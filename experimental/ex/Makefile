@@ -6,7 +6,7 @@
 OS := $(shell uname)
 
 #Set Architecutre
-ARCH := arm
+#ARCH := arm
 
 #Compilers
 ifeq ($(ARCH),arm)

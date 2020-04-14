@@ -37,6 +37,7 @@ endif
 $(shell mkdir -p $(OUTDIR))
 $(shell mkdir -p $(TASK_OUTDIR))
 
+#if release(-O3), debug(-O0)
 CXXFLAGS = -O3 -fPIC -Wall -std=c++17 -D__cplusplus=201703L
 
 #custom definition
