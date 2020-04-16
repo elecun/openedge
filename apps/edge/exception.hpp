@@ -16,21 +16,19 @@
 
 using namespace std;
 
-namespace oe {
-    namespace edge {
+namespace oe::edge {
 
-        //exception class
-        class exception : public oe::oe_exception {
-            exception(const edge::excode code, const char* err_msg){
-                switch(code){
-                    case excode::EDGE_LOAD_CONFIG_FAIL: set(err_msg); break;
-                    default: set("Unexpected Exception");
-                }
+    //exception class
+    class exception : public oe::oe_exception {
+        exception(const edge::excode code, const char* err_msg){
+            switch(code){
+                case excode::EDGE_LOAD_CONFIG_FAIL: set(err_msg); break;
+                default: set("Unexpected Exception");
             }
-            
-        };//class core::exception
+        }
+        
+    };//class core::exception
 
-    } //namespace edge
-} //namespace oe
+} //namespace oe::edge
 
 #endif

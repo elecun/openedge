@@ -12,8 +12,8 @@ ARCH := arm
 
 #Compilers
 ifeq ($(ARCH),arm)
-	CC := /usr/bin/arm-linux-gnueabihf-g++
-	GCC := /usr/bin/arm-linux-gnueabihf-gcc
+	CC := /usr/bin/arm-linux-gnueabihf-g++-8
+	GCC := /usr/bin/arm-linux-gnueabihf-gcc-8
 	LD_LIBRARY_PATH += -L./lib/arm
 	OUTDIR		= ./bin/arm/
 	TASK_OUTDIR		= ./bin/arm/task/

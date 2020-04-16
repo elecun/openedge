@@ -7,21 +7,15 @@
 #ifndef _EDGE_INSTANCE_HPP_
 #define _EDGE_INSTANCE_HPP_
 
-namespace oe {
-    namespace edge {
+namespace oe::edge {
+    //initialize edge application
+    bool init(const char* conf_file);
 
-        //initialize edge application
-        bool init(const char* conf_file);
+    //start to run
+    void run();
 
-        //start to run
-        void run();
-
-        //cleanup
-        void cleanup();
-
-
-    } //namespace edge
-
-} //namespace oe
+    //cleanup
+    void cleanup();
+} //namespace oe::edge
 
 #endif
