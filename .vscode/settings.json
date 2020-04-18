@@ -14,6 +14,7 @@
         "unordered_map": "cpp",
         "unordered_set": "cpp",
         "vector": "cpp",
-        "cstdint": "cpp"
+        "cstdint": "cpp",
+        "functional": "cpp"
     }
 }

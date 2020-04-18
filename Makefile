@@ -104,6 +104,11 @@ simple2.task: $(OUTDIR)simple2.task.o
 $(OUTDIR)simple2.task.o: $(TASK_SOURCE_FILES)simple2/simple2.task.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
+plcDaq.task: $(OUTDIR)plcDaq.task.o
+	$(CC) $(LDFLAGS) -shared -o $(OUTDIR)$@ $^ $(LDLIBS) -ldl
+$(OUTDIR)plcDaq.task.o: $(TASK_SOURCE_FILES)plcDaq/plcDaq.task.cc
+	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
 #openedge core
 $(OUTDIR)driver.o:	$(INCLUDE_FILES)openedge/core/driver.cc
 					$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
@@ -115,7 +120,7 @@ $(OUTDIR)uuid.o:	$(INCLUDE_FILES)openedge/util/uuid.cc
 
 all : edge
 test : oeware_test
-task : simple.task simple2.task
+task : simple.task simple2.task plcDaq.task
 clean : FORCE
 		$(RM) $(OUTDIR)*.o $(OUTDIR)openedge $(OUTDIR)edge $(OUTDIR)*.task
 FORCE : 

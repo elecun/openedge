@@ -1,15 +1,14 @@
 
 /**
- * @file    task.hpp
- * @brief   Task abstraction  class
- * @author  Byunghun Hwang
+ * @file    service.hpp
+ * @brief   Service abstraction  class
+ * @author  Byunghun Hwang<bh.hwang@iae.re.kr>
  */
 
-#ifndef _OPENEDGE_CORE_TASK_HPP_
-#define _OPENEDGE_CORE_TASK_HPP_
+#ifndef _OPENEDGE_CORE_SERVICE_HPP_
+#define _OPENEDGE_CORE_SERVICE_HPP_
 
 #include <string>
-#include <openedge/core/profile.hpp>
 
 using namespace std;
 
