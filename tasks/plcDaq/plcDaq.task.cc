@@ -25,6 +25,7 @@ plcDaqTask::~plcDaqTask(){
 }
 
 bool plcDaqTask::configure(){
+
     return true;
 }
 

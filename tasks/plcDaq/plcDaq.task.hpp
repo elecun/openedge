@@ -1,7 +1,7 @@
 
 /**
- * @file    Data Aquisiiton Task form PLC
- * @brief   
+ * @file    Data Aquisiiton Task
+ * @brief   use general PLC which has FEnet I/F
  * @author  Byunghun Hwang, <bh.hwang@iae.re.kr>
  */
 
@@ -14,6 +14,7 @@
 class plcDaqTask : public oe::core::rt_task::runnable {
     public:
     ~plcDaqTask();
+
     bool configure();
     void execute();
     void cleanup();
