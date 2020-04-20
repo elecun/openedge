@@ -14,7 +14,7 @@
 
 namespace oe::service {
 
-    class plcGeneral : public oe::core::idevice, oe::core::iservice {
+    class plcGeneral : public oe::core::iDeviceExtend, oe::core::iservice {
         public:
             plcGeneral();
             ~plcGeneral();
@@ -22,6 +22,10 @@ namespace oe::service {
             //service function
             void open() override;
             void close() override;
+
+            bool addModule(_mtype* module) = 0;
+            bool removeModule(_mod_index) = 0;
+            _mtype* getModule(_mod_index) = 0;
 
         private:
             oe::core::ibusAsync* _bus;

@@ -3,6 +3,7 @@
 #include "plc.daq.task.hpp"
 #include <3rdparty/spdlog/spdlog.h>
 #include <openedge/core/service.hpp>
+#include <openedge/services/plc.general.service/plc.general.service.hpp>
 
 
 //task create & release
@@ -22,7 +23,8 @@ void release(){
 
 
 plcDaqTask::~plcDaqTask(){
-    //_plc->disconnect();
+
+    _plc->close();
 
     if(_bus)
         delete _bus;
@@ -32,6 +34,11 @@ plcDaqTask::~plcDaqTask(){
 }
 
 bool plcDaqTask::configure(){
+
+    if(!_plc->open())
+        return false;
+
+    _plc->addModule(0, new )
 
     //_bus = new bus;
     //_plc = new plc(with bus interface)

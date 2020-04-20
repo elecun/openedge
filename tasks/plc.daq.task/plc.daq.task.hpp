@@ -26,7 +26,7 @@ class plcDaqTask : public oe::core::rt_task::runnable {
     private:
     struct timespec x; 
     oe::core::ibusAsync* _bus = nullptr;
-    oe::core::idevice* _plc = nullptr;
+    oe::core::iDeviceExtend<int, oe::core::iDevice*>* _plc = nullptr;
 };
 
 EXPORT_RT_TASK_API

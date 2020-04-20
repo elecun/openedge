@@ -7,9 +7,9 @@
         "cycle_ns":10000000000
     },
     "services":{
-        "require":["plc.general.service","fenet.connector.service"],
+        "required":["plc.general.service","fenet.connector.service"],
         "plc.general.service":{
-            
+
         },
         "fenet.connector.service":{
 
