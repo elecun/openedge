@@ -4,14 +4,14 @@
 #pragma once
 
 #ifndef SPDLOG_HEADER_ONLY
-#include <external/spdlog/details/pattern_formatter.h>
+#include <3rdparty/spdlog/details/pattern_formatter.h>
 #endif
 
-#include <external/spdlog/details/fmt_helper.h>
-#include <external/spdlog/details/log_msg.h>
-#include <external/spdlog/details/os.h>
-#include <external/spdlog/fmt/fmt.h>
-#include <external/spdlog/formatter.h>
+#include <3rdparty/spdlog/details/fmt_helper.h>
+#include <3rdparty/spdlog/details/log_msg.h>
+#include <3rdparty/spdlog/details/os.h>
+#include <3rdparty/spdlog/fmt/fmt.h>
+#include <3rdparty/spdlog/formatter.h>
 
 #include <array>
 #include <chrono>

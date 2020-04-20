@@ -272,8 +272,8 @@
 #include <tuple>
 #include <vector>  // NOLINT
 
-#include <external/gtest/internal/custom/gtest-port.h>
-#include <external/gtest/internal/gtest-port-arch.h>
+#include <3rdparty/gtest/internal/custom/gtest-port.h>
+#include <3rdparty/gtest/internal/gtest-port-arch.h>
 
 #if !defined(GTEST_DEV_EMAIL_)
 # define GTEST_DEV_EMAIL_ "googletestframework@@googlegroups.com"

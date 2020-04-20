@@ -50,7 +50,7 @@
 #include <cstdint>
 #include <string>
 
-#include <external/gtest/internal/gtest-port.h>
+#include <3rdparty/gtest/internal/gtest-port.h>
 
 namespace testing {
 namespace internal {

@@ -15,6 +15,9 @@
         "unordered_set": "cpp",
         "vector": "cpp",
         "cstdint": "cpp",
-        "functional": "cpp"
+        "functional": "cpp",
+        "*.tcc": "cpp",
+        "ostream": "cpp",
+        "chrono": "cpp"
     }
 }

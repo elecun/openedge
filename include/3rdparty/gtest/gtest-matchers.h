@@ -44,9 +44,9 @@
 #include <string>
 #include <type_traits>
 
-#include <external/gtest/gtest-printers.h>
-#include <external/gtest/internal/gtest-internal.h>
-#include <external/gtest/internal/gtest-port.h>
+#include <3rdparty/gtest/gtest-printers.h>
+#include <3rdparty/gtest/internal/gtest-internal.h>
+#include <3rdparty/gtest/internal/gtest-port.h>
 
 // MSVC warning C5046 is new as of VS2017 version 15.8.
 #if defined(_MSC_VER) && _MSC_VER >= 1915

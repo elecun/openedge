@@ -96,17 +96,17 @@ $(OUTDIR)rt_timer.o: $(INCLUDE_FILES)openedge/core/rt_timer.cc
 #tasks
 simple.task: $(OUTDIR)simple.task.o
 	$(CC) $(LDFLAGS) -shared -o $(OUTDIR)$@ $^ $(LDLIBS) -ldl
-$(OUTDIR)simple.task.o: $(TASK_SOURCE_FILES)simple/simple.task.cc
+$(OUTDIR)simple.task.o: $(TASK_SOURCE_FILES)simple.task/simple.task.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
 simple2.task: $(OUTDIR)simple2.task.o
 	$(CC) $(LDFLAGS) -shared -o $(OUTDIR)$@ $^ $(LDLIBS) -ldl
-$(OUTDIR)simple2.task.o: $(TASK_SOURCE_FILES)simple2/simple2.task.cc
+$(OUTDIR)simple2.task.o: $(TASK_SOURCE_FILES)simple2.task/simple2.task.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
-plcDaq.task: $(OUTDIR)plcDaq.task.o
+plc.daq.task: $(OUTDIR)plc.daq.task.o
 	$(CC) $(LDFLAGS) -shared -o $(OUTDIR)$@ $^ $(LDLIBS) -ldl
-$(OUTDIR)plcDaq.task.o: $(TASK_SOURCE_FILES)plcDaq/plcDaq.task.cc
+$(OUTDIR)plc.daq.task.o: $(TASK_SOURCE_FILES)plc.daq.task/plc.daq.task.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
 #openedge core
@@ -120,7 +120,7 @@ $(OUTDIR)uuid.o:	$(INCLUDE_FILES)openedge/util/uuid.cc
 
 all : edge
 test : oeware_test
-task : simple.task simple2.task plcDaq.task
+tasks : simple.task simple2.task plc.daq.task
 clean : FORCE
 		$(RM) $(OUTDIR)*.o $(OUTDIR)openedge $(OUTDIR)edge $(OUTDIR)*.task
 FORCE : 

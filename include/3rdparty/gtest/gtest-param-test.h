@@ -177,9 +177,9 @@ TEST_P(DerivedTest, DoesBlah) {
 #include <iterator>
 #include <utility>
 
-#include <external/gtest/internal/gtest-internal.h>
-#include <external/gtest/internal/gtest-param-util.h>
-#include <external/gtest/internal/gtest-port.h>
+#include <3rdparty/gtest/internal/gtest-internal.h>
+#include <3rdparty/gtest/internal/gtest-param-util.h>
+#include <3rdparty/gtest/internal/gtest-port.h>
 
 namespace testing {
 

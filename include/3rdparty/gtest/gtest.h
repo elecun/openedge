@@ -59,17 +59,17 @@
 #include <type_traits>
 #include <vector>
 
-#include <external/gtest/internal/gtest-internal.h>
-#include <external/gtest/internal/gtest-string.h>
-#include <external/gtest/gtest-death-test.h>
-#include <external/gtest/gtest-matchers.h>
-#include <external/gtest/gtest-message.h>
-#include <external/gtest/gtest-param-test.h>
-#include <external/gtest/gtest-printers.h>
-#include <external/gtest/gtest_prod.h>
-#include <external/gtest/gtest-test-part.h>
-#include <external/gtest/gtest-typed-test.h>
-#include <external/gtest/gtest.h>
+#include <3rdparty/gtest/internal/gtest-internal.h>
+#include <3rdparty/gtest/internal/gtest-string.h>
+#include <3rdparty/gtest/gtest-death-test.h>
+#include <3rdparty/gtest/gtest-matchers.h>
+#include <3rdparty/gtest/gtest-message.h>
+#include <3rdparty/gtest/gtest-param-test.h>
+#include <3rdparty/gtest/gtest-printers.h>
+#include <3rdparty/gtest/gtest_prod.h>
+#include <3rdparty/gtest/gtest-test-part.h>
+#include <3rdparty/gtest/gtest-typed-test.h>
+#include <3rdparty/gtest/gtest.h>
 
 GTEST_DISABLE_MSC_WARNINGS_PUSH_(4251 \
 /* class A needs to have dll-interface to be used by clients of class B */)
@@ -379,7 +379,7 @@ GTEST_API_ AssertionResult AssertionFailure(const Message& msg);
 // predicate assertion macros. This include comes late because it relies on
 // APIs declared above.
 //changed the path : hwang
-#include <external/gtest/gtest_pred_impl.h>
+#include <3rdparty/gtest/gtest_pred_impl.h>
 
 namespace testing {
 

@@ -12,6 +12,6 @@
         }
     },
     "tasks":{
-        "default":["simple.task", "simple2.task"]
+        "default":["simple.task"]
     }
 }

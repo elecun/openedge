@@ -14,7 +14,7 @@
 #define FMT_HEADER_ONLY
 #endif
 #endif
-#include <external/spdlog/fmt/bundled/ostream.h>
+#include <3rdparty/spdlog/fmt/bundled/ostream.h>
 #else
 #include <fmt/ostream.h>
 #endif

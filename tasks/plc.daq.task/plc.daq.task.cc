@@ -1,7 +1,8 @@
 
 
-#include "plcDaq.task.hpp"
+#include "plc.daq.task.hpp"
 #include <3rdparty/spdlog/spdlog.h>
+#include <openedge/core/service.hpp>
 
 
 //task create & release
@@ -21,17 +22,29 @@ void release(){
 
 
 plcDaqTask::~plcDaqTask(){
+    //_plc->disconnect();
+
+    if(_bus)
+        delete _bus;
+    if(_plc)
+        delete _plc;
 
 }
 
 bool plcDaqTask::configure(){
 
+    //_bus = new bus;
+    //_plc = new plc(with bus interface)
+    //_plc->connect();
+
     return true;
 }
 
 void plcDaqTask::execute(){
-    // clock_gettime(CLOCK_REALTIME,&x); 
-    // spdlog::info("{}.{:09d}",x.tv_sec, x.tv_nsec);
+
+    //request
+    //_plc->readBytes()
+    //_plc->readByte()
     
 }
 

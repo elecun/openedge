@@ -2,7 +2,7 @@
 #include "profile.hpp"
 #include <openedge/ext/json.hpp>
 #include <fstream>
-#include <external/spdlog/spdlog.h>
+#include <3rdparty/spdlog/spdlog.h>
 
 using json = nlohmann::json;
 using namespace std;

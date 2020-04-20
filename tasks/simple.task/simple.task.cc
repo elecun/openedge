@@ -1,7 +1,8 @@
 
 
 #include "simple.task.hpp"
-#include <external/spdlog/spdlog.h>
+#include <3rdparty/spdlog/spdlog.h>
+#include <chrono>
 
 
 //task create & release
@@ -34,6 +35,12 @@ bool simpletask::configure(){
 void simpletask::execute(){
     // clock_gettime(CLOCK_REALTIME,&x); 
     // spdlog::info("{}.{:09d}",x.tv_sec, x.tv_nsec);
+    
+    // auto t_start = std::chrono::high_resolution_clock::now();
+    // spdlog::info("execute");
+    // auto t_end = std::chrono::high_resolution_clock::now();
+    // using fpsec = std::chrono::duration<double, std::chrono::seconds::period>;
+    // spdlog::info("Elpased : {}", fpsec(t_end - t_start).count());
     
 }
 

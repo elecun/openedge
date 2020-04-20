@@ -1,6 +1,6 @@
 
 
-#include "xgb_fenet.service.hpp"
+#include "fenet.connector.service.hpp"
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
@@ -12,15 +12,15 @@ namespace oe {
     namespace PLC {
         namespace LSIS {
 
-            XGBFEnetService::XGBFEnetService(){
+            fenetConnectorService::fenetConnectorService(){
                 _fenet = new net::XGBFEnet();
             }
 
-            XGBFEnetService::~XGBFEnetService(){
+            fenetConnectorService::~fenetConnectorService(){
                 delete _fenet;
             }
 
-            bool XGBFEnetService::connect(const char* ipv4_address, int port){
+            bool fenetConnectorService::connect(const char* ipv4_address, int port){
                 try {
                     bool rc = _fenet->connect(ipv4_address, port);
                     if(!rc){

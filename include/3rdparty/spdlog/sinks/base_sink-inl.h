@@ -4,11 +4,11 @@
 #pragma once
 
 #ifndef SPDLOG_HEADER_ONLY
-#include <external/spdlog/sinks/base_sink.h>
+#include <3rdparty/spdlog/sinks/base_sink.h>
 #endif
 
-#include <external/spdlog/common.h>
-#include <external/spdlog/details/pattern_formatter.h>
+#include <3rdparty/spdlog/common.h>
+#include <3rdparty/spdlog/details/pattern_formatter.h>
 
 #include <memory>
 

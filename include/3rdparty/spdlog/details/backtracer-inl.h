@@ -4,7 +4,7 @@
 #pragma once
 
 #ifndef SPDLOG_HEADER_ONLY
-#include <external/spdlog/details/backtracer.h>
+#include <3rdparty/spdlog/details/backtracer.h>
 #endif
 namespace spdlog {
 namespace details {

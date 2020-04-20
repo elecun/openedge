@@ -5,7 +5,7 @@
  * @author  Byunghun Hwang<bh.hwang@iae.re.kr>
  */
 
-#include <external/gtest/gtest.h>
+#include <3rdparty/gtest/gtest.h>
 
 // TEST(test_case_name, test_name) {
 //   EXPECT_EQ(2, sum(1,1));

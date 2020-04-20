@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include <external/spdlog/details/log_msg.h>
+#include <3rdparty/spdlog/details/log_msg.h>
 
 namespace spdlog {
 namespace details {

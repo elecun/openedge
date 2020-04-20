@@ -20,7 +20,7 @@ namespace oe::core {
             ibusAsync(readCallbackFunc func = nullptr ):callback(func) { }
 			virtual bool open() = 0;
 			virtual void close() = 0;
-			//virtual int read(uint8_t* data, int len) = 0;
+			virtual int read(uint8_t* data, int len) = 0;
 			virtual int write(const uint8_t* data, int len) = 0;
 			virtual void flush() = 0;
 

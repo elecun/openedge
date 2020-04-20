@@ -4,11 +4,11 @@
 #pragma once
 
 #ifndef SPDLOG_HEADER_ONLY
-#include <external/spdlog/sinks/stdout_color_sinks.h>
+#include <3rdparty/spdlog/sinks/stdout_color_sinks.h>
 #endif
 
-#include <external/spdlog/logger.h>
-#include <external/spdlog/common.h>
+#include <3rdparty/spdlog/logger.h>
+#include <3rdparty/spdlog/common.h>
 
 namespace spdlog {
 

@@ -4,10 +4,10 @@
 #pragma once
 
 #ifndef SPDLOG_HEADER_ONLY
-#include <external/spdlog/sinks/sink.h>
+#include <3rdparty/spdlog/sinks/sink.h>
 #endif
 
-#include <external/spdlog/common.h>
+#include <3rdparty/spdlog/common.h>
 
 SPDLOG_INLINE bool spdlog::sinks::sink::should_log(spdlog::level::level_enum msg_level) const
 {

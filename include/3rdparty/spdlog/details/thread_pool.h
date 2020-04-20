@@ -3,9 +3,9 @@
 
 #pragma once
 
-#include <external/spdlog/details/log_msg_buffer.h>
-#include <external/spdlog/details/mpmc_blocking_q.h>
-#include <external/spdlog/details/os.h>
+#include <3rdparty/spdlog/details/log_msg_buffer.h>
+#include <3rdparty/spdlog/details/mpmc_blocking_q.h>
+#include <3rdparty/spdlog/details/os.h>
 
 #include <chrono>
 #include <memory>
@@ -27,7 +27,7 @@ enum class async_msg_type
     terminate
 };
 
-#include <external/spdlog/details/log_msg_buffer.h>
+#include <3rdparty/spdlog/details/log_msg_buffer.h>
 // Async msg to move to/from the queue
 // Movable only. should never be copied
 struct async_msg : log_msg_buffer

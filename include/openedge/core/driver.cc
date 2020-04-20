@@ -1,9 +1,10 @@
 
 
 #include "driver.hpp"
-#include <external/spdlog/spdlog.h>
+#include <3rdparty/spdlog/spdlog.h>
 #include <dlfcn.h>
 #include <signal.h>
+#include <chrono>
 
 #define SIG_RUNTIME_TRIGGER (SIGRTMIN)
 
@@ -113,17 +114,20 @@ namespace oe {
             sigaddset(&thread_sigmask, SIG_RUNTIME_TRIGGER);
             sigaddset(&thread_sigmask, SIGTERM);
             int _sig_no;
-            struct timespec _begin, _end; 
+            auto t_prev = std::chrono::high_resolution_clock::now();
 
             while(1){
                 sigwait(&thread_sigmask, &_sig_no);
-                clock_gettime(CLOCK_REALTIME,&_begin); 
                 if(_sig_no==SIG_RUNTIME_TRIGGER){
-                    if(_task_impl)
+                    auto t_now = std::chrono::high_resolution_clock::now();
+                    if(_task_impl){
                         _task_impl->execute();
+                    }
+                    spdlog::info("Trigger Time : {}", std::chrono::duration<double, std::chrono::seconds::period>(t_now - t_prev).count());
+                    t_prev = t_now;
+                    //spdlog::info("Signal Duration : {}",t_now);
                 }
-                clock_gettime(CLOCK_REALTIME,&_end);
-                spdlog::info("Elapsed : {}.{:09d}",_begin.tv_sec-_end.tv_sec, _begin.tv_nsec-_end.tv_nsec);
+                
             }
         }
 

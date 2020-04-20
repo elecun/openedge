@@ -14,12 +14,12 @@
 // The use of private formatter per sink provides the opportunity to cache some
 // formatted data, and support for different format per sink.
 
-#include <external/spdlog/common.h>
-#include <external/spdlog/details/log_msg.h>
-#include <external/spdlog/details/backtracer.h>
+#include <3rdparty/spdlog/common.h>
+#include <3rdparty/spdlog/details/log_msg.h>
+#include <3rdparty/spdlog/details/backtracer.h>
 
 #ifdef SPDLOG_WCHAR_TO_UTF8_SUPPORT
-#include <external/spdlog/details/os.h>
+#include <3rdparty/spdlog/details/os.h>
 #endif
 
 #include <vector>

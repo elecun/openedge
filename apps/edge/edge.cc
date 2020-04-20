@@ -26,9 +26,9 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#include <external/cxxopts.hpp>
-#include <external/spdlog/spdlog.h>
-#include <external/spdlog/sinks/stdout_color_sinks.h>
+#include <3rdparty/cxxopts.hpp>
+#include <3rdparty/spdlog/spdlog.h>
+#include <3rdparty/spdlog/sinks/stdout_color_sinks.h>
 #include <csignal> //for signal handling
 #include <sys/mman.h> //for mlock
 #include <openedge/core/version.hpp>

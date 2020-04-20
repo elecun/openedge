@@ -4,10 +4,10 @@
 #pragma once
 
 #ifndef SPDLOG_HEADER_ONLY
-#include <external/spdlog/details/log_msg.h>
+#include <3rdparty/spdlog/details/log_msg.h>
 #endif
 
-#include <external/spdlog/details/os.h>
+#include <3rdparty/spdlog/details/os.h>
 
 namespace spdlog {
 namespace details {

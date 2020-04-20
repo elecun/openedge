@@ -36,8 +36,8 @@
 #ifndef GTEST_INCLUDE_GTEST_INTERNAL_GTEST_DEATH_TEST_INTERNAL_H_
 #define GTEST_INCLUDE_GTEST_INTERNAL_GTEST_DEATH_TEST_INTERNAL_H_
 
-#include <external/gtest/gtest-matchers.h>
-#include <external/gtest/internal/gtest-internal.h>
+#include <3rdparty/gtest/gtest-matchers.h>
+#include <3rdparty/gtest/internal/gtest-internal.h>
 
 #include <stdio.h>
 #include <memory>

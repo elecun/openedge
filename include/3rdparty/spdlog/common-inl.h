@@ -4,7 +4,7 @@
 #pragma once
 
 #ifndef SPDLOG_HEADER_ONLY
-#include <external/spdlog/common.h>
+#include <3rdparty/spdlog/common.h>
 #endif
 
 namespace spdlog {

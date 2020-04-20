@@ -13,10 +13,10 @@ namespace oe {
     namespace PLC {
         namespace LSIS {
 
-            class XGBFEnetService : public net::netBase {
+            class fenetConnectorService : public net::netBase {
                 public:
-                XGBFEnetService();
-                ~XGBFEnetService();
+                fenetConnectorService();
+                ~fenetConnectorService();
 
                 bool connect(const char* ipv4_address, int port);
 

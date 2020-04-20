@@ -1,20 +1,19 @@
 
 /**
- * @file    Data Aquisiiton Task
- * @brief   use general PLC which has FEnet I/F
+ * @file    simple.task.hpp
+ * @brief   simple message task for example
  * @author  Byunghun Hwang, <bh.hwang@iae.re.kr>
  */
 
-#ifndef _OPENEDGE_PLCDAQ_TASK_HPP_
-#define _OPENEDGE_PLCDAQ_TASK_HPP_
+#ifndef _OPENEDGE_TASK_SYSMON_HPP_
+#define _OPENEDGE_TASK_SYSMON_HPP_
 
 #include <openedge/core/task.hpp>
 #include <time.h>
 
-class plcDaqTask : public oe::core::rt_task::runnable {
+class  sysmonTask : public oe::core::rt_task::runnable {
     public:
-    ~plcDaqTask();
-
+    ~sysmonTask();
     bool configure();
     void execute();
     void cleanup();

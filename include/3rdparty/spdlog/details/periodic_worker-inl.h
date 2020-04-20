@@ -4,7 +4,7 @@
 #pragma once
 
 #ifndef SPDLOG_HEADER_ONLY
-#include <external/spdlog/details/periodic_worker.h>
+#include <3rdparty/spdlog/details/periodic_worker.h>
 #endif
 
 namespace spdlog {
