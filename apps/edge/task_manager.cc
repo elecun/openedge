@@ -22,8 +22,8 @@ namespace oe::edge {
 
         //insert task into container with uuid
         //(todo) requries file existance in task respository path
-        _container_map.insert(container_t_map::value_type(taskname, _uuid_gen.generate()));
-        _task_container.insert(container_t::value_type(_container_map[taskname], new core::task_driver(taskname)));
+        _container_map.insert(taskContainer_map::value_type(taskname, _uuid_gen.generate()));
+        _task_container.insert(taskContainer_t::value_type(_container_map[taskname], new core::task_driver(taskname)));
         spdlog::info("{} is assigned to {}", _container_map[taskname].str(), taskname);
         if(!_task_container[_container_map[taskname]]->configure()){
             uninstall(taskname);
@@ -36,7 +36,7 @@ namespace oe::edge {
         if(!taskname){
             spdlog::info("Uninstalling all tasks...");
             //all tasks will be uninstalled
-            for(container_t::iterator itr = _task_container.begin(); itr!=_task_container.end();++itr){
+            for(taskContainer_t::iterator itr = _task_container.begin(); itr!=_task_container.end();++itr){
                 delete itr->second;
             }
             _task_container.clear();
@@ -52,12 +52,12 @@ namespace oe::edge {
 
     void task_manager::run(const char* taskname){
         if(!taskname){
-            for(container_t::iterator itr = _task_container.begin(); itr!=_task_container.end();++itr){
+            for(taskContainer_t::iterator itr = _task_container.begin(); itr!=_task_container.end();++itr){
                 itr->second->execute();
             }
         }
         else {
-            container_t::iterator itr = _task_container.find(_container_map[taskname]);
+            taskContainer_t::iterator itr = _task_container.find(_container_map[taskname]);
             if(itr!=_task_container.end())
                 _task_container[_container_map[taskname]]->execute();
             else

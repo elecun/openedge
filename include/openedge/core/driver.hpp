@@ -27,7 +27,7 @@ namespace oe {
         typedef struct task_stat_t {
             unsigned long jitter;   //max jitter
             unsigned long overrun;  //overrun counter
-        };
+        } task_stat;
 
         class task_driver : public oe::core::rt_task::runnable {
             public:

@@ -6,7 +6,6 @@
 #include "exception.hpp"
 #include <vector>
 #include <string>
-#include "task_container.hpp"
 #include <openedge/core/task.hpp>
 #include "task_manager.hpp"
 #include <sys/sysinfo.h>
