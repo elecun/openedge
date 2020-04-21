@@ -52,6 +52,7 @@ SOURCE_FILES = ./
 APP_SOURCE_FILES = ./apps/
 EXAMPLE_SOURCE_FILES = ./examples/
 TASK_SOURCE_FILES = ./tasks/
+SERVICE_SOURCE_FILES = ./services/
 INSTALL_DIR = /usr/local/bin/
 
 # Make
@@ -93,7 +94,7 @@ $(OUTDIR)rt_trigger.o: $(INCLUDE_FILES)openedge/core/rt_trigger.cc
 $(OUTDIR)rt_timer.o: $(INCLUDE_FILES)openedge/core/rt_timer.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
-#tasks
+############################ Tasks
 simple.task: $(OUTDIR)simple.task.o
 	$(CC) $(LDFLAGS) -shared -o $(OUTDIR)$@ $^ $(LDLIBS) -ldl
 $(OUTDIR)simple.task.o: $(TASK_SOURCE_FILES)simple.task/simple.task.cc
@@ -109,7 +110,19 @@ plc.daq.task: $(OUTDIR)plc.daq.task.o
 $(OUTDIR)plc.daq.task.o: $(TASK_SOURCE_FILES)plc.daq.task/plc.daq.task.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
-#openedge core
+############################ Services
+plc.general.service: $(OUTDIR)plc.general.service.o
+	$(CC) $(LDFLAGS) -shared -o $(OUTDIR)$@ $^ $(LDLIBS) -ldl
+$(OUTDIR)plc.general.service.o: $(SERVICE_SOURCE_FILES)plc.general.service/plc.general.service.cc
+	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
+fenet.connector.service: $(OUTDIR)fenet.connector.service.o
+	$(CC) $(LDFLAGS) -shared -o $(OUTDIR)$@ $^ $(LDLIBS) -ldl
+$(OUTDIR)fenet.connector.service.o: $(SERVICE_SOURCE_FILES)fenet.connector.service/fenet.connector.service.cc
+	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
+
+############################ Openedge Cores
 $(OUTDIR)driver.o:	$(INCLUDE_FILES)openedge/core/driver.cc
 					$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 $(OUTDIR)profile.o:	$(INCLUDE_FILES)openedge/core/profile.cc
@@ -121,6 +134,7 @@ $(OUTDIR)uuid.o:	$(INCLUDE_FILES)openedge/util/uuid.cc
 all : edge
 test : oeware_test
 tasks : simple.task simple2.task plc.daq.task
+services : plc.general.service
 clean : FORCE
-		$(RM) $(OUTDIR)*.o $(OUTDIR)openedge $(OUTDIR)edge $(OUTDIR)*.task
+		$(RM) $(OUTDIR)*.o $(OUTDIR)openedge $(OUTDIR)edge $(OUTDIR)*.task $(OUTDIR)*.service
 FORCE : 

@@ -3,7 +3,7 @@
 #include "plc.daq.task.hpp"
 #include <3rdparty/spdlog/spdlog.h>
 #include <openedge/core/service.hpp>
-#include <openedge/services/plc.general.service/plc.general.service.hpp>
+
 
 
 //task create & release
@@ -23,35 +23,25 @@ void release(){
 
 
 plcDaqTask::~plcDaqTask(){
-
-    _plc->close();
-
-    if(_bus)
-        delete _bus;
-    if(_plc)
-        delete _plc;
-
+    delete _bus;
+    delete _plc;
 }
 
 bool plcDaqTask::configure(){
+    if(!_plc) _plc = new lsisPlc();
+    if(!_bus) _bus = new fenet("192.168.11.100", 2004);
 
-    if(!_plc->open())
+    if(!_plc->connect_with(_bus))
         return false;
 
-    _plc->addModule(0, new )
-
-    //_bus = new bus;
-    //_plc = new plc(with bus interface)
-    //_plc->connect();
+    _plc->read()
 
     return true;
 }
 
 void plcDaqTask::execute(){
 
-    //request
-    //_plc->readBytes()
-    //_plc->readByte()
+
     
 }
 

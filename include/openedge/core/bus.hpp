@@ -13,11 +13,13 @@
 
 namespace oe::core {
 
-    class ibusAsync : public idevice {
+    class iDeviceBus : public iDevice {
         public:
             typedef std::function<void(uint8_t*, int)> readCallbackFunc;
 
-            ibusAsync(readCallbackFunc func = nullptr ):callback(func) { }
+            iDeviceBus(readCallbackFunc func = nullptr ):callback(func) {
+                this->type = DEVICE_TYPE::BUS;
+            }
 			virtual bool open() = 0;
 			virtual void close() = 0;
 			virtual int read(uint8_t* data, int len) = 0;
@@ -30,10 +32,10 @@ namespace oe::core {
 		protected:
 			readCallbackFunc callback = nullptr;
             
-    }; //class ibusAync
+    }; //class iDeviceBus
 
 
-    class ibusUart : public ibusAsync {
+    class iDeviceBusUART : public iDeviceBus {
     public:
         /* UART Baudrate */
         enum class UART_BAUDRATE : unsigned int {
@@ -76,7 +78,7 @@ namespace oe::core {
             TWO,
         };
 
-        ibusUart(UART_BAUDRATE baudrate = UART_BAUDRATE::BAUDRATE_115200,
+        iDeviceBusUART(UART_BAUDRATE baudrate = UART_BAUDRATE::BAUDRATE_115200,
             unsigned int databits = 8,
             UART_STOPBITS stopbits = UART_STOPBITS::ONE,
             UART_PARITY parity = UART_PARITY::NONE,

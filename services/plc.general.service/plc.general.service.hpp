@@ -11,27 +11,24 @@
 #include <openedge/core/device.hpp>
 #include <openedge/core/bus.hpp>
 #include <openedge/core/service.hpp>
+#include <map>
 
-namespace oe::service {
+using namespace std;
 
-    class plcGeneral : public oe::core::iDeviceExtend, oe::core::iservice {
-        public:
-            plcGeneral();
-            ~plcGeneral();
+class plcGeneral : public oe::core::iService {
+    public:
+        plcGeneral();
+        ~plcGeneral();
 
-            //service function
-            void open() override;
-            void close() override;
+        //service function
+        void open() override;
+        void close() override;
 
-            bool addModule(_mtype* module) = 0;
-            bool removeModule(_mod_index) = 0;
-            _mtype* getModule(_mod_index) = 0;
+    private:
+        map<int /*slot number*/, oe::core::iDeviceBus* /*added bus i/f module */> _busSlot;
 
-        private:
-            oe::core::ibusAsync* _bus;
+}; //class plcGeneral
 
-    };
-    
-} //namespace os::service
+EXPORT_SERVICE_API
 
 #endif

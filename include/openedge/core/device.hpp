@@ -18,6 +18,10 @@ namespace oe::core {
     class iDevice {
         public:
             enum class DEVICE_STATUS : int { INACTIVE=0, ACTIVE };
+            enum class DEVICE_TYPE : int { 
+                UNKNOWN = 0, 
+                BUS,
+            };
 
             virtual DEVICE_STATUS getStatus() { return status; }
 			virtual DEVICE_STATUS activate() { this->setStatus(DEVICE_STATUS::ACTIVE); return getStatus(); }
@@ -30,15 +34,16 @@ namespace oe::core {
             void setStatus(DEVICE_STATUS s){ status = s; }
 
         protected:
-            DEVICE_STATUS status;
+            DEVICE_STATUS status = DEVICE_STATUS::INACTIVE;
+            DEVICE_TYPE type = DEVICE_TYPE::UNKNOWN;
     };
 
     //class for Extendable Device
     template<typename _mod_index, typename _mtype>
     class iDeviceExtend : public iDevice {
         public:
-            virtual bool open() override { iDevice::open(); }
-            virtual void close() override { iDevice::close(); }
+            // virtual bool open() override { iDevice::open(); }
+            // virtual void close() override { iDevice::close(); }
 
             virtual bool addModule(_mtype* module) = 0;
             virtual bool removeModule(_mod_index) = 0;

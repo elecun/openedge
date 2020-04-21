@@ -13,15 +13,16 @@
 using namespace std;
 
 namespace oe::core {
-    class iservice {
+
+    class iService {
         virtual void open() = 0;
         virtual void close() = 0;
-    }; //class iservice
+    }; //class iService
 
-    typedef oe::core::iservice*(*create_service)(void);
+    typedef oe::core::iService*(*create_service)(void);
     typedef void(*release_service)(void);
 
-    #define EXPORT_SERVICE_API extern "C" { oe::core::iservice* create(void); void release(void); }
+    #define EXPORT_SERVICE_API extern "C" { oe::core::iService* create(void); void release(void); }
 
 } //namespace service
 

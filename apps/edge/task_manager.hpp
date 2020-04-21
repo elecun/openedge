@@ -2,7 +2,8 @@
 
 /**
  * @file    task_manager.hpp
- * @brief   task manager class
+ * @brief   task manager class \
+ *          all task described in configuration file will be managed, and this manager is globally single
  * @author  Byunghun Hwang<bh.hwang@iae.re.kr>
  */
 
@@ -11,14 +12,16 @@
 #define _OPENEDGE_CORE_MANAGER_HPP_
 
 #include <openedge/arch/singleton.hpp>
-#include "task_manager.hpp"
 #include <map>
 #include <string>
 #include <openedge/core/task.hpp>
 #include <openedge/util/uuid.hpp>
 #include <openedge/core/driver.hpp>
 
+#include "task_manager.hpp"
+
 using namespace std;
+using namespace oe;
 
 namespace oe::edge {
 
