@@ -14,9 +14,8 @@ using namespace std;
 
 namespace oe::net::protocol {
 
-    class xgtDedicated {
+    class XGTDedicated {
         public:
-            #define MAX_FRAME_SIZE    512
             enum class cpu_type_t : uint16_t {
                 XGKR_CPUH = 0x0001,
                 XGK_CPUS = 0x0002,
@@ -30,7 +29,7 @@ namespace oe::net::protocol {
                 OK = 0x0000,
                 ERROR = 0x00f0
             };
-            enum class system_state : uint16_t {
+            enum class system_state_t : uint16_t {
                 RUN = 0x0100,
                 STOP = 0x0200,
                 ERROR = 0x0400,
@@ -87,7 +86,7 @@ namespace oe::net::protocol {
             typedef struct xgt_header_t {
                 uint8_t     companyId[10] = {0x4C, 0x53, 0x49, 0x53, 0x2d, 0x58, 0x47, 0x54, 0x00, 0x00 }; //'LSIS-XGT'
                 uint16_t    plcInfo = static_cast<uint16_t>(cpu_type_t::XGI_CPUU) | static_cast<uint16_t>(plc_redundancy_t::MASTER) | 
-                                      static_cast<uint16_t>(cpu_state_t::OK) | static_cast<uint16_t>(system_state::STOP);
+                                      static_cast<uint16_t>(cpu_state_t::OK) | static_cast<uint16_t>(system_state_t::STOP);
                 cpu_info_t    cpuInfo = cpu_info_t::XGI;
                 sof_t       sof = sof_t::CLIENT;    //source of frame
                 uint16_t    invokeId = 0x0000;
@@ -118,6 +117,7 @@ namespace oe::net::protocol {
                 BLOCK = 0x1400
             };
             
+            #define MAX_FRAME_SIZE    512
             typedef struct xgt_frame_format_t {
                 xgt_header_t    header;
                 uint16_t        command;
@@ -127,6 +127,7 @@ namespace oe::net::protocol {
                     memcpy(this, &other, sizeof(xgt_frame_format_t));
                 }
             };
+            #undef MAX_FRAME_SIZE
 
             void read(command_code_t cmd, datatype_t dtype){
                 
@@ -147,10 +148,6 @@ namespace oe::net::protocol {
             
             uint16_t getInfo() {
 
-            }
-
-            void getInfo() {
-                
             }
     };
 
