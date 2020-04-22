@@ -139,7 +139,7 @@ namespace oe::net::protocol {
                         uint8_t sum = 0x00;
                         for(int i=0;i<sizeof(header_frame)-1;i++)
                             sum += header_frame[i];
-                        sum %= 256;
+                        return (sum&0xff);
                     }
             };
 
