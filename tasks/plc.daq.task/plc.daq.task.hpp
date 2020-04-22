@@ -26,11 +26,11 @@ class plcDaqTask : public core::rt_task::runnable {
         void cleanup() override;
 
     private:
-        bool loadService(const char* servicename, void* handle, core::iServiceBase* pImpl);
-        void releaseService();
+        //bool loadService(const char* servicename, void* handle, core::iServiceBase* pImpl);
+        //void releaseService();
 
     private:
-        map<int, pair<void*, core::iServiceBase*>> _serviceContainer;
+        //map<int, pair<void*, core::iServiceBase*>> _serviceContainer;
 
     private:
         //core::iService<core::iDeviceExtendable<int, device::PLC*>>* _plc = nullptr; //plc service (data collection)

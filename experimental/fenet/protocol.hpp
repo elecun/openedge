@@ -20,37 +20,37 @@ namespace oe::net::protocol {
 
     class XGTDedicated {
         public:
-            enum class cpu_type_t : uint16_t {
+            enum class cpu_type : uint16_t {
                 XGKR_CPUH = 0x0001,
                 XGK_CPUS = 0x0002,
                 XGI_CPUU = 0x0005,
             };
-            enum class plc_redundancy_t : uint16_t {
+            enum class plc_redundancy : uint16_t {
                 MASTER = 0x0000,
                 SLAVE = 0x0040
             };
-            enum class cpu_state_t : uint16_t {
+            enum class cpu_state : uint16_t {
                 OK = 0x0000,
                 ERROR = 0x00f0
             };
-            enum class system_state_t : uint16_t {
+            enum class system_state : uint16_t {
                 RUN = 0x0100,
                 STOP = 0x0200,
                 ERROR = 0x0400,
                 DEBUG = 0x0800
             };
-            enum class cpu_info_t : uint8_t {
+            enum class cpu_info : uint8_t {
                 XGK = 0xa0,
                 XGB_MK = 0xb0,
                 XGI = 0xa4,
                 XGB_IEC = 0xb4,
                 XGR = 0xa8,
             };
-            enum class sof_t : uint8_t {
+            enum class sof : uint8_t {
                 CLIENT = 0x33,      //Client(HMI) to Server(PLC)
                 SERVER = 0x11    //Server(PLC) to Client(HMI)
             };
-            enum class fenet_slot_t : uint8_t {
+            enum class fenet_slot : uint8_t {
                 SLOT0 = 0x00,
                 SLOT1 = 0x01,
                 SLOT2 = 0x02,
@@ -68,7 +68,7 @@ namespace oe::net::protocol {
                 SLOT14 = 0x0e,
                 SLOT15 = 0x0f,
             };
-            enum class fenet_base_t : uint8_t {
+            enum class fenet_base : uint8_t {
                 BASE0 = 0x00,
                 BASE1 = 0x10,
                 BASE2 = 0x20,
@@ -86,33 +86,33 @@ namespace oe::net::protocol {
                 BASE14 = 0xe0,
                 BASE15 = 0xf0,
             };
-            typedef uint16_t plc_info_t;
-            typedef struct xgt_header_t {
-                uint8_t     companyId[10] = {0x4C, 0x53, 0x49, 0x53, 0x2d, 0x58, 0x47, 0x54, 0x00, 0x00 }; //'LSIS-XGT'
-                uint16_t    plcInfo = static_cast<uint16_t>(cpu_type_t::XGI_CPUU) | static_cast<uint16_t>(plc_redundancy_t::MASTER) | 
-                                      static_cast<uint16_t>(cpu_state_t::OK) | static_cast<uint16_t>(system_state_t::STOP);
-                cpu_info_t    cpuInfo = cpu_info_t::XGI;
-                sof_t       sof = sof_t::CLIENT;    //source of frame
-                uint16_t    invokeId = 0x0000;
-                uint16_t    length; //byte length of applicaiton instruction
-                uint8_t     fenet_pos = static_cast<uint8_t>(fenet_slot_t::SLOT0) | static_cast<uint8_t>(fenet_base_t::BASE0);
-                uint8_t     checksum;
-                xgt_header_t& operator=(const xgt_header_t& other){
-                    if(&other == this) return *this;
-                    memcpy(this, &other, sizeof(xgt_header_t));
-                    return *this;
-                }
-                xgt_header_t(uint16_t plcinfo, cpu_info_t cpuinfo, uint16_t invokeId, uint8_t fenetPos){
+            // typedef uint16_t plc_info_t;
+            // typedef struct xgt_header_t {
+            //     uint8_t     companyId[10] = {0x4C, 0x53, 0x49, 0x53, 0x2d, 0x58, 0x47, 0x54, 0x00, 0x00 }; //'LSIS-XGT'
+            //     uint16_t    plcInfo = static_cast<uint16_t>(cpu_type_t::XGI_CPUU) | static_cast<uint16_t>(plc_redundancy_t::MASTER) | 
+            //                           static_cast<uint16_t>(cpu_state_t::OK) | static_cast<uint16_t>(system_state_t::STOP);
+            //     cpu_info_t    cpuInfo = cpu_info_t::XGI;
+            //     sof_t       sof = sof_t::CLIENT;    //source of frame
+            //     uint16_t    invokeId = 0x0000;
+            //     uint16_t    length; //byte length of applicaiton instruction
+            //     uint8_t     fenet_pos = static_cast<uint8_t>(fenet_slot_t::SLOT0) | static_cast<uint8_t>(fenet_base_t::BASE0);
+            //     uint8_t     checksum;
+            //     xgt_header_t& operator=(const xgt_header_t& other){
+            //         if(&other == this) return *this;
+            //         memcpy(this, &other, sizeof(xgt_header_t));
+            //         return *this;
+            //     }
+            //     xgt_header_t(uint16_t plcinfo, cpu_info_t cpuinfo, uint16_t invokeId, uint8_t fenetPos){
                     
-                }
-                xgt_header_t() = default;
-            } xgt_header;
+            //     }
+            //     xgt_header_t() = default;
+            // } xgt_header;
 
 
-            typedef struct xgt_head_t {
+            typedef struct xgt_header_t {
                 uint8_t header_frame[20];
 
-                xgt_head_t(uint8_t cpuinfo, uint8_t sof, uint16_t invokeId, uint16_t bodylen, uint8_t pos){
+                xgt_header_t(uint8_t cpuinfo, uint8_t sof, uint16_t invokeId, uint16_t bodylen, uint8_t pos){
                     memset(header_frame, 0x00, sizeof(header_frame));
                     const uint8_t companyId[10] = {0x4C, 0x53, 0x49, 0x53, 0x2d, 0x58, 0x47, 0x54, 0x00, 0x00 };
                     std::copy(companyId, companyId+sizeof(companyId), header_frame);    //company ID
@@ -125,13 +125,10 @@ namespace oe::net::protocol {
                     header_frame[17] = (bodylen >> 8);
                     header_frame[18] = pos;
                     header_frame[19] = chksum();
-
-                    header_frame[10]=plcinfo & 0xff;
-                    header_frame[11]=(plcinfo >> 8);
-                    std::copy(plcinfo, plcinfo+sizeof(plcinfo), &header_frame[10]);
-                    
-                    memset(header_frame, 0x00, sizeof(header_frame));
-                    strncpy(header_frame, (char*)companyId, sizeof(companyId));
+                };
+                xgt_header_t& operator=(const xgt_header_t& other){
+                    std::copy(other.header_frame, other.header_frame+sizeof(other.header_frame), this->header_frame);
+                    return *this;
                 };
 
                 private:
@@ -143,14 +140,14 @@ namespace oe::net::protocol {
                     }
             };
 
-            enum class command_code_t : uint16_t {
+            enum class command_code : uint16_t {
                 READ_REQUEST = 0x5400,
                 READ_RESPONSE = 0x5500,
                 WRITE_REQUEST = 0x5800,
                 WRITE_RESPONSE = 0x5900
             };
 
-            enum class datatype_t : uint16_t {
+            enum class datatype : uint16_t {
                 BIT = 0x0000,
                 BYTE = 0x0100,
                 WORD = 0x0200,
@@ -173,8 +170,8 @@ namespace oe::net::protocol {
                     memcpy(&this->data, &other.data, sizeof(data));
                     return *this;
                 }
-                xgt_frame_format_t(){ }
-            } xgt_frame_format;
+                //xgt_frame_format_t() = default;
+            };
             #undef MAX_FRAME_SIZE
 
     }; //class
