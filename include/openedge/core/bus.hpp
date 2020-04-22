@@ -11,7 +11,7 @@
 #include <openedge/core/device.hpp>
 #include <functional>
 
-namespace oe::core {
+namespace oe::core::bus {
 
     class iDeviceBus : public iDevice {
         public:

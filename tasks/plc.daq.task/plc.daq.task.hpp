@@ -9,12 +9,13 @@
 #define _OPENEDGE_PLCDAQ_TASK_HPP_
 
 #include <openedge/core/task.hpp>
-#include <openedge/core/bus.hpp>
-#include <openedge/core/device.hpp>
 #include <openedge/core/service.hpp>
-#include "lsis_plc.hpp"
+#include <map>
+#include <tuple>
 
-class plcDaqTask : public oe::core::rt_task::runnable {
+using namespace oe;
+
+class plcDaqTask : public core::rt_task::runnable {
     public:
         plcDaqTask() = default;
         ~plcDaqTask();
@@ -25,10 +26,16 @@ class plcDaqTask : public oe::core::rt_task::runnable {
         void cleanup() override;
 
     private:
-        fenet* _bus = nullptr;
-        lsisPlc* _plc = nullptr;
-        //oe::core::iService* _plc = nullptr; //plc service (data collection)
-        //oe::core::iService* _bus = nullptr; //bus interface connected to PLC
+        bool loadService(const char* servicename, void* handle, core::iServiceBase* pImpl);
+        void releaseService();
+
+    private:
+        map<int, pair<void*, core::iServiceBase*>> _serviceContainer;
+
+    private:
+        //core::iService<core::iDeviceExtendable<int, device::PLC*>>* _plc = nullptr; //plc service (data collection)
+        //core::iService<device::iPLC*>* _plc = nullptr; //plc service (data collection)
+        //core::iService<core::bus::iDeviceBus*>* _bus = nullptr; //bus interface connected to PLC
 };
 
 EXPORT_RT_TASK_API

@@ -21,10 +21,10 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#ifndef _OPENEDGE_CORE_HPP_
-#define _OPENEDGE_CORE_HPP_
+#ifndef _OPENEDGE_MANAGE_HPP_
+#define _OPENEDGE_MANAGE_HPP_
 
-#include <openedge/core/task.hpp>
+#include <openedge/core/service.hpp>
 #include <openedge/core/bus.hpp>
 #include <openedge/core/device.hpp>
 #include <openedge/core/service.hpp>

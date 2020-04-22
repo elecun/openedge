@@ -39,18 +39,15 @@ namespace oe::core {
     };
 
     //class for Extendable Device
-    template<typename _mod_index, typename _mtype>
-    class iDeviceExtend : public iDevice {
+    template<typename _indexType, typename _moduleType>
+    class iDeviceExtendable : public iDevice {
         public:
-            // virtual bool open() override { iDevice::open(); }
-            // virtual void close() override { iDevice::close(); }
-
-            virtual bool addModule(_mtype* module) = 0;
-            virtual bool removeModule(_mod_index) = 0;
-            virtual _mtype* getModule(_mod_index) = 0;
+            virtual bool addModule(_moduleType* module) = 0;
+            virtual bool removeModule(_indexType) = 0;
+            virtual _moduleType* getModule(_indexType) = 0;
 
         protected:
-            std::map<_mod_index, _mtype> slot;
+            std::map<_indexType, _moduleType> slot;
     };
 
 } //namespace oe::core

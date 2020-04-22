@@ -2,9 +2,7 @@
 
 #include "plc.daq.task.hpp"
 #include <3rdparty/spdlog/spdlog.h>
-#include <openedge/core/service.hpp>
-
-
+#include <openedge/device/plc.hpp>
 
 //task create & release
 static plcDaqTask* _instance = nullptr;
@@ -23,24 +21,20 @@ void release(){
 
 
 plcDaqTask::~plcDaqTask(){
-    delete _bus;
-    delete _plc;
+    
 }
 
 bool plcDaqTask::configure(){
-    if(!_plc) _plc = new lsisPlc();
-    if(!_bus) _bus = new fenet("192.168.11.100", 2004);
-
-    if(!_plc->connect_with(_bus))
-        return false;
-
-    _plc->read()
+    
+    //load service file with default configuration
+    _serviceContainer[0] = loadService("plc.general.service");  //load general plc service
+    _serviceContainer[1] = loadService("bus.ethernet.tcp.service"); //load ethernet TCP service
+    _serviceContainer[2] = loadService("protocol.xgt.dedicated.service"); //load ethernet TCP service
 
     return true;
 }
 
 void plcDaqTask::execute(){
-
 
     
 }
