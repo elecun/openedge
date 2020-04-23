@@ -11,7 +11,6 @@
 #include <openedge/core/task.hpp>
 #include <openedge/core/service.hpp>
 #include <map>
-#include <tuple>
 
 using namespace oe;
 
@@ -20,10 +19,19 @@ class plcDaqTask : public core::rt_task::runnable {
         plcDaqTask() = default;
         ~plcDaqTask();
 
-        //RT Task Common Interface
         bool configure() override;
         void execute() override;
         void cleanup() override;
+
+    private:
+        bool loadService(const char* servicename);
+        void unloadService();
+
+    private:
+        void* _plcServiceHandle = nullptr;
+
+    private:
+        //core::iService<device::generalPLC*> _plcService = nullptr;
 
     private:
         //bool loadService(const char* servicename, void* handle, core::iServiceBase* pImpl);

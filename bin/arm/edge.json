@@ -12,6 +12,6 @@
         }
     },
     "tasks":{
-        "default":["simple.task"]
+        "default":["plc.daq.task"]
     }
 }

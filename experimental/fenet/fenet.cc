@@ -4,6 +4,7 @@
 #include "plc.hpp"
 #include "bus.hpp"
 #include <iostream>
+#include "socket.hpp"
 
 using namespace oe;
 using namespace std;

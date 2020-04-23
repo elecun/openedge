@@ -3,6 +3,11 @@
 #include "plc.daq.task.hpp"
 #include <3rdparty/spdlog/spdlog.h>
 #include <openedge/device/plc.hpp>
+#include <dlfcn.h>
+#include <string>
+#include <services/plc.lsis.service/plc.lsis.service.hpp>
+
+using namespace std;
 
 //task create & release
 static plcDaqTask* _instance = nullptr;
@@ -19,17 +24,23 @@ void release(){
     }
 }
 
-
 plcDaqTask::~plcDaqTask(){
-    
+
 }
 
 bool plcDaqTask::configure(){
-    
-    //load service file with default configuration
-    _serviceContainer[0] = loadService("plc.general.service");  //load general plc service
-    _serviceContainer[1] = loadService("bus.ethernet.tcp.service"); //load ethernet TCP service
-    _serviceContainer[2] = loadService("protocol.xgt.dedicated.service"); //load ethernet TCP service
+
+    //laod service file
+    if(loadService("plc.lsis.service")){
+        if(_plcServiceHandle){
+            uint8_t (*pFunc)();
+            pFunc = (uint8_t(*)())dlsym(_plcServiceHandle, "readByte");
+            if(pFunc){
+                spdlog::info("Read Byte : {0:x}", static_cast<unsigned char>(pFunc()));
+            }
+        }
+        
+    }
 
     return true;
 }
@@ -40,5 +51,26 @@ void plcDaqTask::execute(){
 }
 
 void plcDaqTask::cleanup(){
+    if(_plcServiceHandle){
+        release_service pReleaseService = (release_service)dlsym(_plcServiceHandle, "releaseService");
+        if(pReleaseService) pReleaseService();
+        dlclose(_plcServiceHandle);
+        _plcServiceHandle = nullptr;
+    }
+}
+
+bool plcDaqTask::loadService(const char* servicename){
+    spdlog::info("load {}", servicename);
+    string path = "./"+string(servicename);
+    _plcServiceHandle = dlopen(path.c_str(), RTLD_LAZY);
+    if(_plcServiceHandle){
+        create_service pCreateService = (create_service)dlsym(_plcServiceHandle, "createService");
+        if(pCreateService) pCreateService();
+        else { spdlog::error("Cannot open servie"); }
+    }
+    return true;
+}
+
+void plcDaqTask::unloadService(){
 
 }

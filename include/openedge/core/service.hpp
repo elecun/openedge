@@ -43,10 +43,10 @@ namespace oe {
 
     } //namespace core
 
-    typedef oe::core::iServiceBase*(*create_service)(void);
-    typedef void(*release_service)(void);
+    // typedef oe::core::iServiceBase*(*create_service)(void);
+    // typedef void(*release_service)(void);
 
-    #define EXPORT_SERVICE_API extern "C" { oe::core::iServiceBase* create(void); void release(void); }
+    // #define EXPORT_SERVICE_API extern "C" { oe::core::iServiceBase* create(void); void release(void); }
 } //namespace service
 
 

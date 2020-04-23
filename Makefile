@@ -59,10 +59,6 @@ INSTALL_DIR = /usr/local/bin/
 openedge:	$(OUTDIR)openedge.o
 			$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -o $(OUTDIR)$@ $^ $(LDLIBS)
 
-oeware:	$(OUTDIR)oeware.o \
-		$(OUTDIR)instance.o
-		$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -o $(OUTDIR)$@ $^ $(LDLIBS)
-
 oeware_test:	$(OUTDIR)oeware_test.o
 				$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -o $(OUTDIR)$@ $^ $(LDLIBS) $(GTEST_LDLIBS)
 
@@ -96,29 +92,34 @@ $(OUTDIR)rt_timer.o: $(INCLUDE_FILES)openedge/core/rt_timer.cc
 
 ############################ Tasks
 simple.task: $(OUTDIR)simple.task.o
-	$(CC) $(LDFLAGS) -shared -o $(OUTDIR)$@ $^ $(LDLIBS) -ldl
+	$(CC) $(LDFLAGS) -shared -o $(OUTDIR)$@ $^ $(LDLIBS)
 $(OUTDIR)simple.task.o: $(TASK_SOURCE_FILES)simple.task/simple.task.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
 simple2.task: $(OUTDIR)simple2.task.o
-	$(CC) $(LDFLAGS) -shared -o $(OUTDIR)$@ $^ $(LDLIBS) -ldl
+	$(CC) $(LDFLAGS) -shared -o $(OUTDIR)$@ $^ $(LDLIBS)
 $(OUTDIR)simple2.task.o: $(TASK_SOURCE_FILES)simple2.task/simple2.task.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
 plc.daq.task: $(OUTDIR)plc.daq.task.o
-	$(CC) $(LDFLAGS) -shared -o $(OUTDIR)$@ $^ $(LDLIBS) -ldl
+	$(CC) $(LDFLAGS) -shared -o $(OUTDIR)$@ $^ $(LDLIBS)
 $(OUTDIR)plc.daq.task.o: $(TASK_SOURCE_FILES)plc.daq.task/plc.daq.task.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
 ############################ Services
 plc.general.service: $(OUTDIR)plc.general.service.o
-	$(CC) $(LDFLAGS) -shared -o $(OUTDIR)$@ $^ $(LDLIBS) -ldl
+	$(CC) $(LDFLAGS) -shared -o $(OUTDIR)$@ $^ $(LDLIBS)
 $(OUTDIR)plc.general.service.o: $(SERVICE_SOURCE_FILES)plc.general.service/plc.general.service.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
 fenet.connector.service: $(OUTDIR)fenet.connector.service.o
-	$(CC) $(LDFLAGS) -shared -o $(OUTDIR)$@ $^ $(LDLIBS) -ldl
+	$(CC) $(LDFLAGS) -shared -o $(OUTDIR)$@ $^ $(LDLIBS)
 $(OUTDIR)fenet.connector.service.o: $(SERVICE_SOURCE_FILES)fenet.connector.service/fenet.connector.service.cc
+	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
+plc.lsis.service: $(OUTDIR)plc.lsis.service.o
+	$(CC) $(LDFLAGS) -shared -o $(OUTDIR)$@ $^ $(LDLIBS)
+$(OUTDIR)plc.lsis.service.o: $(SERVICE_SOURCE_FILES)plc.lsis.service/plc.lsis.service.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
 
@@ -133,8 +134,8 @@ $(OUTDIR)uuid.o:	$(INCLUDE_FILES)openedge/util/uuid.cc
 
 all : edge
 test : oeware_test
-tasks : simple.task simple2.task plc.daq.task
-services : plc.general.service
+tasks : plc.daq.task
+services : plc.lsis.service
 clean : FORCE
 		$(RM) $(OUTDIR)*.o $(OUTDIR)openedge $(OUTDIR)edge $(OUTDIR)*.task $(OUTDIR)*.service
 FORCE : 

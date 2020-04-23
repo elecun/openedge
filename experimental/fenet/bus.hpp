@@ -4,6 +4,7 @@
 #define _BUS_HPP_
 
 #include "protocol.hpp"
+#include "socket.hpp"
 
 namespace oe::bus {
 
@@ -17,18 +18,19 @@ namespace oe::bus {
 
             }
             ethernet(net::protocol::XGTDedicated* protocol, const char* host_ip4v = nullptr, const int port = 0){
-
+                 _tcp_socket = new net::socket()
             }
 
             ~ethernet() {
-
+                delete _tcp_socket;
             }
 
             void configHost(const char* ipv4, const int port){
 
             }
 
-        protected:
+        private:
+            net::socket* _tcp_socket = nullptr;
             
 
     }; //class
