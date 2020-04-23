@@ -1,7 +1,7 @@
 
 /**
  * @file    PLC Data Aqu. Task
- * @brief   use general PLC which has FEnet I/F
+ * @brief   Data aquisition task with PLC, XGT protocol via FEnet
  * @author  Byunghun Hwang, <bh.hwang@iae.re.kr>
  */
 

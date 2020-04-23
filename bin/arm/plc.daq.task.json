@@ -7,11 +7,16 @@
         "cycle_ns":100000000
     },
     "services":{
-        "required":["plc.general.service","fenet.connector.service"],
-        "plc.general.service":{
+        "required":["plc.lsis.service","bus.tcp.service","xgt.protocol.service"],
+        "plc.lsis.service":{
 
         },
-        "fenet.connector.service":{
+        "bus.tcp.service":{
+            "host":"192.168.11.13",
+            "port":2004,
+            "keep_alive":true
+        },
+        "xgt.protocol.service":{
 
         }
     }
