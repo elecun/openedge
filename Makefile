@@ -41,7 +41,7 @@ $(shell mkdir -p $(TASK_OUTDIR))
 CXXFLAGS = -O3 -fPIC -Wall -std=c++17 -D__cplusplus=201703L
 
 #custom definition
-CXXFLAGS += -D__MAJOR__=0 -D__MINOR__=0 -D__REV__=2
+CXXFLAGS += -D__MAJOR__=0 -D__MINOR__=0 -D__REV__=3
 RM	= rm -rf
 
 #directories
@@ -112,6 +112,11 @@ plc.general.service: $(OUTDIR)plc.general.service.o
 $(OUTDIR)plc.general.service.o: $(SERVICE_SOURCE_FILES)plc.general.service/plc.general.service.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
+bus.tcp.service: $(OUTDIR)bus.tcp.service.o
+	$(CC) $(LDFLAGS) -shared -o $(OUTDIR)$@ $^ $(LDLIBS)
+$(OUTDIR)bus.tcp.service.o: $(SERVICE_SOURCE_FILES)bus.tcp.service/bus.tcp.service.cc
+	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
 fenet.connector.service: $(OUTDIR)fenet.connector.service.o
 	$(CC) $(LDFLAGS) -shared -o $(OUTDIR)$@ $^ $(LDLIBS)
 $(OUTDIR)fenet.connector.service.o: $(SERVICE_SOURCE_FILES)fenet.connector.service/fenet.connector.service.cc
@@ -135,7 +140,7 @@ $(OUTDIR)uuid.o:	$(INCLUDE_FILES)openedge/util/uuid.cc
 all : edge
 test : oeware_test
 tasks : plc.daq.task
-services : plc.lsis.service
+services : plc.lsis.service bus.tcp.service
 clean : FORCE
 		$(RM) $(OUTDIR)*.o $(OUTDIR)openedge $(OUTDIR)edge $(OUTDIR)*.task $(OUTDIR)*.service
 FORCE : 

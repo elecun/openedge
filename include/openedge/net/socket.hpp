@@ -23,6 +23,7 @@ namespace oe::net {
 
             socket():_socket(-1) {
                 memset(&_ipv4_address, 0, sizeof(_ipv4_address));
+                _socket = ::socket(AF_INET , SOCK_STREAM , 0);
             }
             virtual ~socket(){
                 if(is_valid())

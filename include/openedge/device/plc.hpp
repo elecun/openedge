@@ -1,15 +1,18 @@
 
+
+/**
+ * @file    plc.hpp
+ * @brief   general PLC class
+ * @author  Byunghun Hwang<bh.hwang@iae.re.kr>
+ */
+
+
 #ifndef _OPENEDGE_DEVICE_PLC_HPP_
 #define _OPENEDGE_DEVICE_PLC_HPP_
 
 
 namespace oe::device {
 
-    class iPLC {
-        public:
-            iPLC() { }
-
-    }; //class
 
 
     class generalPLC {

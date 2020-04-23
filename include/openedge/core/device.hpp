@@ -10,6 +10,7 @@
 
 #include <map>
 #include <string>
+#include <stdint.h>
 
 using namespace std;
 
@@ -48,6 +49,14 @@ namespace oe::core {
 
         protected:
             std::map<_indexType, _moduleType> slot;
+    };
+
+    //general PLC Device interface
+    namespace bus{ class iDeviceBus; }
+    class iDevicePLC : public iDevice {
+        public:
+            virtual uint8_t readByte(const char* address) = 0;
+            virtual bool configBus(bus::iDeviceBus* bus) = 0;
     };
 
 } //namespace oe::core

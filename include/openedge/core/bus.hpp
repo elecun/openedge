@@ -24,7 +24,6 @@ namespace oe::core::bus {
 			virtual void close() = 0;
 			virtual int read(uint8_t* data, int len) = 0;
 			virtual int write(const uint8_t* data, int len) = 0;
-			virtual void flush() = 0;
 
         protected:
 			virtual void setReadCallback(readCallbackFunc func) { callback = func; }
@@ -92,6 +91,12 @@ namespace oe::core::bus {
         UART_PARITY parity;
         UART_FLOW_CONTROL flowcontrol;
     }; //class
+
+    class iDeviceBusTCP : public iDeviceBus {
+        public:
+            virtual bool connect(const char* ipv4_address, const int port) = 0;
+            virtual void disconnect() = 0;
+    }; //iDeviceBusTCP Class
 
 } //namespace oe::core
 

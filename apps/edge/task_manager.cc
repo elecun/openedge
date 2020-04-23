@@ -24,7 +24,7 @@ namespace oe::edge {
         //(todo) requries file existance in task respository path
         _container_map.insert(taskContainer_map::value_type(taskname, _uuid_gen.generate()));
         _task_container.insert(taskContainer_t::value_type(_container_map[taskname], new core::task_driver(taskname)));
-        spdlog::info("{} is assigned to {}", _container_map[taskname].str(), taskname);
+        //spdlog::info("{} is assigned to {}", _container_map[taskname].str(), taskname);
         if(!_task_container[_container_map[taskname]]->configure()){
             uninstall(taskname);
         }

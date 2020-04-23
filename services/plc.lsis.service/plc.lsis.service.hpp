@@ -9,50 +9,55 @@
 #define _OPENEDGE_SERVICE_PLC_LSIS_HPP_
 
 #include <openedge/core/export.hpp>
+#include <openedge/core/typespec.hpp>
+#include <openedge/core/service.hpp>
+#include <openedge/core/device.hpp>
+#include <openedge/core/bus.hpp>
 #include <stdint.h>
-#include <type_traits>
 
-template <typename _Type>
-    using SignedOnly = typename std::enable_if<std::is_signed<_Type>::value>::value* ;
-template <typename _Type>
-    using UnsignedOnly = typename std::enable_if<std::is_unsigned<_Type>::value>::value* ;
+using namespace oe::core;
 
-
-class EXPORTED plcLsisService {
+class EXPORTED plcLsisService : public iService, public iDevicePLC {
     public:
         plcLsisService();
-        ~plcLsisService();
+        virtual ~plcLsisService();
 
+        bool open() override;
+        void close() override;
+        
         //common service interface
-        bool open();
-        void close();
+        bool openService() override;
+        void closeService() override;
 
-        //support funtion
-        uint8_t readByte(const char* address);
+        bool configBus(bus::iDeviceBus* bus) override;
+
+        uint8_t readByte(const char* address) override;
+        
 
     private:
+        uint16_t _invokeId { 0x0000 };
+        bus::iDeviceBus* _bus = nullptr;;
+        
 
-        template<typename _returnType, UnsignedOnly<_returnType> = nullptr>
-        _returnType read(const char* address); //ex. read("%mw100")
+    private:
+        // template<typename _returnType, UnsignedOnly<_returnType> = nullptr>
+        // _returnType read(const char* address); //ex. read("%mw100")
 
         //void read_n(const char* variable, const unsigned int count);    //read n number of data
 
 
 }; //class
 
-//typedef plcLsisService*(*create_service)(void);
-typedef void(*create_service)(void);
-typedef void(*release_service)(void);
 
 #ifdef  __cplusplus
 extern "C" {
 #endif
 
-static plcLsisService* pService = nullptr;
+plcLsisService* pService = nullptr;
 
-EXPORTED void createService(void) { pService = new plcLsisService(); }
+EXPORTED oe::core::iService* createService(void) { pService = new plcLsisService(); return pService; } //not static
 EXPORTED void releaseService(void) { if(pService) { delete pService; pService=nullptr; }}
-EXPORTED uint8_t readByte(const char* address) { return pService->readByte(address); }
+//EXPORTED uint8_t readByte(const char* address) { return pService->readByte(address); } //hide
 
 #ifdef  __cplusplus
 }

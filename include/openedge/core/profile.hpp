@@ -21,7 +21,7 @@ namespace oe {
         struct profile_t {
             char md5[32] = {0,};
             int affinity;   //working cpu
-            unsigned long cycle_ns; //cycle time in nanoseconds
+            unsigned long long cycle_ns; //cycle time in nanoseconds
             string taskname;
             string version;
 

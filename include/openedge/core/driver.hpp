@@ -44,7 +44,7 @@ namespace oe {
                 void unload();
                 void do_process();
 
-                void set_rt_timer(long nsec);
+                void set_rt_timer(unsigned long long nsec);
 
             private:
                 string _taskname;

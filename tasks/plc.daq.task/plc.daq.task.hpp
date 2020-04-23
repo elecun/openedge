@@ -17,7 +17,7 @@ using namespace oe;
 class plcDaqTask : public core::rt_task::runnable {
     public:
         plcDaqTask() = default;
-        ~plcDaqTask();
+        virtual ~plcDaqTask();
 
         bool configure() override;
         void execute() override;
@@ -31,19 +31,8 @@ class plcDaqTask : public core::rt_task::runnable {
         void* _plcServiceHandle = nullptr;
 
     private:
-        //core::iService<device::generalPLC*> _plcService = nullptr;
-
-    private:
-        //bool loadService(const char* servicename, void* handle, core::iServiceBase* pImpl);
-        //void releaseService();
-
-    private:
-        //map<int, pair<void*, core::iServiceBase*>> _serviceContainer;
-
-    private:
-        //core::iService<core::iDeviceExtendable<int, device::PLC*>>* _plc = nullptr; //plc service (data collection)
-        //core::iService<device::iPLC*>* _plc = nullptr; //plc service (data collection)
-        //core::iService<core::bus::iDeviceBus*>* _bus = nullptr; //bus interface connected to PLC
+        map<string, void*> _srvHandleContainer;
+        map<string, core::iService*> _srvContainer;
 };
 
 EXPORT_RT_TASK_API

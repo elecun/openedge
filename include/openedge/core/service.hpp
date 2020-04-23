@@ -17,16 +17,13 @@ using namespace std;
 namespace oe {
     namespace core {
 
-        class iServiceBase { };
-
-        template<class _T>
-        class iService : public iServiceBase {
+        class iService {
             public:
-                virtual void open() = 0;
-                virtual void close() = 0;
+                virtual bool openService() = 0;
+                virtual void closeService() = 0;
 
-            protected:
-                _T* instance = nullptr;
+            //protected:
+                //static _T* instance = nullptr;
         }; //class iService
 
         // namespace service {
@@ -47,6 +44,9 @@ namespace oe {
     // typedef void(*release_service)(void);
 
     // #define EXPORT_SERVICE_API extern "C" { oe::core::iServiceBase* create(void); void release(void); }
+
+    typedef oe::core::iService*(*create_service)(void);
+    typedef void(*release_service)(void);
 } //namespace service
 
 

@@ -3,8 +3,8 @@
     "info":{
         "taskname":"plc.daq.task",
         "version":"0.0.1",
-        "affinity":0,
-        "cycle_ns":10000000000
+        "affinity":1,
+        "cycle_ns":100000000
     },
     "services":{
         "required":["plc.general.service","fenet.connector.service"],
