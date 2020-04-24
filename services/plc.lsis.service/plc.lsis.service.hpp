@@ -13,6 +13,7 @@
 #include <openedge/core/service.hpp>
 #include <openedge/core/device.hpp>
 #include <openedge/core/bus.hpp>
+#include <openedge/core/protocol.hpp>
 #include <stdint.h>
 
 using namespace oe::core;
@@ -26,17 +27,17 @@ class EXPORTED plcLsisService : public iService, public iDevicePLC {
         void close() override;
         
         //common service interface
-        bool openService() override;
-        void closeService() override;
+        bool initService() override;
 
-        bool configBus(bus::iDeviceBus* bus) override;
-
-        uint8_t readByte(const char* address) override;
-        
+        //common PLC interface
+        bool readBit(bus::iDeviceBus* bus, iProtocolRaw* protocol, const char* address);
+        uint8_t readByte(bus::iDeviceBus* bus, iProtocolRaw* protocol, const char* address);
+        uint16_t readWord(bus::iDeviceBus* bus, iProtocolRaw* protocol, const char* address);
+        uint32_t readDword(bus::iDeviceBus* bus, iProtocolRaw* protocol, const char* address);
+        uint64_t readLword(bus::iDeviceBus* bus, iProtocolRaw* protocol, const char* address);
 
     private:
         uint16_t _invokeId { 0x0000 };
-        bus::iDeviceBus* _bus = nullptr;;
         
 
     private:
@@ -57,6 +58,7 @@ plcLsisService* pService = nullptr;
 
 EXPORTED oe::core::iService* createService(void) { pService = new plcLsisService(); return pService; } //not static
 EXPORTED void releaseService(void) { if(pService) { delete pService; pService=nullptr; }}
+EXPORTED bool initService(void) { if(pService) return pService->initService(); return false; }
 //EXPORTED uint8_t readByte(const char* address) { return pService->readByte(address); } //hide
 
 #ifdef  __cplusplus

@@ -9,13 +9,14 @@
 #define _OPENEDGE_CORE_TASK_HPP_
 
 #include <string>
+#include <map>
 #include <openedge/core/profile.hpp>
 
 using namespace std;
 
 namespace oe {
     namespace core {
-
+            class iService;
             //realtime task interface
             class rt_task {
                 public:
@@ -29,6 +30,13 @@ namespace oe {
                             virtual void execute() = 0;
                             virtual bool configure() = 0;
                             virtual void cleanup() = 0;
+
+                        protected:
+                            typedef struct service_t {
+                                void* handle;
+                                oe::core::iService* ptrService;
+                            } serviceAccess;
+                            map<string, serviceAccess> serviceContainer;
                     };
 
                 protected:

@@ -19,11 +19,7 @@ namespace oe {
 
         class iService {
             public:
-                virtual bool openService() = 0;
-                virtual void closeService() = 0;
-
-            //protected:
-                //static _T* instance = nullptr;
+                virtual bool initService() = 0;
         }; //class iService
 
         // namespace service {

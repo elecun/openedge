@@ -117,6 +117,11 @@ bus.tcp.service: $(OUTDIR)bus.tcp.service.o
 $(OUTDIR)bus.tcp.service.o: $(SERVICE_SOURCE_FILES)bus.tcp.service/bus.tcp.service.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
+xgt.protocol.service: $(OUTDIR)xgt.protocol.service.o
+	$(CC) $(LDFLAGS) -shared -o $(OUTDIR)$@ $^ $(LDLIBS)
+$(OUTDIR)xgt.protocol.service.o: $(SERVICE_SOURCE_FILES)xgt.protocol.service/xgt.protocol.service.cc
+	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
 fenet.connector.service: $(OUTDIR)fenet.connector.service.o
 	$(CC) $(LDFLAGS) -shared -o $(OUTDIR)$@ $^ $(LDLIBS)
 $(OUTDIR)fenet.connector.service.o: $(SERVICE_SOURCE_FILES)fenet.connector.service/fenet.connector.service.cc
@@ -140,7 +145,7 @@ $(OUTDIR)uuid.o:	$(INCLUDE_FILES)openedge/util/uuid.cc
 all : edge
 test : oeware_test
 tasks : plc.daq.task
-services : plc.lsis.service bus.tcp.service
+services : plc.lsis.service bus.tcp.service xgt.protocol.service
 clean : FORCE
 		$(RM) $(OUTDIR)*.o $(OUTDIR)openedge $(OUTDIR)edge $(OUTDIR)*.task $(OUTDIR)*.service
 FORCE : 

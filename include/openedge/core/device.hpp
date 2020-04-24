@@ -53,10 +53,14 @@ namespace oe::core {
 
     //general PLC Device interface
     namespace bus{ class iDeviceBus; }
+    class iProtocolRaw;
     class iDevicePLC : public iDevice {
         public:
-            virtual uint8_t readByte(const char* address) = 0;
-            virtual bool configBus(bus::iDeviceBus* bus) = 0;
+            virtual bool readBit(bus::iDeviceBus* bus, iProtocolRaw* protocol, const char* address) = 0;
+            virtual uint8_t readByte(bus::iDeviceBus* bus, iProtocolRaw* protocol, const char* address) = 0;
+            virtual uint16_t readWord(bus::iDeviceBus* bus, iProtocolRaw* protocol, const char* address) = 0;
+            virtual uint32_t readDword(bus::iDeviceBus* bus, iProtocolRaw* protocol, const char* address) = 0;
+            virtual uint64_t readLword(bus::iDeviceBus* bus, iProtocolRaw* protocol, const char* address) = 0;
     };
 
 } //namespace oe::core

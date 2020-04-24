@@ -4,28 +4,25 @@
 #include <3rdparty/spdlog/spdlog.h>
 
 busTcpService::busTcpService() {
-    if(!openService())
-        spdlog::error("Cannot connect to the server");
+    
 }
 
 busTcpService::~busTcpService(){
-    closeService();
+    if(_asyncSocket)
+        delete _asyncSocket;
 }
 
-bool busTcpService::openService(){
+bool busTcpService::initService(){
     _asyncSocket = new net::socket();
-
     return _asyncSocket->connect("192.168.11.9", 2004);
 }
 
-void busTcpService::closeService(){
-    delete _asyncSocket;
-}
 
 bool busTcpService::connect(const char* ipv4_address, const int port){
-    
-    
-    return false;
+    if(_asyncSocket)
+        return true;
+
+    return initService();
 }
 
 void busTcpService::disconnect(){
@@ -41,6 +38,9 @@ void busTcpService::close(){
 }
 
 int busTcpService::read(uint8_t* data, int len){
+    if(_asyncSocket)
+        _asyncSocket->send(data, len);
+        
     return 0;
 }
 

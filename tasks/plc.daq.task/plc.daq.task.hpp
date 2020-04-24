@@ -19,6 +19,7 @@ class plcDaqTask : public core::rt_task::runnable {
         plcDaqTask() = default;
         virtual ~plcDaqTask();
 
+        //common interface
         bool configure() override;
         void execute() override;
         void cleanup() override;
@@ -26,13 +27,6 @@ class plcDaqTask : public core::rt_task::runnable {
     private:
         bool loadService(const char* servicename);
         void unloadService();
-
-    private:
-        void* _plcServiceHandle = nullptr;
-
-    private:
-        map<string, void*> _srvHandleContainer;
-        map<string, core::iService*> _srvContainer;
 };
 
 EXPORT_RT_TASK_API

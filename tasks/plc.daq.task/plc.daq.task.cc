@@ -7,6 +7,8 @@
 #include <vector>
 #include <openedge/core/device.hpp>
 #include <openedge/core/bus.hpp>
+#include <openedge/util/validation.hpp>
+#include <openedge/core/protocol.hpp>
 
 
 using namespace std;
@@ -26,6 +28,10 @@ void release(){
     }
 }
 
+static core::iDevicePLC* _plc = nullptr;
+static core::bus::iDeviceBusTCP* _bus = nullptr;
+static core::iProtocolRaw* _protocol = nullptr;
+
 plcDaqTask::~plcDaqTask(){
 
 }
@@ -33,89 +39,74 @@ plcDaqTask::~plcDaqTask(){
 bool plcDaqTask::configure(){
 
     //read task configurations
-    vector<string> services { "plc.lsis.service", "bus.tcp.service"};
+    vector<string> services { "plc.lsis.service", "bus.tcp.service", "xgt.protocol.service"};
     for(string& service:services){
         if(!loadService(service.c_str()))
             spdlog::warn("{} cannot be loaded", service.c_str());
+        else
+            spdlog::info("Loaded service : {}", service);
     }
 
-    auto itrPlc = _srvContainer.find("plc.lsis.service");
-    core::iDevicePLC* _plc = nullptr;
-    if(itrPlc!=_srvContainer.end())
-        _plc = dynamic_cast<core::iDevicePLC*>(itrPlc->second);
+    auto itrPlc = serviceContainer.find("plc.lsis.service");
+    if(itrPlc!=serviceContainer.end())
+        _plc = dynamic_cast<core::iDevicePLC*>(itrPlc->second.ptrService);
 
-    auto itrBus = _srvContainer.find("bus.tcp.service");
-    core::bus::iDeviceBusTCP* _bus = nullptr;
-    if(itrBus!=_srvContainer.end())
-        _bus = dynamic_cast<core::bus::iDeviceBusTCP*>(itrBus->second);
+    auto itrBus = serviceContainer.find("bus.tcp.service");
+    if(itrBus!=serviceContainer.end())
+        _bus = dynamic_cast<core::bus::iDeviceBusTCP*>(itrBus->second.ptrService);
 
-    if(_plc && _bus)
-        _plc->configBus(_bus);
-    else
-        spdlog::info("cannot cast the service");
+    auto itrProtocol = serviceContainer.find("xgt.protocol.service");
+    if(itrProtocol!=serviceContainer.end())
+        _protocol = dynamic_cast<core::iProtocolRaw*>(itrProtocol->second.ptrService);
 
     return true;
 }
 
 void plcDaqTask::execute(){
-    auto itr = _srvContainer.find("plc.lsis.service");
-    if(itr!=_srvContainer.end()){
-        if(itr->second){
-            core::iDevicePLC* _plc = dynamic_cast<core::iDevicePLC*>(itr->second);
-            spdlog::info("Read Byte : 0x{0:x}", static_cast<unsigned char>(_plc->readByte("%MW100")));
-        }
+    if(_plc && _bus){
+        uint8_t value = _plc->readByte(_bus, _protocol, "%MW100");
+        spdlog::info("Read Byte : 0x{0:x}", static_cast<unsigned char>(value));
     }
-    
 }
 
 void plcDaqTask::cleanup(){
-
-    for(auto service:_srvHandleContainer){
-        release_service fService = (release_service)dlsym(service.second, "releaseService");
-        if(fService) fService();
-        dlclose(service.second);
-        spdlog::info("plcDaqTask cleanup");
-    }
-
-    _srvHandleContainer.clear();
-    _srvContainer.clear();
-
-    // if(_plcServiceHandle){
-    //     release_service pReleaseService = (release_service)dlsym(_plcServiceHandle, "releaseService");
-    //     if(pReleaseService) pReleaseService();
-    //     dlclose(_plcServiceHandle);
-    //     _plcServiceHandle = nullptr;
-    // }
+    unloadService();
+    serviceContainer.clear();
 }
 
 bool plcDaqTask::loadService(const char* servicename){
 
     string path = "./"+string(servicename);
-    _srvHandleContainer.insert(std::pair<string, void*>(servicename, dlopen(path.c_str(),RTLD_LAZY | RTLD_LOCAL)));
-    if(_srvHandleContainer[servicename]){
-        create_service fService = (create_service)dlsym(_srvHandleContainer[servicename], "createService");
-        if(fService){
-            _srvContainer.insert(std::pair<string, oe::core::iService*>(servicename, fService()));
+    if(!exist(path.c_str())){
+        spdlog::error("{} does not exist", servicename);
+        return false;
+    }
+    
+    serviceContainer[servicename].handle = dlopen(path.c_str(),RTLD_LAZY | RTLD_LOCAL);
+    if(serviceContainer[servicename].handle==nullptr){
+        spdlog::error("{} cannot load", servicename);
+    }
+    else{
+        create_service pfCreate = (create_service)dlsym(serviceContainer[servicename].handle, "createService");
+        if(!pfCreate){
+            spdlog::error("{} access failed", servicename);
+        }
+        else{
+            serviceContainer[servicename].ptrService = pfCreate();
+            serviceContainer[servicename].ptrService->initService();
             return true;
         }
     }
 
-    dlclose(_srvHandleContainer[servicename]);
-    _srvHandleContainer.erase(servicename);
+    dlclose(serviceContainer[servicename].handle);
+    serviceContainer.erase(servicename);
     return false;
-
-    //backup
-    // [servicename] = dlopen(path.c_str(), RTLD_LAZY | RTLD_LOCAL);
-    // _serviceHandleContainer[servicename]
-
-    // if(_plcServiceHandle){
-    //     create_service pCreateService = (create_service)dlsym(_plcServiceHandle, "createService");
-    //     if(pCreateService) pCreateService();
-    //     else { spdlog::error("Cannot open servie"); }
-    // }
-    return true;
 }
 
 void plcDaqTask::unloadService(){
-
+    for(auto service:serviceContainer){
+        release_service pfService = (release_service)dlsym(service.second.handle, "releaseService");
+        if(pfService) pfService();
+        dlclose(service.second.handle);
+    }
 }

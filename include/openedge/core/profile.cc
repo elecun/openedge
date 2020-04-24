@@ -17,7 +17,7 @@ namespace oe {
                 file >> _profile;
 
                 strncpy(dest.md5, _profile["md5"].get<string>().c_str(), sizeof(dest.md5));
-                dest.affinity = _profile["info"]["affinity"].get<int>();
+                dest.cpu_affinity = _profile["info"]["cpu_affinity"].get<int>();
                 dest.cycle_ns = _profile["info"]["cycle_ns"].get<unsigned long long>();
                 dest.taskname = _profile["info"]["taskname"].get<string>();
                 dest.version = _profile["info"]["version"].get<string>();

@@ -29,7 +29,7 @@ namespace oe {
                 spdlog::info("* Task Profile <{}>", _taskname);
                 spdlog::info(" + ({}) Cycle Time : {} nsec", _taskname, _profile.cycle_ns);
                 spdlog::info(" + ({}) Version : {}", _taskname, _profile.version);
-                spdlog::info(" + ({}) CPU Affinity : {}", _taskname, _profile.affinity);
+                spdlog::info(" + ({}) CPU Affinity : {}", _taskname, _profile.cpu_affinity);
 
                 return _task_impl->configure();
             }
