@@ -12,11 +12,13 @@
 #include <fstream>
 #include <map>
 #include <cstring>
+#include <string>
 
 using namespace std;
 
-namespace oe {
-    namespace core {
+namespace oe::core {
+
+    typedef std::string jsonDump;
 
         struct profile_t {
             char md5[32] = {0,};
@@ -47,7 +49,6 @@ namespace oe {
 
         }; //class profile
 
-    } //namepspace core
 }   //namespace oe
 
 
