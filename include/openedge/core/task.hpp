@@ -44,9 +44,8 @@ namespace oe {
                     virtual bool configure() = 0;
                     virtual void cleanup() = 0;
 
-                // protected:
-                //     explicit runnable(const char* taskname):_taskname(taskname), _status(TASK_STATUS::STOPPED){
-                //     }
+                protected:
+                    const core::profile* getProfile() { return _profile; }
 
                 protected:
                     typedef struct service_t {
@@ -55,9 +54,11 @@ namespace oe {
                     } serviceAccess;
                     map<string, serviceAccess> serviceContainer;
 
-                    core::profile* _profile = nullptr;   //task profile (raw)
                     std::string _taskname;
                     TASK_STATUS _status;
+
+                private:
+                    core::profile* _profile = nullptr;   //task profile (raw)
             }; //class runnable
 
     } //namespace core

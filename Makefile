@@ -106,6 +106,16 @@ plc.daq.task: $(OUTDIR)plc.daq.task.o
 $(OUTDIR)plc.daq.task.o: $(TASK_SOURCE_FILES)plc.daq.task/plc.daq.task.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
+mongodb.push.task: $(OUTDIR)mongodb.push.task.o
+	$(CC) $(LDFLAGS) -shared -o $(OUTDIR)$@ $^ $(LDLIBS)
+$(OUTDIR)mongodb.push.task.o: $(TASK_SOURCE_FILES)mongodb.push.task/mongodb.push.task.cc
+	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
+fenet.daq.task: $(OUTDIR)fenet.daq.task.o
+	$(CC) $(LDFLAGS) -shared -o $(OUTDIR)$@ $^ $(LDLIBS)
+$(OUTDIR)fenet.daq.task.o: $(TASK_SOURCE_FILES)fenet.daq.task/fenet.daq.task.cc
+	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
 ############################ Services
 plc.general.service: $(OUTDIR)plc.general.service.o
 	$(CC) $(LDFLAGS) -shared -o $(OUTDIR)$@ $^ $(LDLIBS)
@@ -144,8 +154,8 @@ $(OUTDIR)uuid.o:	$(INCLUDE_FILES)openedge/util/uuid.cc
 
 all : edge
 test : oeware_test
-tasks : plc.daq.task
-services : plc.lsis.service bus.tcp.service xgt.protocol.service
+tasks : plc.daq.task mongodb.push.task fenet.daq.task
+services : plc.lsis.service bus.tcp.service xgt.protocol.service fenet.connector.service
 clean : FORCE
 		$(RM) $(OUTDIR)*.o $(OUTDIR)openedge $(OUTDIR)edge $(OUTDIR)*.task $(OUTDIR)*.service
 FORCE : 

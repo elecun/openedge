@@ -9,6 +9,7 @@
 #include <openedge/core/bus.hpp>
 #include <openedge/util/validation.hpp>
 #include <openedge/core/protocol.hpp>
+#include <openedge/core/profile.hpp>
 
 
 using namespace std;
@@ -34,13 +35,14 @@ static core::iProtocolRaw* _protocol = nullptr;
 
 bool plcDaqTask::configure(){
 
+    vector<string> services = this->getProfile()->data["services"]["required"];
+
     //read task configurations
-    vector<string> services { "plc.lsis.service", "bus.tcp.service", "xgt.protocol.service" };
     for(string& service:services){
         if(!loadService(service.c_str()))
             spdlog::warn("{} cannot be loaded", service.c_str());
         else
-            spdlog::info("Loaded service : {}", service);
+            spdlog::info(" + Loaded service : {}", service);
     }
 
     auto itrPlc = serviceContainer.find("plc.lsis.service");
@@ -61,13 +63,13 @@ bool plcDaqTask::configure(){
 void plcDaqTask::execute(){
     if(_plc && _bus){
         uint8_t value = _plc->readByte(_bus, _protocol, "%MW100");
+        
         spdlog::info("Read Byte : 0x{0:x}", static_cast<unsigned char>(value));
     }
-
-    spdlog::info("call {}", this->_taskname);
 }
 
 void plcDaqTask::cleanup(){
+    spdlog::info("Cleanup <{}>", this->_taskname);
     unloadService();
     serviceContainer.clear();
 }
@@ -91,8 +93,7 @@ bool plcDaqTask::loadService(const char* servicename){
         }
         else{
             serviceContainer[servicename].ptrService = pfCreate();
-            serviceContainer[servicename].ptrService->initService();
-            return true;
+            return serviceContainer[servicename].ptrService->initService();
         }
     }
 

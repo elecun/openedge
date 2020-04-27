@@ -12,6 +12,7 @@
 #include <openedge/core/service.hpp>
 #include <openedge/core/protocol.hpp>
 #include <stdint.h>
+#include "xgt.protocol.hpp"
 
 using namespace oe;
 
@@ -25,6 +26,9 @@ class EXPORTED xgtProtocolService : public core::iService, public core::iProtoco
 
         //common raw protocol interface        
         vector<uint8_t> getHeader() override;
+
+    private:
+        oe::protocol::XGTDedicated* _protocol = nullptr;
 
 
 }; //class

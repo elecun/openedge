@@ -35,10 +35,14 @@ namespace oe::core {
             profile(const char* path);
 
             bool isValid() const { return valid; }
+            string getDumped() const { return data.dump(); }
+
+        public:
+            json data;
 
         private:
             bool valid = true;
-            json data;
+
     }; //class profile interface
 
     

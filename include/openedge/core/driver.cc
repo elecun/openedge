@@ -38,7 +38,7 @@ namespace oe::core::task {
                 _taskImpl->_profile = nullptr;
             }   
         }
-        
+
         unload();
     }
 
@@ -144,11 +144,11 @@ namespace oe::core::task {
                     _taskImpl->execute();
                 }
                 auto t_elapsed = std::chrono::high_resolution_clock::now();
-                spdlog::info("<{}>Processing Time : {} ns / {} ns",
-                _taskImpl->_taskname,
-                std::chrono::duration<double, std::chrono::seconds::period>(t_elapsed - t_now).count(),
-                std::chrono::duration<double, std::chrono::seconds::period>(t_now - t_prev).count());
-                t_prev = t_now;
+                // spdlog::info("<{}>Processing Time : {} ns / {} ns",
+                // _taskImpl->_taskname,
+                // std::chrono::duration<double, std::chrono::seconds::period>(t_elapsed - t_now).count(),
+                // std::chrono::duration<double, std::chrono::seconds::period>(t_now - t_prev).count());
+                // t_prev = t_now;
             }
             
         }

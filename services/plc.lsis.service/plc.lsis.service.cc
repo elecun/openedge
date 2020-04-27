@@ -2,6 +2,10 @@
 
 #include "plc.lsis.service.hpp"
 #include <3rdparty/spdlog/spdlog.h>
+#include <vector>
+#include <iostream>
+
+using namespace std;
 
 plcLsisService::plcLsisService() {
     
@@ -22,7 +26,12 @@ bool plcLsisService::readBit(bus::iDeviceBus* bus, iProtocolRaw* protocol, const
 }
 
 uint8_t plcLsisService::readByte(bus::iDeviceBus* bus, iProtocolRaw* protocol, const char* address){
-    return 0x01;
+    if(bus && protocol){
+        vector<uint8_t> header = protocol->getHeader();
+        int read = bus->read(header.data(), header.size());
+        return 0x01;
+    }
+    return 0x00;
 }
 
 uint16_t plcLsisService::readWord(bus::iDeviceBus* bus, iProtocolRaw* protocol, const char* address){

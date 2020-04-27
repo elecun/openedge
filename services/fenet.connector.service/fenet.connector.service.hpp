@@ -1,29 +1,56 @@
 
 /**
- * @file    xgb_fenet.service.hpp
- * @brief   LSIS XGB FEnet
- * @author  Byunghun Hwang<bh.hwang@iae.re.kr>
+ * @file    fenet.connector.service.hpp
+ * @brief   LSIS PLC Service
+ * @author  Byunghun Hwang <bh.hwang@iae.re.kr>
  */
 
-#include <openedge/net/netbase.hpp>
-#include "xgb_fenet.hpp"
+#ifndef _OPENEDGE_SERVICE_FENET_CONNECTOR_HPP_
+#define _OPENEDGE_SERVICE_FENET_CONNECTOR_HPP_
+
+#include <openedge/core/export.hpp>
+#include <openedge/core/typespec.hpp>
+#include <openedge/core/service.hpp>
+#include <openedge/core/device.hpp>
+#include <openedge/core/bus.hpp>
+#include <stdint.h>
+
+using namespace oe::core;
+
+class EXPORTED fenetConnectorService : public iService {
+    public:
+        fenetConnectorService();
+        virtual ~fenetConnectorService();
+        
+        //common service interface
+        bool initService() override;
+
+        //common PLC interface
+        bool readBit(bus::iDeviceBus* bus, iProtocolRaw* protocol, const char* address);
+        uint8_t readByte(bus::iDeviceBus* bus, iProtocolRaw* protocol, const char* address);
+        uint16_t readWord(bus::iDeviceBus* bus, iProtocolRaw* protocol, const char* address);
+        uint32_t readDword(bus::iDeviceBus* bus, iProtocolRaw* protocol, const char* address);
+        uint64_t readLword(bus::iDeviceBus* bus, iProtocolRaw* protocol, const char* address);
+
+    private:
+        uint16_t _invokeId { 0x0000 };
+
+}; //class
 
 
-namespace oe {
-    namespace PLC {
-        namespace LSIS {
+#ifdef  __cplusplus
+extern "C" {
+#endif
 
-            class fenetConnectorService : public net::netBase {
-                public:
-                fenetConnectorService();
-                ~fenetConnectorService();
+fenetConnectorService* pService = nullptr;
 
-                bool connect(const char* ipv4_address, int port);
+EXPORTED oe::core::iService* createService(void) { pService = new fenetConnectorService(); return pService; } //not static
+EXPORTED void releaseService(void) { if(pService) { delete pService; pService=nullptr; }}
+EXPORTED bool initService(void) { if(pService) return pService->initService(); return false; }
+//EXPORTED uint8_t readByte(const char* address) { return pService->readByte(address); } //hide
 
-                private:
-                    net::XGBFEnet* _fenet = nullptr;
-            };
+#ifdef  __cplusplus
+}
+#endif
 
-        } //namespace LSIS
-    } //namesoace plc
-} //namesoace oe
+#endif

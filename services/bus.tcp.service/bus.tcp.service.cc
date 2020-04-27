@@ -14,7 +14,16 @@ busTcpService::~busTcpService(){
 
 bool busTcpService::initService(){
     _asyncSocket = new net::socket();
-    return _asyncSocket->connect("192.168.11.9", 2004);
+    bool ret = _asyncSocket->connect("192.168.11.9", 2004);
+    if(ret){
+        spdlog::info("Connected");
+        return true;
+    }
+    else{
+        spdlog::info("Cannot connected");
+        return false;
+    }
+    
 }
 
 

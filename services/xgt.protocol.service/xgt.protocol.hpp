@@ -109,10 +109,15 @@ namespace oe::protocol {
             // } xgt_header;
 
 
+            #define MAX_FRAME_SIZE  20
             typedef struct xgt_header_t {
-                uint8_t header_frame[20];
+                uint8_t header_frame[MAX_FRAME_SIZE];
 
-                xgt_header_t(uint8_t cpuinfo, uint8_t sof, uint16_t invokeId, uint16_t bodylen, uint8_t pos){
+                int size() const { return sizeof(header_frame); }
+                
+                xgt_header_t() = default;
+
+                void set(uint8_t cpuinfo, uint8_t sof, uint16_t invokeId, uint16_t bodylen, uint8_t pos){
                     memset(header_frame, 0x00, sizeof(header_frame));
                     const uint8_t companyId[10] = {0x4C, 0x53, 0x49, 0x53, 0x2d, 0x58, 0x47, 0x54, 0x00, 0x00 };
                     std::copy(companyId, companyId+sizeof(companyId), header_frame);    //company ID
@@ -126,6 +131,15 @@ namespace oe::protocol {
                     header_frame[18] = pos;
                     header_frame[19] = chksum();
                 };
+
+                void setDefault(){
+                    set(static_cast<uint8_t>(cpu_info::XGI), 
+                    static_cast<uint8_t>(sof::CLIENT), 
+                    0x0000, 
+                    0x0000,
+                    static_cast<uint8_t>(fenet_slot::SLOT0) | static_cast<uint8_t>(fenet_base::BASE0)
+                    );
+                }
                 xgt_header_t& operator=(const xgt_header_t& other){
                     std::copy(other.header_frame, other.header_frame+sizeof(other.header_frame), this->header_frame);
                     return *this;
@@ -139,6 +153,8 @@ namespace oe::protocol {
                         return (sum&0xff);
                     }
             };
+            #undef MAX_FRAME_SIZE
+
 
             enum class command_code : uint16_t {
                 READ_REQUEST = 0x5400,
@@ -170,9 +186,10 @@ namespace oe::protocol {
                     memcpy(&this->data, &other.data, sizeof(data));
                     return *this;
                 }
-                //xgt_frame_format_t() = default;
             };
             #undef MAX_FRAME_SIZE
+
+            
 
     }; //class
 
