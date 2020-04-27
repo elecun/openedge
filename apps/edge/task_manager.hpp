@@ -28,7 +28,7 @@ namespace oe::edge {
     class task_manager : public oe::arch::singleton<task_manager> {
         public:
 
-        typedef std::map<util::uuid_t, oe::core::task_driver*> taskContainer_t; //task container
+        typedef std::map<util::uuid_t, oe::core::task::driver*> taskContainer_t; //task container
         typedef std::map<string, util::uuid_t> taskContainer_map;   //task map
 
         task_manager();
@@ -40,8 +40,8 @@ namespace oe::edge {
         void run(const char* taskname = nullptr);
         void cleanup(const char* taskname = nullptr);
 
-        oe::core::task_driver* get_driver(const char* taskname = nullptr);
-        oe::core::rt_task::runnable* get_task(const char* taskname = nullptr);
+        oe::core::task::driver* get_driver(const char* taskname = nullptr);
+        oe::core::task::runnable* get_task(const char* taskname = nullptr);
 
         protected:
         task_manager(const task_manager&) = delete;

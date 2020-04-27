@@ -23,7 +23,7 @@ namespace oe::edge {
         //insert task into container with uuid
         //(todo) requries file existance in task respository path
         _container_map.insert(taskContainer_map::value_type(taskname, _uuid_gen.generate()));
-        _task_container.insert(taskContainer_t::value_type(_container_map[taskname], new core::task_driver(taskname)));
+        _task_container.insert(taskContainer_t::value_type(_container_map[taskname], new core::task::driver(taskname)));
         //spdlog::info("{} is assigned to {}", _container_map[taskname].str(), taskname);
         if(!_task_container[_container_map[taskname]]->configure()){
             uninstall(taskname);
@@ -71,7 +71,7 @@ namespace oe::edge {
             _task_container[_container_map[taskname]]->cleanup();
     }
 
-    oe::core::task_driver* task_manager::get_driver(const char* taskname){
+    oe::core::task::driver* task_manager::get_driver(const char* taskname){
         return nullptr;
     }
 

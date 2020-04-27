@@ -13,41 +13,53 @@
 #include <map>
 #include <cstring>
 #include <string>
+#include <3rdparty/json.hpp>
+#include <3rdparty/spdlog/spdlog.h>
 
 using namespace std;
+using json = nlohmann::json;
 
 namespace oe::core {
 
-    typedef std::string jsonDump;
+    namespace task { 
+        class runnable; 
+        class driver;
+    }
 
-        struct profile_t {
-            char md5[32] = {0,};
-            int cpu_affinity;   //working cpu
-            unsigned long long cycle_ns; //cycle time in nanoseconds
-            string taskname;
-            string version;
+    //JSON-based Profile
+    class profile {
 
-            profile_t& operator=(const profile_t& other){
-                memcpy(this->md5, other.md5, sizeof(this->md5));
-                this->cpu_affinity = other.cpu_affinity;
-                this->cycle_ns = other.cycle_ns;
-                this->taskname = other.taskname;
-                this->version = other.version;
-                return *this;
-            }
-        };
+        friend class oe::core::task::driver;
 
-        class profile {
-            public:
-                profile(){}
-                ~profile(){}
+        public:
+            profile(const char* path);
 
-                bool load(const char* profile_path, profile_t& dest);
+            bool isValid() const { return valid; }
 
-            private:
+        private:
+            bool valid = true;
+            json data;
+    }; //class profile interface
 
+    
 
-        }; //class profile
+    // struct profile_t {
+    //     char md5[32] = {0,};
+    //     int cpu_affinity;   //working cpu
+    //     unsigned long long cycle_ns; //cycle time in nanoseconds
+    //     string taskname;
+    //     string version;
+
+    //     profile_t& operator=(const profile_t& other){
+    //         memcpy(this->md5, other.md5, sizeof(this->md5));
+    //         this->cpu_affinity = other.cpu_affinity;
+    //         this->cycle_ns = other.cycle_ns;
+    //         this->taskname = other.taskname;
+    //         this->version = other.version;
+    //         return *this;
+    //     }
+    // };
+
 
 }   //namespace oe
 

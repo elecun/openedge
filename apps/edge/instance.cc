@@ -1,7 +1,7 @@
 
 #include "instance.hpp"
 #include <fstream>
-#include <openedge/ext/json.hpp>
+#include <3rdparty/json.hpp>
 #include <3rdparty/spdlog/spdlog.h>
 #include "exception.hpp"
 #include <vector>
@@ -18,10 +18,12 @@ namespace oe::edge {
     //initialize
     bool init(const char* conf_file){
 
+        //show process information
         spdlog::info("* Process ID = {}", getpid());
         spdlog::info("* System CPUs : {}", get_nprocs());
         spdlog::info("* System Clock Ticks : {}", sysconf(_SC_CLK_TCK));
 
+        //read app. configuration file
         json config;
         try {
             std::ifstream file(conf_file);

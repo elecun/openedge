@@ -14,10 +14,10 @@
 
 using namespace oe;
 
-class plcDaqTask : public core::rt_task::runnable {
+class plcDaqTask : public core::task::runnable {
     public:
         plcDaqTask() = default;
-        virtual ~plcDaqTask();
+        virtual ~plcDaqTask() = default;
 
         //common interface
         bool configure() override;

@@ -15,7 +15,7 @@ using namespace std;
 
 //task create & release
 static plcDaqTask* _instance = nullptr;
-core::rt_task::runnable* create(){
+core::task::runnable* create(){
     if(!_instance)
         _instance = new plcDaqTask();
     return _instance;
@@ -32,14 +32,10 @@ static core::iDevicePLC* _plc = nullptr;
 static core::bus::iDeviceBusTCP* _bus = nullptr;
 static core::iProtocolRaw* _protocol = nullptr;
 
-plcDaqTask::~plcDaqTask(){
-
-}
-
 bool plcDaqTask::configure(){
 
     //read task configurations
-    vector<string> services { "plc.lsis.service", "bus.tcp.service", "xgt.protocol.service"};
+    vector<string> services { "plc.lsis.service", "bus.tcp.service", "xgt.protocol.service" };
     for(string& service:services){
         if(!loadService(service.c_str()))
             spdlog::warn("{} cannot be loaded", service.c_str());
@@ -67,6 +63,8 @@ void plcDaqTask::execute(){
         uint8_t value = _plc->readByte(_bus, _protocol, "%MW100");
         spdlog::info("Read Byte : 0x{0:x}", static_cast<unsigned char>(value));
     }
+
+    spdlog::info("call {}", this->_taskname);
 }
 
 void plcDaqTask::cleanup(){
