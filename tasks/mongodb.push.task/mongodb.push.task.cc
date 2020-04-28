@@ -23,8 +23,7 @@ void release(){
 
 
 bool mongodbPushTask::configure(){
-
-
+    
     return true;
 }
 
