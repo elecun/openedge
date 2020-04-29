@@ -17,7 +17,7 @@
 #define _OPENEDGE_MONGODB_PUSH_TASK_HPP_
 
 #include <openedge/core/task.hpp>
-#include <libmongoc-1.0/mongoc.h>
+#include <3rdparty/libmongoc-1.0/mongoc.h>
 
 using namespace oe;
 
