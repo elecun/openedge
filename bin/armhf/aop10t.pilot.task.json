@@ -1,0 +1,33 @@
+{
+    "md5":"603239CAF2F774498037F944F5592F52",
+    "info":{
+        "taskname":"plc.daq.task",
+        "version":"0.0.1",
+        "cpu_affinity":1,
+        "cycle_ns":100000000
+    },
+    "services":{
+        "required":["plc.lsis.service","bus.tcp.service","xgt.protocol.service"],
+        "plc.lsis.service":{
+            "class":"database",
+            "info":{
+                "cpu_info":"XGI"
+            },
+            "use":{
+                "bus":"bus.tcp.service",
+                "protocol":"xgt.protocol.service"
+            }
+        },
+        "bus.tcp.service":{
+            "info":{
+                "host":"192.168.11.9",
+                "port":2004,
+                "keep_alive":true,
+                "timeout_sec":2
+            }
+        },
+        "xgt.protocol.service": {
+
+        }
+    }
+}
