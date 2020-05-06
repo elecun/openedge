@@ -10,6 +10,7 @@
 
 #include <string>
 #include <map>
+#include <vector>
 #include <openedge/core/profile.hpp>
 
 
@@ -46,6 +47,9 @@ namespace oe {
 
                 protected:
                     const core::profile* getProfile() { return _profile; }
+                    vector<string> getServices() const { 
+                        return _profile->data["services"]["required"];
+                    }
 
                 protected:
                     typedef struct service_t {

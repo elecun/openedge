@@ -34,6 +34,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include <openedge/core/version.hpp>
 #include "instance.hpp"
 #include "exception.hpp"
+#include <iostream>
 
 using namespace std;
 
@@ -71,6 +72,8 @@ int main(int argc, char* argv[])
   cxxopts::Options options(argv[0], "");
 	options.add_options()
         ("c,config", "Load Configuration File(*.json)", cxxopts::value<std::string>(), "FILE")
+        ("i,install", "Install new RT Task", cxxopts::value<std::string>(), "RT Task")
+        ("u,unintall", "Uninstall RT Task", cxxopts::value<std::string>(), "RT Task")
         ("v,version", "Openedge Service Engine Version")
         ("h,help", "Print Usage");
 
@@ -78,7 +81,10 @@ int main(int argc, char* argv[])
   {
     auto args = options.parse(argc, argv);
 
-    if(args.count("version")) { printf("%s\n", _OE_VER_); ::terminate(); }
+    if(args.count("version")) { cout << _OE_VER_ << endl; ::terminate(); }
+    else if(args.count("install")) { cout << "Not Support yet" << endl; ::terminate(); }
+    else if(args.count("uninstall")) { cout << "Not Support yet" << endl; ::terminate(); }
+    else if(args.count("help")) { cout << options.help() << endl; ::terminate(); }
     else if(args.count("config")){
       string _conf_file = args["config"].as<std::string>();
       spdlog::info("Starting Openedge Service Engine {} (built {}/{})", _OE_VER_, __DATE__, __TIME__);

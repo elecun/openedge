@@ -96,6 +96,11 @@ simple.task: $(OUTDIR)simple.task.o
 $(OUTDIR)simple.task.o: $(TASK_SOURCE_FILES)simple.task/simple.task.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
+aop10t.pilot.task: $(OUTDIR)aop10t.pilot.task.o
+	$(CC) $(LDFLAGS) -shared -o $(OUTDIR)$@ $^ $(LDLIBS)
+$(OUTDIR)aop10t.pilot.task.o: $(TASK_SOURCE_FILES)aop10t.pilot.task/aop10t.pilot.task.cc
+	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
 simple2.task: $(OUTDIR)simple2.task.o
 	$(CC) $(LDFLAGS) -shared -o $(OUTDIR)$@ $^ $(LDLIBS)
 $(OUTDIR)simple2.task.o: $(TASK_SOURCE_FILES)simple2.task/simple2.task.cc
@@ -154,7 +159,7 @@ $(OUTDIR)uuid.o:	$(INCLUDE_FILES)openedge/util/uuid.cc
 
 all : edge
 test : oeware_test
-tasks : plc.daq.task mongodb.push.task fenet.daq.task
+tasks : aop10t.pilot.task
 services : plc.lsis.service bus.tcp.service xgt.protocol.service fenet.connector.service
 clean : FORCE
 		$(RM) $(OUTDIR)*.o $(OUTDIR)openedge $(OUTDIR)edge $(OUTDIR)*.task $(OUTDIR)*.service

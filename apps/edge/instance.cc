@@ -8,6 +8,7 @@
 #include <string>
 #include <openedge/core/task.hpp>
 #include "task_manager.hpp"
+#include "global.hpp"
 #include <sys/sysinfo.h>
 
 using namespace std;
@@ -34,7 +35,13 @@ namespace oe::edge {
             return false;
         }
 
+        //add global path
+        edge_path->add("config", config["environments"]["path"]["config"].get<string>().c_str());
+        edge_path->add("task", config["environments"]["path"]["task"].get<string>().c_str());
+        edge_path->add("service", config["environments"]["path"]["service"].get<string>().c_str());
+
         vector<string> default_tasks = config["tasks"]["default"].get<std::vector<string>>();
+        
         for(string& task:default_tasks){
             edge_task_manager->install(task.c_str());
         }

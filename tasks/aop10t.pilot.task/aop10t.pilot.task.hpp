@@ -28,8 +28,7 @@ class aop10tPilotTask : public core::task::runnable {
         void cleanup() override;
 
     private:
-        unique_ptr<core::iService> _db;
-        unique_ptr<core::iService> _fenet;
+        
 
 };
 

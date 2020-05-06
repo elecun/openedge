@@ -1,8 +1,9 @@
 {
     "environments":{
         "path":{
-            "config":"/usr/local/openedge/config",
-            "task":"/home/debian/bin/arm/task/"
+            "config":"./",
+            "task":"./",
+            "service":"./"
         }
     },
     "gateway":{
@@ -12,6 +13,6 @@
         }
     },
     "tasks":{
-        "default":["plc.daq.task"]
+        "default":["aop10t.pilot.task"]
     }
 }

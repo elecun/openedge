@@ -9,7 +9,6 @@
     "services":{
         "required":["plc.lsis.service","bus.tcp.service","xgt.protocol.service"],
         "plc.lsis.service":{
-            "class":"database",
             "info":{
                 "cpu_info":"XGI"
             },
