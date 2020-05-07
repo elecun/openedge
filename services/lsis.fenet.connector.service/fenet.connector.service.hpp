@@ -1,7 +1,7 @@
 
 /**
  * @file    fenet.connector.service.hpp
- * @brief   LSIS PLC Service
+ * @brief   FEnet Connector Service (depends on XGT dedicated protocol over TCP/IP Communication)
  * @author  Byunghun Hwang <bh.hwang@iae.re.kr>
  */
 
@@ -14,6 +14,7 @@
 #include <openedge/core/device.hpp>
 #include <openedge/core/bus.hpp>
 #include <stdint.h>
+#include <array>
 
 using namespace oe::core;
 
@@ -22,18 +23,28 @@ class EXPORTED fenetConnectorService : public iService {
         fenetConnectorService();
         virtual ~fenetConnectorService();
         
-        //common service interface
+        //common iservice interface
         bool initService() override;
 
+        //support interface
+        void write(  const char* addr_start, /* start address to access */
+                    uint16_t count = 0      /*data count to read. if 0, it is individual request*/
+                );
+
         //common PLC interface
-        bool readBit(bus::iDeviceBus* bus, iProtocolRaw* protocol, const char* address);
-        uint8_t readByte(bus::iDeviceBus* bus, iProtocolRaw* protocol, const char* address);
-        uint16_t readWord(bus::iDeviceBus* bus, iProtocolRaw* protocol, const char* address);
-        uint32_t readDword(bus::iDeviceBus* bus, iProtocolRaw* protocol, const char* address);
-        uint64_t readLword(bus::iDeviceBus* bus, iProtocolRaw* protocol, const char* address);
+        // bool readBit(bus::iDeviceBus* bus, iProtocolRaw* protocol, const char* address);
+        // uint8_t readByte(bus::iDeviceBus* bus, iProtocolRaw* protocol, const char* address);
+        // uint16_t readWord(bus::iDeviceBus* bus, iProtocolRaw* protocol, const char* address);
+        // uint32_t readDword(bus::iDeviceBus* bus, iProtocolRaw* protocol, const char* address);
+        // uint64_t readLword(bus::iDeviceBus* bus, iProtocolRaw* protocol, const char* address);
+
+    private:
+        void parse(const char* address = nullptr); /* parse address */
+        
 
     private:
         uint16_t _invokeId { 0x0000 };
+        unique_ptr<bus::iDeviceBus> _bus;// = unique_ptr<bus::iDeviceBus>(nullptr); /* default is null */
 
 }; //class
 

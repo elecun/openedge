@@ -7,8 +7,8 @@
         "cycle_ns":100000000
     },
     "services":{
-        "required":["plc.lsis.service","bus.tcp.service","xgt.protocol.service"],
-        "plc.lsis.service":{
+        "required":["lsis.fenet.connector.service", "lsis.xgt.protocol.service", "mongodb.connector.service"],
+        "lsis.fenet.connector.service":{
             "info":{
                 "cpu_info":"XGI"
             },
@@ -17,7 +17,7 @@
                 "protocol":"xgt.protocol.service"
             }
         },
-        "bus.tcp.service":{
+        "lsis.xgt.protocol.service":{
             "info":{
                 "host":"192.168.11.9",
                 "port":2004,
@@ -25,7 +25,7 @@
                 "timeout_sec":2
             }
         },
-        "xgt.protocol.service": {
+        "mongodb.connector.service": {
 
         }
     }

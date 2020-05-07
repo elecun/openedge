@@ -12,5 +12,26 @@ fenetConnectorService::~fenetConnectorService(){
 }
 
 bool fenetConnectorService::initService(){
+    if(_bus.get()!=nullptr){
+        spdlog::warn("Interface Bus has already assigned");
+        return false;
+    }
+
+    _bus = make_unique<bus::iDeviceBusTCP>();
+    if(_bus.get()){
+
+    }
+
     return true;
+}
+
+
+void fenetConnectorService::write(const char* addr_start, uint16_t count){
+    if(_bus.get()){
+
+    }
+}
+
+void fenetConnectorService::parse(const char* address){
+
 }

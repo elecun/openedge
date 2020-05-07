@@ -12,6 +12,7 @@
 #include <openedge/core/service.hpp>
 #include <map>
 #include <string>
+#include <vector>
 #include <memory>
 
 using namespace oe;
@@ -26,6 +27,10 @@ class aop10tPilotTask : public core::task::runnable {
         bool configure() override;
         void execute() override;
         void cleanup() override;
+
+    private:
+        bool load(const string& svcname /* dependent service name */);
+        void unload();
 
     private:
         
