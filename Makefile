@@ -28,7 +28,7 @@ endif
 # OS
 ifeq ($(OS),Linux) #for Linux
 	LDFLAGS = -Wl,--export-dynamic
-	LDLIBS = -pthread -lrt -ldl
+	LDLIBS = -pthread -lrt -ldl -lm
 	GTEST_LDLIBS = -lgtest
 	INCLUDE_DIR = -I./ -I./include/
 	LD_LIBRARY_PATH += -L/usr/local/lib

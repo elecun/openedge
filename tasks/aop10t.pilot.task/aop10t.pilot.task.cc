@@ -6,8 +6,13 @@
 #include <dlfcn.h>
 #include <openedge/util/validation.hpp>
 #include <services/lsis.fenet.connector.service/fenet.connector.service.hpp>
+#include <services/mongodb.connector.service/mongodb.connector.hpp>
 
 using namespace std;
+
+//fenet
+fenetConnectorService* _fenet { nullptr };
+mongodbConnectorService* _db { nullptr };
 
 //task create & release
 static aop10tPilotTask* _instance = nullptr;
@@ -35,25 +40,36 @@ bool aop10tPilotTask::configure(){
 
     //2. check for service validation
 
+    //3. get service
+    
+    if(!serviceContainer["lsis.fenet.connector.service"].ptrService)
+        _fenet = dynamic_cast<fenetConnectorService*>(serviceContainer["lsis.fenet.connector.service"].ptrService);
+
+    if(_fenet)
+        if(!_fenet->connect("127.0.0.1", 2009))
+            return false;
+    
+    if(!serviceContainer["mongodb.connector.service"].ptrService)
+        _db = dynamic_cast<mongodbConnectorService*>(serviceContainer["mongodb.connector.service"].ptrService);
+
+    // if(_db)
+    //     _db->connect("127.0.0.1", 2008);
+
     return true;
 }
 
 void aop10tPilotTask::execute(){
-    //1. read data from PLC
-    fenetConnectorService* fenet { nullptr };
-    if(!serviceContainer["lsis.fenet.connector.service"].ptrService){
-        fenet = dynamic_cast<fenetConnectorService*>(serviceContainer["lsis.fenet.connector.service"].ptrService);
-        //1.1 request data
-        if(fenet){
-            fenet->read("%MW0", 2);
-        }
-        
-    }
+    //1. request 
+    if(_fenet)
+        _fenet->request("%MW0", 10); //request to read data (async)
 
     //2. store the data into mongoDB
 }
 
 void aop10tPilotTask::cleanup(){
+    if(_fenet)
+        _fenet = nullptr;
+
     unload();
 }
 

@@ -17,7 +17,7 @@ bool fenetConnectorService::initService(){
         return false;
     }
 
-    _bus = make_unique<bus::iDeviceBusTCP>();
+    _bus = make_unique<core::bus::iDeviceBusTCP>();
     if(_bus.get()){
 
     }
@@ -26,7 +26,7 @@ bool fenetConnectorService::initService(){
 }
 
 
-void fenetConnectorService::write(const char* addr_start, uint16_t count){
+void fenetConnectorService::request(const char* addr_start, uint16_t count){
     if(_bus.get()){
 
     }
@@ -35,3 +35,4 @@ void fenetConnectorService::write(const char* addr_start, uint16_t count){
 void fenetConnectorService::parse(const char* address){
 
 }
+

@@ -34,7 +34,6 @@ class aop10tPilotTask : public core::task::runnable {
 
     private:
         
-
 };
 
 EXPORT_RT_TASK_API

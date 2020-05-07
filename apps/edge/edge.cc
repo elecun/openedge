@@ -69,7 +69,7 @@ int main(int argc, char* argv[])
 
   spdlog::stdout_color_st("console"); //initialize spdlog
 
-  cxxopts::Options options(argv[0], "");
+  cxxopts::Options options(argv[0], "-  Commnad Line Options");
 	options.add_options()
         ("c,config", "Load Configuration File(*.json)", cxxopts::value<std::string>(), "FILE")
         ("i,install", "Install new RT Task", cxxopts::value<std::string>(), "RT Task")
@@ -77,7 +77,8 @@ int main(int argc, char* argv[])
         ("v,version", "Openedge Service Engine Version")
         ("h,help", "Print Usage");
 
-  try 
+       
+  try
   {
     auto args = options.parse(argc, argv);
 
@@ -90,7 +91,7 @@ int main(int argc, char* argv[])
       spdlog::info("Starting Openedge Service Engine {} (built {}/{})", _OE_VER_, __DATE__, __TIME__);
       spdlog::info("Load Configuration File : {}", _conf_file);
 
-      //start service engine if configuration load is success
+      //run task engine
       if(oe::edge::init(_conf_file.c_str()))
          oe::edge::run();
       
