@@ -29,6 +29,10 @@ void release(){
     }
 }
 
+int aop10tPilotTask::readf(vector<byte>& packet){
+
+}
+
 bool aop10tPilotTask::configure(){
 
     //1. load services required
@@ -46,6 +50,7 @@ bool aop10tPilotTask::configure(){
         _fenet = dynamic_cast<fenetConnectorService*>(serviceContainer["lsis.fenet.connector.service"].ptrService);
         _fenet->setRcvTimeout(1);
         if(_fenet->connect("192.168.100.6", 27017)){
+            _fenet->setReadCallback(aop10tPilotTask::readf);
         }
     }
     

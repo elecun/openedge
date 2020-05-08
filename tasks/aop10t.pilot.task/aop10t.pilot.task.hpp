@@ -33,6 +33,8 @@ class aop10tPilotTask : public core::task::runnable {
         bool load(const string& svcname /* dependent service name */); //load service
         void unload();  //unload service
 
+        int readf(vector<byte>& packet);
+
     private:
 
 };

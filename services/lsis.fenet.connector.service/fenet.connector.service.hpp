@@ -22,6 +22,8 @@ using namespace oe;
 
 class EXPORTED fenetConnectorService : public core::iService {
     public:
+        typedef std::function<void(uint8_t*, int)> readCallbackFunc;
+        
         fenetConnectorService();
         virtual ~fenetConnectorService();
         
@@ -31,6 +33,7 @@ class EXPORTED fenetConnectorService : public core::iService {
         //for socket interface
         bool connect(const char* ipv4_addr, int port);
         void setRcvTimeout(unsigned int sec);
+        void setReadCallback(std::function<int(vector<byte>)>& func);
 
         //support interface for FEnet
         void request( const char* addr_start, /* start address to access */
@@ -47,6 +50,8 @@ class EXPORTED fenetConnectorService : public core::iService {
     private:
         uint16_t _invokeId { 0x0000 };
         unique_ptr<core::bus::iDeviceBus> _bus;// = unique_ptr<bus::iDeviceBus>(nullptr); /* default is null */
+
+        std::function<int(vector<byte>&)> _readCallback;
 
 }; //class
 
