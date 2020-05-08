@@ -17,7 +17,7 @@ namespace oe::net::tcp {
             async(bool keepAlive = false){ }
             virtual ~async() = default;
 
-            virtual bool connet(const char* ipv4_addr, int port) {
+            virtual bool connect(const char* ipv4_addr, int port) {
 
             }
 

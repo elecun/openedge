@@ -16,10 +16,11 @@
 #include <openedge/net/tcpAsync.hpp>
 #include <stdint.h>
 #include <array>
+#include <3rdparty/sockpp/tcp_connector.h>
 
 using namespace oe;
 
-class EXPORTED fenetConnectorService : public core::iService, net::tcp::async {
+class EXPORTED fenetConnectorService : public core::iService {
     public:
         fenetConnectorService();
         virtual ~fenetConnectorService();
@@ -27,20 +28,21 @@ class EXPORTED fenetConnectorService : public core::iService, net::tcp::async {
         //common iservice interface
         bool initService() override;
 
-        //common public net::tcpbase interface
-        bool connet(const char* ipv4_addr, int port) override;
+        //for socket interface
+        bool connect(const char* ipv4_addr, int port);
+        void setRcvTimeout(unsigned int sec);
 
         //support interface for FEnet
-        bool connect(const char* ipv4, int port);
         void request( const char* addr_start, /* start address to access */
                     uint16_t count = 0      /*data count to read. if 0, it is individual request*/
                 );
 
     private:
         void parse(const char* address = nullptr); /* parse address */
-        
-        //common private net::tcp interface
-        void on_received() override;
+
+        //for tcp socket
+        sockpp::socket_initializer* _sockInit { nullptr };
+        sockpp::tcp_connector _tcp;
 
     private:
         uint16_t _invokeId { 0x0000 };

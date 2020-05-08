@@ -6,13 +6,13 @@
 #include <dlfcn.h>
 #include <openedge/util/validation.hpp>
 #include <services/lsis.fenet.connector.service/fenet.connector.service.hpp>
-#include <services/mongodb.connector.service/mongodb.connector.hpp>
+//#include <services/mongodb.connector.service/mongodb.connector.hpp>
 
 using namespace std;
 
 //fenet
 fenetConnectorService* _fenet { nullptr };
-mongodbConnectorService* _db { nullptr };
+//mongodbConnectorService* _db { nullptr };
 
 //task create & release
 static aop10tPilotTask* _instance = nullptr;
@@ -39,21 +39,18 @@ bool aop10tPilotTask::configure(){
     }
 
     //2. check for service validation
+    //code here
 
     //3. get service
-    
-    if(!serviceContainer["lsis.fenet.connector.service"].ptrService)
+    if(!serviceContainer["lsis.fenet.connector.service"].ptrService){
         _fenet = dynamic_cast<fenetConnectorService*>(serviceContainer["lsis.fenet.connector.service"].ptrService);
-
-    if(_fenet)
-        if(!_fenet->connect("127.0.0.1", 2009))
-            return false;
+        _fenet->setRcvTimeout(1);
+        if(_fenet->connect("192.168.100.6", 27017)){
+        }
+    }
     
-    if(!serviceContainer["mongodb.connector.service"].ptrService)
-        _db = dynamic_cast<mongodbConnectorService*>(serviceContainer["mongodb.connector.service"].ptrService);
-
-    // if(_db)
-    //     _db->connect("127.0.0.1", 2008);
+    // if(!serviceContainer["mongodb.connector.service"].ptrService)
+    //     _db = dynamic_cast<mongodbConnectorService*>(serviceContainer["mongodb.connector.service"].ptrService);
 
     return true;
 }
@@ -93,7 +90,7 @@ bool aop10tPilotTask::load(const string& svcname){
         }
         else{
             serviceContainer[svcname].ptrService = pfCreate();
-            return serviceContainer[svcname].ptrService->initService();
+            return serviceContainer[svcname].ptrService->initService(); //call initialize
         }
     }
 

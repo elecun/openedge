@@ -29,11 +29,12 @@ class aop10tPilotTask : public core::task::runnable {
         void cleanup() override;
 
     private:
-        bool load(const string& svcname /* dependent service name */);
-        void unload();
+        //load & unload service, it should be moved into the base class
+        bool load(const string& svcname /* dependent service name */); //load service
+        void unload();  //unload service
 
     private:
-        
+
 };
 
 EXPORT_RT_TASK_API
