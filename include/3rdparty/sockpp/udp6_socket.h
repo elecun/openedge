@@ -47,8 +47,8 @@
 #ifndef __sockpp_udp6_socket_h
 #define __sockpp_udp6_socket_h
 
-#include "sockpp/datagram_socket.h"
-#include "sockpp/inet6_address.h"
+#include "datagram_socket.h"
+#include "inet6_address.h"
 
 namespace sockpp {
 

@@ -14,7 +14,6 @@ namespace oe::core {
             valid = true;
         }
         catch(const json::exception& e){
-            spdlog::error("{} : {}",__func__, e.what());
             data.clear();
             valid = false;
         }

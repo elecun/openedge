@@ -5,18 +5,16 @@
 #include <string>
 #include <dlfcn.h>
 #include <openedge/util/validation.hpp>
-#include <services/lsis.fenet.connector.service/fenet.connector.service.hpp>
-//#include <services/mongodb.connector.service/mongodb.connector.hpp>
+#include <openedge/core/service.hpp>
+#include <openedge/core/bus.hpp>
 
 using namespace std;
 
-//fenet
-fenetConnectorService* _fenet { nullptr };
-//mongodbConnectorService* _db { nullptr };
+//core::bus::iDeviceBusTCP* _fenet { nullptr };
 
 //task create & release
 static aop10tPilotTask* _instance = nullptr;
-core::task::runnable* create(){
+oe::core::task::runnable* create(){
     if(!_instance)
         _instance = new aop10tPilotTask();
     return _instance;
@@ -29,29 +27,28 @@ void release(){
     }
 }
 
-int aop10tPilotTask::readf(vector<byte>& packet){
-
-}
-
 bool aop10tPilotTask::configure(){
-
     //1. load services required
-    vector<string> svclist = getServices();
+    vector<string> svclist = getRequiredServices();
     for(string& svcname: svclist){
-        if(!load(svcname))
-            spdlog::warn("{} load failed", svcname);
+        if(!_load_service(svcname)){
+            spdlog::error("{} cannot be loaded", svcname);
+        }
     }
 
-    //2. check for service validation
-    //code here
+    // //2. get service
+    if(serviceContainer["lsis.fenet.connector.service"].ptrService){
+        //_fenet = dynamic_cast<core::bus::iDeviceBusTCP*>(serviceContainer["lsis.fenet.connector.service"].ptrService);
+        string address = this->getProfile()->data["services"]["lsis.fenet.connector.service"]["connection"]["address"].get<string>();
+        int port = this->getProfile()->data["services"]["lsis.fenet.connector.service"]["connection"]["port"].get<int>();
 
-    //3. get service
-    if(!serviceContainer["lsis.fenet.connector.service"].ptrService){
-        _fenet = dynamic_cast<fenetConnectorService*>(serviceContainer["lsis.fenet.connector.service"].ptrService);
-        _fenet->setRcvTimeout(1);
-        if(_fenet->connect("192.168.100.6", 27017)){
-            _fenet->setReadCallback(aop10tPilotTask::readf);
-        }
+        spdlog::info("----------");
+        spdlog::info(" + FEnet Connection : {}({})", address, port);
+        spdlog::info("----------");
+
+        // if(_fenet->connect(address.c_str(), port))
+        //     spdlog::info("FEnet Connected");
+        // else spdlog::warn("Cannot connect to the FEnet server");
     }
     
     // if(!serviceContainer["mongodb.connector.service"].ptrService)
@@ -62,21 +59,23 @@ bool aop10tPilotTask::configure(){
 
 void aop10tPilotTask::execute(){
     //1. request 
-    if(_fenet)
-        _fenet->request("%MW0", 10); //request to read data (async)
+    // if(_fenet)
+    //     _fenet->request("%MW0", 10); //request to read data (async)
 
     //2. store the data into mongoDB
 }
 
 void aop10tPilotTask::cleanup(){
-    if(_fenet)
-        _fenet = nullptr;
+    // if(_fenet){
+    //     _fenet->disconnect();
+    // }
+        
 
-    unload();
+    // _unload_service();
 }
 
 
-bool aop10tPilotTask::load(const string& svcname){
+bool aop10tPilotTask::_load_service(const string& svcname){
     spdlog::info(" * Load dependant service : {}", svcname);
     string path = "./"+svcname;
     if(!exist(path.c_str())){
@@ -85,26 +84,26 @@ bool aop10tPilotTask::load(const string& svcname){
     }
 
     serviceContainer[svcname].handle = dlopen(path.c_str(), RTLD_LAZY | RTLD_LOCAL);
-    if(!serviceContainer[svcname].handle){
-        spdlog::error("{} cannot load", svcname);
-    }
-    else{
+    assert(serviceContainer[svcname].handle!=nullptr);
+    if(serviceContainer[svcname].handle){
         create_service pfCreate = (create_service)dlsym(serviceContainer[svcname].handle, "createService");
+        spdlog::info("create service instance");
         if(!pfCreate){
             spdlog::error("{} access failed", svcname);
         }
         else{
+            spdlog::info("call service instance");
             serviceContainer[svcname].ptrService = pfCreate();
             return serviceContainer[svcname].ptrService->initService(); //call initialize
         }
+        dlclose(serviceContainer[svcname].handle);
     }
-
-    dlclose(serviceContainer[svcname].handle);
+    
     serviceContainer.erase(svcname);
     return false;
 }
 
-void aop10tPilotTask::unload(){
+void aop10tPilotTask::_unload_service(){
     //release all services installed
     for(auto svc:serviceContainer){
         release_service pfService = (release_service)dlsym(svc.second.handle, "releaseService");

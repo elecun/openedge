@@ -47,8 +47,8 @@
 #ifndef __sockpp_tcp6_socket_h
 #define __sockpp_tcp6_socket_h
 
-#include "sockpp/stream_socket.h"
-#include "sockpp/inet6_address.h"
+#include "stream_socket.h"
+#include "inet6_address.h"
 
 namespace sockpp {
 

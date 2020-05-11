@@ -47,8 +47,8 @@
 #ifndef __sockpp_unix_addr_h
 #define __sockpp_unix_addr_h
 
-#include "sockpp/platform.h"
-#include "sockpp/sock_address.h"
+#include "platform.h"
+#include "sock_address.h"
 #include <iostream>
 #include <string>
 #include <cstring>

@@ -1,29 +1,22 @@
 
 /**
- * @file    fenet.connector.service.hpp
+ * @file    lsis.fenet.connector.service.hpp
  * @brief   FEnet Connector Service (depends on XGT dedicated protocol over TCP/IP Communication)
  * @author  Byunghun Hwang <bh.hwang@iae.re.kr>
  */
 
-#ifndef _OPENEDGE_SERVICE_FENET_CONNECTOR_HPP_
-#define _OPENEDGE_SERVICE_FENET_CONNECTOR_HPP_
+#ifndef _OPENEDGE_SERVICE_LSIS_FENET_CONNECTOR_HPP_
+#define _OPENEDGE_SERVICE_LSIS_FENET_CONNECTOR_HPP_
 
 #include <openedge/core/export.hpp>
-#include <openedge/core/typespec.hpp>
 #include <openedge/core/service.hpp>
-#include <openedge/core/device.hpp>
-#include <openedge/core/bus.hpp>
-#include <openedge/net/tcpAsync.hpp>
-#include <stdint.h>
-#include <array>
 #include <3rdparty/sockpp/tcp_connector.h>
+#include <openedge/core/bus.hpp>
 
 using namespace oe;
 
 class EXPORTED fenetConnectorService : public core::iService {
     public:
-        typedef std::function<void(uint8_t*, int)> readCallbackFunc;
-        
         fenetConnectorService();
         virtual ~fenetConnectorService();
         
@@ -31,14 +24,18 @@ class EXPORTED fenetConnectorService : public core::iService {
         bool initService() override;
 
         //for socket interface
-        bool connect(const char* ipv4_addr, int port);
-        void setRcvTimeout(unsigned int sec);
-        void setReadCallback(std::function<int(vector<byte>)>& func);
+        // bool connect(const char* ipv4_address, const int port) override;
+        // void disconnect() override;
+        // void setRcvTimeout(unsigned int sec);
+        // void setReadCallback(std::function<int(vector<byte>)>& func);
 
         //support interface for FEnet
-        void request( const char* addr_start, /* start address to access */
-                    uint16_t count = 0      /*data count to read. if 0, it is individual request*/
-                );
+        // void request( const char* addr_start, /* start address to access */
+        //             uint16_t count = 0      /*data count to read. if 0, it is individual request*/
+        //         );
+
+
+        // typedef std::function<void(uint8_t*, int)> readCallbackFunc;
 
     private:
         void parse(const char* address = nullptr); /* parse address */
@@ -49,9 +46,9 @@ class EXPORTED fenetConnectorService : public core::iService {
 
     private:
         uint16_t _invokeId { 0x0000 };
-        unique_ptr<core::bus::iDeviceBus> _bus;// = unique_ptr<bus::iDeviceBus>(nullptr); /* default is null */
+        //unique_ptr<core::bus::iDeviceBus> _bus;// = unique_ptr<bus::iDeviceBus>(nullptr); /* default is null */
 
-        std::function<int(vector<byte>&)> _readCallback;
+        //std::function<int(vector<byte>&)> _readCallback;
 
 }; //class
 

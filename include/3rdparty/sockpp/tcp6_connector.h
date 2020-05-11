@@ -48,8 +48,8 @@
 #ifndef __sockpp_tcp6_connector_h
 #define __sockpp_tcp6_connector_h
 
-#include "sockpp/connector.h"
-#include "sockpp/tcp6_socket.h"
+#include "connector.h"
+#include "tcp6_socket.h"
 
 namespace sockpp {
 

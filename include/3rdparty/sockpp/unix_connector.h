@@ -47,8 +47,8 @@
 #ifndef __sockpp_unix_connector_h
 #define __sockpp_unix_connector_h
 
-#include "sockpp/connector.h"
-#include "sockpp/unix_stream_socket.h"
+#include "connector.h"
+#include "unix_stream_socket.h"
 
 namespace sockpp {
 

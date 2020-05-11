@@ -7,6 +7,7 @@
 #include <chrono>
 #include <openedge/core/profile.hpp>
 #include <openedge/util/validation.hpp>
+#include <stdexcept>
 
 #define SIG_RUNTIME_TRIGGER (SIGRTMIN)
 
@@ -44,9 +45,15 @@ namespace oe::core::task {
 
 
     bool driver::configure(){
-        if(_taskImpl){
-            return _taskImpl->configure();
+        try {
+            if(_taskImpl){
+                return _taskImpl->configure();
+            }
         }
+        catch(const std::runtime_error& e){
+            spdlog::error("Runtime Error : {}", e.what());
+        }
+
         return false;
     }
 
@@ -70,11 +77,12 @@ namespace oe::core::task {
     //load task component
     bool driver::load(const char* taskname){
         string path = "./"+string(taskname); //same dir
+        spdlog::info("Component file : {}", path);
         _task_handle = dlopen(path.c_str(), RTLD_LAZY|RTLD_LOCAL);
         if(_task_handle){
             create_task pfcreate = (create_task)dlsym(_task_handle, "create");
             if(!pfcreate){
-                spdlog::error("{} cannot be loaded : {}", taskname);
+                spdlog::error("{} instance cannot be created", taskname);
                 dlclose(_task_handle);
                 _task_handle = nullptr;
                 return false;
@@ -83,7 +91,7 @@ namespace oe::core::task {
             return true;
         }
         else{
-            spdlog::error("{} cannot be loaded : {}", taskname);
+            spdlog::error("{} cannot be opened", taskname);
         }
         return false;
     }

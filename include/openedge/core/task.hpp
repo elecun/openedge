@@ -47,8 +47,9 @@ namespace oe {
 
                 protected:
                     const core::profile* getProfile() { return _profile; }
-                    vector<string> getServices() const { 
-                        return _profile->data["services"]["required"];
+                    vector<string> getRequiredServices() const { 
+                        vector<string> services = _profile->data["services"]["required"];
+                        return std::move(services);
                     }
 
                 protected:

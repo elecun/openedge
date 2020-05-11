@@ -92,7 +92,7 @@ namespace oe::core::bus {
         UART_FLOW_CONTROL flowcontrol;
     }; //class
 
-    class iDeviceBusTCP : public iDeviceBus {
+    class iDeviceBusTCP {
         public:
             virtual bool connect(const char* ipv4_address, const int port) = 0;
             virtual void disconnect() = 0;

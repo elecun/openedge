@@ -11,15 +11,20 @@
 #include <openedge/core/task.hpp>
 #include <time.h>
 
-class simpletask : public oe::core::rt_task::runnable {
+using namespace oe;
+
+class simpletask : public oe::core::task::runnable {
     public:
-    ~simpletask();
-    bool configure();
-    void execute();
-    void cleanup();
+        simpletask() = default;
+        virtual ~simpletask() = default;
+
+        //common interface
+        bool configure() override;
+        void execute() override;
+        void cleanup() override;
 
     private:
-    struct timespec x; 
+        struct timespec x; 
 };
 
 EXPORT_RT_TASK_API

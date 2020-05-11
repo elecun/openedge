@@ -7,25 +7,19 @@
 
 //task create & release
 static simpletask* _instance = nullptr;
-oe::core::rt_task::runnable* create(){
-    spdlog::info("simple.task create()");
+oe::core::task::runnable* create(){
     if(!_instance)
         _instance = new simpletask();
     return _instance;
 }
 
 void release(){
-    spdlog::info("simple.task release()");
     if(_instance){
         delete _instance;
         _instance = nullptr;
     }
 }
 
-
-simpletask::~simpletask(){
-
-}
 
 bool simpletask::configure(){
     spdlog::info("simple.task configure()");

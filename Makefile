@@ -134,12 +134,12 @@ $(OUTDIR)bus.tcp.service.o: $(SERVICE_SOURCE_FILES)bus.tcp.service/bus.tcp.servi
 
 xgt.protocol.service: $(OUTDIR)xgt.protocol.service.o
 	$(CC) $(LDFLAGS) -shared -o $(OUTDIR)$@ $^ $(LDLIBS)
-$(OUTDIR)xgt.protocol.service.o: $(SERVICE_SOURCE_FILES)xgt.protocol.service/xgt.protocol.service.cc
+$(OUTDIR)xgt.protocol.service.o: $(SERVICE_SOURCE_FILES)lsis.xgt.protocol.service/xgt.protocol.service.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
-fenet.connector.service: $(OUTDIR)fenet.connector.service.o
+lsis.fenet.connector.service: $(OUTDIR)lsis.fenet.connector.service.o
 	$(CC) $(LDFLAGS) -shared -o $(OUTDIR)$@ $^ $(LDLIBS)
-$(OUTDIR)fenet.connector.service.o: $(SERVICE_SOURCE_FILES)fenet.connector.service/fenet.connector.service.cc
+$(OUTDIR)lsis.fenet.connector.service.o: $(SERVICE_SOURCE_FILES)lsis.fenet.connector.service/lsis.fenet.connector.service.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
 plc.lsis.service: $(OUTDIR)plc.lsis.service.o
@@ -159,8 +159,8 @@ $(OUTDIR)uuid.o:	$(INCLUDE_FILES)openedge/util/uuid.cc
 
 all : edge
 test : oeware_test
-tasks : aop10t.pilot.task
-services : plc.lsis.service bus.tcp.service xgt.protocol.service fenet.connector.service
+tasks : simple.task aop10t.pilot.task
+services : lsis.fenet.connector.service
 clean : FORCE
 		$(RM) $(OUTDIR)*.o $(OUTDIR)openedge $(OUTDIR)edge $(OUTDIR)*.task $(OUTDIR)*.service
 FORCE : 

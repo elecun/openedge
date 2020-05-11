@@ -47,8 +47,8 @@
 #ifndef __sockpp_unix_stream_socket_h
 #define __sockpp_unix_stream_socket_h
 
-#include "sockpp/stream_socket.h"
-#include "sockpp/unix_address.h"
+#include "stream_socket.h"
+#include "unix_address.h"
 
 namespace sockpp {
 

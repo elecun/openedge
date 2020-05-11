@@ -9,16 +9,12 @@
 #define _OPENEDGE_AOP10T_PILOT_TASK_HPP_
 
 #include <openedge/core/task.hpp>
-#include <openedge/core/service.hpp>
-#include <map>
 #include <string>
-#include <vector>
-#include <memory>
 
 using namespace oe;
 using namespace std;
 
-class aop10tPilotTask : public core::task::runnable {
+class aop10tPilotTask : public oe::core::task::runnable {
     public:
         aop10tPilotTask() = default;
         virtual ~aop10tPilotTask() = default;
@@ -30,12 +26,8 @@ class aop10tPilotTask : public core::task::runnable {
 
     private:
         //load & unload service, it should be moved into the base class
-        bool load(const string& svcname /* dependent service name */); //load service
-        void unload();  //unload service
-
-        int readf(vector<byte>& packet);
-
-    private:
+        bool _load_service(const string& svcname); //load service
+        void _unload_service();  //unload service
 
 };
 

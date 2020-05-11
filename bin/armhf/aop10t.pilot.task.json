@@ -7,26 +7,15 @@
         "cycle_ns":100000000
     },
     "services":{
-        "required":["lsis.fenet.connector.service", "lsis.xgt.protocol.service", "mongodb.connector.service"],
+        "required":["lsis.fenet.connector.service"],
         "lsis.fenet.connector.service":{
             "info":{
                 "cpu_info":"XGI"
             },
-            "use":{
-                "bus":"bus.tcp.service",
-                "protocol":"xgt.protocol.service"
+            "connection":{
+                "address":"192.168.100.8",
+                "port":2004
             }
-        },
-        "lsis.xgt.protocol.service":{
-            "info":{
-                "host":"192.168.11.9",
-                "port":2004,
-                "keep_alive":true,
-                "timeout_sec":2
-            }
-        },
-        "mongodb.connector.service": {
-
         }
     }
 }

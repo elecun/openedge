@@ -47,8 +47,8 @@
 #ifndef __sockpp_unix_dgram_socket_h
 #define __sockpp_unix_dgram_socket_h
 
-#include "sockpp/datagram_socket.h"
-#include "sockpp/unix_address.h"
+#include "datagram_socket.h"
+#include "unix_address.h"
 
 namespace sockpp {
 
