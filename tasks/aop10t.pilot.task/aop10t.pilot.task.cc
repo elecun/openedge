@@ -88,3 +88,7 @@ bool aop10tPilotTask::_load_fenet_service(){
     
     return false;
 }
+
+bool aop10tPilotTask::_load_mongo_service(){
+    
+}

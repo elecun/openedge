@@ -30,9 +30,11 @@ class aop10tPilotTask : public oe::core::task::runnable {
 
         //load specific service
         bool _load_fenet_service();
+        bool _load_mongo_service();
 
     private:
-        serviceAccess _fenetConnector; //LSIS FEnet Service
+        serviceHandle _fenetConnector; //LSIS FEnet Connector
+        serviceHandle _mongoConnector; //MongoDB Connector
         
 
 };

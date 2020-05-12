@@ -57,8 +57,8 @@ namespace oe {
                         void* handle { nullptr };
                         core::iService* ptrService { nullptr };
                         bool is_valid() { return (!handle && !ptrService); }
-                    } serviceAccess;
-                    map<string /*service name*/, serviceAccess /*service handle*/> serviceContainer;
+                    } serviceHandle;
+                    map<string /*service name*/, serviceHandle /*service handle*/> serviceContainer;
 
                     string _taskname { "Unknown" };
                     Status _status { Status::STOPPED };
