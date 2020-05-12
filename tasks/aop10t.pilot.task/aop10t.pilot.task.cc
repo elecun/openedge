@@ -10,41 +10,33 @@
 
 using namespace std;
 
-//core::bus::iDeviceBusTCP* _fenet { nullptr };
-
-//task create & release
+//static component instance that has only single instance
 static aop10tPilotTask* _instance = nullptr;
-oe::core::task::runnable* create(){
-    if(!_instance)
-        _instance = new aop10tPilotTask();
-    return _instance;
-}
-
-void release(){
-    if(_instance){
-        delete _instance;
-        _instance = nullptr;
-    }
-}
+oe::core::task::runnable* create(){ if(!_instance) _instance = new aop10tPilotTask(); return _instance; }
+void release(){ if(_instance){ delete _instance; _instance = nullptr; }}
 
 bool aop10tPilotTask::configure(){
-    //1. load services required
-    vector<string> svclist = getRequiredServices();
-    for(string& svcname: svclist){
-        if(!_load_service(svcname)){
-            spdlog::error("{} cannot be loaded", svcname);
-        }
-    }
+    //getting required services from task profile, and then load each service on service container.
+    // vector<string> svclist = this->getProfile()->getRequiredServices();
+    // for(string& svcname: svclist){
+    //     if(!_load_service(svcname))
+    //         spdlog::error("{} load failed", svcname);
+    // }
 
-    // //2. get service
+    //1. load service
+    if(!this->_load_fenet_service())
+        return false;
+
+    _fenetConnector.ptrService->initService();
+
     if(serviceContainer["lsis.fenet.connector.service"].ptrService){
         //_fenet = dynamic_cast<core::bus::iDeviceBusTCP*>(serviceContainer["lsis.fenet.connector.service"].ptrService);
-        string address = this->getProfile()->data["services"]["lsis.fenet.connector.service"]["connection"]["address"].get<string>();
-        int port = this->getProfile()->data["services"]["lsis.fenet.connector.service"]["connection"]["port"].get<int>();
+        //string address = this->getProfile()->data["services"]["lsis.fenet.connector.service"]["connection"]["address"].get<string>();
+        //int port = this->getProfile()->data["services"]["lsis.fenet.connector.service"]["connection"]["port"].get<int>();
 
-        spdlog::info("----------");
-        spdlog::info(" + FEnet Connection : {}({})", address, port);
-        spdlog::info("----------");
+        // spdlog::info("----------");
+        // spdlog::info(" + FEnet Connection : {}({})", address, port);
+        // spdlog::info("----------");
 
         // if(_fenet->connect(address.c_str(), port))
         //     spdlog::info("FEnet Connected");
@@ -66,48 +58,33 @@ void aop10tPilotTask::execute(){
 }
 
 void aop10tPilotTask::cleanup(){
-    // if(_fenet){
-    //     _fenet->disconnect();
-    // }
-        
+    if(_fenetConnector.handle){
+        release_service pfRelease = (release_service)dlsym(_fenetConnector.handle, "release");
+        if(pfRelease)
+            pfRelease();
+        dlclose(_fenetConnector.handle);
+    }
 
-    // _unload_service();
+    spdlog::info("Cleanup the aop10tPilotTask");
 }
 
+bool aop10tPilotTask::_load_fenet_service(){
+    const char* svcname = "lsis.fenet.connector.service";
+    string path = "./"+string(svcname);
+    spdlog::info(" * Load dependant service : {}", path);
 
-bool aop10tPilotTask::_load_service(const string& svcname){
-    spdlog::info(" * Load dependant service : {}", svcname);
-    string path = "./"+svcname;
-    if(!exist(path.c_str())){
-        spdlog::error("{} does not exist", svcname);
-        return false;
-    }
-
-    serviceContainer[svcname].handle = dlopen(path.c_str(), RTLD_LAZY | RTLD_LOCAL);
-    assert(serviceContainer[svcname].handle!=nullptr);
-    if(serviceContainer[svcname].handle){
-        create_service pfCreate = (create_service)dlsym(serviceContainer[svcname].handle, "createService");
-        spdlog::info("create service instance");
-        if(!pfCreate){
-            spdlog::error("{} access failed", svcname);
-        }
-        else{
-            spdlog::info("call service instance");
-            serviceContainer[svcname].ptrService = pfCreate();
-            return serviceContainer[svcname].ptrService->initService(); //call initialize
-        }
-        dlclose(serviceContainer[svcname].handle);
-    }
+    _fenetConnector.handle = dlopen(path.c_str(), RTLD_LAZY|RTLD_LOCAL);
+    if(_fenetConnector.handle==nullptr)
+        spdlog::error("{}",dlerror());
+    assert(_fenetConnector.handle!=nullptr);
     
-    serviceContainer.erase(svcname);
-    return false;
-}
-
-void aop10tPilotTask::_unload_service(){
-    //release all services installed
-    for(auto svc:serviceContainer){
-        release_service pfService = (release_service)dlsym(svc.second.handle, "releaseService");
-        if(pfService) pfService();
-        dlclose(svc.second.handle);
+    create_service pfCreate = (create_service)dlsym(_fenetConnector.handle, "create");
+    if(pfCreate){
+        _fenetConnector.ptrService = pfCreate();
+        return true;
     }
+    else
+        dlclose(_fenetConnector.handle);
+    
+    return false;
 }

@@ -11,6 +11,7 @@
 
 #include <fstream>
 #include <map>
+#include <vector>
 #include <cstring>
 #include <string>
 #include <3rdparty/json.hpp>
@@ -33,11 +34,27 @@ namespace oe::core {
 
         public:
             profile(const char* path);
+            virtual ~profile() {
+                data.clear();
+                custom.clear();
+            }
 
             bool isValid() const { return valid; }
             string getDumped() const { return data.dump(); }
 
+            //functional
+            vector<string> getRequiredServices() const { 
+                return static_cast<vector<string>>(this->data["services"]["required"]);
+            }
+
+            string getServiceProfile(const char* servicename) const {
+                return static_cast<string>(this->data["services"][servicename]);
+            }
+
         public:
+            json custom;
+
+        protected:
             json data;
 
         private:

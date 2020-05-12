@@ -11,6 +11,7 @@
 #include <string>
 #include <map>
 #include <vector>
+#include <memory>
 #include <openedge/core/profile.hpp>
 
 
@@ -35,10 +36,10 @@ namespace oe {
                 friend class oe::core::task::driver;
                 
                 public:
-                    enum class TASK_STATUS : int { STOPPED=0, RUNNING, PAUSED };
+                    enum class Status : int { STOPPED=0, RUNNING, PAUSED };
 
-                    virtual TASK_STATUS getStatus() { return _status; }
-                    void setStatus(TASK_STATUS s) { _status = s;  }
+                    virtual Status getStatus() { return _status; }
+                    void setStatus(Status s) { _status = s;  }
                     
                     //common interface
                     virtual void execute() = 0;
@@ -46,24 +47,24 @@ namespace oe {
                     virtual void cleanup() = 0;
 
                 protected:
-                    const core::profile* getProfile() { return _profile; }
-                    vector<string> getRequiredServices() const { 
-                        vector<string> services = _profile->data["services"]["required"];
-                        return std::move(services);
+                    const core::profile* getProfile() { 
+                        assert(_profile!=nullptr);
+                        return _profile.get();
                     }
 
                 protected:
                     typedef struct service_t {
-                        void* handle = nullptr;
-                        core::iService* ptrService = nullptr;
+                        void* handle { nullptr };
+                        core::iService* ptrService { nullptr };
+                        bool is_valid() { return (!handle && !ptrService); }
                     } serviceAccess;
-                    map<string, serviceAccess> serviceContainer;
+                    map<string /*service name*/, serviceAccess /*service handle*/> serviceContainer;
 
-                    std::string _taskname;
-                    TASK_STATUS _status;
+                    string _taskname { "Unknown" };
+                    Status _status { Status::STOPPED };
 
                 private:
-                    core::profile* _profile = nullptr;   //task profile (raw)
+                    unique_ptr<core::profile> _profile;
             }; //class runnable
 
     } //namespace core
@@ -71,7 +72,7 @@ namespace oe {
     typedef oe::core::task::runnable*(*create_task)(void);
     typedef void(*release_task)(void);
 
-    #define EXPORT_RT_TASK_API extern "C" { oe::core::task::runnable* create(void); void release(void); }
+    #define EXPORT_TASK_API extern "C" {oe::core::task::runnable* create(void); void release(void);}
 
 } //namespace oe
 

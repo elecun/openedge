@@ -8,8 +8,10 @@
 #ifndef _OPENEDGE_AOP10T_PILOT_TASK_HPP_
 #define _OPENEDGE_AOP10T_PILOT_TASK_HPP_
 
-#include <openedge/core/task.hpp>
+#include <openedge/core.hpp>
 #include <string>
+#include <memory>
+#include <openedge/core/service.hpp>
 
 using namespace oe;
 using namespace std;
@@ -25,12 +27,17 @@ class aop10tPilotTask : public oe::core::task::runnable {
         void cleanup() override;
 
     private:
-        //load & unload service, it should be moved into the base class
-        bool _load_service(const string& svcname); //load service
-        void _unload_service();  //unload service
+
+        //load specific service
+        bool _load_fenet_service();
+
+    private:
+        serviceAccess _fenetConnector; //LSIS FEnet Service
+        
 
 };
 
-EXPORT_RT_TASK_API
+EXPORT_TASK_API
 
 #endif
+

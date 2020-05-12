@@ -37,9 +37,11 @@ namespace oe::edge {
             spdlog::info("Uninstalling all tasks...");
             //all tasks will be uninstalled
             for(taskContainer_t::iterator itr = _task_container.begin(); itr!=_task_container.end();++itr){
+                itr->second->cleanup();
                 delete itr->second;
             }
             _task_container.clear();
+            _container_map.clear();
         }
         else {
             spdlog::info("Uninstalling {}...", taskname);

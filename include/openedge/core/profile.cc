@@ -12,9 +12,13 @@ namespace oe::core {
             std::ifstream file(path);
             file >> data;
             valid = true;
+            
+            if(data.find("custom")!=data.end())
+                custom = this->data["custom"];
         }
         catch(const json::exception& e){
             data.clear();
+            custom.clear();
             valid = false;
         }
     }

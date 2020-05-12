@@ -19,11 +19,11 @@ namespace oe::core::task {
                 if(_taskImpl){
                     string path = "./"+string(taskname)+".json"; //same dir
                     if(exist(path.c_str()))
-                        _taskImpl->_profile = new oe::core::profile(path.c_str()); //load profile
+                        _taskImpl->_profile = make_unique<core::profile>(path.c_str()); //load profile
                     else
                         spdlog::error("<{}> profile does not exist", taskname);
                     _taskImpl->_taskname = taskname;
-                    _taskImpl->setStatus(oe::core::task::runnable::TASK_STATUS::STOPPED);
+                    _taskImpl->setStatus(oe::core::task::runnable::Status::STOPPED);
                 }
             }
         }
@@ -33,13 +33,6 @@ namespace oe::core::task {
     }
 
     driver::~driver(){
-        if(_taskImpl){
-            if(_taskImpl->_profile){
-                delete _taskImpl->_profile;
-                _taskImpl->_profile = nullptr;
-            }   
-        }
-
         unload();
     }
 
@@ -69,6 +62,7 @@ namespace oe::core::task {
     }
 
     void driver::cleanup(){
+        _taskImpl->_status = oe::core::task::runnable::Status::STOPPED;
         if(_taskImpl)
             _taskImpl->cleanup();
         unload();
@@ -91,7 +85,7 @@ namespace oe::core::task {
             return true;
         }
         else{
-            spdlog::error("{} cannot be opened", taskname);
+            spdlog::error("{} : {}", taskname, dlerror());
         }
         return false;
     }
@@ -109,7 +103,6 @@ namespace oe::core::task {
             dlclose(_task_handle);
             _task_handle = nullptr;
         }
-
     }
 
     //all component has own rt timer
@@ -142,16 +135,16 @@ namespace oe::core::task {
         sigaddset(&thread_sigmask, SIGTERM);
         int _sig_no;
         auto t_prev = std::chrono::high_resolution_clock::now();
-        _taskImpl->_status = oe::core::task::runnable::TASK_STATUS::RUNNING;
+        _taskImpl->_status = oe::core::task::runnable::Status::RUNNING;
 
         while(1){
             sigwait(&thread_sigmask, &_sig_no);
             if(_sig_no==SIG_RUNTIME_TRIGGER){
-                auto t_now = std::chrono::high_resolution_clock::now();
+                //auto t_now = std::chrono::high_resolution_clock::now();
                 if(_taskImpl){
                     _taskImpl->execute();
                 }
-                auto t_elapsed = std::chrono::high_resolution_clock::now();
+                //auto t_elapsed = std::chrono::high_resolution_clock::now();
                 // spdlog::info("<{}>Processing Time : {} ns / {} ns",
                 // _taskImpl->_taskname,
                 // std::chrono::duration<double, std::chrono::seconds::period>(t_elapsed - t_now).count(),

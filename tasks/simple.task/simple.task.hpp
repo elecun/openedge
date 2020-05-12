@@ -27,6 +27,6 @@ class simpletask : public oe::core::task::runnable {
         struct timespec x; 
 };
 
-EXPORT_RT_TASK_API
+EXPORT_TASK_API
 
 #endif

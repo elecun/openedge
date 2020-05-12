@@ -6,16 +6,29 @@
 
 using namespace std::chrono;
 
-fenetConnectorService::fenetConnectorService(){
+sockpp::socket_initializer* _sockInit { nullptr };
+sockpp::tcp_connector _tcp ;
 
+//static service
+static fenetConnectorService* _instance = nullptr;
+oe::core::iService* create(){ if(!_instance) _instance = new fenetConnectorService(); return _instance; }
+void release(){ if(_instance){ delete _instance; _instance = nullptr; }}
+
+fenetConnectorService::fenetConnectorService(){
+    spdlog::info("construct the fenet connector service");
 }
 
 fenetConnectorService::~fenetConnectorService(){
-    // if(_sockInit)
-    //     delete _sockInit;
+    spdlog::info("destruct the fenet connector service");
+}
+
+bool fenetConnectorService::closeService(){
+    spdlog::info("close fenetConnectorService");
+    return true;
 }
 
 bool fenetConnectorService::initService(){
+    spdlog::info("call init service");
     //spdlog::debug("fenet connector service : init service");
     // if(_bus.get()!=nullptr){
     //     spdlog::warn("Interface Bus has already assigned");
