@@ -30,7 +30,7 @@ ifeq ($(OS),Linux) #for Linux
 	LDFLAGS = -Wl,--export-dynamic
 	LDLIBS = -pthread -lrt -ldl -lm
 	GTEST_LDLIBS = -lgtest
-	INCLUDE_DIR = -I./ -I./include/
+	INCLUDE_DIR = -I./ -I./include/ -I./include/3rdparty/
 	LD_LIBRARY_PATH += -L/usr/local/lib
 endif
 

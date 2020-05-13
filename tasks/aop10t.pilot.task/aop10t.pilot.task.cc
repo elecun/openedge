@@ -30,6 +30,7 @@ bool aop10tPilotTask::configure(){
 }
 
 void aop10tPilotTask::execute(){
+    //connection
     if(_fenetConnector.ptrService){
         
     }

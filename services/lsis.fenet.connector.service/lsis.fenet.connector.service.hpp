@@ -11,6 +11,8 @@
 #include <openedge/core/service.hpp>
 #include <3rdparty/sockpp/tcp_connector.h>
 #include <string>
+#include <3rdparty/rpc/server.h>
+#include <memory>
 
 using namespace oe;
 
@@ -30,6 +32,8 @@ class fenetConnectorService : public core::iService {
         string _fenet_address {""};
         int _fenet_port {0};
         unsigned long long _fenet_timeout {0}; //read timeout
+
+        unique_ptr<rpc::server> _serviceport;
 
 }; //class
 

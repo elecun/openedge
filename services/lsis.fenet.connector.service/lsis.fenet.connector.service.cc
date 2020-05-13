@@ -37,6 +37,7 @@ bool fenetConnectorService::initService(const char* config){
     assert(config!=nullptr);
 
     sockpp::socket_initializer sockInit; //initialize socket
+    _serviceport = make_unique<rpc::server>(50000);
 
     try {
         json conf;
