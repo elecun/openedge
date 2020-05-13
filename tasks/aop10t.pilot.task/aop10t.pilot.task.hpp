@@ -12,7 +12,7 @@
 #include <string>
 #include <memory>
 #include <openedge/core/service.hpp>
-#include <3rdparty/jsonrpccxx/client.hpp>
+
 
 using namespace oe;
 using namespace std;

@@ -11,14 +11,6 @@
 #include <jsonrpccxx/iclientconnector.hpp>
 #include <jsonrpccxx/server.hpp>
 
-class fenetServiceAPI {
-public:
-  explicit fenetServiceAPI(JsonRpcClient &client) : client(client) {}
-  bool test(const int& value) { return client.CallMethod<bool>(1, "test", {value}); }
-private:
-  JsonRpcClient& client;
-};
-
 // class InMemoryConnector : public jsonrpccxx::IClientConnector {
 // public:
 //   explicit InMemoryConnector(jsonrpccxx::JsonRpcServer &server) : server(server) {}
