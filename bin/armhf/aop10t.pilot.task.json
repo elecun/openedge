@@ -4,7 +4,7 @@
         "taskname":"plc.daq.task",
         "version":"0.0.1",
         "cpu_affinity":1,
-        "cycle_ns":100000000
+        "cycle_ns":500000000
     },
     "services":{
         "required":["lsis.fenet.connector.service"],
@@ -14,7 +14,8 @@
             },
             "connection":{
                 "address":"192.168.100.8",
-                "port":2004
+                "port":2004,
+                "timeout":300000000
             }
         }
     }

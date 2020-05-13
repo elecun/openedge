@@ -3,11 +3,12 @@
 #include "lsis.fenet.connector.service.hpp"
 #include <3rdparty/spdlog/spdlog.h>
 #include <chrono>
+#include <string>
+#include <3rdparty/json.hpp>
 
 using namespace std::chrono;
-
-sockpp::socket_initializer* _sockInit { nullptr };
-sockpp::tcp_connector _tcp ;
+using json = nlohmann::json;
+using namespace std;
 
 //static service
 static fenetConnectorService* _instance = nullptr;
@@ -19,43 +20,53 @@ fenetConnectorService::fenetConnectorService(){
 }
 
 fenetConnectorService::~fenetConnectorService(){
+    closeService();
     spdlog::info("destruct the fenet connector service");
 }
 
 bool fenetConnectorService::closeService(){
     spdlog::info("close fenetConnectorService");
+    if(_fenetConnector.is_connected()){
+        _fenetConnector.close();
+        spdlog::info("Closed FENet Connector");
+    }
     return true;
 }
 
-bool fenetConnectorService::initService(){
-    spdlog::info("call init service");
-    //spdlog::debug("fenet connector service : init service");
-    // if(_bus.get()!=nullptr){
-    //     spdlog::warn("Interface Bus has already assigned");
-    //     return false;
-    // }
+bool fenetConnectorService::initService(const char* config){
+    assert(config!=nullptr);
 
-    // if(!_sockInit){
-    //     _sockInit = new sockpp::socket_initializer();
-    // }
+    sockpp::socket_initializer sockInit; //initialize socket
 
-    // _bus = make_unique<core::bus::iDeviceBusTCP>();
-    // if(_bus.get()){
+    try {
+        json conf;
+        conf = json::parse(config);
 
-    // }
+        if(conf.find("connection")==conf.end())
+            return false;
+
+        if(conf["connection"].find("address")!=conf["connection"].end())
+            _fenet_address = conf["connection"]["address"].get<std::string>();  //extract ip4v address
+        if(conf["connection"].find("port")!=conf["connection"].end())
+            _fenet_port = conf["connection"]["port"].get<int>();                //extract port
+        if(conf["connection"].find("timeout")!=conf["connection"].end())
+            _fenet_timeout = conf["connection"]["timeout"].get<unsigned long long>();
+        spdlog::info("FEnet Connection : {}:{}", _fenet_address, _fenet_port);
+    }
+    catch(const json::exception& e){
+        spdlog::error("service profile : {}", e.what());
+    }
+    //connect
+    _fenetConnector.connect({_fenet_address, static_cast<in_port_t>(_fenet_port)});
+    if(!_fenetConnector.is_connected()){
+        spdlog::warn("FENet Connection Error : {}", _fenetConnector.last_error_str());
+    }
+    if(!_fenetConnector.read_timeout(std::chrono::nanoseconds(_fenet_timeout)))
+        spdlog::warn("Setting FENet read timeout failed");
+
+    spdlog::info("Opened FENet Connection : {}", _fenetConnector.address().to_string());
 
     return true;
-}
-
-
-// void fenetConnectorService::request(const char* addr_start, uint16_t count){
-//     if(_bus.get()){
-
-//     }
-// }
-
-void fenetConnectorService::parse(const char* address){
-
 }
 
 // bool fenetConnectorService::connect(const char* ipv4_address, const int port){

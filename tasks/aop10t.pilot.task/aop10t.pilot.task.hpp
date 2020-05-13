@@ -35,6 +35,9 @@ class aop10tPilotTask : public oe::core::task::runnable {
     private:
         serviceHandle _fenetConnector; //LSIS FEnet Connector
         serviceHandle _mongoConnector; //MongoDB Connector
+
+    private:
+        
         
 
 };

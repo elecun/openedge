@@ -20,7 +20,7 @@ namespace oe {
         class iService {
             public:
                 virtual ~iService() {}
-                virtual bool initService() = 0;
+                virtual bool initService(const char* config) = 0; //config is dumped json from profile
                 virtual bool closeService() = 0;
         }; //class iService
 

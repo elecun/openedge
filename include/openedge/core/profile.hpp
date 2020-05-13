@@ -48,7 +48,7 @@ namespace oe::core {
             }
 
             string getServiceProfile(const char* servicename) const {
-                return static_cast<string>(this->data["services"][servicename]);
+                return this->data["services"][servicename].dump();
             }
 
         public:

@@ -4,8 +4,6 @@
 
 using namespace std;
 
-
-
 namespace oe::core {
     profile::profile(const char* path){
         try{

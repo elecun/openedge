@@ -138,7 +138,7 @@ $(OUTDIR)xgt.protocol.service.o: $(SERVICE_SOURCE_FILES)lsis.xgt.protocol.servic
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
 lsis.fenet.connector.service: $(OUTDIR)lsis.fenet.connector.service.o
-	$(CC) $(LDFLAGS) -shared -o $(OUTDIR)$@ $^ $(LDLIBS)
+	$(CC) $(LDFLAGS) -shared -o $(OUTDIR)$@ $^ $(LDLIBS) ./lib/armhf/libsockpp.a ./lib/armhf/librpc.a
 $(OUTDIR)lsis.fenet.connector.service.o: $(SERVICE_SOURCE_FILES)lsis.fenet.connector.service/lsis.fenet.connector.service.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 

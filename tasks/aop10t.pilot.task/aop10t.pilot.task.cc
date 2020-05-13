@@ -16,45 +16,23 @@ oe::core::task::runnable* create(){ if(!_instance) _instance = new aop10tPilotTa
 void release(){ if(_instance){ delete _instance; _instance = nullptr; }}
 
 bool aop10tPilotTask::configure(){
-    //getting required services from task profile, and then load each service on service container.
-    // vector<string> svclist = this->getProfile()->getRequiredServices();
-    // for(string& svcname: svclist){
-    //     if(!_load_service(svcname))
-    //         spdlog::error("{} load failed", svcname);
-    // }
 
     //1. load service
     if(!this->_load_fenet_service())
         return false;
 
-    _fenetConnector.ptrService->initService();
-
-    if(serviceContainer["lsis.fenet.connector.service"].ptrService){
-        //_fenet = dynamic_cast<core::bus::iDeviceBusTCP*>(serviceContainer["lsis.fenet.connector.service"].ptrService);
-        //string address = this->getProfile()->data["services"]["lsis.fenet.connector.service"]["connection"]["address"].get<string>();
-        //int port = this->getProfile()->data["services"]["lsis.fenet.connector.service"]["connection"]["port"].get<int>();
-
-        // spdlog::info("----------");
-        // spdlog::info(" + FEnet Connection : {}({})", address, port);
-        // spdlog::info("----------");
-
-        // if(_fenet->connect(address.c_str(), port))
-        //     spdlog::info("FEnet Connected");
-        // else spdlog::warn("Cannot connect to the FEnet server");
+    if(!_fenetConnector.ptrService->initService(this->getProfile()->getServiceProfile("lsis.fenet.connector.service").c_str())){
+        spdlog::error("FENet Connector initialization failed");
+        return false;
     }
-    
-    // if(!serviceContainer["mongodb.connector.service"].ptrService)
-    //     _db = dynamic_cast<mongodbConnectorService*>(serviceContainer["mongodb.connector.service"].ptrService);
 
     return true;
 }
 
 void aop10tPilotTask::execute(){
-    //1. request 
-    // if(_fenet)
-    //     _fenet->request("%MW0", 10); //request to read data (async)
-
-    //2. store the data into mongoDB
+    if(_fenetConnector.ptrService){
+        
+    }
 }
 
 void aop10tPilotTask::cleanup(){
@@ -90,5 +68,5 @@ bool aop10tPilotTask::_load_fenet_service(){
 }
 
 bool aop10tPilotTask::_load_mongo_service(){
-    
+    return false;
 }

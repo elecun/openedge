@@ -10,6 +10,7 @@
 
 #include <openedge/core/service.hpp>
 #include <3rdparty/sockpp/tcp_connector.h>
+#include <string>
 
 using namespace oe;
 
@@ -19,14 +20,16 @@ class fenetConnectorService : public core::iService {
         virtual ~fenetConnectorService();
         
         //common iservice interface
-        bool initService() override;
+        bool initService(const char* config = nullptr) override;
         bool closeService() override;
 
     private:
-        void parse(const char* address = nullptr); /* parse address */
-
-    private:
         uint16_t _invokeId { 0x0000 };
+        sockpp::tcp_connector _fenetConnector;
+
+        string _fenet_address {""};
+        int _fenet_port {0};
+        unsigned long long _fenet_timeout {0}; //read timeout
 
 }; //class
 
