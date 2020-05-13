@@ -12,6 +12,7 @@
 #include <string>
 #include <memory>
 #include <openedge/core/service.hpp>
+#include <3rdparty/jsonrpccxx/client.hpp>
 
 using namespace oe;
 using namespace std;
@@ -37,6 +38,7 @@ class aop10tPilotTask : public oe::core::task::runnable {
         serviceHandle _mongoConnector; //MongoDB Connector
 
     private:
+        unique_ptr<JsonRpcClient> _d;
 };
 
 EXPORT_TASK_API

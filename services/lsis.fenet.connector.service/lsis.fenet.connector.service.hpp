@@ -41,7 +41,8 @@ class fenetConnectorService : public core::iService {
     private:
         uint16_t _invokeId { 0x0000 };
         sockpp::tcp_connector _fenetConnector;
-
+        shared_ptr<serviceConnector> _serviceConnector;
+        
         string _fenet_address {""};
         int _fenet_port {0};
         unsigned long long _fenet_timeout {0}; //read timeout

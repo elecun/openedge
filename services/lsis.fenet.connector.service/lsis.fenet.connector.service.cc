@@ -74,6 +74,8 @@ bool fenetConnectorService::initService(const char* config){
     //service port
     service->Add("test", jsonrpccxx::GetHandle(&fenetConnectorService::test, *this), {"value"});
 
+    _serviceConnector = make_shared<serviceConnector>(*service.get());
+
     spdlog::info("Opened FENet Connection : {}", _fenetConnector.address().to_string());
 
     return true;

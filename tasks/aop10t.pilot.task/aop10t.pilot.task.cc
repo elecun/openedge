@@ -45,6 +45,8 @@ bool aop10tPilotTask::configure(){
         return false;
     }
 
+    _fenetConnector.ptrService
+
     return true;
 }
 
@@ -53,7 +55,7 @@ void aop10tPilotTask::execute(){
     spdlog::info("do aop10t pilot task execute");
     if(_fenetConnector.ptrService){
         spdlog::info("requesting to fenet service");
-        
+
         /*
         auto jmsg = R"({"jsonrpc":"2.0","method": "test", "params":[1], "id":1})"_json;
         string response = _fenetConnector.ptrService->request(jmsg.dump());
