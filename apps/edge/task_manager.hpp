@@ -40,6 +40,8 @@ namespace oe::edge {
         void run(const char* taskname = nullptr);
         void cleanup(const char* taskname = nullptr);
 
+        int size() const { return _task_container.size(); }
+
         oe::core::task::driver* get_driver(const char* taskname = nullptr);
         oe::core::task::runnable* get_task(const char* taskname = nullptr);
 

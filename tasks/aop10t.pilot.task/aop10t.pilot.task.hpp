@@ -37,9 +37,6 @@ class aop10tPilotTask : public oe::core::task::runnable {
         serviceHandle _mongoConnector; //MongoDB Connector
 
     private:
-        
-        
-
 };
 
 EXPORT_TASK_API

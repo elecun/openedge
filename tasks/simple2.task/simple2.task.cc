@@ -6,7 +6,7 @@
 
 //task create & release
 static simpletask2* _instance = nullptr;
-oe::core::rt_task::runnable* create(){
+oe::core::task::runnable* create(){
     spdlog::info("simple2.task create()");
     if(!_instance)
         _instance = new simpletask2();
@@ -27,11 +27,12 @@ simpletask2::~simpletask2(){
 }
 
 bool simpletask2::configure(){
-    spdlog::info("simple2.task configure()");
+    spdlog::info("simple2.task configure");
     return true;
 }
 
 void simpletask2::execute(){
+    spdlog::info("do simple task2 execute");
     // clock_gettime(CLOCK_REALTIME,&x); 
     // spdlog::info("{}.{:09d}",x.tv_sec, x.tv_nsec);
 }

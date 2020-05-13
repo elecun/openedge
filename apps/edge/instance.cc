@@ -45,6 +45,7 @@ namespace oe::edge {
         for(string& task:default_tasks){
             edge_task_manager->install(task.c_str());
         }
+        spdlog::info("Totally installed : {}", edge_task_manager->size());
     
         return true;
     }

@@ -1,7 +1,7 @@
 {
     "md5":"603239CAF2F774498037F944F5592F52",
     "info":{
-        "taskname":"plc.daq.task",
+        "taskname":"aop10t.pilot.task",
         "version":"0.0.1",
         "cpu_affinity":1,
         "cycle_ns":500000000

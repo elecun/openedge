@@ -32,7 +32,7 @@ namespace oe {
 
                 class driver {
                     public:
-                        driver(const char* taskname);
+                        explicit driver(const char* taskname);
                         virtual ~driver();
 
                         //same interface of task
@@ -55,7 +55,7 @@ namespace oe {
                         void* _task_handle = nullptr;   //for dl
                         std::thread* _ptrThread = nullptr;
                         std::mutex _mutex;
-
+                        int _signalIndex = 0;
                         timer_t _timer_id = 0;
                         struct sigevent _sig_evt;
                         struct itimerspec _time_spec;

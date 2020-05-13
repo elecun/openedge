@@ -2,7 +2,7 @@
 #include "common.hpp"
 #include "iclientconnector.hpp"
 #include <exception>
-#include <nlohmann/json.hpp>
+#include <3rdparty/json.hpp>
 #include <string>
 #include <variant>
 

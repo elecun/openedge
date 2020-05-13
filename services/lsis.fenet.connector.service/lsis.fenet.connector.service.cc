@@ -5,6 +5,7 @@
 #include <chrono>
 #include <string>
 #include <3rdparty/json.hpp>
+#include <3rdparty/jsonrpccxx/common.hpp>
 
 using namespace std::chrono;
 using json = nlohmann::json;
@@ -15,7 +16,8 @@ static fenetConnectorService* _instance = nullptr;
 oe::core::iService* create(){ if(!_instance) _instance = new fenetConnectorService(); return _instance; }
 void release(){ if(_instance){ delete _instance; _instance = nullptr; }}
 
-fenetConnectorService::fenetConnectorService(){
+fenetConnectorService::fenetConnectorService()
+{
     spdlog::info("construct the fenet connector service");
 }
 
@@ -33,16 +35,19 @@ bool fenetConnectorService::closeService(){
     return true;
 }
 
+bool fenetConnectorService::test(const int& value){
+    spdlog::info("call test : {}", value);
+    return true;
+}
+
 bool fenetConnectorService::initService(const char* config){
     assert(config!=nullptr);
 
     sockpp::socket_initializer sockInit; //initialize socket
-    _serviceport = make_unique<rpc::server>(50000);
 
     try {
         json conf;
         conf = json::parse(config);
-
         if(conf.find("connection")==conf.end())
             return false;
 
@@ -62,33 +67,14 @@ bool fenetConnectorService::initService(const char* config){
     if(!_fenetConnector.is_connected()){
         spdlog::warn("FENet Connection Error : {}", _fenetConnector.last_error_str());
     }
+    //set read timeout
     if(!_fenetConnector.read_timeout(std::chrono::nanoseconds(_fenet_timeout)))
         spdlog::warn("Setting FENet read timeout failed");
+
+    //service port
+    service->Add("test", jsonrpccxx::GetHandle(&fenetConnectorService::test, *this), {"value"});
 
     spdlog::info("Opened FENet Connection : {}", _fenetConnector.address().to_string());
 
     return true;
 }
-
-// bool fenetConnectorService::connect(const char* ipv4_address, const int port){
-//     in_port_t p = static_cast<in_port_t>(port);
-//     return _tcp.connect({ipv4_address, p});
-// }
-
-// void fenetConnectorService::disconnect(){
-//     if(_tcp.is_connected()){
-//         if(_tcp.close())
-//             spdlog::info("Successfully closed");
-//     }
-// }
-
-
-// void fenetConnectorService::setRcvTimeout(unsigned int sec){
-//     if(!_tcp.read_timeout(seconds(sec))){
-//         spdlog::error("Cannot set timeout on TCP Stream : {}", _tcp.last_error_str());
-//     }
-// }
-
-// void fenetConnectorService::setRcvCallback(std::function<int(const vector<byte>&)> packet){
-
-// }

@@ -22,11 +22,11 @@ void release(){
 
 
 bool simpletask::configure(){
-    spdlog::info("simple.task configure()");
     return true;
 }
 
 void simpletask::execute(){
+    spdlog::info("do simple task execute");
     // clock_gettime(CLOCK_REALTIME,&x); 
     // spdlog::info("{}.{:09d}",x.tv_sec, x.tv_nsec);
     

@@ -11,6 +11,8 @@
 
 #define SIG_RUNTIME_TRIGGER (SIGRTMIN)
 
+static int signalIndex = 0;
+
 namespace oe::core::task {
 
     driver::driver(const char* taskname){
@@ -23,6 +25,7 @@ namespace oe::core::task {
                     else
                         spdlog::error("<{}> profile does not exist", taskname);
                     _taskImpl->_taskname = taskname;
+                    _signalIndex = signalIndex++;
                     _taskImpl->setStatus(oe::core::task::runnable::Status::STOPPED);
                 }
             }
@@ -54,7 +57,7 @@ namespace oe::core::task {
         if(_taskImpl) {
             if(_taskImpl->_profile){
                 unsigned long long rtime = _taskImpl->_profile->data["info"]["cycle_ns"].get<unsigned long long>();
-                spdlog::info("<{}> RT Time Period : {}",_taskImpl->_taskname, rtime);
+                spdlog::info("<{}> RT Time Period : {} ns",_taskImpl->_taskname, rtime);
                 set_rt_timer(rtime);
                 _ptrThread = new thread{ &oe::core::task::driver::do_process, this };
             }
@@ -71,7 +74,6 @@ namespace oe::core::task {
     //load task component
     bool driver::load(const char* taskname){
         string path = "./"+string(taskname); //same dir
-        spdlog::info("Component file : {}", path);
         _task_handle = dlopen(path.c_str(), RTLD_LAZY|RTLD_LOCAL);
         if(_task_handle){
             create_task pfcreate = (create_task)dlsym(_task_handle, "create");
@@ -110,7 +112,7 @@ namespace oe::core::task {
         
         /* Set and enable alarm */ 
         _sig_evt.sigev_notify = SIGEV_SIGNAL; 
-        _sig_evt.sigev_signo = SIG_RUNTIME_TRIGGER; 
+        _sig_evt.sigev_signo = SIG_RUNTIME_TRIGGER+_signalIndex; 
         _sig_evt.sigev_value.sival_ptr = _timer_id; 
         if(timer_create(CLOCK_REALTIME, &_sig_evt, &_timer_id)==-1)
             spdlog::error("timer create error");
@@ -131,15 +133,15 @@ namespace oe::core::task {
         //signal set for threading
         sigset_t thread_sigmask;
         sigemptyset(&thread_sigmask);
-        sigaddset(&thread_sigmask, SIG_RUNTIME_TRIGGER);
-        sigaddset(&thread_sigmask, SIGTERM);
+        sigaddset(&thread_sigmask, SIG_RUNTIME_TRIGGER+_signalIndex);
+        // sigaddset(&thread_sigmask, SIGTERM);
         int _sig_no;
-        auto t_prev = std::chrono::high_resolution_clock::now();
+        //auto t_prev = std::chrono::high_resolution_clock::now();
         _taskImpl->_status = oe::core::task::runnable::Status::RUNNING;
 
         while(1){
             sigwait(&thread_sigmask, &_sig_no);
-            if(_sig_no==SIG_RUNTIME_TRIGGER){
+            if(_sig_no==SIG_RUNTIME_TRIGGER+_signalIndex){
                 //auto t_now = std::chrono::high_resolution_clock::now();
                 if(_taskImpl){
                     _taskImpl->execute();

@@ -4,6 +4,6 @@
         "taskname":"simple.task",
         "version":"0.0.1",
         "cpu_affinity":0,
-        "cycle_ns":1000000000
+        "cycle_ns":100000000
     }
 }

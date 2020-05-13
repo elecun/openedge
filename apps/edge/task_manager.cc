@@ -13,6 +13,12 @@ namespace oe::edge {
     }
 
     bool task_manager::install(const char* taskname){
+        static int ntasks = 0;
+        if(ntasks>15){
+            spdlog::error("Task Container is Full!! (MAX=15)");
+            return false;
+        }
+
         if(!taskname){
             spdlog::warn("Task was not specified to be installed");
             return false;
@@ -28,7 +34,6 @@ namespace oe::edge {
         if(!_task_container[_container_map[taskname]]->configure()){
             uninstall(taskname);
         }
-        spdlog::info("Totally installed : {}", _task_container.size());
         return true;
     }
 

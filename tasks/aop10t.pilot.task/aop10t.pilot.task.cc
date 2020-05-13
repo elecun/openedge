@@ -7,6 +7,25 @@
 #include <openedge/util/validation.hpp>
 #include <openedge/core/service.hpp>
 #include <openedge/core/bus.hpp>
+#include <3rdparty/jsonrpccxx/client.hpp>
+#include <jsonrpccxx/iclientconnector.hpp>
+#include <jsonrpccxx/server.hpp>
+
+class fenetServiceAPI {
+public:
+  explicit fenetServiceAPI(JsonRpcClient &client) : client(client) {}
+  bool test(const int& value) { return client.CallMethod<bool>(1, "test", {value}); }
+private:
+  JsonRpcClient& client;
+};
+
+// class InMemoryConnector : public jsonrpccxx::IClientConnector {
+// public:
+//   explicit InMemoryConnector(jsonrpccxx::JsonRpcServer &server) : server(server) {}
+//   std::string Send(const std::string &request) override { return server.HandleRequest(request); }
+// private:
+//   jsonrpccxx::JsonRpcServer& server;
+// };
 
 using namespace std;
 
@@ -31,8 +50,17 @@ bool aop10tPilotTask::configure(){
 
 void aop10tPilotTask::execute(){
     //connection
+    spdlog::info("do aop10t pilot task execute");
     if(_fenetConnector.ptrService){
+        spdlog::info("requesting to fenet service");
         
+        /*
+        auto jmsg = R"({"jsonrpc":"2.0","method": "test", "params":[1], "id":1})"_json;
+        string response = _fenetConnector.ptrService->request(jmsg.dump());
+        */
+        
+
+        //spdlog::info("RPC Response : {}", response);
     }
 }
 

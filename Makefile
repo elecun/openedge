@@ -138,7 +138,7 @@ $(OUTDIR)xgt.protocol.service.o: $(SERVICE_SOURCE_FILES)lsis.xgt.protocol.servic
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
 lsis.fenet.connector.service: $(OUTDIR)lsis.fenet.connector.service.o
-	$(CC) $(LDFLAGS) -shared -o $(OUTDIR)$@ $^ $(LDLIBS) ./lib/armhf/libsockpp.a ./lib/armhf/librpc.a
+	$(CC) $(LDFLAGS) -shared -o $(OUTDIR)$@ $^ $(LDLIBS) ./lib/armhf/libsockpp.a
 $(OUTDIR)lsis.fenet.connector.service.o: $(SERVICE_SOURCE_FILES)lsis.fenet.connector.service/lsis.fenet.connector.service.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
@@ -159,7 +159,7 @@ $(OUTDIR)uuid.o:	$(INCLUDE_FILES)openedge/util/uuid.cc
 
 all : edge
 test : oeware_test
-tasks : simple.task aop10t.pilot.task
+tasks : simple.task simple2.task aop10t.pilot.task
 services : lsis.fenet.connector.service
 clean : FORCE
 		$(RM) $(OUTDIR)*.o $(OUTDIR)openedge $(OUTDIR)edge $(OUTDIR)*.task $(OUTDIR)*.service

@@ -11,7 +11,7 @@
 #include <openedge/core/task.hpp>
 #include <time.h>
 
-class simpletask2 : public oe::core::rt_task::runnable {
+class simpletask2 : public oe::core::task::runnable {
     public:
     ~simpletask2();
     bool configure();
@@ -22,6 +22,6 @@ class simpletask2 : public oe::core::rt_task::runnable {
     struct timespec x; 
 };
 
-EXPORT_RT_TASK_API
+EXPORT_TASK_API
 
 #endif

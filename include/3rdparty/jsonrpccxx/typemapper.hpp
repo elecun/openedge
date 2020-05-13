@@ -1,7 +1,7 @@
 #pragma once
 
 #include "common.hpp"
-#include "nlohmann/json.hpp"
+#include <3rdparty/json.hpp>
 #include <functional>
 #include <limits>
 #include <utility>
