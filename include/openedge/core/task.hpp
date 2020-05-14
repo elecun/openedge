@@ -56,8 +56,8 @@ namespace oe {
 
                 protected:
                     typedef struct service_t {
-                        void* handle { nullptr };
-                        core::iService* ptrService { nullptr };
+                        void* handle { nullptr }; //component file handler
+                        core::iService* ptrService { nullptr }; //service impl instance
                         bool is_valid() { return (!handle && !ptrService); }
                     } serviceHandle;
                     map<string /*service name*/, serviceHandle /*service handle*/> serviceContainer;

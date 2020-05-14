@@ -10,8 +10,8 @@
 
 #include <openedge/core.hpp>
 #include <string>
+#include <map>
 #include <memory>
-//#include <3rdparty/jsonrpccxx/client.hpp>
 
 using namespace oe;
 using namespace std;
@@ -37,11 +37,7 @@ class aop10tPilotTask : public oe::core::task::runnable {
         serviceHandle _fenetHandler; //LSIS FEnet Connector
         serviceHandle _mongoHandler; //MongoDB Connector
 
-    private:
-        // unique_ptr<fenetConnectorServiceAPI> _fenetServiceAPI;
-        // unique_ptr<core::task::localServiceConnector> _fenetConnector;
-        //shared_ptr<JsonRpcClient> _fenetServiceClient;
-        //shared_ptr<
+        unique_ptr<core::task::localServiceConnector> _fenetConnector;
 };
 
 EXPORT_TASK_API

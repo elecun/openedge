@@ -8,8 +8,6 @@
 #include <openedge/core/service.hpp>
 #include <openedge/core/bus.hpp>
 #include <3rdparty/jsonrpccxx/client.hpp>
-#include <jsonrpccxx/iclientconnector.hpp>
-#include <jsonrpccxx/server.hpp>
 #include <services/lsis.fenet.connector.service/lsis.fenet.connector.api.hpp>
 
 
@@ -22,17 +20,22 @@ void release(){ if(_instance){ delete _instance; _instance = nullptr; }}
 
 bool aop10tPilotTask::configure(){
 
-    //1. load service
+    //1. load service component
     if(!this->_load_fenet_service())
         return false;
 
-    // _fenetServiceClient = make_shared<_fenetServiceClient>();
-    // _fenetServiceAPI = make_unique<fenetConnectorServiceAPI>();
+    //2. connect with the loaded service
+    spdlog::info("try to connect with the fenet service");
+    _fenetConnector = make_unique<core::task::localServiceConnector>(*_fenetHandler.ptrService->getServicePort());
+    jsonrpccxx::JsonRpcClient client(*_fenetConnector.get(), jsonrpccxx::version::v2);
+    unique_ptr<fenetConnectorServiceAPI> api = make_unique<fenetConnectorServiceAPI>(client);
 
     if(!_fenetHandler.ptrService->initService(this->getProfile()->getServiceProfile("lsis.fenet.connector.service").c_str())){
         spdlog::error("FENet Connector initialization failed");
         return false;
     }
+
+    api->test(1);
 
     return true;
 }
@@ -42,9 +45,9 @@ void aop10tPilotTask::execute(){
     if(_fenetHandler.ptrService){
         spdlog::info("requesting to fenet service");
 
-        auto jmsg = R"({"jsonrpc":"2.0","method": "request", "params":["0x123737377272737277"], "id":1})"_json;
-        string response = _fenetHandler.ptrService->request(jmsg.dump());
-        spdlog::info("RPC Response : {}", response);
+        // auto jmsg = R"({"jsonrpc":"2.0","method": "request", "params":["0x123737377272737277"], "id":1})"_json;
+        // string response = _fenetHandler.ptrService->request(jmsg.dump());
+        // spdlog::info("RPC Response : {}", response);
     }
 }
 
