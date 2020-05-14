@@ -11,12 +11,12 @@
 #include <openedge/core.hpp>
 #include <string>
 #include <memory>
-#include <openedge/core/service.hpp>
-
+//#include <3rdparty/jsonrpccxx/client.hpp>
 
 using namespace oe;
 using namespace std;
 
+//class fenetConnectorServiceAPI;
 class aop10tPilotTask : public oe::core::task::runnable {
     public:
         aop10tPilotTask() = default;
@@ -34,11 +34,14 @@ class aop10tPilotTask : public oe::core::task::runnable {
         bool _load_mongo_service();
 
     private:
-        serviceHandle _fenetConnector; //LSIS FEnet Connector
-        serviceHandle _mongoConnector; //MongoDB Connector
+        serviceHandle _fenetHandler; //LSIS FEnet Connector
+        serviceHandle _mongoHandler; //MongoDB Connector
 
     private:
-        unique_ptr<JsonRpcClient> _d;
+        // unique_ptr<fenetConnectorServiceAPI> _fenetServiceAPI;
+        // unique_ptr<core::task::localServiceConnector> _fenetConnector;
+        //shared_ptr<JsonRpcClient> _fenetServiceClient;
+        //shared_ptr<
 };
 
 EXPORT_TASK_API

@@ -10,14 +10,8 @@
 #include <3rdparty/jsonrpccxx/client.hpp>
 #include <jsonrpccxx/iclientconnector.hpp>
 #include <jsonrpccxx/server.hpp>
+#include <services/lsis.fenet.connector.service/lsis.fenet.connector.api.hpp>
 
-// class InMemoryConnector : public jsonrpccxx::IClientConnector {
-// public:
-//   explicit InMemoryConnector(jsonrpccxx::JsonRpcServer &server) : server(server) {}
-//   std::string Send(const std::string &request) override { return server.HandleRequest(request); }
-// private:
-//   jsonrpccxx::JsonRpcServer& server;
-// };
 
 using namespace std;
 
@@ -32,38 +26,34 @@ bool aop10tPilotTask::configure(){
     if(!this->_load_fenet_service())
         return false;
 
-    if(!_fenetConnector.ptrService->initService(this->getProfile()->getServiceProfile("lsis.fenet.connector.service").c_str())){
+    // _fenetServiceClient = make_shared<_fenetServiceClient>();
+    // _fenetServiceAPI = make_unique<fenetConnectorServiceAPI>();
+
+    if(!_fenetHandler.ptrService->initService(this->getProfile()->getServiceProfile("lsis.fenet.connector.service").c_str())){
         spdlog::error("FENet Connector initialization failed");
         return false;
     }
-
-    _fenetConnector.ptrService
 
     return true;
 }
 
 void aop10tPilotTask::execute(){
     //connection
-    spdlog::info("do aop10t pilot task execute");
-    if(_fenetConnector.ptrService){
+    if(_fenetHandler.ptrService){
         spdlog::info("requesting to fenet service");
 
-        /*
-        auto jmsg = R"({"jsonrpc":"2.0","method": "test", "params":[1], "id":1})"_json;
-        string response = _fenetConnector.ptrService->request(jmsg.dump());
-        */
-        
-
-        //spdlog::info("RPC Response : {}", response);
+        auto jmsg = R"({"jsonrpc":"2.0","method": "request", "params":["0x123737377272737277"], "id":1})"_json;
+        string response = _fenetHandler.ptrService->request(jmsg.dump());
+        spdlog::info("RPC Response : {}", response);
     }
 }
 
 void aop10tPilotTask::cleanup(){
-    if(_fenetConnector.handle){
-        release_service pfRelease = (release_service)dlsym(_fenetConnector.handle, "release");
+    if(_fenetHandler.handle){
+        release_service pfRelease = (release_service)dlsym(_fenetHandler.handle, "release");
         if(pfRelease)
             pfRelease();
-        dlclose(_fenetConnector.handle);
+        dlclose(_fenetHandler.handle);
     }
 
     spdlog::info("Cleanup the aop10tPilotTask");
@@ -74,18 +64,18 @@ bool aop10tPilotTask::_load_fenet_service(){
     string path = "./"+string(svcname);
     spdlog::info(" * Load dependant service : {}", path);
 
-    _fenetConnector.handle = dlopen(path.c_str(), RTLD_LAZY|RTLD_LOCAL);
-    if(_fenetConnector.handle==nullptr)
+    _fenetHandler.handle = dlopen(path.c_str(), RTLD_LAZY|RTLD_LOCAL);
+    if(_fenetHandler.handle==nullptr)
         spdlog::error("{}",dlerror());
-    assert(_fenetConnector.handle!=nullptr);
+    assert(_fenetHandler.handle!=nullptr);
     
-    create_service pfCreate = (create_service)dlsym(_fenetConnector.handle, "create");
+    create_service pfCreate = (create_service)dlsym(_fenetHandler.handle, "create");
     if(pfCreate){
-        _fenetConnector.ptrService = pfCreate();
+        _fenetHandler.ptrService = pfCreate();
         return true;
     }
     else
-        dlclose(_fenetConnector.handle);
+        dlclose(_fenetHandler.handle);
     
     return false;
 }

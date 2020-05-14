@@ -13,6 +13,8 @@
 #include <vector>
 #include <memory>
 #include <openedge/core/profile.hpp>
+#include <3rdparty/jsonrpccxx/iclientconnector.hpp>
+#include <3rdparty/jsonrpccxx/server.hpp>
 
 
 #include <cxxabi.h>
@@ -67,6 +69,13 @@ namespace oe {
                     unique_ptr<core::profile> _profile;
             }; //class runnable
 
+            class localServiceConnector : public jsonrpccxx::IClientConnector {
+            public:
+                explicit localServiceConnector(jsonrpccxx::JsonRpcServer &server) : server(server) {}
+                std::string Send(const std::string &request) override { return server.HandleRequest(request); }
+            private:
+                jsonrpccxx::JsonRpcServer &server;
+        };
     } //namespace core
 
     typedef oe::core::task::runnable*(*create_task)(void);

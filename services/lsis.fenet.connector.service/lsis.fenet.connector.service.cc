@@ -5,7 +5,7 @@
 #include <chrono>
 #include <string>
 #include <3rdparty/json.hpp>
-#include <3rdparty/jsonrpccxx/common.hpp>
+//#include <3rdparty/jsonrpccxx/common.hpp>
 
 using namespace std::chrono;
 using json = nlohmann::json;
@@ -35,16 +35,12 @@ bool fenetConnectorService::closeService(){
     return true;
 }
 
-bool fenetConnectorService::test(const int& value){
-    spdlog::info("call test : {}", value);
-    return true;
-}
-
 bool fenetConnectorService::initService(const char* config){
     assert(config!=nullptr);
 
-    sockpp::socket_initializer sockInit; //initialize socket
+    sockpp::socket_initializer sockInit; //initialize socket for fenet connection
 
+    //read configuration for fenet connection
     try {
         json conf;
         conf = json::parse(config);
@@ -62,7 +58,7 @@ bool fenetConnectorService::initService(const char* config){
     catch(const json::exception& e){
         spdlog::error("service profile : {}", e.what());
     }
-    //connect
+    //fenet connect
     _fenetConnector.connect({_fenet_address, static_cast<in_port_t>(_fenet_port)});
     if(!_fenetConnector.is_connected()){
         spdlog::warn("FENet Connection Error : {}", _fenetConnector.last_error_str());
@@ -71,12 +67,21 @@ bool fenetConnectorService::initService(const char* config){
     if(!_fenetConnector.read_timeout(std::chrono::nanoseconds(_fenet_timeout)))
         spdlog::warn("Setting FENet read timeout failed");
 
-    //service port
+    //add service
     service->Add("test", jsonrpccxx::GetHandle(&fenetConnectorService::test, *this), {"value"});
-
-    _serviceConnector = make_shared<serviceConnector>(*service.get());
+    service->Add("request", jsonrpccxx::GetHandle(&fenetConnectorService::write, *this), {"data"});
 
     spdlog::info("Opened FENet Connection : {}", _fenetConnector.address().to_string());
 
     return true;
+}
+
+bool fenetConnectorService::test(const int& value){
+    spdlog::info("call test : {}", value);
+    return true;
+}
+
+bool fenetConnectorService::write(const std::string& data){
+    spdlog::info("call request : {}", data.size());
+    return false;
 }
