@@ -18,12 +18,10 @@ void release(){ if(_instance){ delete _instance; _instance = nullptr; }}
 
 fenetConnectorService::fenetConnectorService()
 {
-    spdlog::info("construct the fenet connector service");
 }
 
 fenetConnectorService::~fenetConnectorService(){
     closeService();
-    spdlog::info("destruct the fenet connector service");
 }
 
 bool fenetConnectorService::closeService(){
@@ -67,9 +65,9 @@ bool fenetConnectorService::initService(const char* config){
     if(!_fenetConnector.read_timeout(std::chrono::nanoseconds(_fenet_timeout)))
         spdlog::warn("Setting FENet read timeout failed");
 
-    //add service
+    //add service for fenet
     service->Add("test", jsonrpccxx::GetHandle(&fenetConnectorService::test, *this), {"value"});
-    service->Add("request", jsonrpccxx::GetHandle(&fenetConnectorService::write, *this), {"data"});
+    service->Add("write", jsonrpccxx::GetHandle(&fenetConnectorService::write, *this), {"data"});
 
     spdlog::info("Opened FENet Connection : {}", _fenetConnector.address().to_string());
 

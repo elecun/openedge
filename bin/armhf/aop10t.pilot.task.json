@@ -7,7 +7,7 @@
         "cycle_ns":500000000
     },
     "services":{
-        "required":["lsis.fenet.connector.service"],
+        "required":["lsis.fenet.connector.service", "mongodb.connector.service"],
         "lsis.fenet.connector.service":{
             "info":{
                 "cpu_info":"XGI"
@@ -16,6 +16,15 @@
                 "address":"192.168.100.8",
                 "port":2004,
                 "timeout":300000000
+            }
+        },
+        "mongodb.connector.service":{
+            "info":{
+                "dbname":"aop_pilot"
+            },
+            "connection":{
+                "address":"192.168.100.9",
+                "port":27017
             }
         }
     }

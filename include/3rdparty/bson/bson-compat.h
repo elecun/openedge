@@ -31,8 +31,10 @@
 #endif
 #endif
 
-#include "bson-config.h"
-#include "bson-macros.h"
+// #include "bson-config.h"
+// #include "bson-macros.h"
+#include <3rdparty/bson/bson-config.h>
+#include <3rdparty/bson/bson-macros.h>
 
 
 #ifdef BSON_OS_WIN32
