@@ -15,6 +15,7 @@
 #include <vector>
 
 using namespace oe;
+using namespace std;
 
 
 class fenetConnectorService : public core::iService {
@@ -28,15 +29,12 @@ class fenetConnectorService : public core::iService {
 
         //services APIs
         bool test(const int& value);
-        bool write(const std::string& data);
+        string write(const std::string& address);
+        string write_n(const std::string& address);
 
     private:
         uint16_t _invokeId { 0x0000 };
         sockpp::tcp_connector _fenetConnector;
-
-        string _fenet_address {""};
-        int _fenet_port {0};
-        unsigned long long _fenet_timeout {0}; //read timeout
 
 }; //class
 

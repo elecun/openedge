@@ -12,9 +12,11 @@
 #include <map>
 #include <type_traits>
 #include <3rdparty/jsonrpccxx/server.hpp>
+#include <3rdparty/json.hpp>
 
 using namespace std;
 using namespace jsonrpccxx;
+using json = nlohmann::json;
 
 namespace oe {
     namespace core {
@@ -35,6 +37,7 @@ namespace oe {
                 virtual jsonrpccxx::JsonRpc2Server& getServicePort() const { return *this->service.get(); }
             protected:
                 shared_ptr<jsonrpccxx::JsonRpc2Server> service;
+                json serivceConfig;
         }; //class iService
 
     } //namespace core

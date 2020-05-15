@@ -129,27 +129,7 @@ namespace oe::net::protocol {
             };
             #undef MAX_FRAME_SIZE
 
-            void read(command_code_t cmd, datatype_t dtype){
-                
-            }
-
-            void write(){
-
-            }
-
     }; //class
-
-
-    class lsisPLC {
-        public:
-            lsisPLC() {
-
-            }
-            
-            uint16_t getInfo() {
-
-            }
-    };
 
 
 } //namespace 

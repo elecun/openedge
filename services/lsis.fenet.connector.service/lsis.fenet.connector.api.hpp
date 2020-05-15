@@ -12,7 +12,8 @@ class fenetServiceAPI {
     public:
         explicit fenetServiceAPI(JsonRpcClient& client):_client(client){}
         bool test(const int& value){ return _client.CallMethod<bool>(1, "test", {value}); }
-        bool write(const std::string& data){ return _client.CallMethod<bool>(2, "write", {data}); }
+        string write(const std::string& address){ return _client.CallMethod<string>(2, "write", {address}); } //ex. '%MW0'
+        string write_n(const std::string& address){ return _client.CallMethod<string>(3, "write_n", {address}); }
 
     private:
         JsonRpcClient& _client;

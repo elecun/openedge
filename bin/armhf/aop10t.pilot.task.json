@@ -10,7 +10,9 @@
         "required":["lsis.fenet.connector.service", "mongodb.connector.service"],
         "lsis.fenet.connector.service":{
             "info":{
-                "cpu_info":"XGI"
+                "companyid":"LSIS-XGT",
+                "mode":"client",
+                "cpu_info":"xgi"
             },
             "connection":{
                 "address":"192.168.100.8",

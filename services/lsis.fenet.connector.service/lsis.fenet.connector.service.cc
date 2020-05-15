@@ -4,11 +4,8 @@
 #include <3rdparty/spdlog/spdlog.h>
 #include <chrono>
 #include <string>
-#include <3rdparty/json.hpp>
-//#include <3rdparty/jsonrpccxx/common.hpp>
 
 using namespace std::chrono;
-using json = nlohmann::json;
 using namespace std;
 
 //static service
@@ -39,37 +36,41 @@ bool fenetConnectorService::initService(const char* config){
     sockpp::socket_initializer sockInit; //initialize socket for fenet connection
 
     //read configuration for fenet connection
+    string _fenet_address {""};
+    int _fenet_port {0};
+    unsigned long long _fenet_timeout {0}; //read timeout
     try {
-        json conf;
-        conf = json::parse(config);
-        if(conf.find("connection")==conf.end())
+        serivceConfig = json::parse(config);
+        if(serivceConfig.find("connection")==serivceConfig.end())
             return false;
 
-        if(conf["connection"].find("address")!=conf["connection"].end())
-            _fenet_address = conf["connection"]["address"].get<std::string>();  //extract ip4v address
-        if(conf["connection"].find("port")!=conf["connection"].end())
-            _fenet_port = conf["connection"]["port"].get<int>();                //extract port
-        if(conf["connection"].find("timeout")!=conf["connection"].end())
-            _fenet_timeout = conf["connection"]["timeout"].get<unsigned long long>();
+        if(serivceConfig["connection"].find("address")!=serivceConfig["connection"].end())
+            _fenet_address = serivceConfig["connection"]["address"].get<std::string>();  //extract ip4v address
+        if(serivceConfig["connection"].find("port")!=serivceConfig["connection"].end())
+            _fenet_port = serivceConfig["connection"]["port"].get<int>();                //extract port
+        if(serivceConfig["connection"].find("timeout")!=serivceConfig["connection"].end())
+            _fenet_timeout = serivceConfig["connection"]["timeout"].get<unsigned long long>();
         spdlog::info("FEnet Connection : {}:{}", _fenet_address, _fenet_port);
     }
     catch(const json::exception& e){
         spdlog::error("service profile : {}", e.what());
     }
+
     //fenet connect
     _fenetConnector.connect({_fenet_address, static_cast<in_port_t>(_fenet_port)});
     if(!_fenetConnector.is_connected()){
-        spdlog::warn("FENet Connection Error : {}", _fenetConnector.last_error_str());
+        spdlog::error("FENet Connection Error : {}", _fenetConnector.last_error_str());
     }
     //set read timeout
     if(!_fenetConnector.read_timeout(std::chrono::nanoseconds(_fenet_timeout)))
         spdlog::warn("Setting FENet read timeout failed");
 
-    //add service for fenet
+    //register function to provide services
     service->Add("test", jsonrpccxx::GetHandle(&fenetConnectorService::test, *this), {"value"});
-    service->Add("write", jsonrpccxx::GetHandle(&fenetConnectorService::write, *this), {"data"});
+    service->Add("write", jsonrpccxx::GetHandle(&fenetConnectorService::write, *this), {"address"});
+    service->Add("write_n", jsonrpccxx::GetHandle(&fenetConnectorService::write_n, *this), {"address"});
 
-    spdlog::info("Opened FENet Connection : {}", _fenetConnector.address().to_string());
+    spdlog::info("Sucessfully created FENet connection : {}", _fenetConnector.address().to_string());
 
     return true;
 }
@@ -79,7 +80,15 @@ bool fenetConnectorService::test(const int& value){
     return true;
 }
 
-bool fenetConnectorService::write(const std::string& data){
-    spdlog::info("call request : {}", data.size());
-    return false;
+string fenetConnectorService::write(const std::string& address){
+    spdlog::info("call request address : {}", address);
+
+
+    return string("");
+}
+
+string fenetConnectorService::write_n(const std::string& address){
+    spdlog::info("call request address: {}", address);
+
+    return string("");
 }
