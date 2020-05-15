@@ -31,14 +31,10 @@ class aop10tPilotTask : public oe::core::task::runnable {
         void cleanup() override;
 
     private:
-
-        //load specific service
-        bool _load_fenet_service();
-        bool _load_mongo_service();
+        bool _load_service(serviceHandle& service /*out*/);
 
     private:
-        serviceHandle _fenetHandle; //LSIS FEnet Service component handle (componet file handler)
-        serviceHandle _mongoHandle; //MongoDB Service component handle (component file handler)
+        map<string, serviceHandle> _serviceHandles;  //service handle map
 
         unique_ptr<core::task::localServiceConnector> _fenetConnector;  //LSIS FEnet Service Connector
         unique_ptr<core::task::localServiceConnector> _mongoConnector;  //MongoDB Service Connector
@@ -48,6 +44,7 @@ class aop10tPilotTask : public oe::core::task::runnable {
 
         shared_ptr<jsonrpccxx::JsonRpcClient> _mongoAccessor;   //for MongoDB Service access
         unique_ptr<mongoServiceAPI> _mongoServiceAPI;   //mongodb service API
+
 };
 
 EXPORT_TASK_API

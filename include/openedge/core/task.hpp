@@ -55,10 +55,13 @@ namespace oe {
                     }
 
                 protected:
-                    typedef struct service_t {
+                    typedef struct serviceHandle_t {
                         void* handle { nullptr }; //component file handler
                         core::iService* ptrService { nullptr }; //service impl instance
+                        string name;
                         bool is_valid() { return (!handle && !ptrService); }
+                        serviceHandle_t(){}
+                        serviceHandle_t(const char* svcname):name(svcname){}
                     } serviceHandle;
                     map<string /*service name*/, serviceHandle /*service handle*/> serviceContainer;
 
