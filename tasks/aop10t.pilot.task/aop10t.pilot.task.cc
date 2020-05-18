@@ -16,19 +16,24 @@ static aop10tPilotTask* _instance = nullptr;
 oe::core::task::runnable* create(){ if(!_instance) _instance = new aop10tPilotTask(); return _instance; }
 void release(){ if(_instance){ delete _instance; _instance = nullptr; }}
 
-const char* required[] = { "lsis.fenet.connector.service", "mongodb.connector.service"};
+const char* svc_fenet = "lsis.fenet.connector.service";
+const char* svc_mongo = "mongodb.connector.service";
 
 bool aop10tPilotTask::configure(){
     //getting list of service
     vector<string> svclist = this->getProfile()->getRequiredServices();
 
     //required service check
-    for(auto svcname:required){
-        if(std::find(svclist.begin(), svclist.end(), svcname)==svclist.end()){
-            spdlog::error("<{}> service must be required.");
-            return false;
-        }
+    if(std::find(svclist.begin(), svclist.end(), svc_fenet)==svclist.end()){
+        spdlog::error("<{}> service must be required.", svc_fenet);
+        return false;
     }
+        
+    if(std::find(svclist.begin(), svclist.end(), svc_mongo)==svclist.end()){
+        spdlog::error("<{}> service must be required.", svc_mongo);
+        return false;
+    }
+        
 
     //load services
     for(string& svcname:svclist){
@@ -47,15 +52,14 @@ bool aop10tPilotTask::configure(){
     }
 
     //find service handle and make required service connection
-    
-    if(_serviceHandles.find(required[0])!=_serviceHandles.end()){
-        _fenetConnector = make_unique<core::task::localServiceConnector>(_serviceHandles[required[0]].ptrService->getServicePort());
+    if(_serviceHandles.find(svc_fenet)!=_serviceHandles.end()){
+        _fenetConnector = make_unique<core::task::localServiceConnector>(_serviceHandles[svc_fenet].ptrService->getServicePort());
         _fenetAccessor = make_shared<jsonrpccxx::JsonRpcClient>(*_fenetConnector.get(), jsonrpccxx::version::v2);
         _fenetServiceAPI = make_unique<fenetServiceAPI>(*_fenetAccessor.get());
     }
 
-    if(_serviceHandles.find(required[1])!=_serviceHandles.end()){
-        _mongoConnector = make_unique<core::task::localServiceConnector>(_serviceHandles[required[1]].ptrService->getServicePort());
+    if(_serviceHandles.find(svc_mongo)!=_serviceHandles.end()){
+        _mongoConnector = make_unique<core::task::localServiceConnector>(_serviceHandles[svc_mongo].ptrService->getServicePort());
         _mongoAccessor = make_shared<jsonrpccxx::JsonRpcClient>(*_mongoConnector.get(), jsonrpccxx::version::v2);
         _mongoServiceAPI = make_unique<mongoServiceAPI>(*_mongoAccessor.get());
     }
@@ -66,16 +70,20 @@ bool aop10tPilotTask::configure(){
 void aop10tPilotTask::execute(){
     //connection
     try {
-        serviceHandle& _fenetHandle = _serviceHandles[required[0]]; //LSIS FEnet Service
-        serviceHandle& _mongodbHandle = _serviceHandles[required[1]];; //LSIS MongoDB Service
+        serviceHandle& _fenetHandle = _serviceHandles[svc_fenet]; //LSIS FEnet Service
+        serviceHandle& _mongodbHandle = _serviceHandles[svc_mongo];; //LSIS MongoDB Service
 
         if(_fenetHandle.ptrService){
-            _fenetServiceAPI->write("123");
+            json action = json::parse(getProfile()->getCustom());
+
+            if(action.find("address")!=action.end() && action.find("count"!=action.end())){
+                _fenetServiceAPI->read_n(action["address"].get<string>(), action["count"].get<int>());
+            }
         }
 
-        if(_mongodbHandle.ptrService){
-            _mongoServiceAPI->test(1);
-        }
+        // if(_mongodbHandle.ptrService){
+        //     _mongoServiceAPI->test(1);
+        // }
     } 
     catch (jsonrpccxx::JsonRpcException &e) {
         spdlog::warn("RPC Error : {}", e.what());
@@ -83,8 +91,8 @@ void aop10tPilotTask::execute(){
 }
 
 void aop10tPilotTask::cleanup(){
-    serviceHandle& _fenetHandle = _serviceHandles[required[0]]; //LSIS FEnet Service
-    serviceHandle& _mongodbHandle = _serviceHandles[required[1]];; //LSIS MongoDB Service
+    serviceHandle& _fenetHandle = _serviceHandles[svc_fenet]; //LSIS FEnet Service
+    serviceHandle& _mongodbHandle = _serviceHandles[svc_mongo]; //LSIS MongoDB Service
 
     if(_fenetHandle.handle){
         release_service pfRelease = (release_service)dlsym(_fenetHandle.handle, "release");

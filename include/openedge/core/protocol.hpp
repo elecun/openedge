@@ -25,7 +25,6 @@ namespace oe::core {
             
             unsigned int getSize() const { return frame.size(); }
             virtual vector<uint8_t> getFrame() { return frame; }
-
             virtual vector<uint8_t> getHeader() = 0;
         protected:
             vector<uint8_t> frame;

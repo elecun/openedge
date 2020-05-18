@@ -12,7 +12,9 @@
             "info":{
                 "companyid":"LSIS-XGT",
                 "mode":"client",
-                "cpu_info":"xgi"
+                "cpu_info":"xgi",
+                "slot_index":0,
+                "base_index":0
             },
             "connection":{
                 "address":"192.168.100.8",
@@ -29,5 +31,10 @@
                 "port":27017
             }
         }
+    },
+    "action":{
+        "command":"read_n",
+        "address":"%MW0",
+        "count":5
     }
 }

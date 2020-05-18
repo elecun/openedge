@@ -36,7 +36,6 @@ namespace oe::core {
             profile(const char* path);
             virtual ~profile() {
                 data.clear();
-                custom.clear();
             }
 
             bool isValid() const { return valid; }
@@ -47,12 +46,22 @@ namespace oe::core {
                 return static_cast<vector<string>>(this->data["services"]["required"]);
             }
 
-            string getServiceProfile(const char* servicename) const {
-                return this->data["services"][servicename].dump();
+            string getCustom(const char* customkey = nullptr) const {
+                if(customkey!=nullptr)
+                    return this->data[customkey].dump();
+
+                if(data.find("custom")!=data.end())
+                    return this->data["custom"].dump();
+
+                return string("{}");
             }
 
-        public:
-            json custom;
+            string getServiceProfile(const char* servicename = nullptr) const {
+                if(!servicename)
+                    return string("{}");
+
+                return this->data["services"][servicename].dump();
+            }
 
         protected:
             json data;

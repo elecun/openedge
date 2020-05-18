@@ -18,6 +18,7 @@ using namespace oe;
 using namespace std;
 
 
+namespace oe::bus::protocol { class XGTDedicated; }
 class fenetConnectorService : public core::iService {
     public:
         fenetConnectorService();
@@ -29,12 +30,14 @@ class fenetConnectorService : public core::iService {
 
         //services APIs
         bool test(const int& value);
-        string write(const std::string& address);
-        string write_n(const std::string& address);
+        string read(const std::string& address); //ex. %MW0
+        string read_n(const std::string& address, int count);
 
     private:
         uint16_t _invokeId { 0x0000 };
         sockpp::tcp_connector _fenetConnector;
+
+        unique_ptr<oe::bus::protocol::XGTDedicated> _protocol;
 
 }; //class
 

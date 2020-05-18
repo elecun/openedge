@@ -37,7 +37,7 @@ namespace oe {
                 virtual jsonrpccxx::JsonRpc2Server& getServicePort() const { return *this->service.get(); }
             protected:
                 shared_ptr<jsonrpccxx::JsonRpc2Server> service;
-                json serivceConfig;
+                json serviceConfig;
         }; //class iService
 
     } //namespace core
