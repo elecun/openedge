@@ -27,12 +27,12 @@
                 "dbname":"aop_pilot"
             },
             "connection":{
-                "address":"192.168.100.9",
+                "address":"192.168.100.6",
                 "port":27017
             }
         }
     },
-    "action":{
+    "custom":{
         "command":"read_n",
         "address":"%MW0",
         "count":5

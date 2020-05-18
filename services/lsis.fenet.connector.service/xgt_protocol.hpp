@@ -8,16 +8,18 @@
 
 #include <stdint.h>
 #include <cstring>
+#include <vector>
 #include <type_traits>
 #include <3rdparty/json.hpp>
 #include <openedge/core/protocol.hpp>
+#include <3rdparty/sockpp/tcp_connector.h>
 
 using namespace std;
 using json = nlohmann::json;
 
 namespace oe::bus::protocol {
 
-    class XGTDedicated : public oe::core::iProtocolRaw {
+    class XGTDedicated {
         public:
             enum class cpu_type_t : uint16_t {
                 XGKR_CPUH = 0x0001,
@@ -88,25 +90,6 @@ namespace oe::bus::protocol {
                 BASE15 = 0xf0,
             };
 
-            typedef uint16_t plc_info_t;
-            typedef struct xgt_header_t {
-                uint8_t     companyId[10] = {0x4C, 0x53, 0x49, 0x53, 0x2d, 0x58, 0x47, 0x54, 0x00, 0x00 }; //'LSIS-XGT'
-                uint16_t    plcInfo = static_cast<uint16_t>(cpu_type_t::XGI_CPUU) | static_cast<uint16_t>(plc_redundancy_t::MASTER) | 
-                                      static_cast<uint16_t>(cpu_state_t::OK) | static_cast<uint16_t>(system_state_t::STOP);
-                cpu_info_t    cpuInfo = cpu_info_t::XGI;
-                sof_t       sof = sof_t::CLIENT;    //source of frame
-                uint16_t    invokeId = 0x0000;
-                uint16_t    length; //byte length of applicaiton instruction
-                uint8_t     fenet_pos = static_cast<uint8_t>(fenet_slot_t::SLOT0) | static_cast<uint8_t>(fenet_base_t::BASE0);
-                uint8_t     checksum;
-                xgt_header_t() {
-
-                }
-                xgt_header_t& operator=(const xgt_header_t& other){
-                    memcpy(this, &other, sizeof(xgt_header_t));
-                }
-            };
-
             enum class command_code_t : uint16_t {
                 READ_REQUEST = 0x5400,
                 READ_RESPONSE = 0x5500,
@@ -122,78 +105,114 @@ namespace oe::bus::protocol {
                 LWORD = 0x0400,
                 BLOCK = 0x1400
             };
-            
-            #define MAX_FRAME_SIZE    512
-            typedef struct xgt_frame_format_t {
-                xgt_header_t    header;
-                uint16_t        command;
-                uint16_t        datatype;
-                uint8_t         data[MAX_FRAME_SIZE-sizeof(header)-sizeof(command)-sizeof(datatype)];
-                xgt_frame_format_t& operator=(const xgt_frame_format_t& other){
-                    memcpy(this, &other, sizeof(xgt_frame_format_t));
-                }
-            };
-            #undef MAX_FRAME_SIZE
 
-            void request(datatype_t type){
-                _frame.header.sof = sof_t::CLIENT;
+            //generate XGT packet
+            #define HEADER_SIZE 20
+            #define BODY_SIZE   12
+            vector<uint8_t> gen_read_block(const string& address, int count){
+                vector<uint8_t> tmpPacket((int)HEADER_SIZE+(int)BODY_SIZE+(int)address.size());
+                //tmpPacket.reserve(HEADER_SIZE+BODY_SIZE+address.size());
+
+                _set_default_header(tmpPacket, cpu_info_t::XGI, sof_t::CLIENT, fenet_slot_t::SLOT0, fenet_base_t::BASE0);
+                _set_default_body(tmpPacket, static_cast<uint16_t>(command_code_t::READ_REQUEST), static_cast<uint16_t>(datatype_t::BLOCK), 0x0001, address, (uint16_t)count);
+                _packet_refine(tmpPacket);
+            
+                return tmpPacket;
+            }
+
+            uint8_t chksum(vector<uint8_t>& packet){ //checksum8 modulo 256 (sum of bytes % 256)
+                uint8_t sum = 0x00;
+                for(int i=0;i<HEADER_SIZE;i++)
+                    sum += packet[i];
+                return (sum&0xff);
             }
 
             void setParameters(string config){
                 try {
-                    this->proto_configs = json::parse(config);
-                    //_generate_header(frame, this->proto_configs);
-                    
-                    
+                    this->proto_configs = json::parse(config);                    
                     spdlog::info("Protocol Parameters : {}", proto_configs.dump());
                 }
                 catch(const json::exception& e){
-                    spdlog::info("{Protocol Error : {}",e.what());
+                    spdlog::info("Protocol Error : {}",e.what());
                 }
             }
 
-            void send(){
-                spdlog::info("send");
-            }
-
-            void receive() {
-                spdlog::info("receive");
-            }
-
         protected:
-            void _generate_header(xgt_frame_format_t& _frame, json& config){
-                //company identity
-                // _frame.header.companyId {0x4C, 0x53, 0x49, 0x53, 0x2d, 0x58, 0x47, 0x54, 0x00, 0x00 };
+            enum XGTProtocolIndex {
+                PLC_INFO = 10,
+                CPU_INFO = 12,
+                SOF = 13,
+                INVOKE_ID = 14,
+                LENGTH = 16,
+                FENET_POS = 18,
+                CHECKSUM = 19,
+                COMMAND = 20,
+                DATATYPE = 22,
+                BODY_RESERVED = 24,
+                BLOCK_COUNT = 26,
+                ADDRESS_LEN = 28,
+                ADDRESS = 30
+            };
 
-                // //plc info & sof
-                // if(proto_configs.find("mode")!=proto_configs.end()){
-                //     if(!proto_configs["mode"].get<string>().compare("client")){ //client mode
-                //         this->frame.header.plcInfo = 0x0000;
-                //         this->frame.header.sof = sof_t::CLIENT;
-                //     }
-                //     else { //server mode
-                //         this->frame.header.plcInfo = static_cast<uint16_t>(cpu_type_t::XGI_CPUU) | static_cast<uint16_t>(plc_redundancy_t::MASTER) | static_cast<uint16_t>(cpu_state_t::OK) | static_cast<uint16_t>(system_state_t::STOP);
-                //         this->frame.header.sof = sof_t::SERVER;
-                //     }
-                // }
+            void _set_default_header(vector<uint8_t>& packet, cpu_info_t cpuinfo, sof_t sof, fenet_slot_t nslot, fenet_base_t nbase){
+                uint8_t header[20] = {
+                    0x4C, 0x53, 0x49, 0x53, 0x2d, 0x58, 0x47, 0x54, 0x00, 0x00, //company ID (LSIS-XGT)
+                    0x00, 0x00, //plc info
+                    0x00, //cpu info
+                    0x00, //source of frame
+                    0x00, 0x00, //invoke id
+                    0x00, 0x00, //length (after header)
+                    0x00,   //FEnet position
+                    0x00 //Checksum
+                };
+                header[XGTProtocolIndex::CPU_INFO] = static_cast<uint8_t>(cpuinfo);
+                header[XGTProtocolIndex::SOF] = static_cast<uint8_t>(sof);
+                header[XGTProtocolIndex::FENET_POS] = static_cast<uint8_t>(nslot) | static_cast<uint8_t>(nbase);
 
-                // //cpu info
-                // if(proto_configs.find("cpu_info")!=proto_configs.end()){
-                //     if(!proto_configs["cpu_info"].compare("xgi"))
-                //         _farme.header.cpuInfo = cpu_info_t::XGI;
-                // }
+                std::copy (header, header+sizeof(header), packet.begin());
+                
+            }
 
-                // //slot & base index
-                // if(proto_configs.find("slot_index")!=proto_configs.end() && proto_configs.find("base_index")!=proto_configs.end()){
-                //     int slot_idx = proto_configs["slot_index"].get<int>();
-                //     int base_idx = proto_configs["base_index"].get<int>();
-                //     this->frame.header.fenet_pos = static_cast<uint8_t>(slot_idx) | (static_cast<uint8_t>(base_idex)<<8);
-                // }
+            void _set_default_body(vector<uint8_t>& packet, uint16_t cmd, uint16_t dtype, uint16_t nblocks, const string& address, uint16_t count){
+                packet[XGTProtocolIndex::COMMAND] = cmd && 0xff;
+                packet[XGTProtocolIndex::COMMAND+1] = cmd << 8;
+                packet[XGTProtocolIndex::DATATYPE] = dtype & 0xff;
+                packet[XGTProtocolIndex::DATATYPE+1] = dtype << 8;
+                packet[XGTProtocolIndex::BODY_RESERVED] = 0x00; //don't care
+                packet[XGTProtocolIndex::BODY_RESERVED+1] = 0x00;
+                packet[XGTProtocolIndex::BLOCK_COUNT] = nblocks & 0xff;
+                packet[XGTProtocolIndex::BLOCK_COUNT+1] = nblocks << 8;
+
+                char address_array[address.size()];
+                int len = address.size();
+                std::copy(address.begin(), address.end(), address_array);
+
+                packet[XGTProtocolIndex::ADDRESS_LEN] = len & 0xff;
+                packet[XGTProtocolIndex::ADDRESS_LEN+1] = len << 8;
+                for(int i=0; i<(int)address.size(); i++)
+                    packet[XGTProtocolIndex::ADDRESS+i] = address_array[i];
+
+                packet[XGTProtocolIndex::ADDRESS+address.size()] = count & 0xff;
+                packet[XGTProtocolIndex::ADDRESS+address.size()+1] = count << 8;
+            }
+
+            void _packet_refine(vector<uint8_t>& packet){
+                static uint16_t invokeId = 0x0000;
+
+                packet[XGTProtocolIndex::INVOKE_ID] = invokeId & 0xff;
+                packet[XGTProtocolIndex::INVOKE_ID+1] = invokeId << 8;
+                packet[XGTProtocolIndex::LENGTH] = (packet.size()-HEADER_SIZE) & 0xff;
+                packet[XGTProtocolIndex::LENGTH+1] = (packet.size()-HEADER_SIZE) << 8;
+
+                packet[XGTProtocolIndex::CHECKSUM] = chksum(packet);
+
+                invokeId++;
+                if(invokeId>65535)
+                    invokeId = 0x0000;
             }
 
         private:
             json proto_configs;
-            xgt_frame_format_t _frame;
 
     }; //class
 

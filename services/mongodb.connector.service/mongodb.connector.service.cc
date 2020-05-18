@@ -35,6 +35,8 @@ bool mongodbConnectorService::closeService(){
 bool mongodbConnectorService::initService(const char* config){
     assert(config!=nullptr);
 
+    spdlog::info("service config : {}", config);
+
     mongoc_init();
 
     //read configuration for fenet connection

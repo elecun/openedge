@@ -9,6 +9,7 @@
 #include <services/mongodb.connector.service/mongodb.connector.api.hpp>
 #include <3rdparty/jsonrpccxx/client.hpp>
 #include <algorithm>
+#include <stdexcept>
 using namespace std;
 
 //static component instance that has only single instance
@@ -51,6 +52,8 @@ bool aop10tPilotTask::configure(){
         }
     }
 
+    spdlog::info("find service");
+
     //find service handle and make required service connection
     if(_serviceHandles.find(svc_fenet)!=_serviceHandles.end()){
         _fenetConnector = make_unique<core::task::localServiceConnector>(_serviceHandles[svc_fenet].ptrService->getServicePort());
@@ -71,13 +74,15 @@ void aop10tPilotTask::execute(){
     //connection
     try {
         serviceHandle& _fenetHandle = _serviceHandles[svc_fenet]; //LSIS FEnet Service
-        serviceHandle& _mongodbHandle = _serviceHandles[svc_mongo];; //LSIS MongoDB Service
+        serviceHandle& _mongodbHandle = _serviceHandles[svc_mongo];; //MongoDB Service
 
         if(_fenetHandle.ptrService){
             json action = json::parse(getProfile()->getCustom());
+            spdlog::info("do action : {}", action.dump());
 
-            if(action.find("address")!=action.end() && action.find("count"!=action.end())){
-                _fenetServiceAPI->read_n(action["address"].get<string>(), action["count"].get<int>());
+            if(action.find("address")!=action.end() && action.find("count")!=action.end()){
+                string dumped = _fenetServiceAPI->read_n(action["address"].get<string>(), action["count"].get<int>());
+                spdlog::info("FEnet Response : {}", dumped);
             }
         }
 
@@ -112,6 +117,7 @@ void aop10tPilotTask::cleanup(){
 }
 
 bool aop10tPilotTask::_load_service(serviceHandle& service){
+    
     string path = "./"+service.name;
     spdlog::info(" * Load service : {}", path);
 

@@ -36,7 +36,7 @@ bool fenetConnectorService::initService(const char* config){
 
     sockpp::socket_initializer sockInit; //initialize socket for fenet connection
 
-    //_protocol = make_unique<oe::bus::protocol::XGTDedicated>();
+    _protocol = make_unique<oe::bus::protocol::XGTDedicated>();
 
     //read configuration for fenet connection
     string _fenet_address {""};
@@ -54,7 +54,8 @@ bool fenetConnectorService::initService(const char* config){
         if(serviceConfig["connection"].find("timeout")!=serviceConfig["connection"].end())
             _fenet_timeout = serviceConfig["connection"]["timeout"].get<unsigned long long>();
 
-        _protocol->setParameters(serviceConfig["info"].dump());
+        if(_protocol)
+            _protocol->setParameters(serviceConfig["info"].dump());
 
         spdlog::info("FEnet Connection : {}:{}", _fenet_address, _fenet_port);
     }
@@ -89,22 +90,51 @@ bool fenetConnectorService::test(const int& value){
 string fenetConnectorService::read(const std::string& address){
     spdlog::info("call request address : {}", address);
 
-
     return string("");
 }
 
 string fenetConnectorService::read_n(const std::string& address, int count){
-    spdlog::info("call request address: {} with {}", address, count);
+    spdlog::info("call request to read block: {} with {}", address, count);
 
-    //request to read block
-    // using oe::bus::protocol;
-    // uint16_t varlen = static_cast<uint16_t>(address.size());
-    // uint16_t blocks = 0x0001;   //single block
-    // string raddr = address.substr(3); //sub string of address
-    // _protocol->request(XGTDedicated::command_code_t::READ_REQUEST,
-    //                     XGTDedicated::datatype_t::BLOCK,
-    //                     )
-    // vector<uint8_t> frame = _protocol->getFrame();
+    char address_array[address.size()];
+    std::copy(address.begin(), address.end(), address_array);
 
-    return string("");
+    if(address_array[0]!='%'){
+        spdlog::error("Invalid FEnet address format : {}", address);
+        return string("{}");
+    }
+
+    if(address_array[2]=='W'){ //Word
+        vector<uint8_t> packet = _protocol->gen_read_block(address, count);
+        string packet_str;
+        for(uint8_t d:packet)
+            packet_str.append(fmt::format("{:x} ", d));
+        spdlog::info("Generated Packet({}) : {}", packet.size(), packet_str);
+
+        int size = _fenetConnector.write(&packet[0], packet.size());
+        spdlog::info("Sent {} bytes", size);
+
+        std::this_thread::sleep_for(std::chrono::nanoseconds(1000000));
+
+        unsigned char data[100] = {0,};
+        int rsize = _fenetConnector.read_n(data, 100);
+
+        string read;
+        for(int i=0;i<rsize;i++)
+            read.append(fmt::format("{:x} ", data[i]));
+        spdlog::info("Received Packet({}) : {}", read.size(), read);
+    }
+
+    //_fenetConnector.write();
+
+    // switch(address.at(1)){
+    //     case 'W':   // Word (16bit)
+    //         {
+    //             string start_address = address.substr(3);
+    //             vector<uint16_t> data = _protocol->read_block<uint16_t>(start_address, count);
+    //         }
+    //     break;
+    // }
+
+    return string("{}");
 }
