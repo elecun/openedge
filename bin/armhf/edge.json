@@ -1,0 +1,18 @@
+{
+    "environments":{
+        "path":{
+            "config":"./",
+            "task":"./",
+            "service":"./"
+        }
+    },
+    "gateway":{
+        "devid":"aop-gw-001",
+        "service":{
+            "repository": "localhost"
+        }
+    },
+    "tasks":{
+        "default":["simple.task", "aop10t.pilot.task"]
+    }
+}

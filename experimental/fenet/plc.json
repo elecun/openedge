@@ -1,0 +1,15 @@
+{
+    "md5":"603239CAF2F774498037F944F5592F52",
+    "info":{
+        "base":0
+    },
+    "services":{
+        "required":["ethernet.tcp.service","xgt.protocol.service"],
+        "ethernet.tcp.service":{
+
+        },
+        "xgt.protocol.service":{
+
+        }
+    }
+}

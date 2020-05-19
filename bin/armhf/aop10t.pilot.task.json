@@ -1,0 +1,40 @@
+{
+    "md5":"603239CAF2F774498037F944F5592F52",
+    "info":{
+        "taskname":"aop10t.pilot.task",
+        "version":"0.0.1",
+        "cpu_affinity":1,
+        "cycle_ns":500000000
+    },
+    "services":{
+        "required":["lsis.fenet.connector.service", "mongodb.connector.service"],
+        "lsis.fenet.connector.service":{
+            "info":{
+                "companyid":"LSIS-XGT",
+                "mode":"client",
+                "cpu_info":"xgi",
+                "slot_index":0,
+                "base_index":0
+            },
+            "connection":{
+                "address":"192.168.100.8",
+                "port":2004,
+                "timeout":300000000
+            }
+        },
+        "mongodb.connector.service":{
+            "info":{
+                "dbname":"aop_pilot"
+            },
+            "connection":{
+                "address":"192.168.100.6",
+                "port":27017
+            }
+        }
+    },
+    "custom":{
+        "command":"read_n",
+        "address":"%MB0",
+        "count":2
+    }
+}
