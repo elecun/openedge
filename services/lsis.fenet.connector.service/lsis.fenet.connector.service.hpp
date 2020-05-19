@@ -29,7 +29,6 @@ class fenetConnectorService : public core::iService {
         bool closeService() override;
 
         //services APIs
-        bool test(const int& value);
         string read(const std::string& address); //ex. %MW0
         string read_n(const std::string& address, int count);
 

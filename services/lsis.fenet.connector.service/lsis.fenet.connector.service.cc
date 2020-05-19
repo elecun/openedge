@@ -73,17 +73,11 @@ bool fenetConnectorService::initService(const char* config){
         spdlog::warn("Setting FENet read timeout failed");
 
     //register function to provide services
-    service->Add("test", jsonrpccxx::GetHandle(&fenetConnectorService::test, *this), {"value"});
     service->Add("read", jsonrpccxx::GetHandle(&fenetConnectorService::read, *this), {"address"});
     service->Add("read_n", jsonrpccxx::GetHandle(&fenetConnectorService::read_n, *this), {"address", "count"});
 
     spdlog::info("Sucessfully created FENet connection : {}", _fenetConnector.address().to_string());
 
-    return true;
-}
-
-bool fenetConnectorService::test(const int& value){
-    spdlog::info("call test : {}", value);
     return true;
 }
 
