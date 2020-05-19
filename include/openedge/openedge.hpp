@@ -24,5 +24,6 @@ OTHER DEALINGS IN THE SOFTWARE.
 #define _OPENEDGE_HPP_
 
 #include <openedge/core.hpp>
+#include <openedge/manage.hpp>
 
 #endif
