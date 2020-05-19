@@ -26,7 +26,7 @@ bool simpletask::configure(){
 }
 
 void simpletask::execute(){
-    spdlog::info("do simple task execute");
+    //spdlog::info("do simple task execute");
     // clock_gettime(CLOCK_REALTIME,&x); 
     // spdlog::info("{}.{:09d}",x.tv_sec, x.tv_nsec);
     

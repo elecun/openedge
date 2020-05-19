@@ -34,7 +34,7 @@
     },
     "custom":{
         "command":"read_n",
-        "address":"%MW0",
-        "count":5
+        "address":"%MB0",
+        "count":2
     }
 }

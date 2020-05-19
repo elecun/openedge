@@ -78,11 +78,11 @@ void aop10tPilotTask::execute(){
 
         if(_fenetHandle.ptrService){
             json action = json::parse(getProfile()->getCustom());
-            spdlog::info("do action : {}", action.dump());
+            //spdlog::info("do action : {}", action.dump());
 
             if(action.find("address")!=action.end() && action.find("count")!=action.end()){
                 string dumped = _fenetServiceAPI->read_n(action["address"].get<string>(), action["count"].get<int>());
-                spdlog::info("FEnet Response : {}", dumped);
+                //spdlog::info("FEnet Response : {}", dumped);
             }
         }
 

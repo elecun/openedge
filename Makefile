@@ -127,14 +127,12 @@ bus.tcp.service: $(OUTDIR)bus.tcp.service.o
 $(OUTDIR)bus.tcp.service.o: $(SERVICE_SOURCE_FILES)bus.tcp.service/bus.tcp.service.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
-xgt.protocol.service: $(OUTDIR)xgt.protocol.service.o
-	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(OUTDIR)$@ $^ $(LDLIBS)
-$(OUTDIR)xgt.protocol.service.o: $(SERVICE_SOURCE_FILES)lsis.xgt.protocol.service/xgt.protocol.service.cc
-	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
-
-lsis.fenet.connector.service: $(OUTDIR)lsis.fenet.connector.service.o
+lsis.fenet.connector.service: $(OUTDIR)lsis.fenet.connector.service.o \
+							$(OUTDIR)xgt.protocol.o
 	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(OUTDIR)$@ $^ $(LDLIBS) ./lib/armhf/libsockpp.a
 $(OUTDIR)lsis.fenet.connector.service.o: $(SERVICE_SOURCE_FILES)lsis.fenet.connector.service/lsis.fenet.connector.service.cc
+	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+$(OUTDIR)xgt.protocol.o: $(SERVICE_SOURCE_FILES)lsis.fenet.connector.service/xgt.protocol.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
 mongodb.connector.service: $(OUTDIR)mongodb.connector.service.o

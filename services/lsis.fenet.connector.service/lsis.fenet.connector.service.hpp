@@ -34,9 +34,7 @@ class fenetConnectorService : public core::iService {
         string read_n(const std::string& address, int count);
 
     private:
-        uint16_t _invokeId { 0x0000 };
         sockpp::tcp_connector _fenetConnector;
-
         unique_ptr<oe::bus::protocol::XGTDedicated> _protocol;
 
 }; //class

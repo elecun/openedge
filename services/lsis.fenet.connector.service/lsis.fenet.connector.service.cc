@@ -4,7 +4,7 @@
 #include <3rdparty/spdlog/spdlog.h>
 #include <chrono>
 #include <string>
-#include "xgt_protocol.hpp"
+#include "xgt.protocol.hpp"
 
 using namespace std::chrono;
 using namespace std;
@@ -94,7 +94,7 @@ string fenetConnectorService::read(const std::string& address){
 }
 
 string fenetConnectorService::read_n(const std::string& address, int count){
-    spdlog::info("call request to read block: {} with {}", address, count);
+    //spdlog::info("call request to read block: {} with {}", address, count);
 
     char address_array[address.size()];
     std::copy(address.begin(), address.end(), address_array);
@@ -104,7 +104,7 @@ string fenetConnectorService::read_n(const std::string& address, int count){
         return string("{}");
     }
 
-    if(address_array[2]=='W'){ //Word
+    if(address_array[2]=='B'){ //Word
         vector<uint8_t> packet = _protocol->gen_read_block(address, count);
         string packet_str;
         for(uint8_t d:packet)
@@ -112,17 +112,22 @@ string fenetConnectorService::read_n(const std::string& address, int count){
         spdlog::info("Generated Packet({}) : {}", packet.size(), packet_str);
 
         int size = _fenetConnector.write(&packet[0], packet.size());
-        spdlog::info("Sent {} bytes", size);
 
-        std::this_thread::sleep_for(std::chrono::nanoseconds(1000000));
+        //std::this_thread::sleep_for(std::chrono::nanoseconds(20000000));
 
         unsigned char data[100] = {0,};
-        int rsize = _fenetConnector.read_n(data, 100);
+        int rsize = _fenetConnector.read_n(data, sizeof(data));
 
-        string read;
-        for(int i=0;i<rsize;i++)
-            read.append(fmt::format("{:x} ", data[i]));
-        spdlog::info("Received Packet({}) : {}", read.size(), read);
+        if(rsize>0){
+            string read;
+            for(int i=0;i<rsize;i++)
+                read.append(fmt::format("{:x} ", data[i]));
+            spdlog::info("Received Packet({}) : {}", rsize, read);
+
+            uint16_t error = _protocol->check_response_error(data, rsize);
+            if(error)
+                spdlog::error("Protocol Error : {:x}", error);
+        }
     }
 
     //_fenetConnector.write();
