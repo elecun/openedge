@@ -17,6 +17,8 @@ ifeq ($(ARCH),arm)
 	LD_LIBRARY_PATH += -L./lib/armhf
 	OUTDIR		= ./bin/armhf/
 	TASK_OUTDIR		= ./bin/armhf/task/
+	INCLUDE_DIR = -I./ -I./include/ -I./include/3rdparty/
+	LD_LIBRARY_PATH += -L/usr/local/lib -L./lib/armhf
 else
 	CC := g++
 	GCC := gcc
@@ -30,8 +32,8 @@ ifeq ($(OS),Linux) #for Linux
 	LDFLAGS = -Wl,--export-dynamic
 	LDLIBS = -pthread -lrt -ldl -lm
 	GTEST_LDLIBS = -lgtest
-	INCLUDE_DIR = -I./ -I./include/ -I./include/3rdparty/
-	LD_LIBRARY_PATH += -L/usr/local/lib -L./lib/armhf
+	#INCLUDE_DIR = -I./ -I./include/ -I./include/3rdparty/
+	#LD_LIBRARY_PATH += -L/usr/local/lib -L./lib/armhf
 endif
 
 $(shell mkdir -p $(OUTDIR))
