@@ -21,6 +21,9 @@ const char* svc_fenet = "lsis.fenet.connector.service";
 const char* svc_mongo = "mongodb.connector.service";
 
 bool aop10tPilotTask::configure(){
+
+    _logPerf.open("aop10tPilotTask.perf.txt");
+
     //getting list of service
     vector<string> svclist = this->getProfile()->getRequiredServices();
 
@@ -71,6 +74,7 @@ bool aop10tPilotTask::configure(){
 }
 
 void aop10tPilotTask::execute(){
+    auto t_now = std::chrono::high_resolution_clock::now();
     //connection
     try {
         serviceHandle& _fenetHandle = _serviceHandles[svc_fenet]; //LSIS FEnet Service
@@ -78,7 +82,6 @@ void aop10tPilotTask::execute(){
 
         if(_fenetHandle.ptrService){
             json action = json::parse(getProfile()->getCustom());
-            //spdlog::info("do action : {}", action.dump());
 
             if(action.find("address")!=action.end() && action.find("count")!=action.end()){
                 vector<uint8_t> rawdata = _fenetServiceAPI->read_block(action["address"].get<string>(), action["count"].get<int>());
@@ -91,21 +94,25 @@ void aop10tPilotTask::execute(){
         }
 
         // code here to parse the raw data
-
         if(_mongodbHandle.ptrService){
             json test;
             test["test"] = 1;
             _mongoServiceAPI->insert(test.dump());
         }
-
-        
     } 
     catch (jsonrpccxx::JsonRpcException &e) {
         spdlog::warn("RPC Error : {}", e.what());
     }
+
+    auto t_elapsed = std::chrono::high_resolution_clock::now();
+    if(_logPerf.is_open()){
+        _logPerf << std::chrono::duration<double, std::chrono::seconds::period>(t_elapsed - t_now).count() << endl;
+    }
 }
 
 void aop10tPilotTask::cleanup(){
+    _logPerf.close();
+
     serviceHandle& _fenetHandle = _serviceHandles[svc_fenet]; //LSIS FEnet Service
     serviceHandle& _mongodbHandle = _serviceHandles[svc_mongo]; //LSIS MongoDB Service
 

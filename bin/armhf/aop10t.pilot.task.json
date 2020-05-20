@@ -4,7 +4,7 @@
         "taskname":"aop10t.pilot.task",
         "version":"0.0.1",
         "cpu_affinity":1,
-        "cycle_ns":500000000
+        "cycle_ns":400000000
     },
     "services":{
         "required":["lsis.fenet.connector.service", "mongodb.connector.service"],

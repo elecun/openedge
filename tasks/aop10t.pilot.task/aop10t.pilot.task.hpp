@@ -12,6 +12,7 @@
 #include <map>
 #include <memory>
 #include <openedge/core.hpp>
+#include <fstream>
 
 using namespace oe;
 using namespace std;
@@ -45,6 +46,8 @@ class aop10tPilotTask : public oe::core::task::runnable {
         shared_ptr<jsonrpccxx::JsonRpcClient> _mongoAccessor;   //for MongoDB Service access
         unique_ptr<mongoServiceAPI> _mongoServiceAPI;   //mongodb service API
 
+        
+        std::ofstream _logPerf;
 };
 
 EXPORT_TASK_API

@@ -134,7 +134,6 @@ namespace oe::core::task {
         sigset_t thread_sigmask;
         sigemptyset(&thread_sigmask);
         sigaddset(&thread_sigmask, SIG_RUNTIME_TRIGGER+_signalIndex);
-        // sigaddset(&thread_sigmask, SIGTERM);
         int _sig_no;
         //auto t_prev = std::chrono::high_resolution_clock::now();
         _taskImpl->_status = oe::core::task::runnable::Status::RUNNING;
