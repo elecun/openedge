@@ -5,14 +5,18 @@
 
 
 #include <3rdparty/jsonrpccxx/client.hpp>
+#include <vector>
+#include <stdint.h>
+#include <string>
 
 using namespace jsonrpccxx;
+using namespace std;
 
 class fenetServiceAPI {
     public:
         explicit fenetServiceAPI(JsonRpcClient& client):_client(client){}
         string read(const std::string& address){ return _client.CallMethod<string>(2, "read", {address}); } //ex. '%MW0'
-        string read_n(const std::string& address, int count){ return _client.CallMethod<string>(3, "read_n", {address, count}); }
+        vector<uint8_t> read_block(const std::string& address, int count) { return _client.CallMethod<vector<uint8_t>>(4, "read_block", {address, count});}
 
     private:
         JsonRpcClient& _client;

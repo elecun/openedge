@@ -30,7 +30,11 @@ class fenetConnectorService : public core::iService {
 
         //services APIs
         string read(const std::string& address); //ex. %MW0
-        string read_n(const std::string& address, int count);
+        vector<uint8_t> read_block(const std::string& address, int count);
+
+    private:
+        string _vec2str(vector<uint8_t>& data);
+        string _c2str(const unsigned char* data, int size);
 
     private:
         sockpp::tcp_connector _fenetConnector;

@@ -6,7 +6,7 @@
 
 namespace oe::bus::protocol {
 
-    enum class xgt_operation_errorcode_t : uint16_t {
+    enum class xgt_errorcode_t : uint16_t {
         NORMAL_OPERATION = 0x0000,
         MODBUS_RECEIVE_FRAME_ERROR = 0x0001,        //모드버스 수신프레임 에러 (채널 초과)
         MODBUS_SIZE_ERROR = 0x0002,                 //모드버스 사이즈 에러

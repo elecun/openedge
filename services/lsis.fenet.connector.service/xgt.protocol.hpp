@@ -16,6 +16,7 @@
 #include <3rdparty/json.hpp>
 #include <openedge/core/protocol.hpp>
 #include <3rdparty/sockpp/tcp_connector.h>
+#include "xgt.errorcode.hpp"
 
 using namespace std;
 using json = nlohmann::json;
@@ -122,6 +123,7 @@ namespace oe::bus::protocol {
             void setParameters(string config);
 
             uint16_t check_response_error(const uint8_t* data, int size);
+            xgt_errorcode_t checkError(const uint8_t* data, int size);
 
         protected:
             void _set_default_header(vector<uint8_t>& packet, cpu_info_t cpuinfo, sof_t sof, fenet_slot_t nslot, fenet_base_t nbase);

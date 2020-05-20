@@ -2,7 +2,6 @@
 
 #include "xgt.protocol.hpp"
 #include <3rdparty/spdlog/spdlog.h>
-#include "xgt.errorcode.hpp"
 
 namespace oe::bus::protocol {
 
@@ -112,6 +111,14 @@ namespace oe::bus::protocol {
             errorcode = (uint16_t)(data[XGTProtocolIndex::ERROR_CODE+1]<<8 | data[XGTProtocolIndex::ERROR_CODE]);
         }
 
+        return errorcode;
+    }
+
+    xgt_errorcode_t XGTDedicated::checkError(const uint8_t* data, int size){
+        xgt_errorcode_t errorcode = xgt_errorcode_t::NORMAL_OPERATION;
+        if(!(data[XGTProtocolIndex::ERROR_STATE]==0x00) && !(data[XGTProtocolIndex::ERROR_STATE+1]==0x00)){
+            errorcode = static_cast<xgt_errorcode_t>((uint16_t)(data[XGTProtocolIndex::ERROR_CODE+1]<<8 | data[XGTProtocolIndex::ERROR_CODE]));
+        }
         return errorcode;
     }
 

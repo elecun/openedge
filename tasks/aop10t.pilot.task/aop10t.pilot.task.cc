@@ -81,8 +81,12 @@ void aop10tPilotTask::execute(){
             //spdlog::info("do action : {}", action.dump());
 
             if(action.find("address")!=action.end() && action.find("count")!=action.end()){
-                string dumped = _fenetServiceAPI->read_n(action["address"].get<string>(), action["count"].get<int>());
-                //spdlog::info("FEnet Response : {}", dumped);
+                vector<uint8_t> rawdata = _fenetServiceAPI->read_block(action["address"].get<string>(), action["count"].get<int>());
+                
+                string data;
+                for(uint8_t d:rawdata)
+                    data.append(fmt::format("{:x} ", d));
+                spdlog::info("Data : {}", data);
             }
         }
 

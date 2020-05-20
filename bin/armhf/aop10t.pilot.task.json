@@ -33,7 +33,7 @@
         }
     },
     "custom":{
-        "command":"read_n",
+        "command":"read_block",
         "address":"%MB0",
         "count":2
     }

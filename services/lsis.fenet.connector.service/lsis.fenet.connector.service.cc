@@ -3,8 +3,10 @@
 #include "lsis.fenet.connector.service.hpp"
 #include <3rdparty/spdlog/spdlog.h>
 #include <chrono>
+#include <vector>
 #include <string>
 #include "xgt.protocol.hpp"
+#include <stdexcept>
 
 using namespace std::chrono;
 using namespace std;
@@ -74,7 +76,7 @@ bool fenetConnectorService::initService(const char* config){
 
     //register function to provide services
     service->Add("read", jsonrpccxx::GetHandle(&fenetConnectorService::read, *this), {"address"});
-    service->Add("read_n", jsonrpccxx::GetHandle(&fenetConnectorService::read_n, *this), {"address", "count"});
+    service->Add("read_block", jsonrpccxx::GetHandle(&fenetConnectorService::read_block, *this), {"address", "count"});
 
     spdlog::info("Sucessfully created FENet connection : {}", _fenetConnector.address().to_string());
 
@@ -87,53 +89,92 @@ string fenetConnectorService::read(const std::string& address){
     return string("");
 }
 
-string fenetConnectorService::read_n(const std::string& address, int count){
-    //spdlog::info("call request to read block: {} with {}", address, count);
+vector<uint8_t> fenetConnectorService::read_block(const std::string& address, int count){
 
-    char address_array[address.size()];
-    std::copy(address.begin(), address.end(), address_array);
+    vector<uint8_t> rawdata;
 
-    if(address_array[0]!='%'){
-        spdlog::error("Invalid FEnet address format : {}", address);
-        return string("{}");
-    }
+    try {
+        assert(address.at(0)=='%');
 
-    if(address_array[2]=='B'){ //Word
+        const char memprefix[] = { 'I', 'Q', 'M', 'R', 'W'};
+        char mem {0};
+        for(auto m:memprefix){
+            if(address.at(1)==m){
+                mem = m; break;
+            }
+        }
+        assert(mem!=0);
+
+        const char typeprefix[] = {'X', 'B', 'W', 'D', 'L'};
+        char type{0};
+        for(auto t:typeprefix){
+            if(address.at(2)==t){
+                type = t; break;
+            }
+        }
+        assert(type!=0);
+
         vector<uint8_t> packet = _protocol->gen_read_block(address, count);
-        string packet_str;
-        for(uint8_t d:packet)
-            packet_str.append(fmt::format("{:x} ", d));
-        spdlog::info("Generated Packet({}) : {}", packet.size(), packet_str);
+        string strpack = _vec2str(packet);
+        spdlog::info("Generated({}) : {}", packet.size(), strpack);
 
-        int size = _fenetConnector.write(&packet[0], packet.size());
+        if(_fenetConnector.is_connected()){
+            int sent = _fenetConnector.write(&packet[0], packet.size());
+            
+            unsigned char data[512] = {0,};
+            int received = _fenetConnector.read_n(data, sizeof(data));
+            if(received>0){
+                spdlog::info("Received({}) : {}", received, _c2str(data, received));
+                using oe::bus::protocol::xgt_errorcode_t;
+                xgt_errorcode_t errorcode = _protocol->checkError(data, received);
+                if(errorcode!=xgt_errorcode_t::NORMAL_OPERATION){
+                    spdlog::error("Error Code : {:x}", static_cast<uint16_t>(errorcode));
+                }
+                else
+                    rawdata.assign(data+(received-count), data+received);
 
-        //std::this_thread::sleep_for(std::chrono::nanoseconds(20000000));
+                // else {
+                //     switch(type){
+                //         case 'X':   //bit Type
+                //         break;
+                //         case 'B':   //Byte(8bit)
+                //         {
+                //             rawdata.assign(data+(received-count), data+received);
+                //         }
+                //         break;
+                //         case 'W':   //WORD Type(16bit)
+                //         {
+                            
+                //         }
+                //         break;
+                //         case 'D':   //Double Word(32bit)
+                //         break;
+                //         case 'L':   //Long Word(64bit)
+                //         break;
+                //         default:
 
-        unsigned char data[100] = {0,};
-        int rsize = _fenetConnector.read_n(data, sizeof(data));
-
-        if(rsize>0){
-            string read;
-            for(int i=0;i<rsize;i++)
-                read.append(fmt::format("{:x} ", data[i]));
-            spdlog::info("Received Packet({}) : {}", rsize, read);
-
-            uint16_t error = _protocol->check_response_error(data, rsize);
-            if(error)
-                spdlog::error("Protocol Error : {:x}", error);
+                //     } //end switch
+                // }
+            }
         }
     }
+    catch(std::out_of_range& e){
+        spdlog::error("{}",e.what());
+    }
 
-    //_fenetConnector.write();
+    return rawdata;
+}
 
-    // switch(address.at(1)){
-    //     case 'W':   // Word (16bit)
-    //         {
-    //             string start_address = address.substr(3);
-    //             vector<uint16_t> data = _protocol->read_block<uint16_t>(start_address, count);
-    //         }
-    //     break;
-    // }
+string fenetConnectorService::_vec2str(vector<uint8_t>& data){
+    string str;
+    for(uint8_t d:data)
+        str.append(fmt::format("{:x} ", d));
+    return str;
+}
 
-    return string("{}");
+string fenetConnectorService::_c2str(const unsigned char* data, int size){
+    string str;
+    for(int i=0;i<size;i++)
+        str.append(fmt::format("{:x} ", data[i]));
+    return str;
 }
