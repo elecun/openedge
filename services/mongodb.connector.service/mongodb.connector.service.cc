@@ -16,6 +16,11 @@ static mongodbConnectorService* _instance = nullptr;
 oe::core::iService* create(){ if(!_instance) _instance = new mongodbConnectorService(); return _instance; }
 void release(){ if(_instance){ delete _instance; _instance = nullptr; }}
 
+//static mongoc_uri_t* _uri { nullptr };
+static mongoc_client_t* _client { nullptr };
+static mongoc_database_t* _database { nullptr };
+static mongoc_collection_t* _collection { nullptr };
+
 mongodbConnectorService::mongodbConnectorService()
 {
 }
@@ -25,8 +30,11 @@ mongodbConnectorService::~mongodbConnectorService(){
 }
 
 bool mongodbConnectorService::closeService(){
-    spdlog::info("close mongoConnectorService");
 
+    mongoc_collection_destroy(_collection);
+    mongoc_database_destroy(_database);
+    //mongoc_uri_destroy(_uri);
+    mongoc_client_destroy(_client);
     mongoc_cleanup();
 
     return true;
@@ -51,19 +59,86 @@ bool mongodbConnectorService::initService(const char* config){
         if(conf["connection"].find("port")!=conf["connection"].end())
             _mongodb_port = conf["connection"]["port"].get<int>();                //extract port
         spdlog::info("MongoDB Connection : {}:{}", _mongodb_address, _mongodb_port);
+
+        if(conf["info"].find("dbname")!=conf["info"].end())
+            _dbname = conf["info"]["dbname"].get<string>();
+        if(conf["info"].find("collection")!=conf["info"].end())
+            _colname = conf["info"]["collection"].get<string>();
+        
+        string _appname;
+        if(conf["info"].find("appname")!=conf["info"].end())
+            _appname = conf["info"]["appname"].get<string>();
+
+
+        //create mongo client
+
+        string mdburi = fmt::format("mongodb://{}:{}/?appname={}", _mongodb_address, _mongodb_port, _appname);
+        _client = mongoc_client_new(mdburi.c_str());
+        if(!_client){
+            spdlog::error("Failed to create mongodb client instance");
+            return false;
+        }
+        _collection = mongoc_client_get_collection(_client, _dbname.c_str(), _colname.c_str());
+
     }
     catch(const json::exception& e){
         spdlog::error("service profile : {}", e.what());
     }
 
-
     //add service
     service->Add("test", jsonrpccxx::GetHandle(&mongodbConnectorService::test, *this), {"value"});
+    service->Add("insert", jsonrpccxx::GetHandle(&mongodbConnectorService::insert, *this), {"document"});
 
     return true;
 }
 
 bool mongodbConnectorService::test(const int& value){
-    spdlog::info("call test : {}", value);
+    bson_t reply;
+    bson_error_t error;
+
+    bson_t* command = BCON_NEW("ping", BCON_INT32 (1));
+    bool retval = mongoc_client_command_simple(_client, "admin", command, nullptr, &reply, &error);
+
+    if(!retval){
+        spdlog::error("Error : {}", error.message);
+        return false;
+    }
+
+    char* str = bson_as_json(&reply, nullptr);
+    spdlog::info("{}",str);
+
+    bson_t* insert = BCON_NEW("hello", BCON_UTF8 ("world")); //insert (key=hello, value = world)
+
+    if(!mongoc_collection_insert_one(_collection, insert, nullptr, nullptr, &error)) {
+        spdlog::error("MongoDB Insert Error : {}", error.message);
+    }
+
+    bson_destroy(insert);
+    bson_destroy(&reply);
+    bson_destroy(command);
+    bson_free(str);
+
+    return true;
+}
+
+bool mongodbConnectorService::insert(const string& document /*json*/){
+
+    try {
+        bson_error_t error;
+        bson_t* bson = bson_new_from_json((const uint8_t*)document.c_str(), -1, &error);
+        if(!bson) {
+            spdlog::error("DB Insertion Error : {}", error.message);
+            return false;
+        }
+
+        if(!mongoc_collection_insert_one(_collection, bson, nullptr, nullptr, &error)) {
+            spdlog::error("MongoDB Insert Error : {}", error.message);
+            return false;
+        }
+        bson_destroy(bson);
+    }
+    catch(json::exception& e){
+        spdlog::error("Document insertion error : {}", e.what());
+    }
     return true;
 }

@@ -23,11 +23,14 @@ class mongodbConnectorService : public core::iService {
 
         //services APIs
         bool test(const int& value);
+        //bool insert(const string& dbname, const string& collection, const string& document /*json*/);
+        bool insert(const string& document /*json*/);
 
     private:
-        uint16_t _invokeId { 0x0000 };
         string _mongodb_address {""};
         int _mongodb_port {0};
+        string _dbname {""};
+        string _colname {""};
 
 }; //class
 

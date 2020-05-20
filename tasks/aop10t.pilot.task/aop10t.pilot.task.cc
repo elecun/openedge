@@ -90,9 +90,15 @@ void aop10tPilotTask::execute(){
             }
         }
 
-        // if(_mongodbHandle.ptrService){
-        //     _mongoServiceAPI->test(1);
-        // }
+        // code here to parse the raw data
+
+        if(_mongodbHandle.ptrService){
+            json test;
+            test["test"] = 1;
+            _mongoServiceAPI->insert(test.dump());
+        }
+
+        
     } 
     catch (jsonrpccxx::JsonRpcException &e) {
         spdlog::warn("RPC Error : {}", e.what());

@@ -24,7 +24,9 @@
         },
         "mongodb.connector.service":{
             "info":{
-                "dbname":"aop_pilot"
+                "dbname":"aop_pilot",
+                "collection":"sensor",
+                "appname":"sensor-1"
             },
             "connection":{
                 "address":"192.168.100.6",
@@ -33,7 +35,6 @@
         }
     },
     "custom":{
-        "command":"read_block",
         "address":"%MB0",
         "count":2
     }
