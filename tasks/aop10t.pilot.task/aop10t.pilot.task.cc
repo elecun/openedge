@@ -121,6 +121,7 @@ void aop10tPilotTask::cleanup(){
         if(pfRelease)
             pfRelease();
         dlclose(_fenetHandle.handle);
+        _fenetHandle.handle = nullptr;
     }
 
     if(_mongodbHandle.handle){
@@ -128,6 +129,7 @@ void aop10tPilotTask::cleanup(){
         if(pfRelease)
             pfRelease();
         dlclose(_mongodbHandle.handle);
+        _mongodbHandle.handle = nullptr;
     }
 
     spdlog::info("Cleanup the aop10tPilotTask");

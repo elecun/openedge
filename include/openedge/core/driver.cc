@@ -65,6 +65,8 @@ namespace oe::core::task {
     }
 
     void driver::cleanup(){
+        timer_delete(_timer_id);    //delete timer
+        spdlog::info("Cleanup <{}>", _taskImpl->_taskname);
         _taskImpl->_status = oe::core::task::runnable::Status::STOPPED;
         if(_taskImpl)
             _taskImpl->cleanup();
@@ -152,6 +154,9 @@ namespace oe::core::task {
                 // std::chrono::duration<double, std::chrono::seconds::period>(t_now - t_prev).count());
                 // t_prev = t_now;
             }
+            else
+                spdlog::info("Signal : {}", _sig_no);
+            
             
         }
     }

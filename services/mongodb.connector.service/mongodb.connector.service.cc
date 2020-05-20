@@ -16,7 +16,6 @@ static mongodbConnectorService* _instance = nullptr;
 oe::core::iService* create(){ if(!_instance) _instance = new mongodbConnectorService(); return _instance; }
 void release(){ if(_instance){ delete _instance; _instance = nullptr; }}
 
-//static mongoc_uri_t* _uri { nullptr };
 static mongoc_client_t* _client { nullptr };
 static mongoc_database_t* _database { nullptr };
 static mongoc_collection_t* _collection { nullptr };
@@ -33,9 +32,10 @@ bool mongodbConnectorService::closeService(){
 
     mongoc_collection_destroy(_collection);
     mongoc_database_destroy(_database);
-    //mongoc_uri_destroy(_uri);
     mongoc_client_destroy(_client);
     mongoc_cleanup();
+
+    spdlog::info("close mongodbConnectorService");
 
     return true;
 }
