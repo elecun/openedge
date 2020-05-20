@@ -69,9 +69,6 @@ bool mongodbConnectorService::initService(const char* config){
         if(conf["info"].find("appname")!=conf["info"].end())
             _appname = conf["info"]["appname"].get<string>();
 
-
-        //create mongo client
-
         string mdburi = fmt::format("mongodb://{}:{}/?appname={}", _mongodb_address, _mongodb_port, _appname);
         _client = mongoc_client_new(mdburi.c_str());
         if(!_client){
@@ -86,37 +83,7 @@ bool mongodbConnectorService::initService(const char* config){
     }
 
     //add service
-    service->Add("test", jsonrpccxx::GetHandle(&mongodbConnectorService::test, *this), {"value"});
     service->Add("insert", jsonrpccxx::GetHandle(&mongodbConnectorService::insert, *this), {"document"});
-
-    return true;
-}
-
-bool mongodbConnectorService::test(const int& value){
-    bson_t reply;
-    bson_error_t error;
-
-    bson_t* command = BCON_NEW("ping", BCON_INT32 (1));
-    bool retval = mongoc_client_command_simple(_client, "admin", command, nullptr, &reply, &error);
-
-    if(!retval){
-        spdlog::error("Error : {}", error.message);
-        return false;
-    }
-
-    char* str = bson_as_json(&reply, nullptr);
-    spdlog::info("{}",str);
-
-    bson_t* insert = BCON_NEW("hello", BCON_UTF8 ("world")); //insert (key=hello, value = world)
-
-    if(!mongoc_collection_insert_one(_collection, insert, nullptr, nullptr, &error)) {
-        spdlog::error("MongoDB Insert Error : {}", error.message);
-    }
-
-    bson_destroy(insert);
-    bson_destroy(&reply);
-    bson_destroy(command);
-    bson_free(str);
 
     return true;
 }

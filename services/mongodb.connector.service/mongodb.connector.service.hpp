@@ -22,8 +22,6 @@ class mongodbConnectorService : public core::iService {
         bool closeService() override;
 
         //services APIs
-        bool test(const int& value);
-        //bool insert(const string& dbname, const string& collection, const string& document /*json*/);
         bool insert(const string& document /*json*/);
 
     private:
