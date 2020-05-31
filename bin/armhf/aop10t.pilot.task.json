@@ -14,7 +14,10 @@
                 "mode":"client",
                 "cpu_info":"xgi",
                 "slot_index":0,
-                "base_index":0
+                "base_index":0,
+                "datatype":"D",
+                "start_address":100,
+                "end_address":120
             },
             "connection":{
                 "address":"192.168.100.8",
