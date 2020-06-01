@@ -35,7 +35,7 @@
         },
         "mqtt.publisher.service":{
             "info":{
-                "topic":"aop10t/pilot/address"
+                "topic":"aop10t/plc/address"
             },
             "connection":{
                 "address":"192.168.100.4"
@@ -43,7 +43,7 @@
         }
     },
     "block":{
-        "address":"%MD100",
-        "size":21
+        "address":"%MB0",
+        "size":8
     }
 }

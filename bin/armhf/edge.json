@@ -13,6 +13,6 @@
         }
     },
     "tasks":{
-        "default":["simple.task", "aop10t.pilot.task"]
+        "default":["aop10t.pilot.task"]
     }
 }

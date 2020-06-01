@@ -100,16 +100,26 @@ void aop10tPilotTask::execute(){
                 int size = block["size"].get<int>();
                 vector<uint8_t> rawdata = _fenetServiceAPI->read_block(address, size);
 
+                spdlog::info("Received raw data size {}", rawdata.size());
                 switch(address.at(2)){
+                    case 'B':
                     case 'W':
+                    {
+                        if(_mqttHandle.ptrService){
+                            string msg = "Data,host=aop-super-server ";
+                            int start_addr = std::stoi(address.substr(3));
+                            for(int i=0;i<size;i++){ //block size
+                                msg.append(fmt::format("Address_{}={:d}", start_addr++, static_cast<int>(rawdata[i])));
+                                if(i<size-1)
+                                    msg.append(",");
+                            }
+                            _mqttServiceAPI->publish(msg);
+                        }
+                    }
                     break;
                     case 'D': //double word
                         {
-                            spdlog::info("Received raw data size {}", rawdata.size());
-                            string data;
-                            for(uint8_t d:rawdata)
-                                data.append(fmt::format("{:x} ", d));
-                            spdlog::info("Data : {}", data);
+                            
                         }
                     break;
                 }
@@ -126,10 +136,7 @@ void aop10tPilotTask::execute(){
 		// 		registers[11]/1600,registers[12]/1600,registers[13]/1600,registers[14],registers[15]/16000*15,registers[16]/160);
 		// console->info("{}",msg);
 
-                if(_mqttHandle.ptrService){
-                    _mqttServiceAPI->publish("test");
-                    spdlog::info("Published Data");
-                }
+                
             }
         }
 

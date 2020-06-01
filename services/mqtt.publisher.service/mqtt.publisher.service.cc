@@ -71,10 +71,9 @@ bool mqttPublisherService::initService(const char* config){
     return true;
 }
 
-bool mqttPublisherService::publish(const string& topic, const string& data){
+bool mqttPublisherService::publish(const string& data){
 
     try {
-        
         int rc = _mqtt->publish(0, _topic.c_str(), strlen(data.c_str()), data.c_str(), 2, false);
 		rc = _mqtt->loop();
         if(rc)

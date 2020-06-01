@@ -23,7 +23,7 @@ class mqttPublisherService : public core::iService {
         bool closeService() override;
 
         //services APIs
-        bool publish(const string& topic, const string& data);
+        bool publish(const string& data);
 
     private:
         string _mqtt_address {""};
