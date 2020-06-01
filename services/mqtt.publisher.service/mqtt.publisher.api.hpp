@@ -1,18 +1,18 @@
 
 
-#ifndef _OPENEDGE_SERVICE_MONGODB_CONNECTOR_API_HPP_
-#define _OPENEDGE_SERVICE_MONGODB_CONNECTOR_API_HPP_
+#ifndef _OPENEDGE_SERVICE_MQTT_PUBLISHER_API_HPP_
+#define _OPENEDGE_SERVICE_MQTT_PUBLISHER_API_HPP_
 
 
 #include <3rdparty/jsonrpccxx/client.hpp>
 
 using namespace jsonrpccxx;
 
-class mongoServiceAPI {
+class mqttServiceAPI {
     public:
-        explicit mongoServiceAPI(JsonRpcClient& client):_client(client){}
+        explicit mqttServiceAPI(JsonRpcClient& client):_client(client){}
         
-        bool insert(const string& document) { return _client.CallMethod<bool>(3, "insert", {document}); }
+        bool publish(const string& data) { return _client.CallMethod<bool>(1, "publish", {data}); }
     private:
         JsonRpcClient& _client;
 };

@@ -2,6 +2,7 @@
 # Makefile for OpenEdge Software Framework for Application Gateway
 # Author : Byunghun Hwang <bh.hwang@iae.re.kr>
 # Usage : make ARCH=arm 
+# Note : You should make with GCC/G++ version 8
 
 # Makefile
 
@@ -142,9 +143,12 @@ mongodb.connector.service: $(OUTDIR)mongodb.connector.service.o
 $(OUTDIR)mongodb.connector.service.o: $(SERVICE_SOURCE_FILES)mongodb.connector.service/mongodb.connector.service.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
-mqtt.publisher.service: $(OUTDIR)mqtt.publisher.service.o
-	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(OUTDIR)$@ $^ $(LDLIBS) -lmosquitto
+mqtt.publisher.service: $(OUTDIR)mqtt.publisher.service.o \
+						$(OUTDIR)xqtt.o
+	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(OUTDIR)$@ $^ $(LDLIBS) -lmosquittopp
 $(OUTDIR)mqtt.publisher.service.o: $(SERVICE_SOURCE_FILES)mqtt.publisher.service/mqtt.publisher.service.cc
+	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+$(OUTDIR)mqtt.o: $(SERVICE_SOURCE_FILES)mqtt.publisher.service/mqtt.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
 plc.lsis.service: $(OUTDIR)plc.lsis.service.o

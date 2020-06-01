@@ -1,6 +1,6 @@
 
 
-#include "mongodb.connector.service.hpp"
+#include "mqtt.publisher.service.hpp"
 #include <3rdparty/spdlog/spdlog.h>
 #include <chrono>
 #include <string>
@@ -8,41 +8,34 @@
 #include <mosquittopp.h>
 #include <string>
 #include <mosquitto.h>
+#include "mqtt.hpp"
 
 using namespace std::chrono;
 using json = nlohmann::json;
 using namespace std;
 
 //static service
-static mongodbConnectorService* _instance = nullptr;
-oe::core::iService* create(){ if(!_instance) _instance = new mongodbConnectorService(); return _instance; }
+static mqttPublisherService* _instance = nullptr;
+oe::core::iService* create(){ if(!_instance) _instance = new mqttPublisherService(); return _instance; }
 void release(){ if(_instance){ delete _instance; _instance = nullptr; }}
 
-static mongoc_client_t* _client { nullptr };
-static mongoc_database_t* _database { nullptr };
-static mongoc_collection_t* _collection { nullptr };
-
-mongodbConnectorService::mongodbConnectorService()
+mqttPublisherService::mqttPublisherService()
 {
+
 }
 
-mongodbConnectorService::~mongodbConnectorService(){
+mqttPublisherService::~mqttPublisherService(){
     closeService();
 }
 
-bool mongodbConnectorService::closeService(){
+bool mqttPublisherService::closeService(){
 
-    mongoc_collection_destroy(_collection);
-    mongoc_database_destroy(_database);
-    mongoc_client_destroy(_client);
-    mongoc_cleanup();
-
-    spdlog::info("close mongodbConnectorService");
+    spdlog::info("close mqttPublisherService");
 
     return true;
 }
 
-bool mongodbConnectorService::initService(const char* config){
+bool mqttPublisherService::initService(const char* config){
     assert(config!=nullptr);
 
     spdlog::info("service config : {}", config);
@@ -57,27 +50,11 @@ bool mongodbConnectorService::initService(const char* config){
             return false;
 
         if(conf["connection"].find("address")!=conf["connection"].end())
-            _mongodb_address = conf["connection"]["address"].get<std::string>();  //extract ip4v address
-        if(conf["connection"].find("port")!=conf["connection"].end())
-            _mongodb_port = conf["connection"]["port"].get<int>();                //extract port
-        spdlog::info("MongoDB Connection : {}:{}", _mongodb_address, _mongodb_port);
+            _mqtt_address = conf["connection"]["address"].get<std::string>();  //extract ip4v address
+        spdlog::info("MQTT Connection : {}", _mqtt_address);
 
-        if(conf["info"].find("dbname")!=conf["info"].end())
-            _dbname = conf["info"]["dbname"].get<string>();
-        if(conf["info"].find("collection")!=conf["info"].end())
-            _colname = conf["info"]["collection"].get<string>();
-        
-        string _appname;
-        if(conf["info"].find("appname")!=conf["info"].end())
-            _appname = conf["info"]["appname"].get<string>();
-
-        string mdburi = fmt::format("mongodb://{}:{}/?appname={}", _mongodb_address, _mongodb_port, _appname);
-        _client = mongoc_client_new(mdburi.c_str());
-        if(!_client){
-            spdlog::error("Failed to create mongodb client instance");
-            return false;
-        }
-        _collection = mongoc_client_get_collection(_client, _dbname.c_str(), _colname.c_str());
+        if(conf["info"].find("topic")!=conf["info"].end())
+            _topic = conf["info"]["topic"].get<string>();
 
     }
     catch(const json::exception& e){
@@ -85,29 +62,31 @@ bool mongodbConnectorService::initService(const char* config){
     }
 
     //add service
-    service->Add("insert", jsonrpccxx::GetHandle(&mongodbConnectorService::insert, *this), {"document"});
+    service->Add("publish", jsonrpccxx::GetHandle(&mqttPublisherService::publish, *this), {"data"});
+
+    if(!_mqtt)
+        _mqtt = make_unique<mqttClient>("data", _mqtt_address.c_str(), 1883, _topic.c_str());
+
+	if(_mqtt->connected())
+		console->info("MQTT Connected");
+    else
+        return false;
 
     return true;
 }
 
-bool mongodbConnectorService::insert(const string& document /*json*/){
+bool mqttPublisherService::publish(const string& topic, const string& data){
 
     try {
-        bson_error_t error;
-        bson_t* bson = bson_new_from_json((const uint8_t*)document.c_str(), -1, &error);
-        if(!bson) {
-            spdlog::error("DB Insertion Error : {}", error.message);
-            return false;
-        }
-
-        if(!mongoc_collection_insert_one(_collection, bson, nullptr, nullptr, &error)) {
-            spdlog::error("MongoDB Insert Error : {}", error.message);
-            return false;
-        }
-        bson_destroy(bson);
+        
+        int rc = _mqtt->publish(0, _topic.c_str(), strlen(data.c_str()), data.c_str(), 2, false);
+		rc = _mqtt->loop();
+        if(rc)
+			_mqtt->reconnect();
+		usleep(1e5);
     }
     catch(json::exception& e){
-        spdlog::error("Document insertion error : {}", e.what());
+        spdlog::error("Data Publish error : {}", e.what());
     }
     return true;
 }

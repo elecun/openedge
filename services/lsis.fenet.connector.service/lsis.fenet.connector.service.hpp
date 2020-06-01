@@ -30,7 +30,7 @@ class fenetConnectorService : public core::iService {
 
         //services APIs
         string read(const std::string& address); //ex. %MW0
-        vector<uint8_t> read_block(const std::string& address, int count);
+        vector<uint8_t> read_block(const std::string& address, int size);
 
     private:
         string _vec2str(vector<uint8_t>& data);

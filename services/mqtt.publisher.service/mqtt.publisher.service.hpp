@@ -12,6 +12,7 @@
 
 using namespace oe;
 
+class mqttClient;
 class mqttPublisherService : public core::iService {
     public:
         mqttPublisherService();
@@ -22,13 +23,12 @@ class mqttPublisherService : public core::iService {
         bool closeService() override;
 
         //services APIs
-        bool publish(const string& document /*json*/);
+        bool publish(const string& topic, const string& data);
 
     private:
-        string _mongodb_address {""};
-        int _mongodb_port {0};
-        string _dbname {""};
-        string _colname {""};
+        string _mqtt_address {""};
+        string _topic {""};
+        unique_ptr<mqttClient> _mqtt { nullptr };
 
 }; //class
 

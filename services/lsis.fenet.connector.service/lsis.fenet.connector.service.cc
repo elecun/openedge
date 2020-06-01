@@ -93,7 +93,7 @@ string fenetConnectorService::read(const std::string& address){
     return string("");
 }
 
-vector<uint8_t> fenetConnectorService::read_block(const std::string& address, int count){
+vector<uint8_t> fenetConnectorService::read_block(const std::string& address, int size){
 
     vector<uint8_t> rawdata;
 
@@ -118,14 +118,14 @@ vector<uint8_t> fenetConnectorService::read_block(const std::string& address, in
         }
         assert(type!=0);
 
-        vector<uint8_t> packet = _protocol->gen_read_block(address, count);
+        vector<uint8_t> packet = _protocol->gen_read_block(address, size);
         string strpack = _vec2str(packet);
         spdlog::info("Generated({}) : {}", packet.size(), strpack);
 
         if(_fenetConnector.is_connected()){
             int sent = _fenetConnector.write(&packet[0], packet.size());
             
-            unsigned char data[512] = {0,};
+            unsigned char data[1024] = {0,};
             int received = _fenetConnector.read_n(data, sizeof(data));
             if(received>0){
                 spdlog::info("Received({}) : {}", received, _c2str(data, received));
@@ -134,8 +134,9 @@ vector<uint8_t> fenetConnectorService::read_block(const std::string& address, in
                 if(errorcode!=xgt_errorcode_t::NORMAL_OPERATION){
                     spdlog::error("Error Code : {:x}", static_cast<uint16_t>(errorcode));
                 }
-                else
-                    rawdata.assign(data+(received-count), data+received);
+                else{
+                    rawdata.assign(data+(received-size), data+received);
+                }
             }
         }
     }

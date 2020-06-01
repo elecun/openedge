@@ -19,9 +19,10 @@ using namespace std;
 
 namespace jsonrpccxx{ class JsonRpcClient; }
 
-class fenetServiceAPI;
-class mongoServiceAPI;
-class mqttServiceAPI;
+class fenetServiceAPI;      //LSIS PLC Fenet Service API
+class mongoServiceAPI;      //MongoDB Service API
+class mqttServiceAPI;       //MQTT Service API
+
 class aop10tPilotTask : public oe::core::task::runnable {
     public:
         aop10tPilotTask() = default;
@@ -40,6 +41,7 @@ class aop10tPilotTask : public oe::core::task::runnable {
 
         unique_ptr<core::task::localServiceConnector> _fenetConnector;  //LSIS FEnet Service Connector
         unique_ptr<core::task::localServiceConnector> _mongoConnector;  //MongoDB Service Connector
+        unique_ptr<core::task::localServiceConnector> _mqttConnector;  //MongoDB Service Connector
 
         shared_ptr<jsonrpccxx::JsonRpcClient> _fenetAccessor;    //for FEnet service access
         unique_ptr<fenetServiceAPI> _fenetServiceAPI; //fenet service API
