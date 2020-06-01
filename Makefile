@@ -142,6 +142,11 @@ mongodb.connector.service: $(OUTDIR)mongodb.connector.service.o
 $(OUTDIR)mongodb.connector.service.o: $(SERVICE_SOURCE_FILES)mongodb.connector.service/mongodb.connector.service.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
+mqtt.publisher.service: $(OUTDIR)mqtt.publisher.service.o
+	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(OUTDIR)$@ $^ $(LDLIBS) -lmosquitto
+$(OUTDIR)mqtt.publisher.service.o: $(SERVICE_SOURCE_FILES)mqtt.publisher.service/mqtt.publisher.service.cc
+	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
 plc.lsis.service: $(OUTDIR)plc.lsis.service.o
 	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(OUTDIR)$@ $^ $(LDLIBS)
 $(OUTDIR)plc.lsis.service.o: $(SERVICE_SOURCE_FILES)plc.lsis.service/plc.lsis.service.cc

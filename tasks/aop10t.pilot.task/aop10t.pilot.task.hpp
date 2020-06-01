@@ -21,6 +21,7 @@ namespace jsonrpccxx{ class JsonRpcClient; }
 
 class fenetServiceAPI;
 class mongoServiceAPI;
+class mqttServiceAPI;
 class aop10tPilotTask : public oe::core::task::runnable {
     public:
         aop10tPilotTask() = default;
@@ -42,6 +43,9 @@ class aop10tPilotTask : public oe::core::task::runnable {
 
         shared_ptr<jsonrpccxx::JsonRpcClient> _fenetAccessor;    //for FEnet service access
         unique_ptr<fenetServiceAPI> _fenetServiceAPI; //fenet service API
+
+        shared_ptr<jsonrpccxx::JsonRpcClient> _mqttPublisher;    //for FEnet service access
+        unique_ptr<mqttServiceAPI> _mqttServiceAPI; //fenet service API
 
         shared_ptr<jsonrpccxx::JsonRpcClient> _mongoAccessor;   //for MongoDB Service access
         unique_ptr<mongoServiceAPI> _mongoServiceAPI;   //mongodb service API

@@ -7,17 +7,14 @@
         "cycle_ns":500000000
     },
     "services":{
-        "required":["lsis.fenet.connector.service", "mongodb.connector.service"],
+        "required":["lsis.fenet.connector.service", "mongodb.connector.service", "mqtt.publisher.service"],
         "lsis.fenet.connector.service":{
             "info":{
                 "companyid":"LSIS-XGT",
                 "mode":"client",
                 "cpu_info":"xgi",
                 "slot_index":0,
-                "base_index":0,
-                "datatype":"D",
-                "start_address":100,
-                "end_address":120
+                "base_index":0
             },
             "connection":{
                 "address":"192.168.100.8",
@@ -32,13 +29,21 @@
                 "appname":"sensor-1"
             },
             "connection":{
-                "address":"192.168.100.6",
+                "address":"192.168.100.4",
                 "port":27017
+            }
+        },
+        "mqtt.publisher.service":{
+            "info":{
+                "topic":"aop10t/pilot/address"
+            },
+            "connection":{
+                "address":"192.168.100.4"
             }
         }
     },
-    "custom":{
-        "address":"%MB0",
-        "count":2
+    "block":{
+        "address":"%MD100",
+        "size":21
     }
 }

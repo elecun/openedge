@@ -19,6 +19,7 @@ void release(){ if(_instance){ delete _instance; _instance = nullptr; }}
 
 const char* svc_fenet = "lsis.fenet.connector.service";
 const char* svc_mongo = "mongodb.connector.service";
+const char* svc_mqtt = "mqtt.publisher.service";
 
 bool aop10tPilotTask::configure(){
 
@@ -81,10 +82,10 @@ void aop10tPilotTask::execute(){
         serviceHandle& _mongodbHandle = _serviceHandles[svc_mongo];; //MongoDB Service
 
         if(_fenetHandle.ptrService){
-            json action = json::parse(getProfile()->getCustom());
+            json block = json::parse(getProfile()->getCustom("block"));
 
-            if(action.find("address")!=action.end() && action.find("count")!=action.end()){
-                vector<uint8_t> rawdata = _fenetServiceAPI->read_block(action["address"].get<string>(), action["count"].get<int>());
+            if(block.find("address")!=block.end() && block.find("size")!=block.end()){
+                vector<uint8_t> rawdata = _fenetServiceAPI->read_block(block["address"].get<string>(), block["size"].get<int>());
                 
                 string data;
                 for(uint8_t d:rawdata)

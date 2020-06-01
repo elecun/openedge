@@ -49,12 +49,16 @@ bool fenetConnectorService::initService(const char* config){
         if(serviceConfig.find("connection")==serviceConfig.end() || serviceConfig.find("info")==serviceConfig.end())
             return false;
 
-        if(serviceConfig["connection"].find("address")!=serviceConfig["connection"].end())
-            _fenet_address = serviceConfig["connection"]["address"].get<std::string>();  //extract ip4v address
-        if(serviceConfig["connection"].find("port")!=serviceConfig["connection"].end())
-            _fenet_port = serviceConfig["connection"]["port"].get<int>();                //extract port
-        if(serviceConfig["connection"].find("timeout")!=serviceConfig["connection"].end())
-            _fenet_timeout = serviceConfig["connection"]["timeout"].get<unsigned long long>();
+        //connection profile
+        json connection = serviceConfig["connection"];
+        if(connection.find("address")!=connection.end())
+            _fenet_address = connection["address"].get<std::string>();  //extract ip4v address
+        if(connection.find("port")!=connection.end())
+            _fenet_port = connection["port"].get<int>();                //extract port
+        if(connection.find("timeout")!=connection.end())
+            _fenet_timeout = connection["timeout"].get<unsigned long long>();
+
+        //info profile
 
         if(_protocol)
             _protocol->setParameters(serviceConfig["info"].dump());
@@ -132,29 +136,6 @@ vector<uint8_t> fenetConnectorService::read_block(const std::string& address, in
                 }
                 else
                     rawdata.assign(data+(received-count), data+received);
-
-                // else {
-                //     switch(type){
-                //         case 'X':   //bit Type
-                //         break;
-                //         case 'B':   //Byte(8bit)
-                //         {
-                //             rawdata.assign(data+(received-count), data+received);
-                //         }
-                //         break;
-                //         case 'W':   //WORD Type(16bit)
-                //         {
-                            
-                //         }
-                //         break;
-                //         case 'D':   //Double Word(32bit)
-                //         break;
-                //         case 'L':   //Long Word(64bit)
-                //         break;
-                //         default:
-
-                //     } //end switch
-                // }
             }
         }
     }
