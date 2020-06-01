@@ -144,7 +144,7 @@ $(OUTDIR)mongodb.connector.service.o: $(SERVICE_SOURCE_FILES)mongodb.connector.s
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
 mqtt.publisher.service: $(OUTDIR)mqtt.publisher.service.o \
-						$(OUTDIR)xqtt.o
+						$(OUTDIR)mqtt.o
 	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(OUTDIR)$@ $^ $(LDLIBS) -lmosquittopp
 $(OUTDIR)mqtt.publisher.service.o: $(SERVICE_SOURCE_FILES)mqtt.publisher.service/mqtt.publisher.service.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
@@ -169,7 +169,7 @@ $(OUTDIR)uuid.o:	$(INCLUDE_FILES)openedge/util/uuid.cc
 all : edge
 test : oeware_test
 tasks : simple.task simple2.task aop10t.pilot.task
-services : lsis.fenet.connector.service mongodb.connector.service
+services : lsis.fenet.connector.service mongodb.connector.service mqtt.publisher.service
 clean : FORCE
 		$(RM) $(OUTDIR)*.o $(OUTDIR)openedge $(OUTDIR)edge $(OUTDIR)*.task $(OUTDIR)*.service
 FORCE : 

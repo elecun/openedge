@@ -5,9 +5,7 @@
 #include <chrono>
 #include <string>
 #include <3rdparty/json.hpp>
-#include <mosquittopp.h>
 #include <string>
-#include <mosquitto.h>
 #include "mqtt.hpp"
 
 using namespace std::chrono;
@@ -40,8 +38,6 @@ bool mqttPublisherService::initService(const char* config){
 
     spdlog::info("service config : {}", config);
 
-    mongoc_init();
-
     //read configuration for fenet connection
     try {
         json conf;
@@ -68,7 +64,7 @@ bool mqttPublisherService::initService(const char* config){
         _mqtt = make_unique<mqttClient>("data", _mqtt_address.c_str(), 1883, _topic.c_str());
 
 	if(_mqtt->connected())
-		console->info("MQTT Connected");
+        spdlog::info("MQTT Connected");
     else
         return false;
 
