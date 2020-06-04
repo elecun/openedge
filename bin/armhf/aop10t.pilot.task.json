@@ -42,8 +42,13 @@
             }
         }
     },
-    "block":{
-        "address":"%MB0",
-        "size":8
+    "task":{
+        "activity":{
+            "read_block":{
+                "address":"%MB0",
+                "size":8,
+                "namelist":["Address0","Address1","Address2","Address3","Address4","Address5","Address6","Address7"]
+            }
+        }
     }
 }

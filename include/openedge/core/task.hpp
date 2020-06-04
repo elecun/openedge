@@ -58,14 +58,17 @@ namespace oe {
                     typedef struct serviceHandle_t {
                         void* handle { nullptr }; //component file handler
                         core::iService* ptrService { nullptr }; //service impl instance
-                        string name;
-                        bool is_valid() { return (!handle && !ptrService); }
+                        bool isValid() { return (!handle && !ptrService); }
+                        const char* getName() { return name.c_str(); }
                         serviceHandle_t(){}
                         serviceHandle_t(const char* svcname):name(svcname){}
+                        private:
+                            string name {""};
+
                     } serviceHandle;
                     map<string /*service name*/, serviceHandle /*service handle*/> serviceContainer;
 
-                    string _taskname { "Unknown" };
+                    string _taskname { "unknown" };
                     Status _status { Status::STOPPED };
 
                 private:
