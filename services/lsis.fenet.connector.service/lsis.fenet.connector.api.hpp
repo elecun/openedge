@@ -12,14 +12,16 @@
 using namespace jsonrpccxx;
 using namespace std;
 
-class fenetServiceAPI {
-    public:
-        explicit fenetServiceAPI(JsonRpcClient& client):_client(client){}
-        string read(const std::string& address){ return _client.CallMethod<string>(2, "read", {address}); } //ex. '%MW0'
-        vector<uint8_t> read_block(const std::string& address, int size) { return _client.CallMethod<vector<uint8_t>>(4, "read_block", {address, size});}
+namespace oe::service {
+    class fenetServiceAPI {
+        public:
+            explicit fenetServiceAPI(JsonRpcClient& client):_client(client){}
+            string read(const std::string& address){ return _client.CallMethod<string>(2, "read", {address}); } //ex. '%MW0'
+            vector<uint8_t> read_block(const std::string& address, int size) { return _client.CallMethod<vector<uint8_t>>(4, "read_block", {address, size});}
 
-    private:
-        JsonRpcClient& _client;
-};
+        private:
+            JsonRpcClient& _client;
+    };
+}
 
 #endif

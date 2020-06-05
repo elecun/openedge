@@ -8,13 +8,15 @@
 
 using namespace jsonrpccxx;
 
-class mqttServiceAPI {
-    public:
-        explicit mqttServiceAPI(JsonRpcClient& client):_client(client){}
-        
-        bool publish(const string& data) { return _client.CallMethod<bool>(1, "publish", {data}); }
-    private:
-        JsonRpcClient& _client;
-};
+namespace oe::service {
+    class mqttServiceAPI {
+        public:
+            explicit mqttServiceAPI(JsonRpcClient& client):_client(client){}
+            
+            bool publish(const string& data) { return _client.CallMethod<bool>(1, "publish", {data}); }
+        private:
+            JsonRpcClient& _client;
+    };
+}
 
 #endif

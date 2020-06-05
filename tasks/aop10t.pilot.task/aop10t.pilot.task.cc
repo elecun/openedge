@@ -24,8 +24,6 @@ const char* svc_mqtt = "mqtt.publisher.service";
 
 bool aop10tPilotTask::configure(){
 
-    _logPerf.open("aop10tPilotTask.perf.txt");
-
     //getting list of service
     vector<string> svclist = this->getProfile()->getRequiredServices();
 
@@ -151,15 +149,9 @@ void aop10tPilotTask::execute(){
     catch (jsonrpccxx::JsonRpcException &e) {
         spdlog::warn("RPC Error : {}", e.what());
     }
-
-    auto t_elapsed = std::chrono::high_resolution_clock::now();
-    if(_logPerf.is_open()){
-        _logPerf << std::chrono::duration<double, std::chrono::seconds::period>(t_elapsed - t_now).count() << endl;
-    }
 }
 
 void aop10tPilotTask::cleanup(){
-    _logPerf.close();
 
     serviceHandle& _fenetHandle = _serviceHandles[svc_fenet]; //LSIS FEnet Service
     serviceHandle& _mongodbHandle = _serviceHandles[svc_mongo]; //LSIS MongoDB Service

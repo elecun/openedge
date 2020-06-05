@@ -24,7 +24,7 @@ namespace oe::core::task {
                         _taskImpl->_profile = make_unique<core::profile>(path.c_str()); //load profile
                     else
                         spdlog::error("<{}> profile does not exist", taskname);
-                    _taskImpl->_taskname = taskname;
+                    _taskImpl->taskname = taskname;
                     _signalIndex = signalIndex++;
                     _taskImpl->setStatus(oe::core::task::runnable::Status::STOPPED);
                 }
@@ -43,6 +43,9 @@ namespace oe::core::task {
     bool driver::configure(){
         try {
             if(_taskImpl){
+                //set configurations
+                _taskImpl->_check_jitter = _taskImpl->getProfile()->data["info"]["policy"]["check_jitter"].get<bool>();
+                _taskImpl->_check_overrun = _taskImpl->getProfile()->data["info"]["policy"]["check_overrun"].get<bool>();
                 return _taskImpl->configure();
             }
         }
@@ -57,7 +60,7 @@ namespace oe::core::task {
         if(_taskImpl) {
             if(_taskImpl->_profile){
                 unsigned long long rtime = _taskImpl->_profile->data["info"]["cycle_ns"].get<unsigned long long>();
-                spdlog::info("<{}> RT Time Period : {} ns",_taskImpl->_taskname, rtime);
+                spdlog::info("<{}> RT Time Period : {} ns",_taskImpl->taskname, rtime);
                 set_rt_timer(rtime);
                 _ptrThread = new thread{ &oe::core::task::driver::do_process, this };
             }
@@ -66,8 +69,8 @@ namespace oe::core::task {
 
     void driver::cleanup(){
         timer_delete(_timer_id);    //delete timer
-        spdlog::info("Cleanup <{}>", _taskImpl->_taskname);
-        _taskImpl->_status = oe::core::task::runnable::Status::STOPPED;
+        spdlog::info("Cleanup <{}>", _taskImpl->taskname);
+        _taskImpl->status = oe::core::task::runnable::Status::STOPPED;
         if(_taskImpl)
             _taskImpl->cleanup();
         unload();
@@ -138,7 +141,7 @@ namespace oe::core::task {
         sigaddset(&thread_sigmask, SIG_RUNTIME_TRIGGER+_signalIndex);
         int _sig_no;
         //auto t_prev = std::chrono::high_resolution_clock::now();
-        _taskImpl->_status = oe::core::task::runnable::Status::RUNNING;
+        _taskImpl->status = oe::core::task::runnable::Status::RUNNING;
 
         while(1){
             sigwait(&thread_sigmask, &_sig_no);

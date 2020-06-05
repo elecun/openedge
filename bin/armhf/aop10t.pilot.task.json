@@ -4,7 +4,12 @@
         "taskname":"aop10t.pilot.task",
         "version":"0.0.1",
         "cpu_affinity":1,
-        "cycle_ns":500000000
+        "cycle_ns":500000000,
+        "policy":{
+            "check_jitter":true,
+            "check_overrun":true,
+            "fault_level":0
+        }
     },
     "services":{
         "required":["lsis.fenet.connector.service", "mongodb.connector.service", "mqtt.publisher.service"],
@@ -47,7 +52,7 @@
             "read_block":{
                 "address":"%MB0",
                 "size":8,
-                "namelist":["Sensor0","Sensor1","Sensor2","Sensor3","Sensor4","Sensor5","Sensor6","Sensor7"]
+                "namelist":["Sensor-0","Sensor-1","Sensor-2","Sensor-3","Sensor-4","Sensor-5","Sensor-6","Sensor-7"]
             }
         }
     }

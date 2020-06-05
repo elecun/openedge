@@ -12,23 +12,26 @@
 #include <map>
 #include <memory>
 #include <openedge/core.hpp>
-#include <fstream>
+
+namespace jsonrpccxx{ class JsonRpcClient; }
+namespace oe::net::rpc { class client; }
+
+namespace oe::service {
+    class fenetServiceAPI;      //LSIS PLC Fenet Service API
+    class mongoServiceAPI;      //MongoDB Service API
+    class mqttServiceAPI;       //MQTT Service API
+}
 
 using namespace oe;
 using namespace std;
-
-namespace jsonrpccxx{ class JsonRpcClient; }
-
-class fenetServiceAPI;      //LSIS PLC Fenet Service API
-class mongoServiceAPI;      //MongoDB Service API
-class mqttServiceAPI;       //MQTT Service API
+using namespace oe::service;
 
 class aop10tPilotTask : public oe::core::task::runnable {
     public:
         aop10tPilotTask() = default;
         virtual ~aop10tPilotTask() = default;
 
-        //common interface
+        //task interface
         bool configure() override;
         void execute() override;
         void cleanup() override;
@@ -51,9 +54,6 @@ class aop10tPilotTask : public oe::core::task::runnable {
 
         shared_ptr<jsonrpccxx::JsonRpcClient> _mongoAccessor;   //for MongoDB Service access
         unique_ptr<mongoServiceAPI> _mongoServiceAPI;   //mongodb service API
-
-        
-        std::ofstream _logPerf;
 };
 
 EXPORT_TASK_API

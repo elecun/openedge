@@ -8,13 +8,15 @@
 
 using namespace jsonrpccxx;
 
-class mongoServiceAPI {
-    public:
-        explicit mongoServiceAPI(JsonRpcClient& client):_client(client){}
-        
-        bool insert(const string& document) { return _client.CallMethod<bool>(3, "insert", {document}); }
-    private:
-        JsonRpcClient& _client;
-};
+namespace oe::service {
+    class mongoServiceAPI {
+        public:
+            explicit mongoServiceAPI(JsonRpcClient& client):_client(client){}
+            
+            bool insert(const string& document) { return _client.CallMethod<bool>(3, "insert", {document}); }
+        private:
+            JsonRpcClient& _client;
+    };
+}
 
 #endif

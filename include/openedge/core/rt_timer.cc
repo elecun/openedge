@@ -26,14 +26,12 @@ namespace oe {
         }
 
         rt_timer::~rt_timer(){
-            printf("rt_timer terminate");
             stop();
             timer_delete(_timer_id);
             signal(SIG_RUNTIME_TRIGGER, SIG_IGN);
         }
 
         void rt_timer::start(long nsec, timer_type type) {
-            printf("rt_timer start");
             switch(type){
                 case timer_type::PERIODIC:
                     const long nano = (1000000000L);

@@ -32,7 +32,9 @@ namespace oe {
     namespace core { class iService; }
     namespace core::task {
             
-            //realtime task interface
+            /**
+             * @brief   runnable class interface for task
+             */
             class runnable {
 
                 friend class oe::core::task::driver;
@@ -40,10 +42,10 @@ namespace oe {
                 public:
                     enum class Status : int { STOPPED=0, RUNNING, PAUSED };
 
-                    virtual Status getStatus() { return _status; }
-                    void setStatus(Status s) { _status = s;  }
+                    virtual Status getStatus() { return status; }
+                    void setStatus(Status s) { status = s;  }
                     
-                    //common interface
+                    //task common interfaces
                     virtual void execute() = 0;
                     virtual bool configure() = 0;
                     virtual void cleanup() = 0;
@@ -56,25 +58,38 @@ namespace oe {
 
                 protected:
                     typedef struct serviceHandle_t {
-                        void* handle { nullptr }; //component file handler
-                        core::iService* ptrService { nullptr }; //service impl instance
-                        bool isValid() { return (!handle && !ptrService); }
-                        const char* getName() { return name.c_str(); }
-                        serviceHandle_t(){}
-                        serviceHandle_t(const char* svcname):name(svcname){}
+                        public:
+                            void* pfHandle { nullptr }; //component file handler
+                            core::iService* pService { nullptr }; //service implementation ptr
+                            bool isValid() { return (!pfHandle && !pService); }
+                            const char* getName() const { return name.c_str(); }
+                            serviceHandle_t(){}
+                            serviceHandle_t(const char* svcname):name(svcname){}
                         private:
                             string name {""};
 
                     } serviceHandle;
                     map<string /*service name*/, serviceHandle /*service handle*/> serviceContainer;
 
-                    string _taskname { "unknown" };
-                    Status _status { Status::STOPPED };
+                    typedef enum class fault_type_t : int {
+                        CRITICAL = 0,   //drop the all tasks, and show alert
+                        IGNORE = 100    //ignore the fault, no actions!
+                    };
+
+                    string taskname { "unknown" };
+                    Status status { Status::STOPPED };
+                    fault_type_t fault_level { fault_type_t::IGNORE };
 
                 private:
                     unique_ptr<core::profile> _profile;
+                    bool _check_jitter {false};
+                    bool _check_overrun {false};
+
             }; //class runnable
 
+            /**
+             * @brief   Local Service Connector for RPC Client
+             */
             class localServiceConnector : public jsonrpccxx::IClientConnector {
             public:
                 explicit localServiceConnector(jsonrpccxx::JsonRpcServer &server) : server(server) {}
