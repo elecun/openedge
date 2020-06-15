@@ -55,26 +55,26 @@ bool aop10tPilotTask::configure(){
 
     //initialize all loaded services
     for(map<string, serviceHandle>::iterator itr = _serviceHandles.begin();itr!=_serviceHandles.end();++itr){
-        if(!itr->second.ptrService->initService(this->getProfile()->getServiceProfile(itr->first.c_str()).c_str())){
+        if(!itr->second.pService->initService(this->getProfile()->getServiceProfile(itr->first.c_str()).c_str())){
             spdlog::error("Service<{}> initialization failed", itr->first);
         }
     }
 
     //find service handle and make required service connection
     if(_serviceHandles.find(svc_fenet)!=_serviceHandles.end()){
-        _fenetConnector = make_unique<core::task::localServiceConnector>(_serviceHandles[svc_fenet].ptrService->getServicePort());
+        _fenetConnector = make_unique<core::task::localServiceConnector>(_serviceHandles[svc_fenet].pService->getServicePort());
         _fenetAccessor = make_shared<jsonrpccxx::JsonRpcClient>(*_fenetConnector.get(), jsonrpccxx::version::v2);
         _fenetServiceAPI = make_unique<fenetServiceAPI>(*_fenetAccessor.get());
     }
 
     if(_serviceHandles.find(svc_mongo)!=_serviceHandles.end()){
-        _mongoConnector = make_unique<core::task::localServiceConnector>(_serviceHandles[svc_mongo].ptrService->getServicePort());
+        _mongoConnector = make_unique<core::task::localServiceConnector>(_serviceHandles[svc_mongo].pService->getServicePort());
         _mongoAccessor = make_shared<jsonrpccxx::JsonRpcClient>(*_mongoConnector.get(), jsonrpccxx::version::v2);
         _mongoServiceAPI = make_unique<mongoServiceAPI>(*_mongoAccessor.get());
     }
 
     if(_serviceHandles.find(svc_mqtt)!=_serviceHandles.end()){
-        _mqttConnector = make_unique<core::task::localServiceConnector>(_serviceHandles[svc_mqtt].ptrService->getServicePort());
+        _mqttConnector = make_unique<core::task::localServiceConnector>(_serviceHandles[svc_mqtt].pService->getServicePort());
         _mqttPublisher = make_shared<jsonrpccxx::JsonRpcClient>(*_mqttConnector.get(), jsonrpccxx::version::v2);
         _mqttServiceAPI = make_unique<mqttServiceAPI>(*_mqttPublisher.get());
     }
@@ -90,7 +90,7 @@ void aop10tPilotTask::execute(){
         serviceHandle& _mongodbHandle = _serviceHandles[svc_mongo];; //MongoDB Service
         serviceHandle& _mqttHandle = _serviceHandles[svc_mqtt];; //MQTT Service
 
-        if(_fenetHandle.ptrService){
+        if(_fenetHandle.pService){
             json block = json::parse(getProfile()->getCustom("block"));
 
             if(block.find("address")!=block.end() && block.find("size")!=block.end()){
@@ -103,7 +103,7 @@ void aop10tPilotTask::execute(){
                     case 'B':
                     case 'W':
                     {
-                        if(_mqttHandle.ptrService){
+                        if(_mqttHandle.pService){
                             string msg = "Data,host=aop-super-server ";
                             int start_addr = std::stoi(address.substr(3));
                             for(int i=0;i<size;i++){ //block size
@@ -156,20 +156,20 @@ void aop10tPilotTask::cleanup(){
     serviceHandle& _fenetHandle = _serviceHandles[svc_fenet]; //LSIS FEnet Service
     serviceHandle& _mongodbHandle = _serviceHandles[svc_mongo]; //LSIS MongoDB Service
 
-    if(_fenetHandle.handle){
-        release_service pfRelease = (release_service)dlsym(_fenetHandle.handle, "release");
+    if(_fenetHandle.pfHandle){
+        release_service pfRelease = (release_service)dlsym(_fenetHandle.pfHandle, "release");
         if(pfRelease)
             pfRelease();
-        dlclose(_fenetHandle.handle);
-        _fenetHandle.handle = nullptr;
+        dlclose(_fenetHandle.pfHandle);
+        _fenetHandle.pfHandle = nullptr;
     }
 
-    if(_mongodbHandle.handle){
-        release_service pfRelease = (release_service)dlsym(_mongodbHandle.handle, "release");
+    if(_mongodbHandle.pfHandle){
+        release_service pfRelease = (release_service)dlsym(_mongodbHandle.pfHandle, "release");
         if(pfRelease)
             pfRelease();
-        dlclose(_mongodbHandle.handle);
-        _mongodbHandle.handle = nullptr;
+        dlclose(_mongodbHandle.pfHandle);
+        _mongodbHandle.pfHandle = nullptr;
     }
 
     spdlog::info("Cleanup the aop10tPilotTask");
@@ -177,21 +177,21 @@ void aop10tPilotTask::cleanup(){
 
 bool aop10tPilotTask::_load_service(serviceHandle& service){
     
-    string path = "./"+service.name;
+    string path = "./"+service.getName();
     spdlog::info(" * Load service : {}", path);
 
-    service.handle = dlopen(path.c_str(), RTLD_LAZY|RTLD_LOCAL);
-    if(service.handle==nullptr)
+    service.pfHandle = dlopen(path.c_str(), RTLD_LAZY|RTLD_LOCAL);
+    if(service.pfHandle==nullptr)
         spdlog::error("{}",dlerror());
-    assert(service.handle!=nullptr);
+    assert(service.pfHandle!=nullptr);
     
-    create_service pfCreate = (create_service)dlsym(service.handle, "create");
+    create_service pfCreate = (create_service)dlsym(service.pfHandle, "create");
     if(pfCreate){
-        service.ptrService = pfCreate();
+        service.pService = pfCreate();
         return true;
     }
     else
-        dlclose(service.handle);
+        dlclose(service.pfHandle);
     
     return false;
 }

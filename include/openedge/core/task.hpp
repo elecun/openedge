@@ -62,7 +62,7 @@ namespace oe {
                             void* pfHandle { nullptr }; //component file handler
                             core::iService* pService { nullptr }; //service implementation ptr
                             bool isValid() { return (!pfHandle && !pService); }
-                            const char* getName() const { return name.c_str(); }
+                            const string getName() const { return name; }
                             serviceHandle_t(){}
                             serviceHandle_t(const char* svcname):name(svcname){}
                         private:
@@ -71,7 +71,7 @@ namespace oe {
                     } serviceHandle;
                     map<string /*service name*/, serviceHandle /*service handle*/> serviceContainer;
 
-                    typedef enum class fault_type_t : int {
+                    enum class fault_type_t : int {
                         CRITICAL = 0,   //drop the all tasks, and show alert
                         IGNORE = 100    //ignore the fault, no actions!
                     };
