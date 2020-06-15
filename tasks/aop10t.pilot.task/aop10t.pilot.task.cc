@@ -91,11 +91,19 @@ void aop10tPilotTask::execute(){
         serviceHandle& _mqttHandle = _serviceHandles[svc_mqtt];; //MQTT Service
 
         if(_fenetHandle.pService){
-            json block = json::parse(getProfile()->getCustom("block"));
+            json jtask = json::parse(getProfile()->get("task"));
+            json block = jtask["read_block"];
 
             if(block.find("address")!=block.end() && block.find("size")!=block.end()){
                 string address = block["address"].get<string>();
                 int size = block["size"].get<int>();
+                vector<string> namelist = block["namelist"].get<vector<string>>();
+
+                if(namelist.size()!=size){
+                    spdlog::error("Reading block size is not equal to namelist size which configured in conf. file.");
+                    return;
+                }
+
                 vector<uint8_t> rawdata = _fenetServiceAPI->read_block(address, size);
 
                 spdlog::info("Received raw data size {}", rawdata.size());
@@ -107,7 +115,7 @@ void aop10tPilotTask::execute(){
                             string msg = "Data,host=aop-super-server ";
                             int start_addr = std::stoi(address.substr(3));
                             for(int i=0;i<size;i++){ //block size
-                                msg.append(fmt::format("Address_{}={:d}", start_addr++, static_cast<int>(rawdata[i])));
+                                msg.append(fmt::format("{}={:d}",namelist[i], static_cast<int>(rawdata[i])));
                                 if(i<size-1)
                                     msg.append(",");
                             }
@@ -117,34 +125,13 @@ void aop10tPilotTask::execute(){
                     break;
                     case 'D': //double word
                         {
-                            
+                            if(_mqttHandle.pService){
+                            }
                         }
                     break;
-                }
-
-                //telegraf interface formatting
-        //         string data;
-        //         string msg = fmt::format("Data,host={} 0_0={:d},0_1={:d},0_2={:d},0_3={:d},0_4={:d},0_5={:d},0_6={:d},0_7={:d},0_8={:d},0_9={:d},0_10={:d},0_11={:d},0_12={:d},0_13={:d},0_14={:d},0_15={:d},5={:03.2f},6={:03.2f},7={:03.2f},8={:03.2f},9={:03.2f},10={:03.2f},11={:03.2f},12={:03.2f},13={:03.2f},14={:03.2f},15={:03.2f},16={:03.2f}"
-		// 		,_mqtt_hostname,
-		// 		(int)registers[0]&&0x0001,(int)registers[0]&&0x0002,(int)registers[0]&&0x0004,(int)registers[0]&&0x0008,
-		// 		(int)registers[0]&0x0010,(int)registers[0]&&0x0020,(int)registers[0]&&0x0040,(int)registers[0]&&0x0080,
-		// 		(int)registers[0]&&0x0100,(int)registers[0]&&0x0200,(int)registers[0]&&0x0400,(int)registers[0]&&0x0800,
-		// 		(int)registers[0]&&0x1000,(int)registers[0]&&0x2000,(int)registers[0]&&0x4000,(int)registers[0]&&0x8000,
-		// 		registers[5]/20,registers[6]/20,registers[7]/20,registers[8]/20,registers[9],registers[10]/1600,
-		// 		registers[11]/1600,registers[12]/1600,registers[13]/1600,registers[14],registers[15]/16000*15,registers[16]/160);
-		// console->info("{}",msg);
-
-                
+                }                
             }
         }
-
-        // code here to parse the raw data
-        // if(_mongodbHandle.ptrService){
-        //     json test;
-        //     test["test"] = 1;
-        //     _mongoServiceAPI->insert(test.dump());
-        // }
-
     } 
     catch (jsonrpccxx::JsonRpcException &e) {
         spdlog::warn("RPC Error : {}", e.what());

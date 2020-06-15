@@ -46,12 +46,9 @@ namespace oe::core {
                 return static_cast<vector<string>>(this->data["services"]["required"]);
             }
 
-            string getCustom(const char* customkey = nullptr) const {
-                if(customkey!=nullptr)
-                    return this->data[customkey].dump();
-
-                if(data.find("custom")!=data.end())
-                    return this->data["custom"].dump();
+            string get(const char* key = nullptr) const {
+                if(key!=nullptr)
+                    return this->data[key].dump();
 
                 return string("{}");
             }
