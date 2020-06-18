@@ -11,6 +11,7 @@
 #include <string>
 #include <map>
 #include <memory>
+#include <vector>
 #include <openedge/core.hpp>
 
 namespace jsonrpccxx{ class JsonRpcClient; }
@@ -54,6 +55,11 @@ class aop10tPilotTask : public oe::core::task::runnable {
 
         shared_ptr<jsonrpccxx::JsonRpcClient> _mongoAccessor;   //for MongoDB Service access
         unique_ptr<mongoServiceAPI> _mongoServiceAPI;   //mongodb service API
+
+        vector<string> _block_tags;
+        string _block_address {""};
+        int _block_size {0};
+        
 };
 
 EXPORT_TASK_API

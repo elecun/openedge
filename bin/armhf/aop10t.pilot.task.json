@@ -43,15 +43,25 @@
                 "topic":"aop10t/plc/address"
             },
             "connection":{
-                "address":"192.168.100.4"
+                "address":"192.168.11.9"
             }
         }
     },
-    "task":{
+    "activity":{
         "read_block":{
-            "address":"%MB0",
-            "size":8,
-            "namelist":["Sensor-0","Sensor-1","Sensor-2","Sensor-3","Sensor-4","Sensor-5","Sensor-6","Sensor-7"]
+            "address":"%MW100",
+            "size":52,
+            "tags":["AI-FIT-101", "AI-FIT-102", "AI-FIT-103", "AI-MFC-101", "AI-MFC-102", 
+                        "AI-HCH-101", "AI-UVS-101", "AI-UVS-102", "AI-TIT-101", "AI-PIT-101",
+                        "AI-PIT-102", "AI-PIT-103", "AI-PIT-104", "AI-PIT-105", "AI-PIT-106",
+                        "AI-LIT-101", "AI-LIT-102", "AI-LIT-103", "AI-LIT-104", "AI-LIT-105",
+                        "AI-LIT-106", "AI-CH21", "AI-CH22", "AI-CH23", "AI-CH24", 
+                        "AI-CH25", "AO-P-101", "AO-P-102", "AO-P-103", "AO-P-104",
+                        "AO-P-105", "AO-CH31", "AO-PDP-101", "AO-PDP-102", "AO-PDP-103",
+                        "AO-PDP-104", "AO-PDP-105", "AI-FQ-101", "AI-FQ-102", "AI-FQ-103",
+                        "AI-MQ-101", "AI-MQ-102", "AI-POWER", "AI-LFT-102", "AI-LFT-103",
+                        "AI-LFT-104", "AI-LFT-105", "AI-LFT-106", "AI-HCH-101_1", "AI-HCH-101_2",
+                        "AI-HCH-101_3","AI-HCH-101_4"]
         }
     }
 }
