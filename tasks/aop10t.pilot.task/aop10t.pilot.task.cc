@@ -109,6 +109,9 @@ void aop10tPilotTask::execute(){
             vector<uint8_t> rcvdata = _fenetServiceAPI->read_block(_block_address, _block_size);
             spdlog::info("Received Size : {}", rcvdata.size());
 
+            if(rcvdata.empty())
+                return;
+
             string msg = "Data,host=aop-super-server "; //white space required at the end of the string
 
             switch (_block_address.at(2))
