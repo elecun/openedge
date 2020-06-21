@@ -133,7 +133,7 @@ namespace oe::protocol {
                 };
 
                 void setDefault(){
-                    set(static_cast<uint8_t>(cpu_info::XGI), 
+                    set(static_cast<uint8_t>(cpu_info::XGB_IEC), 
                     static_cast<uint8_t>(sof::CLIENT), 
                     0x0000, 
                     0x0000,

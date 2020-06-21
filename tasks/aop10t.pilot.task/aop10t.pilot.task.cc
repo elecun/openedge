@@ -145,15 +145,15 @@ void aop10tPilotTask::execute(){
                 break;
             case 'D':   //Double Word(4bytes)
             {
-                if(_mqttHandle.pService){
-                    for(int i=0;i<_block_size;i+=4){
-                        uint32_t data = rcvdata[i]<<24 | rcvdata[i+1]<<16 | rcvdata[i+2]<<8 | rcvdata[i+3];
-                        msg.append(fmt::format("{}={:d}",_block_tags[i], data));
-                        if(i<_block_size-1)
-                            msg.append(",");
-                    }
-                    _mqttServiceAPI->publish(msg);
-                }
+                // if(_mqttHandle.pService){
+                //     for(int i=0;i<_block_size;i+=4){
+                //         uint32_t data = rcvdata[i]<<24 | rcvdata[i+1]<<16 | rcvdata[i+2]<<8 | rcvdata[i+3];
+                //         msg.append(fmt::format("{}={:d}",_block_tags[i], data));
+                //         if(i<_block_size-1)
+                //             msg.append(",");
+                //     }
+                //     _mqttServiceAPI->publish(msg);
+                // }
             }
                 break;
             case 'L':   //Long Word(8bytes)

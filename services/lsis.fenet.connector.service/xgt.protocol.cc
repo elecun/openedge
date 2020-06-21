@@ -29,7 +29,7 @@ namespace oe::bus::protocol {
     vector<uint8_t> XGTDedicated::gen_read_block(const string& address, int count){
         vector<uint8_t> tmpPacket((int)HEADER_SIZE+(int)BODY_SIZE+(int)address.size()); //full length
 
-        _set_default_header(tmpPacket, cpu_info_t::XGI, sof_t::CLIENT, fenet_slot_t::SLOT0, fenet_base_t::BASE0);
+        _set_default_header(tmpPacket, cpu_info_t::XGB_IEC, sof_t::CLIENT, fenet_slot_t::SLOT1, fenet_base_t::BASE0);
         _set_default_body(tmpPacket, static_cast<uint16_t>(command_code_t::READ_REQUEST), static_cast<uint16_t>(datatype_t::BLOCK), 0x0001, address, (uint16_t)count);
         _packet_refine(tmpPacket);
     
@@ -38,7 +38,8 @@ namespace oe::bus::protocol {
 
     uint8_t XGTDedicated::chksum(vector<uint8_t>& packet){ //checksum8 modulo 256 (sum of bytes % 256)
         uint8_t sum = 0x00;
-        for(int i=0;i<HEADER_SIZE;i++)
+        for(int i=0;i<HEADER_SIZE-1;i++)
+        //for(int i=0;i<packet.size();i++)
             sum += packet[i];
         return (sum&0xff);
     }
