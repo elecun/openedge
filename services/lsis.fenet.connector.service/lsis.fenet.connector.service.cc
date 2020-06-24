@@ -59,7 +59,6 @@ bool fenetConnectorService::initService(const char* config){
             _fenet_timeout = connection["timeout"].get<unsigned long long>();
 
         //info profile
-
         if(_protocol)
             _protocol->setParameters(serviceConfig["info"].dump());
 

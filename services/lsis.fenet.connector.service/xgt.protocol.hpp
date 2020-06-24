@@ -131,7 +131,16 @@ namespace oe::bus::protocol {
             void _packet_refine(vector<uint8_t>& packet);
 
         private:
-            json proto_configs;
+            cpu_info_t _set_cpuInfo(const string& param);
+            fenet_slot_t _set_slotIndex(const int& index);
+            fenet_base_t _set_baseIndex(const int& index);
+
+        private:
+            json _proto_configs;
+
+            cpu_info_t _cpu_info {cpu_info_t::XGI };
+            fenet_slot_t _slot_index { fenet_slot_t::SLOT0 };
+            fenet_base_t _base_index { fenet_base_t::BASE0 };
 
     }; //class
 
