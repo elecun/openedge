@@ -2,6 +2,8 @@
 Open Source Application Gateway Middleware for Edge Computing
 
 # Features
+* Component-based Architecture (towards microservice architecture)
+* Runs on Realtime Operating System(Realtime Linux)
 
 # Pre-requisites
 If you build this source on your host (e.g. Ubuntu), you probably should install libraries
