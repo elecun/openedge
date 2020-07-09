@@ -32,7 +32,7 @@ class aop10tPilotTask : public oe::core::task::runnable {
         aop10tPilotTask() = default;
         virtual ~aop10tPilotTask() = default;
 
-        //task interface
+        //common task interfaces
         bool configure() override;
         void execute() override;
         void cleanup() override;
