@@ -166,7 +166,7 @@ $(OUTDIR)uuid.o:	$(INCLUDE_FILES)openedge/util/uuid.cc
 					$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
 
-all : edge
+all : edge tasks services
 test : oeware_test
 tasks : simple.task simple2.task aop10t.pilot.task
 services : lsis.fenet.connector.service mongodb.connector.service mqtt.publisher.service
