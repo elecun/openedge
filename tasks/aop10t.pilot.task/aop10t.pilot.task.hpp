@@ -39,12 +39,13 @@ class aop10tPilotTask : public oe::core::task::runnable {
 
     private:
         bool _load_service(serviceHandle& service /*out*/);
+        float b2f(const uint8_t* bytes);
 
     private:
         map<string, serviceHandle> _serviceHandles;  //service handle map
 
         unique_ptr<core::task::localServiceConnector> _fenetConnector;  //LSIS FEnet Service Connector
-        unique_ptr<core::task::localServiceConnector> _mongoConnector;  //MongoDB Service Connector
+        //unique_ptr<core::task::localServiceConnector> _mongoConnector;  //MongoDB Service Connector
         unique_ptr<core::task::localServiceConnector> _mqttConnector;  //MongoDB Service Connector
 
         shared_ptr<jsonrpccxx::JsonRpcClient> _fenetAccessor;    //for FEnet service access
@@ -53,12 +54,12 @@ class aop10tPilotTask : public oe::core::task::runnable {
         shared_ptr<jsonrpccxx::JsonRpcClient> _mqttPublisher;    //for FEnet service access
         unique_ptr<mqttServiceAPI> _mqttServiceAPI; //fenet service API
 
-        shared_ptr<jsonrpccxx::JsonRpcClient> _mongoAccessor;   //for MongoDB Service access
-        unique_ptr<mongoServiceAPI> _mongoServiceAPI;   //mongodb service API
+        //shared_ptr<jsonrpccxx::JsonRpcClient> _mongoAccessor;   //for MongoDB Service access
+        //unique_ptr<mongoServiceAPI> _mongoServiceAPI;   //mongodb service API
 
         vector<string> _block_tags;
         string _block_address {""};
-        int _block_size {0};
+        int _block_bytes {0};
         
 };
 

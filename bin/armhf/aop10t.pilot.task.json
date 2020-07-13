@@ -12,7 +12,7 @@
         }
     },
     "services":{
-        "required":["lsis.fenet.connector.service", "mongodb.connector.service", "mqtt.publisher.service"],
+        "required":["lsis.fenet.connector.service", "mqtt.publisher.service"],
         "lsis.fenet.connector.service":{
             "info":{
                 "companyid":"LSIS-XGT",
@@ -50,8 +50,24 @@
     "activity":{
         "read_block":{
             "address":"%MB400",
-            "size":8,
-            "tags":["1", "2", "3", "4", "5", "6", "7", "8"]
+            "bytes":208,
+            "tags":["AI_FIT_101","AI_FIT_102","AI_FIT_103",
+                    "AI_MFC_101","AI_MFC_102",
+                    "AI_HCH_101",
+                    "AI_UVS_101","AI_UVS_102",
+                    "AI_TIT_101",
+                    "AI_PIT_101","AI_PIT_102","AI_PIT_103","AI_PIT_104","AI_PIT_105","AI_PIT_106",
+                    "AI_LIT_101","AI_LIT_102","AI_LIT_103","AI_LIT_104","AI_LIT_105","AI_LIT_106",
+                    "AI_CH_21","AI_CH_22","AI_CH_23","AI_CH_24","AI_CH_25",
+                    "AO_P_101","AO_P_102","AO_P_103","AO_P_104","AO_P_105",
+                    "AO_CH_31",
+                    "AO_PDP_101","AO_PDP_102","AO_PDP_103","AO_PDP_104","AO_PDP_105",
+                    "AI_FQ_101","AI_FQ_102","AI_FQ_103",
+                    "AI_MQ_101","AI_MQ_102",
+                    "AI_POWER",
+                    "AI_LFT_102","AI_LFT_103","AI_LFT_104","AI_LFT_105","AI_LFT_106",
+                    "AI_HCH_101_1","AI_HCH_101_2","AI_HCH_101_3","AI_HCH_101_4"
+            ]
         }
     }
 }
