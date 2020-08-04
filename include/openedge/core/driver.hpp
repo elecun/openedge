@@ -23,8 +23,8 @@ namespace oe {
 
                 //RT timer jitter data
                 typedef struct _time_jitter_t {
-                    long long max {0};
-                    long long min {1000000000};
+                    unsigned long long max {0};
+                    unsigned long long min {1000000000};
                     void set(unsigned long long val){
                         if(val>max) max=val;
                         if(val<min) min=val;

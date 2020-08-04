@@ -19,7 +19,7 @@ using namespace std;
 namespace oe::edge {
 
     //exception class
-    class exception : public oe::oe_exception {
+    class exception : public oe::exception {
         exception(const edge::excode code, const char* err_msg){
             switch(code){
                 case excode::EDGE_LOAD_CONFIG_FAIL: set(err_msg); break;

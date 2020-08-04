@@ -12,11 +12,10 @@ using namespace std;
 
 namespace oe {
 
-    //common exception class
-    class oe_exception : public std::exception {
+    class exception : public std::exception {
         public:
-            oe_exception() {}
-            ~oe_exception() throw() { }
+            exception() {}
+            ~exception() throw() { }
 
             virtual const char* what() throw() {
                 return _exception_str.c_str();
@@ -29,7 +28,7 @@ namespace oe {
 
     //core exception
     namespace core {
-        class exception : public oe::oe_exception {
+        class exception : public oe::exception {
             exception(core::excode code, const char* err_msg = nullptr){
                 switch(code){
                     case excode::OE_SIGACTION_FAIL: set("RT Trigger Signal Action failed"); break;

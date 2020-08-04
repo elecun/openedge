@@ -1,6 +1,6 @@
 /**
  * @file    edge.cc
- * @brief   OpenEdge Service Engine
+ * @brief   OpenEdge Service Engine on Preemptive Realtime OS
  * @author  Byunghun Hwang <bh.hwang@iae.re.kr>
  */
 
@@ -31,47 +31,66 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include <3rdparty/spdlog/sinks/stdout_color_sinks.h>
 #include <csignal> //for signal handling
 #include <sys/mman.h> //for mlock
-#include <openedge/core/version.hpp>
 #include "instance.hpp"
-#include "exception.hpp"
 #include <iostream>
+#include <semaphore.h>  //for process synchronization (avoiding re-run)
+
+#include <openedge/core/version.hpp>
+#include <openedge/core/exception.hpp>  //exception by openedge
 
 using namespace std;
 
+//global variables
+static sem_t* _running = SEM_FAILED;
+const char* semname = "openedge";
+
 void terminate() {
-    exit(EXIT_SUCCESS);
+  oe::edge::cleanup();
+  spdlog::info("Successfully terminated");
+  exit(EXIT_SUCCESS);
 }
 
 void cleanup(int sig) { 
-  oe::edge::cleanup();
-  spdlog::info("Successfully terminated");
+  sem_close(_running);
+  sem_unlink(semname);
   ::terminate(); 
 }
 
 
 int main(int argc, char* argv[])
 {
+  spdlog::stdout_color_st("console");
+
+  //termination signal event redirection
   signal(SIGINT, cleanup);
-	signal(SIGTERM, cleanup); //pkill, kill (kill -9 cannot handle)
+	signal(SIGTERM, cleanup);
   signal(SIGKILL, cleanup);
-  signal(SIGABRT, cleanup); //aborted core dump
+  signal(SIGABRT, cleanup);
 
   //signal masking
   sigset_t sigmask;
-  sigfillset(&sigmask);
-  sigdelset(&sigmask, SIGINT);
-  sigdelset(&sigmask, SIGTERM);
-  sigdelset(&sigmask, SIGKILL);
-  sigdelset(&sigmask, SIGABRT);
-  pthread_sigmask(SIG_SETMASK, &sigmask, nullptr);    //main thread mask all signal without SIGINT
+  if(!sigfillset(&sigmask)){
+    sigdelset(&sigmask, SIGINT);  //delete signal from signal mask
+    sigdelset(&sigmask, SIGTERM);
+    sigdelset(&sigmask, SIGKILL);
+    sigdelset(&sigmask, SIGABRT);  
+  }
+  else {
+    spdlog::error("Signal Handling Error");
+    ::terminate(); //if failed, do termination
+  }
+  
+
+  if(pthread_sigmask(SIG_SETMASK, &sigmask, nullptr)!=0){ // signal masking for this thread(main)
+    spdlog::error("Signal Masking Error");
+    ::terminate();
+  }
 
   mlockall(MCL_CURRENT|MCL_FUTURE); //avoid swaping
 
-  spdlog::stdout_color_st("console"); //initialize spdlog
-
   cxxopts::Options options(argv[0], "-  Commnad Line Options");
 	options.add_options()
-        ("c,config", "Load Configuration File(*.json)", cxxopts::value<std::string>(), "FILE")
+        ("c,config", "Load Configuration File(*.json)", cxxopts::value<std::string>(), "FILE") //require rerun avoiding
         ("i,install", "Install new RT Task", cxxopts::value<std::string>(), "RT Task")
         ("u,unintall", "Uninstall RT Task", cxxopts::value<std::string>(), "RT Task")
         ("v,version", "Openedge Service Engine Version")
@@ -87,12 +106,19 @@ int main(int argc, char* argv[])
     else if(args.count("uninstall")) { cout << "Not Support yet" << endl; ::terminate(); }
     else if(args.count("help")) { cout << options.help() << endl; ::terminate(); }
     else if(args.count("config")){
+      //for re-run avoidance
+      _running = sem_open(semname, O_CREAT | O_EXCL, S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH, 1);
+      if(_running==SEM_FAILED){
+        spdlog::error("It cannot be allowed to re-run on same system.");
+        ::terminate();
+      }
+
       string _conf_file = args["config"].as<std::string>();
       spdlog::info("Starting Openedge Service Engine {} (built {}/{})", _OE_VER_, __DATE__, __TIME__);
       spdlog::info("Load Configuration File : {}", _conf_file);
 
       //run task engine
-      if(oe::edge::init(_conf_file.c_str()))
+      if(oe::edge::initialize(_conf_file.c_str()))
          oe::edge::run();
       
       pause(); //wait until getting SIGINT
@@ -100,11 +126,9 @@ int main(int argc, char* argv[])
 
   }
   catch(const cxxopts::OptionException& e){
-    spdlog::error("cxxopt Exception : {}",e.what());
+    spdlog::error("Argument parse exception : {}",e.what());
   }
 
-  spdlog::info("Sucessfully Terminated");
   ::terminate();
-
   return EXIT_SUCCESS;
 }

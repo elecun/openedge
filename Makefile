@@ -1,7 +1,7 @@
 
 # Makefile for OpenEdge Software Framework for Application Gateway
 # Author : Byunghun Hwang <bh.hwang@iae.re.kr>
-# Usage : make ARCH=arm 
+# Usage : make ARCH=armhf
 # Note : You should make with GCC/G++ version 8
 
 # Makefile
@@ -9,7 +9,7 @@
 OS := $(shell uname)
 
 #Set Architecutre
-#ARCH := arm
+#ARCH := armhf
 
 #Compilers
 ifeq ($(ARCH),armhf)
@@ -46,7 +46,7 @@ $(shell mkdir -p $(OUTDIR))
 CXXFLAGS = -O3 -fPIC -Wall -std=c++17 -D__cplusplus=201703L
 
 #custom definition
-CXXFLAGS += -D__MAJOR__=0 -D__MINOR__=0 -D__REV__=4
+CXXFLAGS += -D__MAJOR__=0 -D__MINOR__=0 -D__REV__=5
 RM	= rm -rf
 
 #directories

@@ -8,14 +8,11 @@
 #define _EDGE_INSTANCE_HPP_
 
 namespace oe::edge {
-    //initialize edge application
-    bool init(const char* conf_file);
 
-    //start to run
+    bool initialize(const char* conf_file);
     void run();
-
-    //cleanup
     void cleanup();
-} //namespace oe::edge
+
+} 
 
 #endif
