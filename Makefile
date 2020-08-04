@@ -9,10 +9,10 @@
 OS := $(shell uname)
 
 #Set Architecutre
-ARCH := arm
+#ARCH := arm
 
 #Compilers
-ifeq ($(ARCH),arm)
+ifeq ($(ARCH),armhf)
 	CC := /usr/bin/arm-linux-gnueabihf-g++-8
 	GCC := /usr/bin/arm-linux-gnueabihf-gcc-8
 	LD_LIBRARY_PATH += -L./lib/armhf
@@ -26,6 +26,8 @@ else
 	LD_LIBRARY_PATH += -L./lib/x86_64
 	OUTDIR		= ./bin/x86_64/
 	TASK_OUTDIR		= ./bin/x86_64/task/
+	INCLUDE_DIR = -I./ -I./include/ -I./include/3rdparty/
+	LD_LIBRARY_PATH += -L/usr/local/lib -L./lib/x86_64
 endif
 
 # OS
@@ -132,7 +134,7 @@ $(OUTDIR)bus.tcp.service.o: $(SERVICE_SOURCE_FILES)bus.tcp.service/bus.tcp.servi
 
 lsis.fenet.connector.service: $(OUTDIR)lsis.fenet.connector.service.o \
 							$(OUTDIR)xgt.protocol.o
-	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(OUTDIR)$@ $^ $(LDLIBS) ./lib/armhf/libsockpp.a
+	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(OUTDIR)$@ $^ $(LDLIBS) ./lib/$(ARCH)/libsockpp.a
 $(OUTDIR)lsis.fenet.connector.service.o: $(SERVICE_SOURCE_FILES)lsis.fenet.connector.service/lsis.fenet.connector.service.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 $(OUTDIR)xgt.protocol.o: $(SERVICE_SOURCE_FILES)lsis.fenet.connector.service/xgt.protocol.cc

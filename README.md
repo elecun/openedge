@@ -15,10 +15,18 @@ If you build this source on your host (e.g. Ubuntu), you probably should install
   - This RT Task would be used for pilot plant of AOP (10ton/day scale)
   - It depends on 2 services : lsis.fenet.connector.service, mqtt.publisher.service
 
+* lsis.fenet.connector.service
+  - this service would be required for aop10t.pilot.task to connect with LSIS PLC using its dedicated communication protocol
+
+
 # Dependency
-This Software depends on other open sources
+This software will be required other open source libraries for some tasks and services.
 
 * spdlog : fast c++ logging library (https://github.com/gabime/spdlog.git)
+* libsockpp : modern c++ socket library (https://github.com/fpagliughi/sockpp) - optional (required for some components)
+* libbson : parse BSON document, it is required for MongoDB C Driver
+* libmosquitto, libmosquittopp : communication with MQTT
+* libmongoc : Mongo DB C driver
 
 
 # Build
@@ -26,25 +34,25 @@ Clone the Openedge source from github repository.
 ```
 $ git clone https://github.com/elecun/openedge.git
 $ cd ./openedge
-$ make ARCH=arm
-```
 
-build all the source codes.
-```
-$ make all
+# for ARM architecture
+$ make ARCH=armhf
+
+# for X86_64 architecture
+$ make ARCH=x86_64
 ```
 
 If you only want to build the openedge runner,
 ```
-$ make edge
+$ make edge -j
 ```
 
 for only tasks
 ```
-$ make tasks
+$ make tasks -j
 ```
 
 for only services
 ```
-$ make services
+$ make services -j
 ```
