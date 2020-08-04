@@ -101,36 +101,24 @@ simple.task: $(OUTDIR)simple.task.o
 $(OUTDIR)simple.task.o: $(TASK_SOURCE_FILES)simple.task/simple.task.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
-aop10t.pilot.task: $(OUTDIR)aop10t.pilot.task.o
-	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(OUTDIR)$@ $^ $(LDLIBS)
-$(OUTDIR)aop10t.pilot.task.o: $(TASK_SOURCE_FILES)aop10t.pilot.task/aop10t.pilot.task.cc
-	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
-
 simple2.task: $(OUTDIR)simple2.task.o
 	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(OUTDIR)$@ $^ $(LDLIBS)
 $(OUTDIR)simple2.task.o: $(TASK_SOURCE_FILES)simple2.task/simple2.task.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
-plc.daq.task: $(OUTDIR)plc.daq.task.o
+aop10t.pilot.task: $(OUTDIR)aop10t.pilot.task.o
 	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(OUTDIR)$@ $^ $(LDLIBS)
-$(OUTDIR)plc.daq.task.o: $(TASK_SOURCE_FILES)plc.daq.task/plc.daq.task.cc
+$(OUTDIR)aop10t.pilot.task.o: $(TASK_SOURCE_FILES)aop10t.pilot.task/aop10t.pilot.task.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
-fenet.daq.task: $(OUTDIR)fenet.daq.task.o
+#sys.mdns.manage.task
+sys.mdns.manage.task: $(OUTDIR)sys.mdns.manage.task.o
 	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(OUTDIR)$@ $^ $(LDLIBS)
-$(OUTDIR)fenet.daq.task.o: $(TASK_SOURCE_FILES)fenet.daq.task/fenet.daq.task.cc
+$(OUTDIR)sys.mdns.manage.task.o: $(TASK_SOURCE_FILES)sys.mdns.manage.task/sys.mdns.manage.task.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
 
 ############################ Services
-plc.general.service: $(OUTDIR)plc.general.service.o
-	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(OUTDIR)$@ $^ $(LDLIBS)
-$(OUTDIR)plc.general.service.o: $(SERVICE_SOURCE_FILES)plc.general.service/plc.general.service.cc
-	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
-
-bus.tcp.service: $(OUTDIR)bus.tcp.service.o
-	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(OUTDIR)$@ $^ $(LDLIBS)
-$(OUTDIR)bus.tcp.service.o: $(SERVICE_SOURCE_FILES)bus.tcp.service/bus.tcp.service.cc
-	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
 lsis.fenet.connector.service: $(OUTDIR)lsis.fenet.connector.service.o \
 							$(OUTDIR)xgt.protocol.o
@@ -153,10 +141,6 @@ $(OUTDIR)mqtt.publisher.service.o: $(SERVICE_SOURCE_FILES)mqtt.publisher.service
 $(OUTDIR)mqtt.o: $(SERVICE_SOURCE_FILES)mqtt.publisher.service/mqtt.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
-plc.lsis.service: $(OUTDIR)plc.lsis.service.o
-	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(OUTDIR)$@ $^ $(LDLIBS)
-$(OUTDIR)plc.lsis.service.o: $(SERVICE_SOURCE_FILES)plc.lsis.service/plc.lsis.service.cc
-	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
 
 ############################ Openedge Cores
@@ -170,7 +154,7 @@ $(OUTDIR)uuid.o:	$(INCLUDE_FILES)openedge/util/uuid.cc
 
 all : edge tasks services
 test : oeware_test
-tasks : simple.task simple2.task aop10t.pilot.task
+tasks : simple.task simple2.task aop10t.pilot.task sys.mdns.manage.task
 services : lsis.fenet.connector.service mongodb.connector.service mqtt.publisher.service
 clean : FORCE
 		$(RM) $(OUTDIR)*.o $(OUTDIR)openedge $(OUTDIR)edge $(OUTDIR)*.task $(OUTDIR)*.service

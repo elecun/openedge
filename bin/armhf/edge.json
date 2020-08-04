@@ -8,5 +8,7 @@
         },
         "hostname":"AOPGW-01"
     },
-    "tasks":["aop10t.pilot.task"]
+    "required":{
+        "tasks":["sys.mdns.manage.task"]
+    }
 }
