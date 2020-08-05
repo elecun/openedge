@@ -23,6 +23,7 @@ namespace oe::edge {
     #define CONFIG_PATH   config["registry"]["path"]
     #define CONFIG_HOSTNAME config["registry"]["hostname"]
     #define CONFIG_TASKS    config["required"]["tasks"] //forced (remove not allowable)
+    #define CONFIG_SYSTEM   config["system"]
 
     //initialize
     bool initialize(const char* conf_file){
@@ -39,6 +40,13 @@ namespace oe::edge {
         catch(const json::exception& e){
             spdlog::error("{}", e.what());
             return false;
+        }
+
+        //set dumped system configuration into the registry
+        if(config.find("system")!=config.end()){
+            for(json::iterator it = CONFIG_SYSTEM.begin(); it != CONFIG_SYSTEM.end(); ++it){
+                registry->insert(it.key(), std::make_any<std::string>(it.value().dump()));
+            }
         }
 
         //insert registry

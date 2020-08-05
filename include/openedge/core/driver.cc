@@ -8,6 +8,8 @@
 #include <openedge/core/profile.hpp>
 #include <openedge/util/validation.hpp>
 #include <stdexcept>
+#include <openedge/core/registry.hpp>
+#include <openedge/core/global.hpp>
 
 #define SIG_RUNTIME_TRIGGER (SIGRTMIN)
 
@@ -19,7 +21,8 @@ namespace oe::core::task {
         try {
             if(load(taskname)){
                 if(_taskImpl){
-                    string path = "./"+string(taskname)+".json"; //same dir
+                    string profile_dir = registry->get<std::string>("PROFILE_DIR");
+                    string path = profile_dir+string(taskname)+__PROFILE_EXT__;
                     if(exist(path.c_str()))
                         _taskImpl->_profile = make_unique<core::profile>(path.c_str()); //load profile
                     else

@@ -35,7 +35,7 @@ namespace oe::edge {
         ~task_manager();
 
         bool install(const char* taskname = nullptr);
-        void uninstall(const char* taskname = nullptr);
+        void uninstall(const char* taskname = nullptr); //install without system configuration
 
         void run(const char* taskname = nullptr);
         void cleanup(const char* taskname = nullptr);

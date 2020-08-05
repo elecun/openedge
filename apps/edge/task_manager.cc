@@ -1,6 +1,7 @@
 
 #include "task_manager.hpp"
 #include <3rdparty/spdlog/spdlog.h>
+#include <openedge/core/global.hpp>
 
 namespace oe::edge {
 
@@ -14,8 +15,8 @@ namespace oe::edge {
 
     bool task_manager::install(const char* taskname){
         static int ntasks = 0;
-        if(ntasks>15){
-            spdlog::error("Task Container is Full!! (MAX=15)");
+        if(ntasks>__TASKS_LIMITS__){
+            spdlog::error("Task Container is Full!! (LIMIT={})", __TASKS_LIMITS__);
             return false;
         }
 
@@ -24,12 +25,12 @@ namespace oe::edge {
             return false;
         }
 
-        spdlog::info("Installing {}...", taskname);
-
         //insert task into container with uuid
         //(todo) requries file existance in task respository path
         _container_map.insert(taskContainer_map::value_type(taskname, _uuid_gen.generate()));
         _task_container.insert(taskContainer_t::value_type(_container_map[taskname], new core::task::driver(taskname)));
+
+        spdlog::info("Installed {} Component(UUID:{})", taskname, _container_map[taskname].str());
 
         if(!_task_container[_container_map[taskname]]->configure()){
             uninstall(taskname);

@@ -10,13 +10,5 @@
             "check_overrun":false,
             "fault_level":0
         }
-    },
-    "services":{
-        "discovery":{
-            "name":"Application Gateway at %h",
-            "type":"_notify._tcp",
-            "port":50000,
-            "txt-record":""
-        }
     }
 }

@@ -54,20 +54,23 @@ bool mongodbConnectorService::initService(const char* config){
         if(conf.find("connection")==conf.end())
             return false;
 
-        if(conf["connection"].find("address")!=conf["connection"].end())
-            _mongodb_address = conf["connection"]["address"].get<std::string>();  //extract ip4v address
-        if(conf["connection"].find("port")!=conf["connection"].end())
-            _mongodb_port = conf["connection"]["port"].get<int>();                //extract port
+            #define CONNECTION  conf["connection"]
+            #define INFO  conf["info"]
+
+        if(CONNECTION.find("address")!=CONNECTION.end())
+            _mongodb_address = CONNECTION["address"].get<std::string>();  //extract ip4v address
+        if(CONNECTION.find("port")!=CONNECTION.end())
+            _mongodb_port = CONNECTION["port"].get<int>();                //extract port
         spdlog::info("MongoDB Connection : {}:{}", _mongodb_address, _mongodb_port);
 
-        if(conf["info"].find("dbname")!=conf["info"].end())
-            _dbname = conf["info"]["dbname"].get<string>();
-        if(conf["info"].find("collection")!=conf["info"].end())
-            _colname = conf["info"]["collection"].get<string>();
+        if(INFO.find("dbname")!=INFO.end())
+            _dbname = INFO["dbname"].get<string>();
+        if(INFO.find("collection")!=INFO.end())
+            _colname = INFO["collection"].get<string>();
         
         string _appname;
-        if(conf["info"].find("appname")!=conf["info"].end())
-            _appname = conf["info"]["appname"].get<string>();
+        if(INFO.find("appname")!=INFO.end())
+            _appname = INFO["appname"].get<string>();
 
         string mdburi = fmt::format("mongodb://{}:{}/?appname={}", _mongodb_address, _mongodb_port, _appname);
         _client = mongoc_client_new(mdburi.c_str());

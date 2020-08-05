@@ -37,6 +37,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 #include <openedge/core/version.hpp>
 #include <openedge/core/exception.hpp>  //exception by openedge
+#include <openedge/core/global.hpp>
 
 using namespace std;
 
@@ -90,9 +91,10 @@ int main(int argc, char* argv[])
 
   cxxopts::Options options(argv[0], "-  Commnad Line Options");
 	options.add_options()
-        ("c,config", "Load Configuration File(*.json)", cxxopts::value<std::string>(), "FILE") //require rerun avoiding
+        ("c,config", "Load Configuration File(*.json)", cxxopts::value<std::string>(), "File Path") //require rerun avoiding
         ("i,install", "Install new RT Task", cxxopts::value<std::string>(), "RT Task")
         ("u,unintall", "Uninstall RT Task", cxxopts::value<std::string>(), "RT Task")
+        ("f,force", "forced re-Run")
         ("v,version", "Openedge Service Engine Version")
         ("h,help", "Print Usage");
 
@@ -101,11 +103,15 @@ int main(int argc, char* argv[])
   {
     auto args = options.parse(argc, argv);
 
+    if(args.count("force")) { sem_close(_running); sem_unlink(semname); }
+    
     if(args.count("version")) { cout << _OE_VER_ << endl; ::terminate(); }
     else if(args.count("install")) { cout << "Not Support yet" << endl; ::terminate(); }
     else if(args.count("uninstall")) { cout << "Not Support yet" << endl; ::terminate(); }
     else if(args.count("help")) { cout << options.help() << endl; ::terminate(); }
+    else if(args.count("help")) { cout << options.help() << endl; ::terminate(); }
     else if(args.count("config")){
+
       //for re-run avoidance
       _running = sem_open(semname, O_CREAT | O_EXCL, S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH, 1);
       if(_running==SEM_FAILED){
@@ -114,16 +120,16 @@ int main(int argc, char* argv[])
       }
 
       string _conf_file = args["config"].as<std::string>();
+
       spdlog::info("Starting Openedge Service Engine {} (built {}/{})", _OE_VER_, __DATE__, __TIME__);
       spdlog::info("Load Configuration File : {}", _conf_file);
 
       //run task engine
       if(oe::edge::initialize(_conf_file.c_str()))
-         oe::edge::run();
+          oe::edge::run();
       
       pause(); //wait until getting SIGINT
     }
-
   }
   catch(const cxxopts::OptionException& e){
     spdlog::error("Argument parse exception : {}",e.what());

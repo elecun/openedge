@@ -45,6 +45,12 @@ namespace oe {
                         return nullptr;
                 }
 
+                bool find(const char* key){
+                    if(registry_container.find(key)==registry_container.end())
+                        return false;
+                    return true;
+                }
+
             private:
                 unordered_map<string, any> registry_container;
 

@@ -10,11 +10,12 @@
 using namespace jsonrpccxx;
 
 namespace oe::service {
-    class mqttServiceAPI {
+    class avahiMdnsServiceAPI {
         public:
-            explicit mqttServiceAPI(JsonRpcClient& client):_client(client){}
+            explicit avahiMdnsServiceAPI(JsonRpcClient& client):_client(client){}
             
             bool publish(const std::string& data) { return _client.CallMethod<bool>(1, "publish", {data}); }
+            bool drop() { return _client.CallMethod<bool>(2, "drop"); }
             
         private:
             JsonRpcClient& _client;

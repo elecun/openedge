@@ -2,6 +2,7 @@
     "registry":{
         "path":{
             "HOME_DIR":"/home/debian/bin/armhf/",
+            "PROFILE_DIR":"/home/debian/bin/armhf/",
             "BIN_DIR":"/home/debian/bin/armhf/",
             "CONFIG_DIR":"/home/debian/bin/armhf/",
             "MDNS_SERVICE_DIR":"/etc/avahi/services/"
@@ -10,5 +11,16 @@
     },
     "required":{
         "tasks":["sys.mdns.manage.task"]
+    },
+
+    "system":{
+        "network":{
+            "discovery":{
+                "name":"Application Gateway at %h",
+                "type":"_notify._tcp",
+                "port":50000,
+                "txt-record":""
+            }
+        }
     }
 }
