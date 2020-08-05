@@ -2,7 +2,7 @@
 
 #include "sys.mdns.manage.task.hpp"
 #include <3rdparty/spdlog/spdlog.h>
-
+#include <3rdparty/tinyxml2/tinyxml2.h>
 
 
 //implemented create/release singleton instance

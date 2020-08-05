@@ -12,9 +12,10 @@
         }
     },
     "services":{
-        "publish":{
+        "discovery":{
             "name":"Application Gateway at %h",
             "type":"_notify._tcp",
+            "port":50000,
             "txt-record":""
         }
     }
