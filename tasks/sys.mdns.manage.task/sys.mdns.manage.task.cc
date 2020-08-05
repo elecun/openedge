@@ -85,7 +85,7 @@ bool sysMdnsManageTask::configure(){
             element->SetText(network["discovery"]["txt-record"].get<string>().c_str());
             node->LinkEndChild(element);
 
-            string xmlfile = fmt::format("{}device.xml",registry->get<string>("MDNS_SERVICE_DIR"));
+            string xmlfile = fmt::format("{}device.service",registry->get<string>("MDNS_SERVICE_DIR"));
             doc->SaveFile(xmlfile.c_str());
             spdlog::info("Saved");
             
