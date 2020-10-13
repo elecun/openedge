@@ -133,4 +133,6 @@ bool modbusRtuService::write_holding_register(const uint16_t address, uint16_t d
         spdlog::error("{}", e.what());
     }
 
+    return false;
+
 }

@@ -27,7 +27,6 @@ bool qualDmrTask::configure(){
         spdlog::error("<{}> service must be required.", svc_modbus);
         return false;
     }
-        
 
     //load services
     for(string& svcname:svclist){
@@ -71,12 +70,17 @@ bool qualDmrTask::configure(){
 
 void qualDmrTask::execute(){
     auto t_now = std::chrono::high_resolution_clock::now();
+    static uint16_t onoff = 0x0000;
     //connection
     try {
         serviceHandle& _modbusHandle = _serviceHandles[svc_modbus]; //modbus RTU Service
 
         if(_modbusHandle.pService){
-            unsigned char rcvdata = _modbusRtuServiceAPI->read(_read_address);
+
+            if(onoff == 0x0000){
+                bool sent = _modbusRtuServiceAPI->write_holding_register(_read_address, 0x0001);
+            }
+            
             spdlog::info("{} bytes received", rcvdata);
         }
     } 
