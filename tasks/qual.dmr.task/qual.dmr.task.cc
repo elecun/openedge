@@ -54,13 +54,15 @@ bool qualDmrTask::configure(){
     //configure a task activity
     if(_serviceHandles[svc_modbus].pService){
         json activity = json::parse(getProfile()->get("activity"));
-        json config = activity["read_holding_registers"];
+        json rconfig = activity["read_holding_registers"];
+        json wconfig = activity["write_holding_registers"];
 
-        if(config.find("address")!=config.end()){
-            _read_address = config["address"].get<unsigned int>();
-            _read_function = config["function"].get<unsigned int>();
+        if(rconfig.find("address")!=rconfig.end()){
+            _read_address = rconfig["address"].get<uint16_t>();
+        }
 
-            spdlog::info("Block Configuration : Address {} with function {} ",_read_address, _read_function);
+        if(wconfig.find("address")!=wconfig.end()){
+            _write_address = wconfig["address"].get<uint16_t>();
         }
     }
 
@@ -70,18 +72,25 @@ bool qualDmrTask::configure(){
 
 void qualDmrTask::execute(){
     auto t_now = std::chrono::high_resolution_clock::now();
-    static uint16_t onoff = 0x0000;
+    static bool onoff = true;
+    vector<uint16_t> on = {0x0001};
+    vector<uint16_t> off = {0x0000};
+
     //connection
     try {
         serviceHandle& _modbusHandle = _serviceHandles[svc_modbus]; //modbus RTU Service
 
         if(_modbusHandle.pService){
-
-            if(onoff == 0x0000){
-                bool sent = _modbusRtuServiceAPI->write_holding_register(_read_address, 0x0001);
-            }
             
-            spdlog::info("{} bytes received", rcvdata);
+            
+            if(onoff){ //on
+                _modbusRtuServiceAPI->write_holding_registers(_write_address, on);
+                onoff = false;
+            }
+            else {
+                _modbusRtuServiceAPI->write_holding_registers(_write_address, off);
+                onoff = true;
+            }
         }
     } 
     catch (jsonrpccxx::JsonRpcException &e) {

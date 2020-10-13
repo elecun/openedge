@@ -23,6 +23,7 @@ class modbusRtuService : public core::iService {
 
         //services APIs
         vector<uint16_t> read_holding_registers(const uint16_t address, int size);
+        bool write_holding_registers(const uint16_t address, vector<uint16_t> data);
         bool write_holding_register(const uint16_t address, uint16_t data);
 
         

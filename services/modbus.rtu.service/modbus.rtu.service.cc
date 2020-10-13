@@ -117,11 +117,35 @@ vector<uint16_t> modbusRtuService::read_holding_registers(const uint16_t address
     return registers;
 }
 
+bool modbusRtuService::write_holding_registers(const uint16_t address, vector<uint16_t> data){
+    try {
+        if(_modbus){
+            int written = 0;
+            for(uint16_t d:data){
+                written = modbus_write_registers(_modbus, address, data.size(), data.data());
+            }
+            if(written==data.size())
+                return true;
+        }
+        else {
+            spdlog::error("Unable to write holding register modbus RTU");
+        }
+
+    }
+    catch(json::exception& e){
+        spdlog::error("{}", e.what());
+    }
+
+    return false;
+}
+
 bool modbusRtuService::write_holding_register(const uint16_t address, uint16_t data){
 
     try {
         if(_modbus){
-            if(!modbus_write_register(_modbus, address, data))
+            if(modbus_write_register(_modbus, address, data))
+                return true;
+            else
                 spdlog::error("Fail to write on holding register {}", address);
         }
         else {

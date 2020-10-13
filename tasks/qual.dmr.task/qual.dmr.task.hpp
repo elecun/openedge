@@ -45,8 +45,8 @@ class qualDmrTask : public oe::core::task::runnable {
         shared_ptr<jsonrpccxx::JsonRpcClient> _modbusRtuAccessor;    //for modbus RTU service access
         unique_ptr<modbusRtuServiceAPI> _modbusRtuServiceAPI; //modbus RTU service API
 
-        unsigned char _read_address = 0x00;
-        unsigned char _read_function = 0x03;
+        uint16_t _read_address = 0x0000;
+        uint16_t _write_address = 0x0000;
         
 };
 
