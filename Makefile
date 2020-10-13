@@ -154,8 +154,8 @@ $(OUTDIR)uuid.o:	$(INCLUDE_FILES)openedge/util/uuid.cc
 
 all : edge tasks services
 test : oeware_test
-tasks : simple.task simple2.task aop10t.pilot.task sys.mdns.manage.task
-services : lsis.fenet.connector.service mongodb.connector.service mqtt.publisher.service
+tasks : simple.task simple2.task aop10t.pilot.task sys.mdns.manage.task qual.dmr.task
+services : lsis.fenet.connector.service mongodb.connector.service mqtt.publisher.service modbusRTU.service
 clean : FORCE
 		$(RM) $(OUTDIR)*.o $(OUTDIR)openedge $(OUTDIR)edge $(OUTDIR)*.task $(OUTDIR)*.service
 FORCE : 
