@@ -15,7 +15,7 @@
         "required":["modbus.rtu.service"],
         "modbus.rtu.service":{
             "info":{
-                
+                "slave_id":1
             },
             "connection":{
                 "port":"/dev/tty0",
@@ -24,8 +24,9 @@
         }
     },
     "activity":{
-        "read":{
+        "read_registers":{
             "address":0,
+            "size":1,
             "function":3
         }
     }
