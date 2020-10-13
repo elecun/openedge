@@ -55,7 +55,7 @@ bool qualDmrTask::configure(){
     //configure a task activity
     if(_serviceHandles[svc_modbus].pService){
         json activity = json::parse(getProfile()->get("activity"));
-        json config = activity["read"];
+        json config = activity["read_holding_registers"];
 
         if(config.find("address")!=config.end()){
             _read_address = config["address"].get<unsigned int>();

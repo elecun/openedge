@@ -99,13 +99,16 @@ vector<uint16_t> modbusRtuService::read_holding_registers(const uint16_t address
     vector<uint16_t> registers;
     try {
 
-        uint16_t* read_registers = (uint16_t *)malloc(size * sizeof(uint16_t));
-        int read = modbus_read_registers(_modbus, address, size, read_registers);
+        if(_modbus){
+            uint16_t* read_registers = (uint16_t *)malloc(size * sizeof(uint16_t));
+            int read = modbus_read_registers(_modbus, address, size, read_registers);
+            registers.assign(read_registers, read_registers+size);
 
-        spdlog::info("Read Holding Registers : {}", read);
-
-        registers.assign(read_registers, read_registers+size);
-
+            spdlog::info("Read Holding Registers : {}", read);
+        }
+        else {
+            spdlog::error("Unable to read holding register modbus RTU");
+        }
     }
     catch(json::exception& e){
         spdlog::error("{}", e.what());
@@ -117,6 +120,13 @@ vector<uint16_t> modbusRtuService::read_holding_registers(const uint16_t address
 bool modbusRtuService::write_holding_register(const uint16_t address, uint16_t data){
 
     try {
+        if(_modbus){
+            if(!modbus_write_register(_modbus, address, data))
+                spdlog::error("Fail to write on holding register {}", address);
+        }
+        else {
+            spdlog::error("Unable to write holding register modbus RTU");
+        }
 
     }
     catch(json::exception& e){
@@ -124,22 +134,3 @@ bool modbusRtuService::write_holding_register(const uint16_t address, uint16_t d
     }
 
 }
-
-// unsigned char modbusRtuService::read_bits(const unsigned char address /*json*/){
-
-//     try {
-//         if(_modbus){
-//             uint8_t read_register;
-//             modbus_read_bits() (_modbus, address, 1, read_register); //single byte
-//         }
-        
-//     }
-//     catch(json::exception& e){
-//         spdlog::error("{}", e.what());
-//     }
-//     return true;
-// }
-
-// void modbusRtuService::write(const unsigned char address, unsigned char data /*json*/){
-
-// }

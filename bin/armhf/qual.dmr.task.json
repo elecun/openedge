@@ -24,10 +24,14 @@
         }
     },
     "activity":{
-        "read_registers":{
+        "read_holding_registers":{
             "address":0,
             "size":1,
             "function":3
+        },
+        "write_holding_register":{
+            "address":0,
+            "data":1
         }
     }
 }
