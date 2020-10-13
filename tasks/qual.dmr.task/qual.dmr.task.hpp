@@ -18,7 +18,7 @@ namespace jsonrpccxx{ class JsonRpcClient; }
 namespace oe::net::rpc { class client; }
 
 namespace oe::service {
-    class modbusRTUServiceAPI;  //Modbus RTU Service API
+    class modbusRtuServiceAPI;  //Modbus RTU Service API
 }
 
 using namespace oe;
@@ -37,18 +37,16 @@ class qualDmrTask : public oe::core::task::runnable {
 
     private:
         bool _load_service(serviceHandle& service /*out*/);
-        float b2f(const uint8_t* bytes);
 
     private:
         map<string, serviceHandle> _serviceHandles;  //service handle map
 
-        unique_ptr<core::task::localServiceConnector> _modbusConnector;  //LSIS FEnet Service Connector
-        shared_ptr<jsonrpccxx::JsonRpcClient> _modbusAccessor;    //for FEnet service access
-        unique_ptr<modbusRTUServiceAPI> _modbusRTUServiceAPI; //fenet service API
+        unique_ptr<core::task::localServiceConnector> _modbusRtuConnector;  //modbus RTU Service Connector
+        shared_ptr<jsonrpccxx::JsonRpcClient> _modbusRtuAccessor;    //for modbus RTU service access
+        unique_ptr<modbusRtuServiceAPI> _modbusRtuServiceAPI; //modbus RTU service API
 
-        vector<string> _block_tags;
-        string _block_address {""};
-        int _block_bytes {0};
+        unsigned char _read_address = 0x00;
+        unsigned char _read_function = 0x03;
         
 };
 

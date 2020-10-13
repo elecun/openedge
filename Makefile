@@ -9,7 +9,7 @@
 OS := $(shell uname)
 
 #Set Architecutre
-#ARCH := armhf
+ARCH := armhf
 
 #Compilers
 ifeq ($(ARCH),armhf)
@@ -117,6 +117,11 @@ sys.mdns.manage.task: $(OUTDIR)sys.mdns.manage.task.o
 $(OUTDIR)sys.mdns.manage.task.o: $(TASK_SOURCE_FILES)sys.mdns.manage.task/sys.mdns.manage.task.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
+qual.dmr.task: $(OUTDIR)qual.dmr.task.o
+	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(OUTDIR)$@ $^ $(LDLIBS)
+$(OUTDIR)qual.dmr.task.o: $(TASK_SOURCE_FILES)qual.dmr.task/qual.dmr.task.cc
+	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
 
 ############################ Services
 
@@ -141,6 +146,11 @@ $(OUTDIR)mqtt.publisher.service.o: $(SERVICE_SOURCE_FILES)mqtt.publisher.service
 $(OUTDIR)mqtt.o: $(SERVICE_SOURCE_FILES)mqtt.publisher.service/mqtt.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
+modbus.rtu.service: $(OUTDIR)modbus.rtu.service.o
+	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(OUTDIR)$@ $^ $(LDLIBS) -lmodbus
+$(OUTDIR)modbus.rtu.service.o: $(SERVICE_SOURCE_FILES)modbus.rtu.service/modbus.rtu.service.cc
+	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
 
 
 ############################ Openedge Cores
@@ -155,7 +165,7 @@ $(OUTDIR)uuid.o:	$(INCLUDE_FILES)openedge/util/uuid.cc
 all : edge tasks services
 test : oeware_test
 tasks : simple.task simple2.task aop10t.pilot.task sys.mdns.manage.task qual.dmr.task
-services : lsis.fenet.connector.service mongodb.connector.service mqtt.publisher.service modbusRTU.service
+services : lsis.fenet.connector.service mongodb.connector.service mqtt.publisher.service modbus.rtu.service
 clean : FORCE
 		$(RM) $(OUTDIR)*.o $(OUTDIR)openedge $(OUTDIR)edge $(OUTDIR)*.task $(OUTDIR)*.service
 FORCE : 
