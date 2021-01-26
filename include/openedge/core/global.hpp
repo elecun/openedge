@@ -13,8 +13,10 @@ namespace oe {
 
 static const int   __TASKS_LIMITS__ = 15;  //maximum of tasks working on OSD3358-based system
 
-#define __CONFIG_FILE_EXT__     ".json"
-#define __PROFILE_EXT__         ".json"
+#define __CONFIG_FILE_EXT__     ".config"
+#define __PROFILE_EXT__         ".profile"
+#define __TASKFILE_EXT__        ".task"
+#define __SERVICEFILE_EXT__     ".service"
 
 #define __CONFIG_HOSTNAME_KEY__    "hostname"
 #define __CONFIG_NETWORK_KEY__      "network"
