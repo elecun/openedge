@@ -92,12 +92,11 @@ int main(int argc, char* argv[])
   cxxopts::Options options(argv[0], "-  Commnad Line Options");
 	options.add_options()
         ("c,config", "Load Configuration File(*.config)", cxxopts::value<std::string>(), "File Path") //require rerun avoiding
-        ("i,install", "Install new RT Task", cxxopts::value<std::string>(), "RT Task")
+        ("i,install", "Install RT Task", cxxopts::value<std::string>(), "RT Task")
         ("u,unintall", "Uninstall RT Task", cxxopts::value<std::string>(), "RT Task")
         ("f,force", "forced re-Run")
         ("v,version", "Openedge Service Engine Version")
         ("h,help", "Print Usage");
-
        
   try
   {

@@ -123,6 +123,11 @@ $(OUTDIR)qual.dmr.task.o: $(TASK_SOURCE_FILES)qual.dmr.task/qual.dmr.task.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
 
+logi2c.task: $(OUTDIR)logi2c.task.o
+	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(OUTDIR)$@ $^ $(LDLIBS)
+$(OUTDIR)logi2c.task.o: $(TASK_SOURCE_FILES)logi2c.task/logi2c.task.cc
+	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
 ############################ Services
 
 lsis.fenet.connector.service: $(OUTDIR)lsis.fenet.connector.service.o \
