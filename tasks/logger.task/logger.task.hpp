@@ -1,23 +1,24 @@
 
 /**
- * @file    logi2c.task.hpp
+ * @file    logger.task.hpp
  * @brief   Sensor Data Logger with I2C Interface
  * @author  Byunghun Hwang, <bh.hwang@iae.re.kr>
  */
 
-#ifndef _OPENEDGE_LOGI2C_TASK_HPP_
-#define _OPENEDGE_LOGI2C_TASK_HPP_
+#ifndef _OPENEDGE_LOGGER_TASK_HPP_
+#define _OPENEDGE_LOGGER_TASK_HPP_
 
 #include <openedge/core.hpp>
-#include <openedge/device.hpp>
+#include <vector>
 
 using namespace oe;
 using namespace std;
 
-class logi2cTask : public oe::core::task::runnable {
+namespace oe { class device; }
+class loggerTask : public oe::core::task::runnable {
     public:
-        logi2cTask() = default;
-        virtual ~logi2cTask() = default;
+        loggerTask() = default;
+        virtual ~loggerTask() = default;
 
         //common task interfaces
         bool configure() override;
@@ -25,7 +26,7 @@ class logi2cTask : public oe::core::task::runnable {
         void cleanup() override;
 
     private:
-        oe::device*  _device = nullptr; //device object
+        vector<oe::device*> _devices; //device object
 };
 
 EXPORT_TASK_API

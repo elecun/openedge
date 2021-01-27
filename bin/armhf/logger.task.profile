@@ -1,0 +1,28 @@
+{
+    "md5":"603239CAF2F774498037F944F5592F52",
+    "info":{
+        "taskname":"logger.task",
+        "version":"0.0.1",
+        "cpu_affinity":1,
+        "cycle_ns":50000000,
+        "policy":{
+            "check_jitter":true,
+            "check_overrun":true,
+            "fault_level":0
+        }
+    },
+    "system":{
+        "bus":"/dev/i2c-2"
+    },
+    "device":{
+        "required":["i2c1", "i2c2"],
+        "i2c1":{
+            "address":64,
+            "register":[1,3,5]
+        },
+        "i2c2":{
+            "address":65,
+            "register":[1,3,5]
+        }
+    }
+}
