@@ -1,6 +1,7 @@
 
 
 #include "logi2c.task.hpp"
+#include <support/device/cjmcu3221.hpp>
 
 using namespace std;
 
@@ -12,7 +13,7 @@ void release(){ if(_instance){ delete _instance; _instance = nullptr; }}
 
 
 bool logi2cTask::configure(){
-
+    
     return true;
 }
 

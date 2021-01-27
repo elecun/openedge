@@ -9,6 +9,7 @@
 #define _OPENEDGE_LOGI2C_TASK_HPP_
 
 #include <openedge/core.hpp>
+#include <openedge/device.hpp>
 
 using namespace oe;
 using namespace std;
@@ -21,7 +22,10 @@ class logi2cTask : public oe::core::task::runnable {
         //common task interfaces
         bool configure() override;
         void execute() override;
-        void cleanup() override;        
+        void cleanup() override;
+
+    private:
+        oe::device*  _device = nullptr; //device object
 };
 
 EXPORT_TASK_API

@@ -24,7 +24,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #ifndef _OPENEDGE_DEVICE_HPP_
 #define _OPENEDGE_DEVICE_HPP_
 
-#include <openedge/device/plc.hpp>
+#include <openedge/device/abstract.hpp>
 
 
 using namespace oe;
