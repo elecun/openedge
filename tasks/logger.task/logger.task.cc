@@ -1,7 +1,9 @@
 
 
 #include "logger.task.hpp"
-#include <support/device/general.hpp>
+#include <openedge/device/prepheral.hpp>
+#include <openedge/device/general.hpp>
+#include <fstream>
 
 using namespace std;
 
@@ -13,28 +15,64 @@ void release(){ if(_instance){ delete _instance; _instance = nullptr; }}
 
 
 bool loggerTask::configure(){
-    //device instance
-    json _system = json::parse(getProfile()->get("system"));
-    string _bus = _system["bus"].get<string>();
-    spdlog::info("use system bus : {}", _bus);
+    //getting device information
+    // json _system = json::parse(getProfile()->get("system"));
+    // string dev = _system["device"].get<string>();
+    // spdlog::info("use system bus : {}", dev);
 
-    json _device = json::parse(getProfile()->get("device"));
-    vector<string> _required = _device["required"].get<vector<string>>();
+    // //create general device instance
+    // _device = new oe::generalDevice(new oe::busI2C(dev.c_str()));
 
-    for(string& dev: _required){
-        unsigned char address = static_cast<unsigned char>(_device[dev]["address"].get<int>());
-        vector<int> _register = _device[dev]["register"].get<vector<int>>();
+    // //getting general device channel information
+    // json _device = json::parse(getProfile()->get("device"));
+    // vector<string> _channels = _device["channels"].get<vector<string>>();
 
-        //_device.emplace_back(new oe::generalDevice(new oe::))
+    // for(string& ch: _channels){
+    //     unsigned char address = static_cast<unsigned char>(_device[ch]["address"].get<int>());
+    //     vector<int> _registers = _device[ch]["registers"].get<vector<int>>();
+
+    //     //_devices.emplace_back(new oe::generalDevice(new oe::busI2C());
+    // }
+
+    _device = new oe::device("/dev/i2c-2");
+    if(_device->open()){
+        _device->addPrepheral(new oe::prepheral("sensor-1"));
+    }
+    else {
+        spdlog::error("device cannot open, so cannot add prepherals");
     }
     
     return true;
 }
 
 void loggerTask::execute(){
-    spdlog::info("execute");
+
+    if(_device->isOpen()){
+        unsigned short value[6] = {0x00, };
+        value[0] = _device->getPrepheral("sensor-1")->read(0x01);
+        value[1] = _device->getPrepheral("sensor-1")->read(0x03);
+        value[2] = _device->getPrepheral("sensor-1")->read(0x05);
+        value[3] = _device->getPrepheral("sensor-2")->read(0x01);
+        value[4] = _device->getPrepheral("sensor-2")->read(0x03);
+        value[5] = _device->getPrepheral("sensor-2")->read(0x05);
+
+        if(_logfile.is_open()){
+            for(unsigned short& val: value){
+                _logfile << static_cast<int>(val);
+                _logfile << ",";
+            }
+            _logfile << "\n";
+        }
+    }
 }
 
 void loggerTask::cleanup(){
-    spdlog::info("cleanup");
+
+    if(_logfile.is_open()){
+        _logfile.close();
+    }
+
+    if(_device){
+        delete _device;
+    }
 }

@@ -9,7 +9,10 @@
 #define _OPENEDGE_DEVICE_GENERAL_HPP_
 
 #include <openedge/device/abstract.hpp>
-#include <openedge/bus/abstract.hpp>
+#include <openedge/device/busi2c.hpp>
+#include <vector>
+
+using namespace std;
 
 namespace oe {
 
@@ -17,7 +20,7 @@ namespace oe {
         public:
             generalDevice() = default;
             generalDevice(oe::bus* bus = nullptr);
-            ~generalDevice();
+            virtual ~generalDevice();
 
             int open() override;
             int close() override;
@@ -25,8 +28,13 @@ namespace oe {
             int write() override;
             int read() override;
 
+            oe::busI2C* getBusI2C() { return _busi2c; }
+
+        private:
+            
+
         protected:
-            oe::bus* _bus = nullptr;
+            oe::busI2C* _busi2c = nullptr;
 
     };
 

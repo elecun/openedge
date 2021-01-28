@@ -10,11 +10,15 @@
 
 #include <openedge/core.hpp>
 #include <vector>
+#include <map>
+#include <tuple>
+#include <fstream>
 
 using namespace oe;
 using namespace std;
 
-namespace oe { class device; }
+
+namespace oe{ class device; }
 class loggerTask : public oe::core::task::runnable {
     public:
         loggerTask() = default;
@@ -26,8 +30,9 @@ class loggerTask : public oe::core::task::runnable {
         void cleanup() override;
 
     private:
-        vector<oe::device*> _devices; //device object
-};
+        ofstream _logfile;
+        oe::device* _device = nullptr;  //prepheral device to use
+
 
 EXPORT_TASK_API
 

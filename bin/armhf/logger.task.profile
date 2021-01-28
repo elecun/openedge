@@ -11,18 +11,38 @@
             "fault_level":0
         }
     },
-    "system":{
-        "bus":"/dev/i2c-2"
-    },
-    "device":{
-        "required":["i2c1", "i2c2"],
-        "i2c1":{
-            "address":64,
-            "register":[1,3,5]
+    "prepherals":{
+        "sensor-1":{
+            "use":"INA3221"
+            "port":"/dev/i2c-2",
+            "address":"0x40",
+            "channels":{
+                "ch1":{
+                    "address":"0x01"
+                },
+                "ch2":{
+                    "address":"0x03"
+                },
+                "ch3":{
+                    "address":"0x05"
+                }
+            }
         },
-        "i2c2":{
-            "address":65,
-            "register":[1,3,5]
+        "sensor-2":{
+            "use":"INA3221"
+            "port":"/dev/i2c-2",
+            "address":"0x41",
+            "channels":{
+                "ch1":{
+                    "address":"0x01"
+                },
+                "ch2":{
+                    "address":"0x03"
+                },
+                "ch3":{
+                    "address":"0x05"
+                }
+            }
         }
     }
 }
