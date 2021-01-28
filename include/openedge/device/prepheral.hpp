@@ -24,7 +24,10 @@ namespace oe {
 
             }
 
-            virtual ~prepheral() {}
+            virtual ~prepheral();
+
+            //read from i2c
+            unsigned short read(unsigned char address);
 
         private:
             string _pname;

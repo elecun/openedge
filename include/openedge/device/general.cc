@@ -1,41 +1,47 @@
 
 #include "general.hpp"
+#include <fcntl.h>
+#include <unistd.h>
+
+using namespace std;
 
 namespace oe {
-    device::device(const char* devname){
 
+    device::device(const char* devname):_devicename(devname){
+        _fd = ::open(devname, O_RDWR);
     }
 
-    device(const char* devname):_devicename(devname){
-                _fd = ::open(devname, O_RDWR); //open device file desc. only
-            }
-            virtual ~device() {
-                if(_fd)
-                    ::close(_fd);
-            }
+    device::~device() {
+        if(_fd)
+            ::close(_fd);
 
-            /**
-             * @brief   check if device is opened
-             **/
-            bool isOpen(){
-                if(_fd<0)
-                    return false;
-                return true;
-            }
+        for(map<string, oe::prepheral*>::iterator itr = _ppContainer.begin(); itr!=_ppContainer.end(); itr++){
+            delete itr->second;
+            itr->second = nullptr;
+        }
+    }
 
-            void addPrepheral(oe::prepheral* p, const char* pname){
-                _ppContainer.insert(std::pair<string, oe::prepheral*>(pname, p));
-            }
+    bool device::open(){
+        if(_fd<0)
+            _fd = ::open(_devicename.c_str(), O_RDWR);
+        return true;
+    }
 
-            oe::prepheral* getPrepheral(const char* pname){
-                if(_ppContainer.find(pname)!=_ppContainer.end()){
-                    return _ppContainer[pname];
-                }
-                return nullptr;
-            }
+    bool device::isOpen(){
+        if(_fd<0)
+            return false;
+        return true;
+    }
 
-        private:
-            map<string, oe::prepheral*> _ppContainer;
-            int _fd = -1;
-            string _devicename = "";
-}
+    void device::addPrepheral(oe::prepheral* p){
+        _ppContainer.insert(std::pair<string, oe::prepheral*>(_devicename, p));
+    }
+
+    oe::prepheral* device::getPrepheral(const char* pname){
+        if(_ppContainer.find(pname)!=_ppContainer.end()){
+            return _ppContainer[pname];
+        }
+        return nullptr;
+    }
+
+} /* namespace */

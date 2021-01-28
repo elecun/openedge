@@ -16,9 +16,9 @@ void release(){ if(_instance){ delete _instance; _instance = nullptr; }}
 
 bool loggerTask::configure(){
     //getting device information
-    // json _system = json::parse(getProfile()->get("system"));
-    // string dev = _system["device"].get<string>();
-    // spdlog::info("use system bus : {}", dev);
+    json _prepheral = json::parse(getProfile()->get("prepheral"));
+    json _sensor1 = _prepheral["sensor-1"];
+    json _sensor2 = _prepheral["sensor-2"];
 
     // //create general device instance
     // _device = new oe::generalDevice(new oe::busI2C(dev.c_str()));

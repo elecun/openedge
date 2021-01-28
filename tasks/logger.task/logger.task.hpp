@@ -33,6 +33,7 @@ class loggerTask : public oe::core::task::runnable {
         ofstream _logfile;
         oe::device* _device = nullptr;  //prepheral device to use
 
+};
 
 EXPORT_TASK_API
 
