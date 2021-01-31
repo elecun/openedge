@@ -36,7 +36,8 @@ bool loggerTask::configure(){
 
     _device = new oe::device("/dev/i2c-2");
     if(_device->open()){
-        _device->addPrepheral(new oe::prepheral("sensor-1"));
+        _device->addPrepheral(new oe::prepheral(_device, "sensor-1"));
+        _device->addPrepheral(new oe::prepheral(_device, "sensor-2"));
     }
     else {
         spdlog::error("device cannot open, so cannot add prepherals");
@@ -49,9 +50,11 @@ void loggerTask::execute(){
 
     if(_device->isOpen()){
         unsigned short value[6] = {0x00, };
+        
         value[0] = _device->getPrepheral("sensor-1")->read(0x01);
         value[1] = _device->getPrepheral("sensor-1")->read(0x03);
         value[2] = _device->getPrepheral("sensor-1")->read(0x05);
+
         value[3] = _device->getPrepheral("sensor-2")->read(0x01);
         value[4] = _device->getPrepheral("sensor-2")->read(0x03);
         value[5] = _device->getPrepheral("sensor-2")->read(0x05);

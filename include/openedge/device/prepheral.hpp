@@ -13,20 +13,19 @@
 using namespace std;
  
 namespace oe {
-
+    class device;
     enum class prepheral_class : int {
         I2C = 100,
     };
     
     class prepheral {
         public:
-            prepheral(const char* pname):_pname(pname){
-
-            }
-
+            prepheral(device* dev, const char* pname);
             virtual ~prepheral();
 
-            //read from i2c
+
+
+            bool open(unsigned char addr);
             unsigned short read(unsigned char address);
 
         private:

@@ -15,6 +15,7 @@ namespace oe {
         if(_fd)
             ::close(_fd);
 
+        //delete prepherals
         for(map<string, oe::prepheral*>::iterator itr = _ppContainer.begin(); itr!=_ppContainer.end(); itr++){
             delete itr->second;
             itr->second = nullptr;
