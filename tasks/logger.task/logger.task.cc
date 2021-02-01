@@ -3,6 +3,7 @@
 #include "logger.task.hpp"
 #include <openedge/device/prepheral.hpp>
 #include <openedge/device/general.hpp>
+#include <openedge/device/support/ina3221.hpp>
 #include <fstream>
 
 using namespace std;
@@ -18,13 +19,13 @@ bool loggerTask::configure(){
 
     //getting device information
     json _prepheral = json::parse(getProfile()->get("prepheral"));
-    json _sensor1 = _prepheral["sensor-1"];
-    json _sensor2 = _prepheral["sensor-2"];
+    //json _sensor1 = _prepheral["sensor-1"]; //sensor-1 profile
+    //json _sensor2 = _prepheral["sensor-2"]; //sensor-2 profile
 
-    _device = new oe::device("/dev/i2c-2"); //I2C Device Open
-    if(_device->open()){
-        _device->addPrepheral(new oe::prepheral(_device, "sensor-1"));
-        _device->addPrepheral(new oe::prepheral(_device, "sensor-2"));
+    _device_i2c = new oe::device("/dev/i2c-2"); //I2C Device Open
+    if(_device_i2c->open()){
+        _device_i2c->addPrepheral(new oe::support::INA3221(_device_i2c, 0x40));
+        _device_i2c->addPrepheral(new oe::support::INA3221(_device_i2c, 0x41));
     }
     else {
         spdlog::error("device cannot open");
@@ -36,16 +37,16 @@ bool loggerTask::configure(){
 
 void loggerTask::execute(){
 
-    if(_device->isOpen()){
+    if(_device_i2c->isOpen()){
         unsigned short value[6] = {0x00, };
         
-        value[0] = _device->getPrepheral("sensor-1")->read(0x01);
-        value[1] = _device->getPrepheral("sensor-1")->read(0x03);
-        value[2] = _device->getPrepheral("sensor-1")->read(0x05);
+        value[0] = _device_i2c->getPrepheral("sensor-1")->read(0x01);
+        value[1] = _device_i2c->getPrepheral("sensor-1")->read(0x03);
+        value[2] = _device_i2c->getPrepheral("sensor-1")->read(0x05);
 
-        value[3] = _device->getPrepheral("sensor-2")->read(0x01);
-        value[4] = _device->getPrepheral("sensor-2")->read(0x03);
-        value[5] = _device->getPrepheral("sensor-2")->read(0x05);
+        value[3] = _device_i2c->getPrepheral("sensor-2")->read(0x01);
+        value[4] = _device_i2c->getPrepheral("sensor-2")->read(0x03);
+        value[5] = _device_i2c->getPrepheral("sensor-2")->read(0x05);
 
         if(_logfile.is_open()){
             for(unsigned short& val: value){
@@ -63,7 +64,7 @@ void loggerTask::cleanup(){
         _logfile.close();
     }
 
-    if(_device){
-        delete _device;
+    if(_device_i2c){
+        delete _device_i2c;
     }
 }

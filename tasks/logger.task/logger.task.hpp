@@ -9,9 +9,6 @@
 #define _OPENEDGE_LOGGER_TASK_HPP_
 
 #include <openedge/core.hpp>
-#include <vector>
-#include <map>
-#include <tuple>
 #include <fstream>
 
 using namespace oe;
@@ -31,7 +28,7 @@ class loggerTask : public oe::core::task::runnable {
 
     private:
         ofstream _logfile;
-        oe::device* _device = nullptr;
+        oe::device* _device_i2c = nullptr;
 
 };
 

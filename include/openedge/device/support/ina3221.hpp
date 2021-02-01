@@ -10,24 +10,29 @@
 #define _OPENEDGE_SUPPORT_DEVICE_INA3221_HPP_
 
 #include <string>
+#include <openedge/device/prepheral.hpp>
 
 using namespace std;
 
-namespace oe {
+namespace oe { class device; }
+namespace oe::support {
 
-    class INA3221 {
+    class INA3221 : public oe::prepheral {
         public:
-
-            INA3221(const char* dev, unsigned char address);   //dev : "/dev/i2c-2"
+            INA3221(oe::device* device, unsigned char address);
             virtual ~INA3221();
 
-            bool open();
+            bool open() override;
             void close();
+
+            unsigned short read(unsigned char address) override;
 
         private:
             string _dev;
             int _devfd = -1;
             unsigned char _address;
+
+            oe::device* _device;
     };
 
 } /* namespace */

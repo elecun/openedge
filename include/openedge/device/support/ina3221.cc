@@ -10,15 +10,21 @@
 #include <fcntl.h> //open
 #include <unistd.h> //close
 
-namespace oe {
+#include <openedge/device/general.hpp>
 
-    INA3221::INA3221(const char* dev, unsigned char address):_dev(dev), _address(address){
-        
+/**
+ * pre-requisites
+ *  - $ sudo apt-get install libi2c-dev
+ */
+
+namespace oe::support {
+
+    INA3221::INA3221(oe::device* device, unsigned char address){
+
     }
 
     INA3221::~INA3221(){
-        if(_devfd)
-            ::close(_devfd);
+
     }
 
     bool INA3221::open(){
@@ -40,5 +46,11 @@ namespace oe {
         }
     }
 
-    unsigned short read(unsigned char register)
+    unsigned short INA3221::read(unsigned char address){
+        unsigned short buf = 0x0000;
+        if(::read(_devfd, &buf, sizeof(unsigned short))!=sizeof(unsigned short)){
+            return 0x0000;
+        }
+        return buf;
+    }
 }

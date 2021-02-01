@@ -26,6 +26,7 @@ namespace oe {
 
             void addPrepheral(oe::prepheral* p);
             oe::prepheral* getPrepheral(const char* pname);
+            
 
         private:
             map<string, oe::prepheral*> _ppContainer;

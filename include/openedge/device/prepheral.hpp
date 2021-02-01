@@ -20,16 +20,11 @@ namespace oe {
     
     class prepheral {
         public:
-            prepheral(device* dev, const char* pname);
-            virtual ~prepheral();
+            prepheral() { }
+            virtual ~prepheral() { }
 
-
-
-            bool open(unsigned char addr);
-            unsigned short read(unsigned char address);
-
-        private:
-            string _pname;
+            virtual bool open() = 0;
+            virtual unsigned short read(unsigned char address) = 0;
     };
 
 } /* namespace oe */
