@@ -15,32 +15,20 @@ void release(){ if(_instance){ delete _instance; _instance = nullptr; }}
 
 
 bool loggerTask::configure(){
+
     //getting device information
     json _prepheral = json::parse(getProfile()->get("prepheral"));
     json _sensor1 = _prepheral["sensor-1"];
     json _sensor2 = _prepheral["sensor-2"];
 
-    // //create general device instance
-    // _device = new oe::generalDevice(new oe::busI2C(dev.c_str()));
-
-    // //getting general device channel information
-    // json _device = json::parse(getProfile()->get("device"));
-    // vector<string> _channels = _device["channels"].get<vector<string>>();
-
-    // for(string& ch: _channels){
-    //     unsigned char address = static_cast<unsigned char>(_device[ch]["address"].get<int>());
-    //     vector<int> _registers = _device[ch]["registers"].get<vector<int>>();
-
-    //     //_devices.emplace_back(new oe::generalDevice(new oe::busI2C());
-    // }
-
-    _device = new oe::device("/dev/i2c-2");
+    _device = new oe::device("/dev/i2c-2"); //I2C Device Open
     if(_device->open()){
         _device->addPrepheral(new oe::prepheral(_device, "sensor-1"));
         _device->addPrepheral(new oe::prepheral(_device, "sensor-2"));
     }
     else {
-        spdlog::error("device cannot open, so cannot add prepherals");
+        spdlog::error("device cannot open");
+        return false;
     }
     
     return true;

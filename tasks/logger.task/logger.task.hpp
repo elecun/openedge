@@ -31,7 +31,7 @@ class loggerTask : public oe::core::task::runnable {
 
     private:
         ofstream _logfile;
-        oe::device* _device = nullptr;  //prepheral device to use
+        oe::device* _device = nullptr;
 
 };
 
