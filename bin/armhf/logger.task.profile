@@ -13,7 +13,7 @@
     },
     "prepherals":{
         "sensor-1":{
-            "use":"INA3221"
+            "use":"INA3221",
             "port":"/dev/i2c-2",
             "address":"0x40",
             "channels":{
@@ -29,7 +29,7 @@
             }
         },
         "sensor-2":{
-            "use":"INA3221"
+            "use":"INA3221",
             "port":"/dev/i2c-2",
             "address":"0x41",
             "channels":{

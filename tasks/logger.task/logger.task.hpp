@@ -10,6 +10,8 @@
 
 #include <openedge/core.hpp>
 #include <fstream>
+#include <string>
+#include <time.h>
 
 using namespace oe;
 using namespace std;
@@ -27,8 +29,12 @@ class loggerTask : public oe::core::task::runnable {
         void cleanup() override;
 
     private:
+        struct timespec x; 
         ofstream _logfile;
-        oe::device* _device_i2c = nullptr;
+        int _fd = -1;
+        string _devname;
+        unsigned char _i2c_address[2] = {0x40, 0x41};
+        unsigned char _registers[3] = {0x02, 0x04, 0x06}; //channle 1,2,3 bus voltages
 
 };
 

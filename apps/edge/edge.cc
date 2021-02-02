@@ -42,8 +42,8 @@ OTHER DEALINGS IN THE SOFTWARE.
 using namespace std;
 
 //global variables
-static sem_t* _running = SEM_FAILED;
-const char* semname = "openedge";
+//static sem_t* _running = SEM_FAILED;
+//const char* semname = "openedge";
 
 void terminate() {
   oe::edge::cleanup();
@@ -52,8 +52,8 @@ void terminate() {
 }
 
 void cleanup(int sig) { 
-  sem_close(_running);
-  sem_unlink(semname);
+  //sem_close(_running);
+  //sem_unlink(semname);
   ::terminate(); 
 }
 
@@ -94,7 +94,7 @@ int main(int argc, char* argv[])
         ("c,config", "Load Configuration File(*.config)", cxxopts::value<std::string>(), "File Path") //require rerun avoiding
         ("i,install", "Install RT Task", cxxopts::value<std::string>(), "RT Task")
         ("u,unintall", "Uninstall RT Task", cxxopts::value<std::string>(), "RT Task")
-        ("f,force", "forced re-Run")
+        //("f,force", "forced re-Run")
         ("v,version", "Openedge Service Engine Version")
         ("h,help", "Print Usage");
        
@@ -102,21 +102,20 @@ int main(int argc, char* argv[])
   {
     auto args = options.parse(argc, argv);
 
-    if(args.count("force")) { sem_close(_running); sem_unlink(semname); }
+    //if(args.count("force")) { sem_close(_running); sem_unlink(semname); }
     
     if(args.count("version")) { cout << _OE_VER_ << endl; ::terminate(); }
     else if(args.count("install")) { cout << "Not Support yet" << endl; ::terminate(); }
     else if(args.count("uninstall")) { cout << "Not Support yet" << endl; ::terminate(); }
     else if(args.count("help")) { cout << options.help() << endl; ::terminate(); }
-    else if(args.count("help")) { cout << options.help() << endl; ::terminate(); }
     else if(args.count("config")){
 
       //for re-run avoidance
-      _running = sem_open(semname, O_CREAT | O_EXCL, S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH, 1);
-      if(_running==SEM_FAILED){
-        spdlog::error("It cannot be allowed to re-run on same system.");
-        ::terminate();
-      }
+      // _running = sem_open(semname, O_CREAT | O_EXCL, S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH, 1);
+      // if(_running==SEM_FAILED){
+      //   spdlog::error("It cannot be allowed to re-run on same system.");
+      //   ::terminate();
+      // }
 
       string _conf_file = args["config"].as<std::string>();
 

@@ -51,7 +51,6 @@ RM	= rm -rf
 
 #directories
 
-
 INCLUDE_FILES = ./include/
 SOURCE_FILES = ./
 APP_SOURCE_FILES = ./apps/
@@ -95,6 +94,16 @@ $(OUTDIR)rt_trigger.o: $(INCLUDE_FILES)openedge/core/rt_trigger.cc
 $(OUTDIR)rt_timer.o: $(INCLUDE_FILES)openedge/core/rt_timer.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
+############################ Openedge Cores
+$(OUTDIR)driver.o:	$(INCLUDE_FILES)openedge/core/driver.cc
+					$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+$(OUTDIR)profile.o:	$(INCLUDE_FILES)openedge/core/profile.cc
+					$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+$(OUTDIR)uuid.o:	$(INCLUDE_FILES)openedge/util/uuid.cc
+					$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+$(OUTDIR)general.o:	$(INCLUDE_FILES)openedge/device/general.cc
+					$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
 ############################ Tasks
 simple.task: $(OUTDIR)simple.task.o
 	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(OUTDIR)$@ $^ $(LDLIBS)
@@ -124,9 +133,11 @@ $(OUTDIR)qual.dmr.task.o: $(TASK_SOURCE_FILES)qual.dmr.task/qual.dmr.task.cc
 
 
 logger.task: $(OUTDIR)logger.task.o
-	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(OUTDIR)$@ $^ $(LDLIBS)
+	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(OUTDIR)$@ $^ $(LDLIBS) -li2c
 $(OUTDIR)logger.task.o: $(TASK_SOURCE_FILES)logger.task/logger.task.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+#$(OUTDIR)ina3221.o:	$(INCLUDE_FILES)openedge/device/support/ina3221.cc
+#					$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
 ############################ Services
 
@@ -155,16 +166,6 @@ modbus.rtu.service: $(OUTDIR)modbus.rtu.service.o
 	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(OUTDIR)$@ $^ $(LDLIBS) -lmodbus
 $(OUTDIR)modbus.rtu.service.o: $(SERVICE_SOURCE_FILES)modbus.rtu.service/modbus.rtu.service.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
-
-
-
-############################ Openedge Cores
-$(OUTDIR)driver.o:	$(INCLUDE_FILES)openedge/core/driver.cc
-					$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
-$(OUTDIR)profile.o:	$(INCLUDE_FILES)openedge/core/profile.cc
-					$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
-$(OUTDIR)uuid.o:	$(INCLUDE_FILES)openedge/util/uuid.cc
-					$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
 
 all : edge tasks services
