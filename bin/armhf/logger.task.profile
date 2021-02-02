@@ -12,37 +12,14 @@
         }
     },
     "prepherals":{
+        "port":"/dev/i2c-2",
         "sensor-1":{
             "use":"INA3221",
-            "port":"/dev/i2c-2",
-            "address":"0x40",
-            "channels":{
-                "ch1":{
-                    "address":"0x01"
-                },
-                "ch2":{
-                    "address":"0x03"
-                },
-                "ch3":{
-                    "address":"0x05"
-                }
-            }
+            "address":"0x40"
         },
         "sensor-2":{
             "use":"INA3221",
-            "port":"/dev/i2c-2",
-            "address":"0x41",
-            "channels":{
-                "ch1":{
-                    "address":"0x01"
-                },
-                "ch2":{
-                    "address":"0x03"
-                },
-                "ch3":{
-                    "address":"0x05"
-                }
-            }
+            "address":"0x41"
         }
     }
 }

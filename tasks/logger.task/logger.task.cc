@@ -24,7 +24,11 @@ void release(){ if(_instance){ delete _instance; _instance = nullptr; }}
 
 bool loggerTask::configure(){
 
-    _fd = ::open("/dev/i2c-2", O_RDWR);
+    json prepherals = json::parse(getProfile()->get("prepherals"));
+    string port = prepherals["port"].get<std::string>();
+    spdlog::info("device port : {}", port);
+
+    _fd = ::open(port.c_str(), O_RDWR);
     if(_fd<0)
         return false;
 

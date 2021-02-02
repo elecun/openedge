@@ -23,8 +23,10 @@ namespace oe::core::task {
                 if(_taskImpl){
                     string profile_dir = registry->get<std::string>("PROFILE_DIR");
                     string path = profile_dir+string(taskname)+__PROFILE_EXT__;
-                    if(exist(path.c_str()))
+                    if(exist(path.c_str())){
+                        spdlog::info("Task profile : {}", path);
                         _taskImpl->_profile = make_unique<core::profile>(path.c_str()); //load profile
+                    }
                     else
                         spdlog::error("<{}> profile does not exist", taskname);
                     _taskImpl->taskname = taskname;
