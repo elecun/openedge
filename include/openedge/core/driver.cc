@@ -83,7 +83,8 @@ namespace oe::core::task {
 
     //load task component
     bool driver::load(const char* taskname){
-        string path = "./"+string(taskname); //same dir
+        string path = registry->get<std::string>("BIN_DIR") +string(taskname); //same dir
+        spdlog::info("Load {}", path);
         _task_handle = dlopen(path.c_str(), RTLD_LAZY|RTLD_LOCAL);
         if(_task_handle){
             create_task pfcreate = (create_task)dlsym(_task_handle, "create");

@@ -4,7 +4,7 @@
         "taskname":"logger.task",
         "version":"0.0.1",
         "cpu_affinity":1,
-        "cycle_ns":50000000,
+        "cycle_ns":10000000,
         "policy":{
             "check_jitter":true,
             "check_overrun":true,

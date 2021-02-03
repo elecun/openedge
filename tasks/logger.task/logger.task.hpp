@@ -29,12 +29,15 @@ class loggerTask : public oe::core::task::runnable {
         void cleanup() override;
 
     private:
+        void measure();   
+
+    private:
         struct timespec x; 
         ofstream _logfile;
         int _fd = -1;
         string _devname;
-        unsigned char _i2c_address[2] = {0x40, 0x41};
-        unsigned char _registers[3] = {0x02, 0x04, 0x06}; //channle 1,2,3 bus voltages
+        //unsigned char _i2c_address[2] = {0x40, 0x41};
+        //unsigned char _registers[3] = {0x02, 0x04, 0x06}; //channle 1,2,3 bus voltages
 
 };
 
