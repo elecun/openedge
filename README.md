@@ -8,7 +8,7 @@ Open Source Application Gateway Middleware for Edge Computing
 # Pre-requisites
 If you build this source on your host (e.g. Ubuntu), you probably should install libraries
 
-* $ sudo apt-get install make gcc-8-arm-linux-gnueabihf g++-8-arm-linux-gnueabihf
+* $ sudo apt-get install make gcc-8-arm-linux-gnueabihf g++-8-arm-linux-gnueabihf libczmq-dev
 
 # Supporting Tasks & Services
 * aop10t.pilot.task
@@ -27,6 +27,7 @@ This software will be required other open source libraries for some tasks and se
 * libbson : parse BSON document, it is required for MongoDB C Driver
 * libmosquitto, libmosquittopp : communication with MQTT
 * libmongoc : Mongo DB C driver
+* libczmq-dev : Zero MQ C Binding Library (version 4.2.0)
 
 
 # Build

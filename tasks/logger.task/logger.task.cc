@@ -115,3 +115,11 @@ void loggerTask::cleanup(){
     if(_logfile.is_open())
         _logfile.close();
 }
+
+void loggerTask::pause(){
+
+}
+
+void loggerTask::resume(){
+
+}

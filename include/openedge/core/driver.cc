@@ -81,6 +81,18 @@ namespace oe::core::task {
         unload();
     }
 
+    void driver::pause(){
+        if(_taskImpl){
+            
+        }
+    }
+
+    void driver::resume(){
+        if(_taskImpl){
+            
+        }
+    }
+
     //load task component
     bool driver::load(const char* taskname){
         string path = registry->get<std::string>("BIN_DIR") +string(taskname); //same dir

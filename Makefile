@@ -132,12 +132,22 @@ $(OUTDIR)qual.dmr.task.o: $(TASK_SOURCE_FILES)qual.dmr.task/qual.dmr.task.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
 
+# i2c sensor logging task for injection modeling prj
 logger.task: $(OUTDIR)logger.task.o
 	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(OUTDIR)$@ $^ $(LDLIBS) -li2c
 $(OUTDIR)logger.task.o: $(TASK_SOURCE_FILES)logger.task/logger.task.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
-#$(OUTDIR)ina3221.o:	$(INCLUDE_FILES)openedge/device/support/ina3221.cc
-#					$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
+uvcontrol.task: $(OUTDIR)uvcontrol.task.o
+	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(OUTDIR)$@ $^ $(LDLIBS) -lczmq -lzmq
+$(OUTDIR)uvcontrol.task.o: $(TASK_SOURCE_FILES)uvcontrol.task/uvcontrol.task.cc
+	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
+modbusRTU.task: $(OUTDIR)modbusRTU.task.o
+	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(OUTDIR)$@ $^ $(LDLIBS) -lczmq -lzmq
+$(OUTDIR)modbusRTU.task.o: $(TASK_SOURCE_FILES)modbusRTU.task/modbusRTU.task.cc
+	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
 
 ############################ Services
 

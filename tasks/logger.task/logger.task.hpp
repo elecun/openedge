@@ -27,6 +27,8 @@ class loggerTask : public oe::core::task::runnable {
         bool configure() override;
         void execute() override;
         void cleanup() override;
+        void pause() override;
+        void resume() override;
 
     private:
         void measure();   

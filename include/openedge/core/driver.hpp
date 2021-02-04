@@ -45,6 +45,12 @@ namespace oe {
                         //destory task
                         void cleanup();
 
+                        //pause task
+                        void pause();
+
+                        //resume task
+                        void resume();
+
                         //getting task name
                         const char* getTaskname() const { return _taskImpl->taskname.c_str(); }
 

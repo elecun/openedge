@@ -45,10 +45,12 @@ namespace oe {
                     virtual Status getStatus() { return status; }
                     void setStatus(Status s) { status = s;  }
                     
-                    //task common interfaces
+                    //task common interfaces (very important!!!!)
                     virtual void execute() = 0;
                     virtual bool configure() = 0;
                     virtual void cleanup() = 0;
+                    virtual void pause() = 0;
+                    virtual void resume() = 0;
 
                 protected:
                     const core::profile* getProfile() { 
