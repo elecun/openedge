@@ -1,8 +1,8 @@
 
 /**
  * @file    task.hpp
- * @brief   Task abstraction  class
- * @author  Byunghun Hwang
+ * @brief   Task abstraction class
+ * @author  Byunghun Hwang <bh.hwang@iae.re.kr>
  */
 
 #ifndef _OPENEDGE_CORE_TASK_HPP_
