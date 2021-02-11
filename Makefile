@@ -9,7 +9,7 @@
 OS := $(shell uname)
 
 #Set Architecutre
-ARCH := armhf
+#ARCH := armhf
 
 #Compilers
 ifeq ($(ARCH),armhf)
@@ -17,7 +17,7 @@ ifeq ($(ARCH),armhf)
 	GCC := /usr/bin/arm-linux-gnueabihf-gcc-8
 	LD_LIBRARY_PATH += -L./lib/armhf
 	OUTDIR		= ./bin/armhf/
-	TASK_OUTDIR		= ./bin/armhf/task/
+	BUILDDIR		= ./build/armhf/
 	INCLUDE_DIR = -I./ -I./include/ -I./include/3rdparty/
 	LD_LIBRARY_PATH += -L/usr/local/lib -L./lib/armhf
 else
@@ -25,7 +25,7 @@ else
 	GCC := gcc
 	LD_LIBRARY_PATH += -L./lib/x86_64
 	OUTDIR		= ./bin/x86_64/
-	TASK_OUTDIR		= ./bin/x86_64/task/
+	BUILDDIR		= ./build/x86_64/
 	INCLUDE_DIR = -I./ -I./include/ -I./include/3rdparty/
 	LD_LIBRARY_PATH += -L/usr/local/lib -L./lib/x86_64
 endif
@@ -35,17 +35,15 @@ ifeq ($(OS),Linux) #for Linux
 	LDFLAGS = -Wl,--export-dynamic
 	LDLIBS = -pthread -lrt -ldl -lm
 	GTEST_LDLIBS = -lgtest
-	#INCLUDE_DIR = -I./ -I./include/ -I./include/3rdparty/
-	#LD_LIBRARY_PATH += -L/usr/local/lib -L./lib/armhf
 endif
 
 $(shell mkdir -p $(OUTDIR))
-#$(shell mkdir -p $(TASK_OUTDIR))
+$(shell mkdir -p $(BUILDDIR))
 
 #if release(-O3), debug(-O0)
 CXXFLAGS = -O3 -fPIC -Wall -std=c++17 -D__cplusplus=201703L
 
-#custom definition
+#custom definitions
 CXXFLAGS += -D__MAJOR__=0 -D__MINOR__=0 -D__REV__=5
 RM	= rm -rf
 
@@ -60,121 +58,121 @@ SERVICE_SOURCE_FILES = ./services/
 INSTALL_DIR = /usr/local/bin/
 
 # Make
-openedge:	$(OUTDIR)openedge.o
-			$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -o $(OUTDIR)$@ $^ $(LDLIBS)
+openedge:	$(BUILDDIR)openedge.o
+			$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -o $(BUILDDIR)$@ $^ $(LDLIBS)
 
-oeware_test:	$(OUTDIR)oeware_test.o
-				$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -o $(OUTDIR)$@ $^ $(LDLIBS) $(GTEST_LDLIBS)
+oeware_test:	$(BUILDDIR)oeware_test.o
+				$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -o $(BUILDDIR)$@ $^ $(LDLIBS) $(GTEST_LDLIBS)
 
 # edge service engine
-edge:	$(OUTDIR)edge.o \
-		$(OUTDIR)edge_instance.o \
-		$(OUTDIR)task_manager.o \
-		$(OUTDIR)driver.o \
-		$(OUTDIR)profile.o \
-		$(OUTDIR)rt_timer.o
-		$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -o $(OUTDIR)$@ $^ $(LDLIBS)
+edge:	$(BUILDDIR)edge.o \
+		$(BUILDDIR)edge_instance.o \
+		$(BUILDDIR)task_manager.o \
+		$(BUILDDIR)driver.o \
+		$(BUILDDIR)profile.o \
+		$(BUILDDIR)rt_timer.o
+		$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -o $(BUILDDIR)$@ $^ $(LDLIBS)
 
 #
 # edge service engine
 #
-$(OUTDIR)edge.o: $(APP_SOURCE_FILES)edge/edge.cc
+$(BUILDDIR)edge.o: $(APP_SOURCE_FILES)edge/edge.cc
 				$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
-$(OUTDIR)task_manager.o: $(APP_SOURCE_FILES)edge/task_manager.cc
+$(BUILDDIR)task_manager.o: $(APP_SOURCE_FILES)edge/task_manager.cc
 				$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
-$(OUTDIR)edge_instance.o: $(APP_SOURCE_FILES)edge/instance.cc
+$(BUILDDIR)edge_instance.o: $(APP_SOURCE_FILES)edge/instance.cc
 				$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
 
 #openedge base
-$(OUTDIR)rt_trigger.o: $(INCLUDE_FILES)openedge/core/rt_trigger.cc
+$(BUILDDIR)rt_trigger.o: $(INCLUDE_FILES)openedge/core/rt_trigger.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
 # include
-$(OUTDIR)rt_timer.o: $(INCLUDE_FILES)openedge/core/rt_timer.cc
+$(BUILDDIR)rt_timer.o: $(INCLUDE_FILES)openedge/core/rt_timer.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
 ############################ Openedge Cores
-$(OUTDIR)driver.o:	$(INCLUDE_FILES)openedge/core/driver.cc
+$(BUILDDIR)driver.o:	$(INCLUDE_FILES)openedge/core/driver.cc
 					$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
-$(OUTDIR)profile.o:	$(INCLUDE_FILES)openedge/core/profile.cc
+$(BUILDDIR)profile.o:	$(INCLUDE_FILES)openedge/core/profile.cc
 					$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
-$(OUTDIR)uuid.o:	$(INCLUDE_FILES)openedge/util/uuid.cc
+$(BUILDDIR)uuid.o:	$(INCLUDE_FILES)openedge/util/uuid.cc
 					$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
-$(OUTDIR)general.o:	$(INCLUDE_FILES)openedge/device/general.cc
+$(BUILDDIR)general.o:	$(INCLUDE_FILES)openedge/device/general.cc
 					$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
 ############################ Tasks
-simple.task: $(OUTDIR)simple.task.o
-	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(OUTDIR)$@ $^ $(LDLIBS)
-$(OUTDIR)simple.task.o: $(TASK_SOURCE_FILES)simple.task/simple.task.cc
+simple.task: $(BUILDDIR)simple.task.o
+	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS)
+$(BUILDDIR)simple.task.o: $(TASK_SOURCE_FILES)simple.task/simple.task.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
-simple2.task: $(OUTDIR)simple2.task.o
-	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(OUTDIR)$@ $^ $(LDLIBS)
-$(OUTDIR)simple2.task.o: $(TASK_SOURCE_FILES)simple2.task/simple2.task.cc
+simple2.task: $(BUILDDIR)simple2.task.o
+	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS)
+$(BUILDDIR)simple2.task.o: $(TASK_SOURCE_FILES)simple2.task/simple2.task.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
-aop10t.pilot.task: $(OUTDIR)aop10t.pilot.task.o
-	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(OUTDIR)$@ $^ $(LDLIBS)
-$(OUTDIR)aop10t.pilot.task.o: $(TASK_SOURCE_FILES)aop10t.pilot.task/aop10t.pilot.task.cc
+aop10t.pilot.task: $(BUILDDIR)aop10t.pilot.task.o
+	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS)
+$(BUILDDIR)aop10t.pilot.task.o: $(TASK_SOURCE_FILES)aop10t.pilot.task/aop10t.pilot.task.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
 #sys.mdns.manage.task
-sys.mdns.manage.task: $(OUTDIR)sys.mdns.manage.task.o
-	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(OUTDIR)$@ $^ $(LDLIBS) -ltinyxml2
-$(OUTDIR)sys.mdns.manage.task.o: $(TASK_SOURCE_FILES)sys.mdns.manage.task/sys.mdns.manage.task.cc
+sys.mdns.manage.task: $(BUILDDIR)sys.mdns.manage.task.o
+	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) -ltinyxml2
+$(BUILDDIR)sys.mdns.manage.task.o: $(TASK_SOURCE_FILES)sys.mdns.manage.task/sys.mdns.manage.task.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
-qual.dmr.task: $(OUTDIR)qual.dmr.task.o
-	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(OUTDIR)$@ $^ $(LDLIBS)
-$(OUTDIR)qual.dmr.task.o: $(TASK_SOURCE_FILES)qual.dmr.task/qual.dmr.task.cc
+qual.dmr.task: $(BUILDDIR)qual.dmr.task.o
+	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS)
+$(BUILDDIR)qual.dmr.task.o: $(TASK_SOURCE_FILES)qual.dmr.task/qual.dmr.task.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
 
 # i2c sensor logging task for injection modeling prj
-logger.task: $(OUTDIR)logger.task.o
-	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(OUTDIR)$@ $^ $(LDLIBS) -li2c
-$(OUTDIR)logger.task.o: $(TASK_SOURCE_FILES)logger.task/logger.task.cc
+logger.task: $(BUILDDIR)logger.task.o
+	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) -li2c
+$(BUILDDIR)logger.task.o: $(TASK_SOURCE_FILES)logger.task/logger.task.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
-uvcontrol.task: $(OUTDIR)uvcontrol.task.o
-	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(OUTDIR)$@ $^ $(LDLIBS) -lczmq -lzmq
-$(OUTDIR)uvcontrol.task.o: $(TASK_SOURCE_FILES)uvcontrol.task/uvcontrol.task.cc
+uvcontrol.task: $(BUILDDIR)uvcontrol.task.o
+	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) -lczmq -lzmq
+$(BUILDDIR)uvcontrol.task.o: $(TASK_SOURCE_FILES)uvcontrol.task/uvcontrol.task.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
-modbusRTU.task: $(OUTDIR)modbusRTU.task.o
-	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(OUTDIR)$@ $^ $(LDLIBS) -lczmq -lzmq
-$(OUTDIR)modbusRTU.task.o: $(TASK_SOURCE_FILES)modbusRTU.task/modbusRTU.task.cc
+modbusRTU.task: $(BUILDDIR)modbusRTU.task.o
+	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) -lczmq -lzmq
+$(BUILDDIR)modbusRTU.task.o: $(TASK_SOURCE_FILES)modbusRTU.task/modbusRTU.task.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
 
 ############################ Services
 
-lsis.fenet.connector.service: $(OUTDIR)lsis.fenet.connector.service.o \
-							$(OUTDIR)xgt.protocol.o
-	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(OUTDIR)$@ $^ $(LDLIBS) ./lib/$(ARCH)/libsockpp.a
-$(OUTDIR)lsis.fenet.connector.service.o: $(SERVICE_SOURCE_FILES)lsis.fenet.connector.service/lsis.fenet.connector.service.cc
+lsis.fenet.connector.service: $(BUILDDIR)lsis.fenet.connector.service.o \
+							$(BUILDDIR)xgt.protocol.o
+	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) ./lib/$(ARCH)/libsockpp.a
+$(BUILDDIR)lsis.fenet.connector.service.o: $(SERVICE_SOURCE_FILES)lsis.fenet.connector.service/lsis.fenet.connector.service.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
-$(OUTDIR)xgt.protocol.o: $(SERVICE_SOURCE_FILES)lsis.fenet.connector.service/xgt.protocol.cc
-	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
-
-mongodb.connector.service: $(OUTDIR)mongodb.connector.service.o
-	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(OUTDIR)$@ $^ $(LDLIBS) -lbson-1.0 -lmongoc-1.0
-$(OUTDIR)mongodb.connector.service.o: $(SERVICE_SOURCE_FILES)mongodb.connector.service/mongodb.connector.service.cc
+$(BUILDDIR)xgt.protocol.o: $(SERVICE_SOURCE_FILES)lsis.fenet.connector.service/xgt.protocol.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
-mqtt.publisher.service: $(OUTDIR)mqtt.publisher.service.o \
-						$(OUTDIR)mqtt.o
-	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(OUTDIR)$@ $^ $(LDLIBS) -lmosquittopp
-$(OUTDIR)mqtt.publisher.service.o: $(SERVICE_SOURCE_FILES)mqtt.publisher.service/mqtt.publisher.service.cc
-	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
-$(OUTDIR)mqtt.o: $(SERVICE_SOURCE_FILES)mqtt.publisher.service/mqtt.cc
+mongodb.connector.service: $(BUILDDIR)mongodb.connector.service.o
+	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) -lbson-1.0 -lmongoc-1.0
+$(BUILDDIR)mongodb.connector.service.o: $(SERVICE_SOURCE_FILES)mongodb.connector.service/mongodb.connector.service.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
-modbus.rtu.service: $(OUTDIR)modbus.rtu.service.o
-	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(OUTDIR)$@ $^ $(LDLIBS) -lmodbus
-$(OUTDIR)modbus.rtu.service.o: $(SERVICE_SOURCE_FILES)modbus.rtu.service/modbus.rtu.service.cc
+mqtt.publisher.service: $(BUILDDIR)mqtt.publisher.service.o \
+						$(BUILDDIR)mqtt.o
+	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) -lmosquittopp
+$(BUILDDIR)mqtt.publisher.service.o: $(SERVICE_SOURCE_FILES)mqtt.publisher.service/mqtt.publisher.service.cc
+	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+$(BUILDDIR)mqtt.o: $(SERVICE_SOURCE_FILES)mqtt.publisher.service/mqtt.cc
+	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
+modbus.rtu.service: $(BUILDDIR)modbus.rtu.service.o
+	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) -lmodbus
+$(BUILDDIR)modbus.rtu.service.o: $(SERVICE_SOURCE_FILES)modbus.rtu.service/modbus.rtu.service.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
 
@@ -182,6 +180,8 @@ all : edge tasks services
 test : oeware_test
 tasks : simple.task simple2.task aop10t.pilot.task sys.mdns.manage.task qual.dmr.task
 services : lsis.fenet.connector.service mongodb.connector.service mqtt.publisher.service modbus.rtu.service
-clean : FORCE
-		$(RM) $(OUTDIR)*.o $(OUTDIR)openedge $(OUTDIR)edge $(OUTDIR)*.task $(OUTDIR)*.service
+deploy : FORCE
+	cp $(BUILDDIR)*.task $(BUILDDIR)edge $(BINDIR)
+clean : FORCE 
+		$(RM) $(BUILDDIR)*.o $(BUILDDIR)openedge $(BUILDDIR)edge $(BUILDDIR)*.task $(BUILDDIR)*.service
 FORCE : 
