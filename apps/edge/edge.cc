@@ -1,6 +1,6 @@
 /**
  * @file    edge.cc
- * @brief   OpenEdge Service Engine on Preemptive Realtime OS
+ * @brief   OpenEdge Task Runtime Engine on Preemptive Realtime OS
  * @author  Byunghun Hwang <bh.hwang@iae.re.kr>
  */
 
@@ -27,23 +27,18 @@ OTHER DEALINGS IN THE SOFTWARE.
 */
 
 #include <3rdparty/cxxopts.hpp>
-#include <3rdparty/spdlog/spdlog.h>
-#include <3rdparty/spdlog/sinks/stdout_color_sinks.h>
-#include <csignal> //for signal handling
-#include <sys/mman.h> //for mlock
+
+#include <csignal>
+#include <sys/mman.h>
 #include "instance.hpp"
 #include <iostream>
-#include <semaphore.h>  //for process synchronization (avoiding re-run)
+#include <openedge/log.hpp>
 
 #include <openedge/core/version.hpp>
 #include <openedge/core/exception.hpp>  //exception by openedge
 #include <openedge/core/global.hpp>
 
 using namespace std;
-
-//global variables
-//static sem_t* _running = SEM_FAILED;
-//const char* semname = "openedge";
 
 void terminate() {
   oe::edge::cleanup();

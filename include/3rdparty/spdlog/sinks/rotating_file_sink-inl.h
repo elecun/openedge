@@ -4,14 +4,14 @@
 #pragma once
 
 #ifndef SPDLOG_HEADER_ONLY
-#include <3rdparty/spdlog/sinks/rotating_file_sink.h>
+#include <spdlog/sinks/rotating_file_sink.h>
 #endif
 
-#include <3rdparty/spdlog/common.h>
+#include <spdlog/common.h>
 
-#include <3rdparty/spdlog/details/file_helper.h>
-#include <3rdparty/spdlog/details/null_mutex.h>
-#include <3rdparty/spdlog/fmt/fmt.h>
+#include <spdlog/details/file_helper.h>
+#include <spdlog/details/null_mutex.h>
+#include <spdlog/fmt/fmt.h>
 
 #include <cerrno>
 #include <chrono>
@@ -110,8 +110,7 @@ SPDLOG_INLINE void rotating_file_sink<Mutex>::rotate_()
             {
                 file_helper_.reopen(true); // truncate the log file anyway to prevent it to grow beyond its limit!
                 current_size_ = 0;
-                SPDLOG_THROW(
-                    spdlog_ex("rotating_file_sink: failed renaming " + filename_to_str(src) + " to " + filename_to_str(target), errno));
+                throw_spdlog_ex("rotating_file_sink: failed renaming " + filename_to_str(src) + " to " + filename_to_str(target), errno);
             }
         }
     }

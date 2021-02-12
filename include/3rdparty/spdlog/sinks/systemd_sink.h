@@ -3,9 +3,9 @@
 
 #pragma once
 
-#include <3rdparty/spdlog/sinks/base_sink.h>
-#include <3rdparty/spdlog/details/null_mutex.h>
-#include <3rdparty/spdlog/details/synchronous_factory.h>
+#include <spdlog/sinks/base_sink.h>
+#include <spdlog/details/null_mutex.h>
+#include <spdlog/details/synchronous_factory.h>
 
 #include <array>
 #ifndef SD_JOURNAL_SUPPRESS_LOCATION
@@ -72,7 +72,7 @@ protected:
 
         if (err)
         {
-            SPDLOG_THROW(spdlog_ex("Failed writing to systemd", errno));
+            throw_spdlog_ex("Failed writing to systemd", errno);
         }
     }
 

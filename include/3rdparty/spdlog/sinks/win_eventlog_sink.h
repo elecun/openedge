@@ -30,10 +30,11 @@ Windows Registry Editor Version 5.00
 
 #pragma once
 
-#include <winbase.h>
+#include <spdlog/details/null_mutex.h>
+#include <spdlog/sinks/base_sink.h>
 
-#include <3rdparty/spdlog/details/null_mutex.h>
-#include <3rdparty/spdlog/sinks/base_sink.h>
+#include <spdlog/details/windows_include.h>
+#include <winbase.h>
 
 #include <mutex>
 #include <string>
@@ -72,7 +73,7 @@ struct win32_error : public spdlog_ex
         return fmt::format("{}: {}{}", user_message, error_code, system_message);
     }
 
-    win32_error(std::string const &func_name, DWORD error = GetLastError())
+    explicit win32_error(std::string const &func_name, DWORD error = GetLastError())
         : spdlog_ex(format(func_name, error))
     {}
 };
@@ -90,7 +91,7 @@ public:
     {
         if (!::IsValidSid(psid))
         {
-            SPDLOG_THROW(spdlog_ex("sid_t::sid_t(): invalid SID received"));
+            throw_spdlog_ex("sid_t::sid_t(): invalid SID received");
         }
 
         auto const sid_length{::GetLengthSid(psid)};
@@ -174,8 +175,7 @@ struct eventlog
             return EVENTLOG_ERROR_TYPE;
 
         default:
-            // should be unreachable
-            SPDLOG_THROW(std::logic_error(fmt::format("Unsupported log level {}", msg.level)));
+            return EVENTLOG_INFORMATION_TYPE;
         }
     }
 

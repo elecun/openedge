@@ -3,9 +3,9 @@
 
 #pragma once
 
-#include <3rdparty/spdlog/details/console_globals.h>
-#include <3rdparty/spdlog/details/null_mutex.h>
-#include <3rdparty/spdlog/sinks/sink.h>
+#include <spdlog/details/console_globals.h>
+#include <spdlog/details/null_mutex.h>
+#include <spdlog/sinks/sink.h>
 #include <memory>
 #include <mutex>
 #include <string>
@@ -30,7 +30,11 @@ public:
     ~ansicolor_sink() override = default;
 
     ansicolor_sink(const ansicolor_sink &other) = delete;
+    ansicolor_sink(ansicolor_sink &&other) = delete;
+
     ansicolor_sink &operator=(const ansicolor_sink &other) = delete;
+    ansicolor_sink &operator=(ansicolor_sink &&other) = delete;
+
     void set_color(level::level_enum color_level, string_view_t color);
     void set_color_mode(color_mode mode);
     bool should_color();
@@ -80,9 +84,10 @@ private:
     mutex_t &mutex_;
     bool should_do_colors_;
     std::unique_ptr<spdlog::formatter> formatter_;
-    std::array<string_view_t , level::n_levels> colors_;
+    std::array<std::string, level::n_levels> colors_;
     void print_ccode_(const string_view_t &color_code);
     void print_range_(const memory_buf_t &formatted, size_t start, size_t end);
+    static std::string to_string_(const string_view_t &sv);
 };
 
 template<typename ConsoleMutex>

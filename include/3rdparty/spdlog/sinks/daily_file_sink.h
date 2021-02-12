@@ -3,14 +3,14 @@
 
 #pragma once
 
-#include <3rdparty/spdlog/common.h>
-#include <3rdparty/spdlog/details/file_helper.h>
-#include <3rdparty/spdlog/details/null_mutex.h>
-#include <3rdparty/spdlog/fmt/fmt.h>
-#include <3rdparty/spdlog/sinks/base_sink.h>
-#include <3rdparty/spdlog/details/os.h>
-#include <3rdparty/spdlog/details/circular_q.h>
-#include <3rdparty/spdlog/details/synchronous_factory.h>
+#include <spdlog/common.h>
+#include <spdlog/details/file_helper.h>
+#include <spdlog/details/null_mutex.h>
+#include <spdlog/fmt/fmt.h>
+#include <spdlog/sinks/base_sink.h>
+#include <spdlog/details/os.h>
+#include <spdlog/details/circular_q.h>
+#include <spdlog/details/synchronous_factory.h>
 
 #include <chrono>
 #include <cstdio>
@@ -56,7 +56,7 @@ public:
     {
         if (rotation_hour < 0 || rotation_hour > 23 || rotation_minute < 0 || rotation_minute > 59)
         {
-            SPDLOG_THROW(spdlog_ex("daily_file_sink: Invalid rotation time in ctor"));
+            throw_spdlog_ex("daily_file_sink: Invalid rotation time in ctor");
         }
 
         auto now = log_clock::now();
@@ -155,7 +155,7 @@ private:
         using details::os::filename_to_str;
         using details::os::remove_if_exists;
 
-        filename_t current_file = filename();
+        filename_t current_file = file_helper_.filename();
         if (filenames_q_.full())
         {
             auto old_filename = std::move(filenames_q_.front());
@@ -164,7 +164,7 @@ private:
             if (!ok)
             {
                 filenames_q_.push_back(std::move(current_file));
-                SPDLOG_THROW(spdlog_ex("Failed removing daily file " + filename_to_str(old_filename), errno));
+                throw_spdlog_ex("Failed removing daily file " + filename_to_str(old_filename), errno);
             }
         }
         filenames_q_.push_back(std::move(current_file));
