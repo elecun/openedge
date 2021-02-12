@@ -18,14 +18,14 @@
 using namespace std;
 using json = nlohmann::json;
 
-namespace oe::edge {
+namespace oe::app {
 
     #define CONFIG_PATH   config["registry"]["path"]
     #define CONFIG_HOSTNAME config["registry"]["hostname"]
     #define CONFIG_TASKS    config["required"]["tasks"] //forced (remove not allowable)
     #define CONFIG_SYSTEM   config["system"]
 
-    //initialize
+    //app initialize
     bool initialize(const char* conf_file){
 
         spdlog::info("* Process ID = {}", getpid());
@@ -38,7 +38,7 @@ namespace oe::edge {
             file >> config;
         }
         catch(const json::exception& e){
-            spdlog::error("{}", e.what());
+            spdlog::error("Config file load failed : {}", e.what());
             return false;
         }
 

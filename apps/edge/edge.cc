@@ -33,22 +33,27 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "instance.hpp"
 #include <iostream>
 #include <openedge/log.hpp>
-
-#include <openedge/core/version.hpp>
-#include <openedge/core/exception.hpp>  //exception by openedge
-#include <openedge/core/global.hpp>
+#include <openedge/core.hpp>
 
 using namespace std;
 
 void terminate() {
-  oe::edge::cleanup();
+  oe::app::cleanup();
   spdlog::info("Successfully terminated");
   exit(EXIT_SUCCESS);
 }
 
-void cleanup(int sig) { 
-  //sem_close(_running);
-  //sem_unlink(semname);
+void cleanup(int sig) {
+  switch(sig){
+    case SIGSEGV: { spdlog::info("Invalid access to storage"); } break;
+    case SIGABRT: { spdlog::info("Abnormal termination"); } break;
+    case SIGKILL: { spdlog::info("Process killed"); } break;
+    case SIGBUS: { spdlog::info("Bus Error"); } break;
+    case SIGTERM: { spdlog::info("Termination requested"); } break;
+    case SIGINT: { spdlog::info("interrupted"); } break;
+    default:
+      spdlog::info("Cleaning up the program");
+  }
   ::terminate(); 
 }
 
@@ -56,26 +61,25 @@ void cleanup(int sig) {
 int main(int argc, char* argv[])
 {
   spdlog::stdout_color_st("console");
+  const int signals[] = { SIGINT, SIGTERM, SIGBUS, SIGKILL, SIGABRT, SIGSEGV };
 
-  //termination signal event redirection
   signal(SIGINT, cleanup);
 	signal(SIGTERM, cleanup);
+  signal(SIGBUS, cleanup);
   signal(SIGKILL, cleanup);
   signal(SIGABRT, cleanup);
+  signal(SIGSEGV, cleanup);
 
   //signal masking
   sigset_t sigmask;
   if(!sigfillset(&sigmask)){
-    sigdelset(&sigmask, SIGINT);  //delete signal from signal mask
-    sigdelset(&sigmask, SIGTERM);
-    sigdelset(&sigmask, SIGKILL);
-    sigdelset(&sigmask, SIGABRT);  
+    for(int signal:signals)
+      sigdelset(&sigmask, signal); //delete signal from mask
   }
   else {
     spdlog::error("Signal Handling Error");
     ::terminate(); //if failed, do termination
   }
-  
 
   if(pthread_sigmask(SIG_SETMASK, &sigmask, nullptr)!=0){ // signal masking for this thread(main)
     spdlog::error("Signal Masking Error");
@@ -84,48 +88,37 @@ int main(int argc, char* argv[])
 
   mlockall(MCL_CURRENT|MCL_FUTURE); //avoid swaping
 
-  cxxopts::Options options(argv[0], "-  Commnad Line Options");
+  cxxopts::Options options(argv[0], "-  Options");
 	options.add_options()
         ("c,config", "Load Configuration File(*.config)", cxxopts::value<std::string>(), "File Path") //require rerun avoiding
-        ("i,install", "Install RT Task", cxxopts::value<std::string>(), "RT Task")
-        ("u,unintall", "Uninstall RT Task", cxxopts::value<std::string>(), "RT Task")
-        //("f,force", "forced re-Run")
+        ("i,install", "Install RT Task", cxxopts::value<std::string>(), "RT Task Component")
+        ("u,unintall", "Uninstall RT Task", cxxopts::value<std::string>(), "RT Task Component")
         ("v,version", "Openedge Service Engine Version")
         ("h,help", "Print Usage");
        
   try
   {
     auto args = options.parse(argc, argv);
-
-    //if(args.count("force")) { sem_close(_running); sem_unlink(semname); }
     
     if(args.count("version")) { cout << _OE_VER_ << endl; ::terminate(); }
     else if(args.count("install")) { cout << "Not Support yet" << endl; ::terminate(); }
     else if(args.count("uninstall")) { cout << "Not Support yet" << endl; ::terminate(); }
     else if(args.count("help")) { cout << options.help() << endl; ::terminate(); }
     else if(args.count("config")){
-
-      //for re-run avoidance
-      // _running = sem_open(semname, O_CREAT | O_EXCL, S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH, 1);
-      // if(_running==SEM_FAILED){
-      //   spdlog::error("It cannot be allowed to re-run on same system.");
-      //   ::terminate();
-      // }
-
-      string _conf_file = args["config"].as<std::string>();
+      string _conf = args["config"].as<std::string>();
 
       spdlog::info("Starting Openedge Service Engine {} (built {}/{})", _OE_VER_, __DATE__, __TIME__);
-      spdlog::info("Load Configuration File : {}", _conf_file);
+      spdlog::info("Load Configuration File : {}", _conf);
 
       //run task engine
-      if(oe::edge::initialize(_conf_file.c_str()))
-          oe::edge::run();
+      if(oe::app::initialize(_conf.c_str()))
+          oe::app::run();
       
       pause(); //wait until getting SIGINT
     }
   }
   catch(const cxxopts::OptionException& e){
-    spdlog::error("Argument parse exception : {}",e.what());
+    spdlog::error("Argument parse exception : {}", e.what());
   }
 
   ::terminate();

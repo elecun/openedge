@@ -28,6 +28,9 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include <openedge/core/bus.hpp>
 #include <openedge/core/device.hpp>
 #include <openedge/core/service.hpp>
+#include <openedge/core/version.hpp>
+#include <openedge/core/exception.hpp>
+#include <openedge/core/global.hpp>
 
 
 using namespace oe;
