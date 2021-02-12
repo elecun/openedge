@@ -17,71 +17,69 @@
 
 using namespace std;
 
-namespace oe {
-    namespace core {
-            namespace task {
+namespace oe::core {
+    namespace task {
 
-                //RT timer jitter data
-                typedef struct _time_jitter_t {
-                    unsigned long long max {0};
-                    unsigned long long min {1000000000};
-                    void set(unsigned long long val){
-                        if(val>max) max=val;
-                        if(val<min) min=val;
-                    }   
-                } time_jitter;
+        //RT timer jitter data
+        typedef struct _time_jitter_t {
+            unsigned long long max {0};
+            unsigned long long min {1000000000};
+            void set(unsigned long long val){
+                if(val>max) max=val;
+                if(val<min) min=val;
+            }   
+        } time_jitter;
 
-                class driver {
-                    public:
-                        explicit driver(const char* taskname);
-                        virtual ~driver();
+        class driver {
+            public:
+                explicit driver(const char* taskname);
+                virtual ~driver();
 
-                        //configure the task before execute
-                        bool configure();
+                //configure the task before execute
+                bool configure();
 
-                        //start task to run
-                        void execute();
+                //start task to run
+                void execute();
 
-                        //destory task
-                        void cleanup();
+                //destory task
+                void cleanup();
 
-                        //pause task
-                        void pause();
+                //pause task
+                void pause();
 
-                        //resume task
-                        void resume();
+                //resume task
+                void resume();
 
-                        //getting task name
-                        const char* getTaskname() const { return _taskImpl->taskname.c_str(); }
+                //getting task name
+                const char* getTaskname() const { return _taskImpl->taskname.c_str(); }
 
-                    private:
-                        //Load task by task name
-                        bool load(const char* taskname);
+            private:
+                //Load task by task name
+                bool load(const char* taskname);
 
-                        //Unload all task
-                        void unload();
+                //Unload all task
+                void unload();
 
-                        //start task process concurrently
-                        void do_process();
+                //start task process concurrently
+                void do_process();
 
-                        //set task time spec. 
-                        void set_rt_timer(unsigned long long nsec);
+                //set task time spec. 
+                void set_rt_timer(unsigned long long nsec);
 
-                    private:
-                        task::runnable* _taskImpl = nullptr;    //concrete implementation
-                        void* _task_handle = nullptr;   //for dl
-                        std::thread* _ptrThread = nullptr;
-                        std::mutex _mutex;
-                        int _signalIndex {0};
-                        timer_t _timer_id {0};
-                        struct sigevent _sig_evt;
-                        struct itimerspec _time_spec;
-                        _time_jitter_t _jitter;
-                        bool _overrun { false };
+            private:
+                task::runnable* _taskImpl = nullptr;    //concrete implementation
+                void* _task_handle = nullptr;   //for dl
+                std::thread* _ptrThread = nullptr;
+                std::mutex _mutex;
+                int _signalIndex {0};
+                timer_t _timer_id {0};
+                struct sigevent _sig_evt;
+                struct itimerspec _time_spec;
+                _time_jitter_t _jitter;
+                bool _overrun { false };
 
-                };
-            } //namespace task
-    } //namespace core
+        };
+    } //namespace task
 } //namespace oe
 
 #endif
