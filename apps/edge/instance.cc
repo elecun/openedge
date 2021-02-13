@@ -41,6 +41,10 @@ namespace oe::app {
             spdlog::error("Config file load failed : {}", e.what());
             return false;
         }
+        catch(std::ifstream::failure& e){
+            spdlog::error("Configuration file load error : {}", e.what());
+            return false;
+        }
 
         //set dumped system configuration into the registry
         if(config.find("system")!=config.end()){

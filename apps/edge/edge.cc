@@ -39,20 +39,20 @@ using namespace std;
 
 void terminate() {
   oe::app::cleanup();
-  spdlog::info("Successfully terminated");
+  console::info("Successfully terminated");
   exit(EXIT_SUCCESS);
 }
 
 void cleanup(int sig) {
   switch(sig){
-    case SIGSEGV: { spdlog::info("Invalid access to storage"); } break;
-    case SIGABRT: { spdlog::info("Abnormal termination"); } break;
-    case SIGKILL: { spdlog::info("Process killed"); } break;
-    case SIGBUS: { spdlog::info("Bus Error"); } break;
-    case SIGTERM: { spdlog::info("Termination requested"); } break;
-    case SIGINT: { spdlog::info("interrupted"); } break;
+    case SIGSEGV: { console::info("Invalid access to storage"); } break;
+    case SIGABRT: { console::info("Abnormal termination"); } break;
+    case SIGKILL: { console::info("Process killed"); } break;
+    case SIGBUS: { console::info("Bus Error"); } break;
+    case SIGTERM: { console::info("Termination requested"); } break;
+    case SIGINT: { console::info("interrupted"); } break;
     default:
-      spdlog::info("Cleaning up the program");
+      console::info("Cleaning up the program");
   }
   ::terminate(); 
 }
@@ -60,7 +60,8 @@ void cleanup(int sig) {
 
 int main(int argc, char* argv[])
 {
-  spdlog::stdout_color_st("console");
+  console::stdout_color_st("console");
+
   const int signals[] = { SIGINT, SIGTERM, SIGBUS, SIGKILL, SIGABRT, SIGSEGV };
 
   signal(SIGINT, cleanup);
@@ -77,12 +78,12 @@ int main(int argc, char* argv[])
       sigdelset(&sigmask, signal); //delete signal from mask
   }
   else {
-    spdlog::error("Signal Handling Error");
+    console::error("Signal Handling Error");
     ::terminate(); //if failed, do termination
   }
 
   if(pthread_sigmask(SIG_SETMASK, &sigmask, nullptr)!=0){ // signal masking for this thread(main)
-    spdlog::error("Signal Masking Error");
+    console::error("Signal Masking Error");
     ::terminate();
   }
 
@@ -107,8 +108,8 @@ int main(int argc, char* argv[])
     else if(args.count("config")){
       string _conf = args["config"].as<std::string>();
 
-      spdlog::info("Starting Openedge Service Engine {} (built {}/{})", _OE_VER_, __DATE__, __TIME__);
-      spdlog::info("Load Configuration File : {}", _conf);
+      console::info("Starting Openedge Service Engine {} (built {}/{})", _OE_VER_, __DATE__, __TIME__);
+      console::info("Load Configuration File : {}", _conf);
 
       //run task engine
       if(oe::app::initialize(_conf.c_str()))
@@ -118,7 +119,7 @@ int main(int argc, char* argv[])
     }
   }
   catch(const cxxopts::OptionException& e){
-    spdlog::error("Argument parse exception : {}", e.what());
+    console::error("Argument parse exception : {}", e.what());
   }
 
   ::terminate();

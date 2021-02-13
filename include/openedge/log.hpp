@@ -12,4 +12,6 @@
 #include <3rdparty/spdlog/spdlog.h>
 #include <3rdparty/spdlog/sinks/stdout_color_sinks.h>
 
+namespace console = spdlog;
+
 #endif

@@ -8,7 +8,7 @@ Open Source Application Gateway Middleware for Edge Computing
 # Pre-requisites
 If you build this source on your host (e.g. Ubuntu), you probably should install libraries
 
-* $ sudo apt-get install make gcc-8-arm-linux-gnueabihf g++-8-arm-linux-gnueabihf libczmq-dev
+* $ sudo apt-get install make gcc-8-arm-linux-gnueabihf g++-8-arm-linux-gnueabihf libczmq-dev sqlite3
 
 # Supporting Tasks & Services
 * aop10t.pilot.task

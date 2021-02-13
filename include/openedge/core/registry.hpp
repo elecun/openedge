@@ -13,49 +13,45 @@
 #include <string>
 #include <unordered_map>
 #include <openedge/arch/singleton.hpp>
-#include <3rdparty/spdlog/spdlog.h>
+#include <openedge/log.hpp>
 
 using namespace std;
 
-namespace oe {
-    namespace global {
+namespace oe::global {
     
-        class registry : public oe::arch::singleton<registry> {
-            public:
-                registry() = default;
-                virtual ~registry() = default;
+    class registry : public oe::arch::singleton<registry> {
+        public:
+            registry() = default;
+            virtual ~registry() = default;
 
-
-                virtual bool insert(const string key, const any value){
-                    if(registry_container.find(key)==registry_container.end()){
-                        registry_container[key] = value;
-                        return true;
-                    }
-                    else {
-                        spdlog::warn("{} has already existed in the system registry.", key);
-                        return false;
-                    }
-                }
-
-                template<typename _Type>
-                _Type get(const string key){
-                    if(registry_container.find(key)!=registry_container.end())
-                        return std::any_cast<_Type>(registry_container[key]);
-                    else
-                        return nullptr;
-                }
-
-                bool find(const char* key){
-                    if(registry_container.find(key)==registry_container.end())
-                        return false;
+            virtual bool insert(const string key, const any value){
+                if(registry_container.find(key)==registry_container.end()){
+                    registry_container.insert(std::pair<string, any>(key, value));
                     return true;
                 }
+                else {
+                    console::warn("{} has already existed in the system registry.", key);
+                    return false;
+                }
+            }
 
-            private:
-                unordered_map<string, any> registry_container;
+            template<typename _Type>
+            _Type get(const string key){
+                if(registry_container.find(key)!=registry_container.end())
+                    return std::any_cast<_Type>(registry_container[key]);
+                else
+                    return nullptr;
+            }
 
-        };
-    } //namespace
+            bool find(const char* key){
+                if(registry_container.find(key)==registry_container.end())
+                    return false;
+                return true;
+            }
+
+        private:
+            unordered_map<string, any> registry_container;
+    };
 } //namespace
 
 #define registry oe::global::registry::instance()
