@@ -17,7 +17,7 @@ ifeq ($(ARCH),armhf)
 	GCC := /usr/bin/arm-linux-gnueabihf-gcc-8
 	LD_LIBRARY_PATH += -L./lib/armhf
 	OUTDIR		= ./bin/armhf/
-	BUILDDIR		= ./build/armhf/
+	BUILDDIR		= ./bin/armhf/
 	INCLUDE_DIR = -I./ -I./include/ -I./include/3rdparty/
 	LD_LIBRARY_PATH += -L/usr/local/lib -L./lib/armhf
 else
@@ -25,7 +25,7 @@ else
 	GCC := gcc
 	LD_LIBRARY_PATH += -L./lib/x86_64
 	OUTDIR		= ./bin/x86_64/
-	BUILDDIR		= ./build/x86_64/
+	BUILDDIR		= ./bin/x86_64/
 	INCLUDE_DIR = -I./ -I./include/ -I./include/3rdparty/
 	LD_LIBRARY_PATH += -L/usr/local/lib -L./lib/x86_64
 endif
@@ -146,6 +146,12 @@ modbusRTU.task: $(BUILDDIR)modbusRTU.task.o
 $(BUILDDIR)modbusRTU.task.o: $(TASK_SOURCE_FILES)modbusRTU.task/modbusRTU.task.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
+# sysmon task
+sysmon.task: $(BUILDDIR)sysmon.o
+	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) -lczmq -lzmq
+$(BUILDDIR)sysmon.o: $(TASK_SOURCE_FILES)sysmon.task/sysmon.cc
+	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
 
 ############################ Services
 
@@ -175,10 +181,10 @@ modbus.rtu.service: $(BUILDDIR)modbus.rtu.service.o
 $(BUILDDIR)modbus.rtu.service.o: $(SERVICE_SOURCE_FILES)modbus.rtu.service/modbus.rtu.service.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
-
 all : edge tasks services
+
 test : oeware_test
-tasks : simple.task simple2.task aop10t.pilot.task sys.mdns.manage.task qual.dmr.task
+tasks : simple.task simple2.task aop10t.pilot.task sys.mdns.manage.task qual.dmr.task sysmon.task
 services : lsis.fenet.connector.service mongodb.connector.service mqtt.publisher.service modbus.rtu.service
 deploy : FORCE
 	cp $(BUILDDIR)*.task $(BUILDDIR)edge $(BINDIR)
