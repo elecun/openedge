@@ -102,6 +102,14 @@ $(BUILDDIR)uuid.o:	$(INCLUDE_FILES)openedge/util/uuid.cc
 $(BUILDDIR)general.o:	$(INCLUDE_FILES)openedge/device/general.cc
 					$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
+############################ Openedge Sys
+$(BUILDDIR)info.o:	$(INCLUDE_FILES)openedge/sys/info.cc
+					$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+$(BUILDDIR)cpuload.o:	$(INCLUDE_FILES)openedge/sys/cpuload.cc
+					$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+$(BUILDDIR)netload.o:	$(INCLUDE_FILES)openedge/sys/netload.cc
+					$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
 ############################ Tasks
 simple.task: $(BUILDDIR)simple.task.o
 	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS)
@@ -147,7 +155,10 @@ $(BUILDDIR)modbusRTU.task.o: $(TASK_SOURCE_FILES)modbusRTU.task/modbusRTU.task.c
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
 # sysmon task
-sysmon.task: $(BUILDDIR)sysmon.o
+sysmon.task: $(BUILDDIR)sysmon.o \
+			 $(BUILDDIR)info.o \
+			 $(BUILDDIR)cpuload.o \
+			 $(BUILDDIR)netload.o
 	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) -lczmq -lzmq
 $(BUILDDIR)sysmon.o: $(TASK_SOURCE_FILES)sysmon.task/sysmon.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
