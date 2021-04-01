@@ -18,6 +18,24 @@ namespace oe::app {
     //app cleanup
     void cleanup();
 
-} 
+}
+
+namespace oe::manager {
+
+    /**
+     * @brief   initialize process manager
+     */
+    bool initialize_proc();
+
+    /**
+     * @brief   start process manager
+     */
+    void run();
+
+    /**
+     * @brief   terminate process manager
+     */
+    void cleanup();
+}
 
 #endif

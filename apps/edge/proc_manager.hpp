@@ -1,15 +1,14 @@
 
 
 /**
- * @file    task_manager.hpp
- * @brief   task manager class \
- *          all task described in configuration file will be managed, and this manager is globally single
+ * @file    proc_manager.hpp
+ * @brief   edge process manager class
  * @author  Byunghun Hwang<bh.hwang@iae.re.kr>
  */
 
 
-#ifndef _OPENEDGE_TASK_MANAGER_HPP_
-#define _OPENEDGE_TASK_MANAGER_HPP_
+#ifndef _OPENEDGE_PROC_MANAGER_HPP_
+#define _OPENEDGE_PROC_MANAGER_HPP_
 
 #include <openedge/arch/singleton.hpp>
 #include <map>
@@ -23,14 +22,14 @@ using namespace oe;
 
 namespace oe::edge {
 
-    class task_manager : public oe::arch::singleton<task_manager> {
+    class proc_manager : public oe::arch::singleton<proc_manager> {
         public:
 
         typedef std::map<util::uuid_t, oe::core::task::driver*> taskContainer_t; //task container
         typedef std::map<string, util::uuid_t> taskContainer_map;   //task map
 
-        task_manager();
-        ~task_manager();
+        proc_manager();
+        ~proc_manager();
 
         bool install(const char* taskname = nullptr);
         void uninstall(const char* taskname = nullptr); //install without system configuration

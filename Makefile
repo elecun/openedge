@@ -163,6 +163,12 @@ sysmon.task: $(BUILDDIR)sysmon.o \
 $(BUILDDIR)sysmon.o: $(TASK_SOURCE_FILES)sysmon.task/sysmon.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
+procmanage.task: $(BUILDDIR)procmanage.o
+	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) -lczmq -lzmq
+$(BUILDDIR)procmanage.o: $(TASK_SOURCE_FILES)procmanage.task/procmanage.cc
+	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
+
 
 ############################ Services
 
@@ -195,7 +201,7 @@ $(BUILDDIR)modbus.rtu.service.o: $(SERVICE_SOURCE_FILES)modbus.rtu.service/modbu
 all : edge tasks services
 
 test : oeware_test
-tasks : simple.task simple2.task aop10t.pilot.task sys.mdns.manage.task qual.dmr.task sysmon.task
+tasks : simple.task simple2.task aop10t.pilot.task sys.mdns.manage.task qual.dmr.task sysmon.task procmanage.task
 services : lsis.fenet.connector.service mongodb.connector.service mqtt.publisher.service modbus.rtu.service
 deploy : FORCE
 	cp $(BUILDDIR)*.task $(BUILDDIR)edge $(BINDIR)

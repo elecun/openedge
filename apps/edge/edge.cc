@@ -91,6 +91,7 @@ int main(int argc, char* argv[])
 
   cxxopts::Options options(argv[0], "-  Options");
 	options.add_options()
+        ("p,proc", "openedge works as process manager") //it works as process manager (it assigns to RT timer signal index or status monitoring)
         ("c,config", "Load Configuration File(*.config)", cxxopts::value<std::string>(), "File Path") //require rerun avoiding
         ("i,install", "Install RT Task", cxxopts::value<std::string>(), "RT Task Component")
         ("u,unintall", "Uninstall RT Task", cxxopts::value<std::string>(), "RT Task Component")
@@ -105,6 +106,12 @@ int main(int argc, char* argv[])
     else if(args.count("install")) { cout << "Not Support yet" << endl; ::terminate(); }
     else if(args.count("uninstall")) { cout << "Not Support yet" << endl; ::terminate(); }
     else if(args.count("help")) { cout << options.help() << endl; ::terminate(); }
+    //works as process manager
+    else if(args.count("proc")) {
+      console::info("Starting Openedge Service Engine (as Process Manager) {} (built {}/{})", _OE_VER_, __DATE__, __TIME__);
+
+    }
+    //edge configuruation
     else if(args.count("config")){
       string _conf = args["config"].as<std::string>();
 
