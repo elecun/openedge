@@ -53,7 +53,7 @@ bool procmanage::configure(){
     }
     
     return true;
-}
+} 
 
 void procmanage::execute(){
 
