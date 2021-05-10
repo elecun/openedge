@@ -24,9 +24,24 @@ class ServicePeakEtherCAN {
     public:
         ServicePeakEtherCAN();
         virtual ~ServicePeakEtherCAN();
+
+    private:
+
         
 }; //class
 
 
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+// create & destroy instance for single instance
+ServicePeakEtherCAN* create();
+void release();
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
