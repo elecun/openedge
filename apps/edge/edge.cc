@@ -27,13 +27,14 @@ OTHER DEALINGS IN THE SOFTWARE.
 */
 
 #include <3rdparty/cxxopts.hpp>
-
+#include <unistd.h>
 #include <csignal>
 #include <sys/mman.h>
 #include "instance.hpp"
 #include <iostream>
 #include <openedge/log.hpp>
 #include <openedge/core.hpp>
+#include <stdexcept>
 
 using namespace std;
 
@@ -63,13 +64,8 @@ int main(int argc, char* argv[])
   console::stdout_color_st("console");
 
   const int signals[] = { SIGINT, SIGTERM, SIGBUS, SIGKILL, SIGABRT, SIGSEGV };
-
-  signal(SIGINT, cleanup);
-	signal(SIGTERM, cleanup);
-  signal(SIGBUS, cleanup);
-  signal(SIGKILL, cleanup);
-  signal(SIGABRT, cleanup);
-  signal(SIGSEGV, cleanup);
+  for(const int& s:signals)
+    signal(s, cleanup);
 
   //signal masking
   sigset_t sigmask;
@@ -89,45 +85,109 @@ int main(int argc, char* argv[])
 
   mlockall(MCL_CURRENT|MCL_FUTURE); //avoid swaping
 
-  cxxopts::Options options(argv[0], "-  Options");
-	options.add_options()
-        ("p,proc", "openedge works as process manager") //it works as process manager (it assigns to RT timer signal index or status monitoring)
-        ("c,config", "Load Configuration File(*.config)", cxxopts::value<std::string>(), "File Path") //require rerun avoiding
-        ("i,install", "Install RT Task", cxxopts::value<std::string>(), "RT Task Component")
-        ("u,unintall", "Uninstall RT Task", cxxopts::value<std::string>(), "RT Task Component")
-        ("v,version", "Openedge Service Engine Version")
-        ("h,help", "Print Usage");
+  int optc = 0;
+  string _conf;  //configuration file
+
+  while((optc=getopt(argc, argv, "s:c:i:u:lvrh"))!=-1){
+    switch(optc){
+      case 'i': //install task
+      {
+        console::info("install {}", optarg);
+      }
+      break;
+
+      case 'u': //uninstall task
+      {
+        console::info("uninstall {}", optarg);
+      }
+      break;
+
+      case 'l': //task list
+      {
+        console::info("list of tasks");
+      }
+      break;
+
+      case 'v': //version
+      {
+        console::info("{} (built {}/{})", _OE_VER_, __DATE__, __TIME__);
+      }
+      break;
+
+      case 'r': //realtime
+      {
+        console::info("Enable working as realtime");
+      }
+      break;
+
+      case 'h': //help
+      {
+        console::info("usage : ");
+      }
+      break;
+
+      case 'c': //config
+      {
+        _conf = optarg;
+        console::info("Load configuration file(*.config) : {}", _conf);
+      }
+      break;
+
+      case '?': //unkown
+        
+      break;
+    }
+
+  }
+
+  try{
+    if(!_conf.empty())
+      if(oe::app::initialize(_conf.c_str())){
+        oe::app::run();
+        pause(); //wait until getting SIGINT
+      }
+  }
+  catch(const std::exception& e){
+    console::error("Exception : {}", e.what());
+  }
+
+  // cxxopts::Options options(argv[0], "-  Options");
+	// options.add_options()
+  //       ("s,service", "openedge service") //it works as process manager (it assigns to RT timer signal index or status monitoring)
+  //       ("c,config", "Load Configuration File(*.config)", cxxopts::value<std::string>(), "File Path") //require rerun avoiding
+  //       ("i,install", "Install RT Task", cxxopts::value<std::string>(), "RT Task Component")
+  //       ("u,unintall", "Uninstall RT Task", cxxopts::value<std::string>(), "RT Task Component")
+  //       ("v,version", "Openedge Service Engine Version")
+  //       ("r,rt", "Enable working as RT(RealTime) System")
+  //       ("h,help", "Print Usage");
        
-  try
-  {
-    auto args = options.parse(argc, argv);
+  // try
+  // {
+  //   auto args = options.parse(argc, argv);
     
-    if(args.count("version")) { cout << _OE_VER_ << endl; ::terminate(); }
-    else if(args.count("install")) { cout << "Not Support yet" << endl; ::terminate(); }
-    else if(args.count("uninstall")) { cout << "Not Support yet" << endl; ::terminate(); }
-    else if(args.count("help")) { cout << options.help() << endl; ::terminate(); }
-    //works as process manager
-    else if(args.count("proc")) {
-      console::info("Starting Openedge Service Engine (as Process Manager) {} (built {}/{})", _OE_VER_, __DATE__, __TIME__);
+  //   if(args.count("version")) { cout << _OE_VER_ << endl; ::terminate(); }
+  //   else if(args.count("rt")) { cout << "Not Support yet" << endl; ::terminate(); }
+  //   else if(args.count("install")) { cout << "Not Support yet" << endl; ::terminate(); }
+  //   else if(args.count("uninstall")) { cout << "Not Support yet" << endl; ::terminate(); }
+  //   else if(args.count("service")) { cout << "Not Support yet" << endl; ::terminate(); }
+  //   else if(args.count("help")) { cout << options.help() << endl; ::terminate(); }
+  //   //edge configuruation
+  //   else if(args.count("config")){
+  //     string _conf = args["config"].as<std::string>();
 
-    }
-    //edge configuruation
-    else if(args.count("config")){
-      string _conf = args["config"].as<std::string>();
+  //     console::info("Starting Openedge Service Engine {} (built {}/{})", _OE_VER_, __DATE__, __TIME__);
+  //     console::info("Load Configuration File : {}", _conf);
 
-      console::info("Starting Openedge Service Engine {} (built {}/{})", _OE_VER_, __DATE__, __TIME__);
-      console::info("Load Configuration File : {}", _conf);
-
-      //run task engine
-      if(oe::app::initialize(_conf.c_str()))
-          oe::app::run();
+  //     //run task engine
+  //     if(oe::app::initialize(_conf.c_str()))
+  //         oe::app::run();
       
-      pause(); //wait until getting SIGINT
-    }
-  }
-  catch(const cxxopts::OptionException& e){
-    console::error("Argument parse exception : {}", e.what());
-  }
+  //     pause(); //wait until getting SIGINT
+  //   }
+  // }
+  // catch(const cxxopts::OptionException& e){
+  //   console::error("Argument parse exception : {}", e.what());
+  // }
 
   ::terminate();
   return EXIT_SUCCESS;
