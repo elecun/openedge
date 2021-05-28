@@ -9,7 +9,7 @@
 OS := $(shell uname)
 
 #Set Architecutre
-#ARCH := armhf
+ARCH := armhf
 
 #Compilers
 ifeq ($(ARCH),armhf)
@@ -144,9 +144,9 @@ logger.task: $(BUILDDIR)logger.task.o
 $(BUILDDIR)logger.task.o: $(TASK_SOURCE_FILES)logger.task/logger.task.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
-uvcontrol.task: $(BUILDDIR)uvcontrol.task.o
+uvlc.control.task: $(BUILDDIR)uvlc.control.task.o
 	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) -lczmq -lzmq
-$(BUILDDIR)uvcontrol.task.o: $(TASK_SOURCE_FILES)uvcontrol.task/uvcontrol.task.cc
+$(BUILDDIR)uvlc.control.task.o: $(TASK_SOURCE_FILES)uvlc.control.task/uvlc.control.task.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
 modbusRTU.task: $(BUILDDIR)modbusRTU.task.o
@@ -201,7 +201,7 @@ $(BUILDDIR)modbus.rtu.service.o: $(SERVICE_SOURCE_FILES)modbus.rtu.service/modbu
 all : edge tasks services
 
 test : oeware_test
-tasks : simple.task simple2.task aop10t.pilot.task sys.mdns.manage.task qual.dmr.task sysmon.task procmanage.task
+tasks : simple.task simple2.task aop10t.pilot.task sys.mdns.manage.task qual.dmr.task sysmon.task procmanage.task uvlc.control.task
 services : lsis.fenet.connector.service mongodb.connector.service mqtt.publisher.service modbus.rtu.service
 deploy : FORCE
 	cp $(BUILDDIR)*.task $(BUILDDIR)edge $(BINDIR)
