@@ -4,8 +4,8 @@
  * @author  Byunghun Hwang<bh.hwang@iae.re.kr>
  */
 
-#ifndef _OPENEDGE_UVCONTROL_TASK_HPP_
-#define _OPENEDGE_UVCONTROL_TASK_HPP_
+#ifndef _OPENEDGE_UVLC_CONTROL_TASK_HPP_
+#define _OPENEDGE_UVLC_CONTROL_TASK_HPP_
 
 #include <openedge/core.hpp>
 namespace zmq {
