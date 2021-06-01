@@ -1,44 +1,111 @@
 
 #include "dkm_dx3000.hpp"
+#include <openedge/log.hpp>
+#include <openedge/device/bus.hpp>
+#include <3rdparty/libmodbus/modbus.h>
+#include <3rdparty/libmodbus/modbus-rtu.h>
+
+static modbus_t* _modbus = nullptr;
 
 namespace oe::support {
 
 
-    DKM_DX3000::DKM_DX3000(oe::bus* bus = nullptr){
-
+    DKM_DX3000::DKM_DX3000(oe::device::bus* bus = nullptr){
+    
+    }
+    DKM_DX3000::DKM_DX3000(const char* dev = nullptr, BAUDRATE baudrate = BAUDRATE::BAUDRATE_9600)
+    :_dev(dev) {
+        switch(baudrate){
+            case BAUDRATE::BAUDRATE_2400: _baudrate = 2400; break;
+            case BAUDRATE::BAUDRATE_9600: _baudrate = 9600; break;
+            case BAUDRATE::BAUDRATE_19200: _baudrate = 19200; break;
+            case BAUDRATE::BAUDRATE_38400: _baudrate = 38400; break;
+            case BAUDRATE::BAUDRATE_115200: _baudrate = 115200; break;
+            default:
+                _baudrate = 9600;
+        }
     }
 
     DKM_DX3000::~DKM_DX3000(){
+        if(_modbus){
+            modbus_close(_modbus);
+            modbus_free(_modbus);
+        }
+    }
 
+    bool DKM_DX3000::open(){
+
+
+
+        if(!_modbus){
+            _modbus = modbus_new_rtu(_dev.c_str(), _baudrate, 'N', 8, 1);
+            if(!_modbus){
+                console::warn("Unable to create the modbus context");
+                return false;
+            }
+
+            modbus_set_slave(_modbus, _slave_id);
+
+            if(modbus_connect(_modbus)==-1){
+                console::error("Unable to connect {}", modbus_strerror(errno));
+                modbus_free(_modbus);
+                return false;
+            }
+        }
+    
+        return true;
+    }
+
+    void DKM_DX3000::close(){
+        if(_modbus){
+            modbus_close(_modbus);
+            modbus_free(_modbus);
+        }
     }
 
     bool DKM_DX3000::init(){
-        
-    }
-    bool DKM_DX3000::move();    //move motor
-    void DKM_DX3000::stop();    //stop motor
 
-    //parameter settings
-    void DKM_DX3000::set_speed_max(const int rpm = 1760);
-    void DKM_DX3000::set_speed_limit(const int rpm = 1760);
-    void DKM_DX3000::set_acc_time(const double sec = 0.1);
-    void DKM_DX3000::set_dir(const int cw=0);
-    void DKM_DX3000::set_gear_ratio(const double ratio=1.0);
-    void DKM_DX3000::set_control_mode(const int mode=1); //1=rpm, 0=torque
-    void DKM_DX3000::set_zero_clamp(const double voltage=0.0);
-    void DKM_DX3000::set_rpm_offset(const double voltage=0.0); 
-    void DKM_DX3000::set_gain_p(const int gain=100); //0~255
-    void DKM_DX3000::set_gain_i(const int gain=50); //0~255
-    void DKM_DX3000::set_id(const int id=1);
-    void DKM_DX3000::set_io_strategy(const int strategy=1); //0-CN3, 1=RS485
-    void DKM_DX3000::set_speed_strategy(const int strategy=1); //0=CN4, 1=RS485
-    void DKM_DX3000::set_baudrate(const BAUDRATE = BAUDRATE::BAUDRATE_9600);
-    void DKM_DX3000::set_mem_rpm1(const int rpm=500);
-    void DKM_DX3000::set_mem_rpm2(const int rpm=1000);
-    void DKM_DX3000::set_mem_rpm3(const int rpm=1500);
-    void DKM_DX3000::set_mem_torque1(const int percentage=10);
-    void DKM_DX3000::set_mem_torque2(const int percentage=20);
-    void DKM_DX3000::set_mem_torque3(const int percentage=50);
+    }
+    bool DKM_DX3000::move(){
+
+    }
+
+    void DKM_DX3000::stop(){
+
+    }
+
+    bool DKM_DX3000::set_parameter(DX3000_SET opt, variant<int, double> param){
+
+        if(!_bus){
+            return false;
+        }
+
+        switch(opt){
+            case DX3000_SET::SET_DEFAULT: {} break;
+            case DX3000_SET::SET_MAX_SPEED: {} break;
+            case DX3000_SET::SET_SPEED_LIMIT:{}  break;
+            case DX3000_SET::SET_ACC_TIME: {} break;
+            case DX3000_SET::SET_DIR: {} break;
+            case DX3000_SET::SET_GEAR_RATIO: {} break;
+            case DX3000_SET::SET_CONTROL_MODE: {} break;
+            case DX3000_SET::SET_ZERO_CLAMP: {} break;
+            case DX3000_SET::SET_RPM_OFFSET:{}  break;
+            case DX3000_SET::SET_GAIN_P: {} break;
+            case DX3000_SET::SET_GAIN_I: {} break;
+            case DX3000_SET::SET_ID: {} break;
+            case DX3000_SET::SET_IO_CONFIG: {} break;
+            case DX3000_SET::SET_SPEED_CONFIG: {} break;
+            case DX3000_SET::SET_BAUDRATE: {} break;
+            case DX3000_SET::SET_MEM_RPM1: {} break;
+            case DX3000_SET::SET_MEM_RPM2: {} break;
+            case DX3000_SET::SET_MEM_RPM3: {} break;
+            case DX3000_SET::SET_MEM_TORQUE1: {} break;
+            case DX3000_SET::SET_MEM_TORQUE2: {} break;
+            case DX3000_SET::SET_MEM_TORQUE3: {} break;
+            default:
+                console::warn("Setting configuration({}) does not exist", static_cast<int>(opt));
+        }
+    }
 
 } //namespace
 

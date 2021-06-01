@@ -10,11 +10,17 @@
 #ifndef _OPENEDGE_SUPPORT_DEVICE_DKM_DX3000_HPP_
 #define _OPENEDGE_SUPPORT_DEVICE_DKM_DX3000_HPP_
 
-#include <openedge/device.hpp>
+#include <openedge/device/controller.hpp>
+#include <variant>
+#include <string>
 
+
+using namespace std;
+
+namespace oe::device { class bus; }
 namespace oe::support {
 
-class DKM_DX3000 : public oe::device {
+class DKM_DX3000 : public oe::device::controller {
 
     public:
         enum class BAUDRATE : int { 
@@ -25,38 +31,49 @@ class DKM_DX3000 : public oe::device {
             BAUDRATE_115200 = 4
         };
 
-        DKM_DX3000(oe::bus* bus = nullptr);
+        //DX3000 driver supports setting configuration
+        enum class DX3000_SET : int {
+            SET_DEFAULT = 0,    //manually set default configuration
+            SET_MAX_SPEED = 1,
+            SET_SPEED_LIMIT,
+            SET_ACC_TIME,
+            SET_DIR,
+            SET_GEAR_RATIO,
+            SET_CONTROL_MODE,
+            SET_ZERO_CLAMP,
+            SET_RPM_OFFSET,
+            SET_GAIN_P,
+            SET_GAIN_I,
+            SET_ID,
+            SET_IO_CONFIG,
+            SET_SPEED_CONFIG,
+            SET_BAUDRATE,
+            SET_MEM_RPM1,
+            SET_MEM_RPM2,
+            SET_MEM_RPM3,
+            SET_MEM_TORQUE1,
+            SET_MEM_TORQUE2,
+            SET_MEM_TORQUE3
+        };
+
+        DKM_DX3000(oe::device::bus* bus = nullptr);
+        DKM_DX3000(const char* dev = nullptr, BAUDRATE baudrate = BAUDRATE::BAUDRATE_9600);
         virtual ~DKM_DX3000();
+
+        //device interface
+        bool open() override;
+        void close() override;
 
         /* interface APIs*/
         bool init();    //motor driver initialization
         bool move();    //move motor
         void stop();    //stop motor
-
-        //parameter settings
-        void set_speed_max(const int rpm = 1760);
-        void set_speed_limit(const int rpm = 1760);
-        void set_acc_time(const double sec = 0.1);
-        void set_dir(const int cw=0);
-        void set_gear_ratio(const double ratio=1.0);
-        void set_control_mode(const int mode=1); //1=rpm, 0=torque
-        void set_zero_clamp(const double voltage=0.0);
-        void set_rpm_offset(const double voltage=0.0); 
-        void set_gain_p(const int gain=100); //0~255
-        void set_gain_i(const int gain=50); //0~255
-        void set_id(const int id=1);
-        void set_io_strategy(const int strategy=1); //0-CN3, 1=RS485
-        void set_speed_strategy(const int strategy=1); //0=CN4, 1=RS485
-        void set_baudrate(const BAUDRATE = BAUDRATE::BAUDRATE_9600);
-        void set_mem_rpm1(const int rpm=500);
-        void set_mem_rpm2(const int rpm=1000);
-        void set_mem_rpm3(const int rpm=1500);
-        void set_mem_torque1(const int percentage=10);
-        void set_mem_torque2(const int percentage=20);
-        void set_mem_torque3(const int percentage=50);
+        bool set_parameter(DX3000_SET opt, variant<int, double> param);
 
     private:
-
+        oe::device::bus* _bus = nullptr;
+        string _dev;
+        unsigned int _baudrate = 0;
 
 };
 

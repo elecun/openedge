@@ -8,16 +8,22 @@
 #define _OPENEDGE_UVLC_CONTROL_TASK_HPP_
 
 #include <openedge/core.hpp>
+
 namespace zmq {
     #include <czmq.h>
 }
 
 using namespace oe;
 
-class uvcontrolTask : public oe::core::task::runnable {
+namespace oe::device {
+    class controller;
+    class bus;
+}
+
+class uvlcControlTask : public oe::core::task::runnable {
     public:
-        uvcontrolTask() = default;
-        virtual ~uvcontrolTask() = default;
+        uvlcControlTask() = default;
+        virtual ~uvlcControlTask() = default;
 
         //common interface
         bool configure() override;
@@ -28,7 +34,7 @@ class uvcontrolTask : public oe::core::task::runnable {
 
     private:
         zmq::zsock_t* _push = nullptr;
-
+        device::controller* _controller = nullptr;
 };
 
 EXPORT_TASK_API
