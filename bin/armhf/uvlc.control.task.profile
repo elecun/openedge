@@ -4,23 +4,27 @@
         "taskname":"uvlc.control.task",
         "version":"0.0.1",
         "cpu_affinity":1,
-        "cycle_ns":500000000,
+        "cycle_ns":1000000000,
         "policy":{
             "check_jitter":true,
             "check_overrun":true,
             "fault_level":0
         }
     },
-    "use"
-    "prepherals":{
-        "port":"/dev/i2c-2",
-        "sensor-1":{
-            "use":"INA3221",
-            "address":"0x40"
+    "configurations":{
+        "dx3000":{
+            "access":"/dev/ttyUSB0",
+            "baudrate":9600
         },
-        "sensor-2":{
-            "use":"INA3221",
-            "address":"0x41"
+        "gpio_1":{
+            "pin":48,
+            "direction":"in",
+            "access":"/sys/class/gpio/gpio48"
+        },
+        "gpio_2":{
+            "pin":60,
+            "direction":"in",
+            "access":"/sys/class/gpio/gpio60"
         }
     }
 }

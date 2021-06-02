@@ -32,7 +32,7 @@ class DKM_DX3000 : public oe::device::controller {
         };
 
         //DX3000 driver supports setting configuration
-        enum class DX3000_SET : int {
+        enum class PARAMETER : int {
             SET_DEFAULT = 0,    //manually set default configuration
             SET_MAX_SPEED = 1,
             SET_SPEED_LIMIT,
@@ -68,7 +68,7 @@ class DKM_DX3000 : public oe::device::controller {
         bool init();    //motor driver initialization
         bool move();    //move motor
         void stop();    //stop motor
-        bool set_parameter(DX3000_SET opt, variant<int, double> param);
+        bool set_parameter(PARAMETER opt, variant<int, double> param);
 
     private:
         oe::device::bus* _bus = nullptr;

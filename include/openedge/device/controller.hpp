@@ -13,6 +13,9 @@ namespace oe::device {
     class controller {
 
         public:
+            controller() = default;
+            virtual ~controller() = default;
+            
             virtual bool open() = 0;
             virtual void close() = 0;
 

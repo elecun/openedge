@@ -14,10 +14,12 @@ namespace zmq {
 }
 
 using namespace oe;
+using namespace std;
 
 namespace oe::device {
     class controller;
     class bus;
+    class gpio;
 }
 
 class uvlcControlTask : public oe::core::task::runnable {
@@ -35,6 +37,8 @@ class uvlcControlTask : public oe::core::task::runnable {
     private:
         zmq::zsock_t* _push = nullptr;
         device::controller* _controller = nullptr;
+        map<int, device::gpio*> _limitsw; //60(motor side)
+
 };
 
 EXPORT_TASK_API

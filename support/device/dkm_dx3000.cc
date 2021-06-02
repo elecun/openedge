@@ -10,10 +10,10 @@ static modbus_t* _modbus = nullptr;
 namespace oe::support {
 
 
-    DKM_DX3000::DKM_DX3000(oe::device::bus* bus = nullptr){
+    DKM_DX3000::DKM_DX3000(oe::device::bus* bus){
     
     }
-    DKM_DX3000::DKM_DX3000(const char* dev = nullptr, BAUDRATE baudrate = BAUDRATE::BAUDRATE_9600)
+    DKM_DX3000::DKM_DX3000(const char* dev, BAUDRATE baudrate)
     :_dev(dev) {
         switch(baudrate){
             case BAUDRATE::BAUDRATE_2400: _baudrate = 2400; break;
@@ -35,8 +35,6 @@ namespace oe::support {
 
     bool DKM_DX3000::open(){
 
-
-
         if(!_modbus){
             _modbus = modbus_new_rtu(_dev.c_str(), _baudrate, 'N', 8, 1);
             if(!_modbus){
@@ -44,7 +42,7 @@ namespace oe::support {
                 return false;
             }
 
-            modbus_set_slave(_modbus, _slave_id);
+            modbus_set_slave(_modbus, 1);
 
             if(modbus_connect(_modbus)==-1){
                 console::error("Unable to connect {}", modbus_strerror(errno));
@@ -64,47 +62,51 @@ namespace oe::support {
     }
 
     bool DKM_DX3000::init(){
+        return true;
 
     }
-    bool DKM_DX3000::move(){
 
+    bool DKM_DX3000::move(){
+        return true;
     }
 
     void DKM_DX3000::stop(){
 
     }
 
-    bool DKM_DX3000::set_parameter(DX3000_SET opt, variant<int, double> param){
+    bool DKM_DX3000::set_parameter(PARAMETER opt, variant<int, double> param){
 
         if(!_bus){
             return false;
         }
 
         switch(opt){
-            case DX3000_SET::SET_DEFAULT: {} break;
-            case DX3000_SET::SET_MAX_SPEED: {} break;
-            case DX3000_SET::SET_SPEED_LIMIT:{}  break;
-            case DX3000_SET::SET_ACC_TIME: {} break;
-            case DX3000_SET::SET_DIR: {} break;
-            case DX3000_SET::SET_GEAR_RATIO: {} break;
-            case DX3000_SET::SET_CONTROL_MODE: {} break;
-            case DX3000_SET::SET_ZERO_CLAMP: {} break;
-            case DX3000_SET::SET_RPM_OFFSET:{}  break;
-            case DX3000_SET::SET_GAIN_P: {} break;
-            case DX3000_SET::SET_GAIN_I: {} break;
-            case DX3000_SET::SET_ID: {} break;
-            case DX3000_SET::SET_IO_CONFIG: {} break;
-            case DX3000_SET::SET_SPEED_CONFIG: {} break;
-            case DX3000_SET::SET_BAUDRATE: {} break;
-            case DX3000_SET::SET_MEM_RPM1: {} break;
-            case DX3000_SET::SET_MEM_RPM2: {} break;
-            case DX3000_SET::SET_MEM_RPM3: {} break;
-            case DX3000_SET::SET_MEM_TORQUE1: {} break;
-            case DX3000_SET::SET_MEM_TORQUE2: {} break;
-            case DX3000_SET::SET_MEM_TORQUE3: {} break;
+            case PARAMETER::SET_DEFAULT: {} break;
+            case PARAMETER::SET_MAX_SPEED: {} break;
+            case PARAMETER::SET_SPEED_LIMIT:{}  break;
+            case PARAMETER::SET_ACC_TIME: {} break;
+            case PARAMETER::SET_DIR: {} break;
+            case PARAMETER::SET_GEAR_RATIO: {} break;
+            case PARAMETER::SET_CONTROL_MODE: {} break;
+            case PARAMETER::SET_ZERO_CLAMP: {} break;
+            case PARAMETER::SET_RPM_OFFSET:{}  break;
+            case PARAMETER::SET_GAIN_P: {} break;
+            case PARAMETER::SET_GAIN_I: {} break;
+            case PARAMETER::SET_ID: {} break;
+            case PARAMETER::SET_IO_CONFIG: {} break;
+            case PARAMETER::SET_SPEED_CONFIG: {} break;
+            case PARAMETER::SET_BAUDRATE: {} break;
+            case PARAMETER::SET_MEM_RPM1: {} break;
+            case PARAMETER::SET_MEM_RPM2: {} break;
+            case PARAMETER::SET_MEM_RPM3: {} break;
+            case PARAMETER::SET_MEM_TORQUE1: {} break;
+            case PARAMETER::SET_MEM_TORQUE2: {} break;
+            case PARAMETER::SET_MEM_TORQUE3: {} break;
             default:
                 console::warn("Setting configuration({}) does not exist", static_cast<int>(opt));
         }
+
+        return true;
     }
 
 } //namespace

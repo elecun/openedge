@@ -55,6 +55,7 @@ APP_SOURCE_FILES = ./apps/
 EXAMPLE_SOURCE_FILES = ./examples/
 TASK_SOURCE_FILES = ./tasks/
 SERVICE_SOURCE_FILES = ./services/
+SUPPORT_SOURCE_FILES = ./support/
 INSTALL_DIR = /usr/local/bin/
 
 # Make
@@ -144,9 +145,12 @@ logger.task: $(BUILDDIR)logger.task.o
 $(BUILDDIR)logger.task.o: $(TASK_SOURCE_FILES)logger.task/logger.task.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
-uvlc.control.task: $(BUILDDIR)uvlc.control.task.o
+uvlc.control.task: $(BUILDDIR)uvlc.control.task.o \
+					$(BUILDDIR)dkm_dx3000.o 
 	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) -lczmq -lzmq
 $(BUILDDIR)uvlc.control.task.o: $(TASK_SOURCE_FILES)uvlc.control.task/uvlc.control.task.cc
+	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+$(BUILDDIR)dkm_dx3000.o: $(SUPPORT_SOURCE_FILES)device/dkm_dx3000.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
 modbusRTU.task: $(BUILDDIR)modbusRTU.task.o
