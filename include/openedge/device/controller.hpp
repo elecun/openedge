@@ -13,14 +13,18 @@ namespace oe::device {
     class controller {
 
         public:
-            controller() = default;
+            controller(int cid = 1):id(cid){ 
+
+            }
             virtual ~controller() = default;
             
             virtual bool open() = 0;
             virtual void close() = 0;
 
-        protected:
-            int id = 0;
+            const int get_id() { return id; }
+
+        private:
+            int id = 1;
 
     };
 

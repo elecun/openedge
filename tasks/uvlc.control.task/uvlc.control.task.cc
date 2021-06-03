@@ -35,10 +35,16 @@ bool uvlcControlTask::configure(){
         json dx3000_param = config["dx3000"];
         if(dx3000_param.find("access")!=dx3000_param.end()){
             string access_port = dx3000_param["access"].get<string>();
-            _controller = new oe::support::DKM_DX3000(access_port.c_str());
-
+            int slave_id = dx3000_param["slave_id"].get<int>();
+            _controller = new oe::support::DKM_DX3000(slave_id, access_port.c_str());
             if(!_controller->open())
                 return false;
+            else {
+                DKM_DX3000* motor = dynamic_cast<DKM_DX3000*>(_controller);
+                if(motor){
+                    motor->set_parameter(DKM_DX3000::PARAMETER::SET_ID, slave_id);
+                }
+            }
         }
     }
     else {
@@ -98,10 +104,36 @@ bool uvlcControlTask::configure(){
 void uvlcControlTask::execute(){
     //zstr_send(_push, "Hello, World");
     // spdlog::info("push message");
+    console::info("move motor");
+
+    static bool started = false;
+    DKM_DX3000* motor = dynamic_cast<DKM_DX3000*>(_controller);
 
     for(auto itr = _limitsw.begin(); itr != _limitsw.end(); itr++){
-        if(itr->second->read()==device::gpio::LEVEL::LOW)
-            console::info("low");
+        switch(itr->second->get_pin()){
+            case 48: {
+                if(itr->second->read()==device::gpio::LEVEL::LOW)
+                    if(motor) { 
+                        motor->move(DKM_DX3000::DIRECTION::CCW); 
+                        console::info("limit reached");
+                    }
+            } break;
+            case 60: {
+                if(itr->second->read()==device::gpio::LEVEL::LOW)
+                    if(motor){ 
+                        motor->move(DKM_DX3000::DIRECTION::CW); 
+                        console::info("limit reached");
+                    }
+            } break;
+        }
+    }
+
+    if(!started){
+        if(motor){ 
+            motor->move(DKM_DX3000::DIRECTION::CW); 
+            console::info("motor stareted");
+        }
+        started = true;
     }
     
 }

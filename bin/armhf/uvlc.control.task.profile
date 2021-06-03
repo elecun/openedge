@@ -14,7 +14,8 @@
     "configurations":{
         "dx3000":{
             "access":"/dev/ttyUSB0",
-            "baudrate":9600
+            "baudrate":9600,
+            "slave_id":1
         },
         "gpio_1":{
             "pin":48,

@@ -10,10 +10,12 @@ static modbus_t* _modbus = nullptr;
 namespace oe::support {
 
 
-    DKM_DX3000::DKM_DX3000(oe::device::bus* bus){
+    DKM_DX3000::DKM_DX3000(int id, oe::device::bus* bus)
+    :oe::device:: controller(id) {
     
     }
-    DKM_DX3000::DKM_DX3000(const char* dev, BAUDRATE baudrate)
+
+    DKM_DX3000::DKM_DX3000(int id, const char* dev, BAUDRATE baudrate)
     :_dev(dev) {
         switch(baudrate){
             case BAUDRATE::BAUDRATE_2400: _baudrate = 2400; break;
@@ -27,6 +29,8 @@ namespace oe::support {
     }
 
     DKM_DX3000::~DKM_DX3000(){
+        this->stop();
+
         if(_modbus){
             modbus_close(_modbus);
             modbus_free(_modbus);
@@ -42,7 +46,7 @@ namespace oe::support {
                 return false;
             }
 
-            modbus_set_slave(_modbus, 1);
+            modbus_set_slave(_modbus, get_id());
 
             if(modbus_connect(_modbus)==-1){
                 console::error("Unable to connect {}", modbus_strerror(errno));
@@ -66,12 +70,47 @@ namespace oe::support {
 
     }
 
-    bool DKM_DX3000::move(){
-        return true;
+    bool DKM_DX3000::move(DIRECTION dir){
+
+        switch(dir){
+            case DIRECTION::NONE: {
+
+            }
+            break;
+
+            case DIRECTION::CW: {
+                if(_modbus){
+                    if(modbus_write_register(_modbus, 0x0005, 0x0002)){
+                        console::info("write register CW");
+                        return true;
+                    }
+                    else
+                        console::warn("failed to write register");
+                }
+                else {
+                    console::warn("not able to write into modbus");
+                }
+            }
+            break;
+
+            case DIRECTION::CCW: {
+                if(modbus_write_register(_modbus, 0x0005, 0x0004)){
+                    console::info("write register CCW");
+                    return true;
+                }
+            }
+            break;
+        }
+        
+        return false;
     }
 
-    void DKM_DX3000::stop(){
-
+    bool DKM_DX3000::stop(){
+        if(_modbus){
+            if(modbus_write_register(_modbus, 0x0005, 0x0001))
+                return true;
+        }
+        return false;
     }
 
     bool DKM_DX3000::set_parameter(PARAMETER opt, variant<int, double> param){
@@ -92,7 +131,9 @@ namespace oe::support {
             case PARAMETER::SET_RPM_OFFSET:{}  break;
             case PARAMETER::SET_GAIN_P: {} break;
             case PARAMETER::SET_GAIN_I: {} break;
-            case PARAMETER::SET_ID: {} break;
+            case PARAMETER::SET_ID: {
+                console::info("Set controller MODBUS Slave ID : {}", std::get<int>(param));
+            } break;
             case PARAMETER::SET_IO_CONFIG: {} break;
             case PARAMETER::SET_SPEED_CONFIG: {} break;
             case PARAMETER::SET_BAUDRATE: {} break;
@@ -107,6 +148,14 @@ namespace oe::support {
         }
 
         return true;
+    }
+
+    bool DKM_DX3000::set_rpm(unsigned short rpm){
+        if(_modbus){
+            if(modbus_write_register(_modbus, 0x0002, rpm))
+                return true;
+        }
+        return false;
     }
 
 } //namespace

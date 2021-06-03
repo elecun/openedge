@@ -23,6 +23,12 @@ namespace oe::support {
 class DKM_DX3000 : public oe::device::controller {
 
     public:
+        enum class DIRECTION : int {
+            NONE = 0,
+            CW,
+            CCW
+        };
+
         enum class BAUDRATE : int { 
             BAUDRATE_2400 = 0,
             BAUDRATE_9600 = 1,
@@ -56,8 +62,8 @@ class DKM_DX3000 : public oe::device::controller {
             SET_MEM_TORQUE3
         };
 
-        DKM_DX3000(oe::device::bus* bus = nullptr);
-        DKM_DX3000(const char* dev = nullptr, BAUDRATE baudrate = BAUDRATE::BAUDRATE_9600);
+        DKM_DX3000(int id = 1, oe::device::bus* bus = nullptr);
+        DKM_DX3000(int id = 1, const char* dev = nullptr, BAUDRATE baudrate = BAUDRATE::BAUDRATE_9600);
         virtual ~DKM_DX3000();
 
         //device interface
@@ -66,9 +72,10 @@ class DKM_DX3000 : public oe::device::controller {
 
         /* interface APIs*/
         bool init();    //motor driver initialization
-        bool move();    //move motor
-        void stop();    //stop motor
+        bool move(DIRECTION dir);    //move motor
+        bool stop();    //stop motor
         bool set_parameter(PARAMETER opt, variant<int, double> param);
+        bool set_rpm(unsigned short rpm);
 
     private:
         oe::device::bus* _bus = nullptr;
