@@ -34,8 +34,8 @@ namespace oe::device {
             virtual const LEVEL read() = 0;
             virtual void write(LEVEL value) = 0;
 
-            const int get_pin() const { return this->pin; }
-            const char* get_dir() const { return this->dir.c_str(); }
+            const int get_pin() { return this->pin; }
+            const char* get_dir() { return this->dir.c_str(); }
             const bool is_out() {
                 if(dir.compare("out")==0)
                     return true;

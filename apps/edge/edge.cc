@@ -46,12 +46,12 @@ void terminate() {
 
 void cleanup(int sig) {
   switch(sig){
-    case SIGSEGV: { console::info("Invalid access to storage"); } break;
-    case SIGABRT: { console::info("Abnormal termination"); } break;
-    case SIGKILL: { console::info("Process killed"); } break;
-    case SIGBUS: { console::info("Bus Error"); } break;
-    case SIGTERM: { console::info("Termination requested"); } break;
-    case SIGINT: { console::info("interrupted"); } break;
+    case SIGSEGV: { console::warn("Segmentation violation"); } break;
+    case SIGABRT: { console::warn("Abnormal termination"); } break;
+    case SIGKILL: { console::warn("Process killed"); } break;
+    case SIGBUS: { console::warn("Bus Error"); } break;
+    case SIGTERM: { console::warn("Termination requested"); } break;
+    case SIGINT: { console::warn("interrupted"); } break;
     default:
       console::info("Cleaning up the program");
   }

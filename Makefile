@@ -147,7 +147,7 @@ $(BUILDDIR)logger.task.o: $(TASK_SOURCE_FILES)logger.task/logger.task.cc
 
 uvlc.control.task: $(BUILDDIR)uvlc.control.task.o \
 					$(BUILDDIR)dkm_dx3000.o 
-	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) -lczmq -lzmq
+	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) -lczmq -lzmq -lmodbus
 $(BUILDDIR)uvlc.control.task.o: $(TASK_SOURCE_FILES)uvlc.control.task/uvlc.control.task.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 $(BUILDDIR)dkm_dx3000.o: $(SUPPORT_SOURCE_FILES)device/dkm_dx3000.cc

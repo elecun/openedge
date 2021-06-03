@@ -20,83 +20,94 @@ namespace am335xrt {
     class gpio : public oe::device::gpio {
         public:
             gpio(int pin, const char* dir):oe::device::gpio(pin, dir) {
-
+                this->close();
             }
             
             ~gpio() {
-                close();
+                this->close();
             }
 
             bool open() override {
 
-                string pin = fmt::format("{}", this->get_pin());
-
                 //export
                 int fd_export = ::open("/sys/class/gpio/export", O_WRONLY);
-                if(fd_export==-1){
-                    console::error("Unable to open gpio{} export file", this->get_pin());
+                if(fd_export==-1)
                     return false;
-                }
 
-                if(::write(fd_export, pin.c_str(), pin.size())!=(int)pin.size()){
+                string p = fmt::format_int(this->get_pin()).str();
+                if(::write(fd_export, p.c_str(), p.size())!=(int)p.size()){
                     return false;
                 }
                 ::close(fd_export);
 
+                usleep(200000);
+
                 //direction
-                int fd_dir = ::open("/sys/class/gpio/direction", O_WRONLY);
+                string access = fmt::format("/sys/class/gpio/gpio{}/direction", this->get_pin());
+
+                int fd_dir = ::open(access.c_str(), O_WRONLY);
                 if(fd_dir==-1){
-                    console::error("Unable to open gpio{} direction file", this->get_pin());
+                    return false;
+                }
+                
+                string dir = this->get_dir();
+                if(::write(fd_dir, dir.c_str(), dir.size())!=(int)dir.size()){
                     return false;
                 }
 
-                if(::write(fd_dir, pin.c_str(), pin.size())!=(int)pin.size()){
-                    return false;
-                }
-                ::close(fd_dir);
-
+                if(fd_dir)
+                    ::close(fd_dir);
 
                 return true;
             }
 
             bool close() override {
 
-                string pin = fmt::format("{}", this->get_pin());
-
                 //export
-                int fd_unexport = ::open("/sys/class/gpio/unexport", O_WRONLY);
-                if(fd_unexport==-1){
-                    console::error("Unable to open gpio{} unexport file", this->get_pin());
+                int fd_unexport = -1;
+                if((fd_unexport = ::open("/sys/class/gpio/unexport", O_WRONLY))==-1){
                     return false;
                 }
 
-                if(::write(fd_unexport, pin.c_str(), pin.size())!=(int)pin.size()){
+                string p = fmt::format_int(this->get_pin()).str();
+                if(::write(fd_unexport, p.c_str(), p.size())!=(int)p.size()){
+                    ::close(fd_unexport);
                     return false;
                 }
-                ::close(fd_unexport);
+                
+                if(fd_unexport)
+                    ::close(fd_unexport);
+
+                return true;
 
             }
 
             const LEVEL read() override {
                 
-                string access = fmt::format("/sys/class/gpio/gpio{}", this->get_pin());
+                string access = fmt::format("/sys/class/gpio/gpio{}/value", this->get_pin());
 
                 //value
-                int fd_value = ::open(access.c_str(), O_WRONLY);
-                if(fd_value==-1){
-                    console::error("Unable to open gpio{} value file", this->get_pin());
+                int fd_value = -1;
+                if((fd_value = ::open(access.c_str(), O_RDONLY))==-1){
                     return LEVEL::ERROR;
                 }
-                int value = -1;
-                if(::read(fd_value, &value, sizeof(value))){
+
+                char buffer[8] = {'\0', };
+                if(::read(fd_value, &buffer[0], sizeof(buffer))>0){
+                    ::close(fd_value);
+                    int value = std::stoi(buffer);
                     if(value==1) return LEVEL::HIGH;
                     else return LEVEL::LOW;
                 }
-                ::close(fd_value);
+
+                if(fd_value)
+                    ::close(fd_value);
+
+                return LEVEL::ERROR;
             }
 
             void write(LEVEL value) override {
-
+                console::info("Not implemented yet");
             }
     };
 

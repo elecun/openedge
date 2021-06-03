@@ -101,7 +101,7 @@ void uvlcControlTask::execute(){
 
     for(auto itr = _limitsw.begin(); itr != _limitsw.end(); itr++){
         if(itr->second->read()==device::gpio::LEVEL::LOW)
-            console::info("pin {} is set", _limitsw[1]->get_pin());
+            console::info("low");
     }
     
 }
@@ -111,6 +111,11 @@ void uvlcControlTask::cleanup(){
     if(motor)
         motor->stop();
     _controller->close();
+
+    for(auto itr = _limitsw.begin(); itr != _limitsw.end(); itr++){
+        itr->second->close();
+    }
+
     //zmq::zsock_destroy(&_push);
 }
 
