@@ -1,0 +1,21 @@
+{
+    "md5":"603239CAF2F774498037F944F5592F52",
+    "info":{
+        "taskname":"uvlc.control.task",
+        "version":"0.0.1",
+        "cpu_affinity":1,
+        "cycle_ns":1000000000,
+        "policy":{
+            "check_jitter":true,
+            "check_overrun":true,
+            "fault_level":0
+        }
+    },
+    "configurations":{
+        "mqtt_host":"192.168.100.71",
+        "mqtt_port":1883,
+        "mqtt_topic":"test",
+        "mqtt_keep_alive":60,
+        "pcan_dataport":50000
+    }
+}

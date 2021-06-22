@@ -172,6 +172,12 @@ procmanage.task: $(BUILDDIR)procmanage.o
 $(BUILDDIR)procmanage.o: $(TASK_SOURCE_FILES)procmanage.task/procmanage.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
+pcan.mqtt.task: $(BUILDDIR)pcan.mqtt.task.o
+	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) -lczmq -lzmq -lmosquittopp -lmosquitto
+$(BUILDDIR)pcan.mqtt.task.o: $(TASK_SOURCE_FILES)pcan.mqtt.task/pcan.mqtt.task.cc
+	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
+
 
 
 ############################ Services
@@ -205,7 +211,7 @@ $(BUILDDIR)modbus.rtu.service.o: $(SERVICE_SOURCE_FILES)modbus.rtu.service/modbu
 all : edge tasks services
 
 test : oeware_test
-tasks : simple.task simple2.task aop10t.pilot.task sys.mdns.manage.task qual.dmr.task sysmon.task procmanage.task uvlc.control.task
+tasks : simple.task simple2.task aop10t.pilot.task sys.mdns.manage.task qual.dmr.task sysmon.task procmanage.task uvlc.control.task pcan.mqtt.task
 services : lsis.fenet.connector.service mongodb.connector.service mqtt.publisher.service modbus.rtu.service
 deploy : FORCE
 	cp $(BUILDDIR)*.task $(BUILDDIR)edge $(BINDIR)
