@@ -13,6 +13,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include "pcan.parse.hpp"
+#include <thread>
 
 namespace zmq {
     #include <czmq.h>
@@ -26,7 +27,7 @@ class pcanMqttTask : public oe::core::task::runnable, private mosqpp::mosquittop
         pcanMqttTask():mosqpp::mosquittopp(){};
         virtual ~pcanMqttTask() = default;
 
-        //common interface
+        //component common interface
         bool configure() override;
         void execute() override;
         void cleanup() override;
@@ -46,8 +47,12 @@ class pcanMqttTask : public oe::core::task::runnable, private mosqpp::mosquittop
 
     private:
         //PCAN data parse
-        int parseDataMsg(unsigned char * p_buff, int len, S_LAN_MSG *p_msg);
-        int printData(S_LAN_MSG *p_msg);
+        int parse_pcan_data(unsigned char * p_buff, int len, S_LAN_MSG *p_msg);
+        int print_pcan_data(S_LAN_MSG* p_msg);
+
+    private:
+        std::thread* _psubTask = nullptr;
+        void subtask();
 
     private:
         zmq::zsock_t* _push = nullptr;
@@ -63,10 +68,9 @@ class pcanMqttTask : public oe::core::task::runnable, private mosqpp::mosquittop
         long _sockfd = -1;
         long _sock_optval = 1;
         sockaddr_in _sockname;
-
-        
         fd_set _fds_rd;
         fd_set _fds_wr;
+        
         int _so_fd_data_in = -1;
         unsigned int _dataPort = 50000;
         int _protocol_type = SOCK_DGRAM;

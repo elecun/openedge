@@ -73,23 +73,9 @@ bool pcanMqttTask::configure(){
         console::error("unable to bind socket");
         return false;
     }
-    
 
-    // //initialize network(UDP)
-    // FD_ZERO(&_fds_rd);
-	// FD_ZERO(&_fds_wr);
-
-    // //init incoming data socket
-    // if(_so_fd_data_in<0){
-	// 	_so_fd_data_in = priv_openSocketIn(_dataPort, _protocol_type, CLIENT_QUEUE_LEN);
-	// 	if(_so_fd_data_in<0){
-    //         console::error("open socket failed({})", strerror(errno));
-    //         return false;
-	// 	}
-	// 	else
-    //         console::info("so_fd_data_in is {}", _so_fd_data_in);
-	// }else
-    //         console::warn("{already open (fd={})}", _so_fd_data_in);
+    FD_ZERO(&_fds_rd);
+    _psubTask = new std::thread{ &pcanMqttTask::subtask, this };
 
     return true;
 }
@@ -108,11 +94,6 @@ void pcanMqttTask::execute(){
     if(len>0){
         this->parseDataMsg(buffer, len, &rec_msg);
         this->printData(&rec_msg);
-        // string frame;
-        // for(int i=0; i<len;i++){
-        //     frame  += fmt::format("{0:x} ", buffer[i]);
-        // }
-        // console::info("{}", frame);
     }
 
     delete []buffer;
@@ -128,6 +109,22 @@ void pcanMqttTask::cleanup(){
     this->disconnect();
     this->loop_stop();
     mosqpp::lib_cleanup();
+}
+
+void pcanMqttTask::subtask(){
+    static bool run = true;
+    while(run){
+        if(_sockfd>0){
+            FD_SET(_sockfd, &_fds_rd);
+        }
+        FD_SET(STDIN_FILENO, &_fds_rd);
+
+        int fd_sel = select(STDIN_FILENO+1, &_fds_rd, &_fds_wr, nullptr, nullptr); //start waiting
+        if(FD_ISSET(STDIN_FILENO, &_fds_rd)){
+            
+        }
+    }
+
 }
 
 void pcanMqttTask::pause(){
@@ -174,7 +171,7 @@ void pcanMqttTask::on_error(){
 
 }
 
-int pcanMqttTask::parseDataMsg(unsigned char * p_buff, int len, S_LAN_MSG *p_msg){
+int pcanMqttTask::parse_pcan_data(unsigned char * p_buff, int len, S_LAN_MSG *p_msg){
     /* check message length */
 	p_msg->size = ntohs(*((unsigned short*)&p_buff[0]));
 	if(p_msg->size != 36){
@@ -226,7 +223,7 @@ int pcanMqttTask::parseDataMsg(unsigned char * p_buff, int len, S_LAN_MSG *p_msg
 	return p_msg->size;
 }
 
-int pcanMqttTask::printData(S_LAN_MSG *p_msg){
+int pcanMqttTask::print_pcan_data(S_LAN_MSG* p_msg){
     unsigned int i;
 
     string data;
