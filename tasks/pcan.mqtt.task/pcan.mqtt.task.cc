@@ -5,12 +5,7 @@
 #include <openedge/device/controller.hpp>
 #include <support/device/dkm_dx3000.hpp>
 #include <openedge/device/gpio.hpp>
-#include <support/device/am335x/gpio.hpp>
-#include <string>
 
-#include <errno.h>
-#include <arpa/inet.h>		/* inet_ntoa() */
-#include <netinet/tcp.h>	/* SOL_TCP... */
 
 #define CLIENT_QUEUE_LEN 	  	3
 
@@ -25,7 +20,10 @@ void release(){ if(_instance){ delete _instance; _instance = nullptr; }}
 bool pcanMqttTask::configure(){
 
     //initialize mosquitto
-    mosqpp::lib_init();
+    if(const int ret = mosqpp::lib_init()!=MOSQ_ERR_SUCCESS){
+        console::error("({}){}", ret, mosqpp::strerror(ret));
+        return false;
+    }
 
     //read configuration from profile
     json config = json::parse(getProfile()->get("configurations"));
@@ -41,9 +39,41 @@ bool pcanMqttTask::configure(){
     console::info("> set MQTT Topic : {}", _mqtt_topic);
     console::info("> set PCAN Data Port : {}", _data_port);
 
-    //this->connect(_mqtt_host.c_str(), _mqtt_port, _mqtt_keep_alive);
-    this->connect_async(_mqtt_host.c_str(), _mqtt_port, _mqtt_keep_alive);
-    this->loop_start();
+
+    //connect to MQTT broker
+    if(const int conret = this->connect_async(_mqtt_host.c_str(), _mqtt_port, _mqtt_keep_alive)==MOSQ_ERR_SUCCESS){
+        if(const int ret = this->loop_start()!=MOSQ_ERR_SUCCESS)
+            console::warn("({}){}", ret, mosqpp::strerror(ret));
+    }
+    else
+        console::warn("({}){}", conret, mosqpp::strerror(conret)); 
+
+    //start UDP Server
+    if((_sockfd = ::socket(PF_INET, SOCK_DGRAM, 0))<0){
+        console::error("PCAN UDP Socket creation failed");
+        return false;
+    }
+
+    //setting socket options
+    if(setsockopt(_sockfd, SOL_SOCKET, SO_REUSEADDR, &_sock_optval, sizeof(_sock_optval))<0){
+        console::warn("socket error using setsockopt (SOL_SOCKET, SO_REUSEADDR");
+    }
+    if(setsockopt(_sockfd, SOL_IP, IP_RECVERR, &_sock_optval, sizeof(int))<0){
+        console::warn("socket error using setsockopt (SOL_IP, IP_RECVERR)");
+    }
+
+    //config socket
+    memset((char*)&_sockname, 0, sizeof(struct sockaddr_in));
+    _sockname.sin_family = AF_INET;
+	_sockname.sin_port = htons(_data_port);
+	_sockname.sin_addr.s_addr = htonl(INADDR_ANY);
+
+    //socket binding
+    if(::bind(_sockfd, (const struct sockaddr*)&_sockname, sizeof(_sockname))<0){
+        console::error("unable to bind socket");
+        return false;
+    }
+    
 
     // //initialize network(UDP)
     // FD_ZERO(&_fds_rd);
@@ -65,12 +95,36 @@ bool pcanMqttTask::configure(){
 }
 
 void pcanMqttTask::execute(){
-    const char* msg = "this is test";
-    this->publish(nullptr, _mqtt_topic.c_str(), strlen(msg), msg, 2, false);
+    // const char* msg = "this is test";
+    // this->publish(nullptr, _mqtt_topic.c_str(), strlen(msg), msg, 2, false);
+
+    const int max_length = 2048;
+    unsigned char* buffer = new unsigned char[max_length];
+    memset(buffer, 0, sizeof(char)*max_length);
+    S_LAN_MSG rec_msg;
+
+    int len = ::recvfrom(_sockfd, (char*)buffer, max_length, 0, nullptr, nullptr);
+
+    if(len>0){
+        this->parseDataMsg(buffer, len, &rec_msg);
+        this->printData(&rec_msg);
+        // string frame;
+        // for(int i=0; i<len;i++){
+        //     frame  += fmt::format("{0:x} ", buffer[i]);
+        // }
+        // console::info("{}", frame);
+    }
+
+    delete []buffer;
     
 }
 
 void pcanMqttTask::cleanup(){
+    //UDP connection close
+    shutdown(_sockfd, SHUT_RDWR);
+	close(_sockfd);
+
+    //MQTT connection close
     this->disconnect();
     this->loop_stop();
     mosqpp::lib_cleanup();
@@ -84,82 +138,6 @@ void pcanMqttTask::resume(){
 
 }
 
-
-int pcanMqttTask::priv_openSocketIn(int port, int type, unsigned int queue_len)
-{
-    // struct sockaddr_in sockname;
-	// signed long optval = 1;
-	// signed long sockID = 0;
-
-	// //New Socket Instance
-	// if (type == SOCK_STREAM){
-	// 	//New Socket Instance
-	// 	if ((sockID = socket(PF_INET, SOCK_STREAM, 0)) < 0){
-    //         console::error("Unable to open Socket");
-	// 		// exit(-2);			   				/* Rückkehr bei Fehler */
-	// 	}
-	// }
-	// else if (type == SOCK_DGRAM){
-	// 	//New Socket Instance
-	// 	if ((sockID = socket(PF_INET, SOCK_DGRAM, 0)) < 0){
-	// 		console::error("Unable to open Socket");
-	// 		// exit(-2);			   				/* Rückkehr bei Fehler */
-	// 	}
-	// }
-	// else
-    //     return 0;
-
-	// signed long retVal = setsockopt(sockID, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(optval));
-	// if(retVal < 0){
-    //     console::error("error using setsockopt (SOL_SOCKET, SO_REUSEADDR)");
-	// 	return 0;
-	// }
-
-	// // Enable keepalive packets
-	// retVal = setsockopt(sockID, SOL_SOCKET, SO_KEEPALIVE, &optval, sizeof(optval));
-	// if(retVal < 0){
-    //     console::error("error using setsockopt (SOL_SOCKET, SO_KEEPALIVE)");
-	// 	return 0;
-	// }
-
-	// retVal = setsockopt(sockID, SOL_IP, IP_RECVERR, &optval, sizeof(int));
-	// if(retVal < 0){
-    //     console::error("error using setsockopt (SOL_IP, IP_RECVERR)");
-	// 	return 0;
-	// }
-
-	// //Config Socket
-	// memset((char *) &sockname, 0, sizeof(struct sockaddr_in));	/* unbenutzte Bytes loeschen! */
-	// sockname.sin_family = AF_INET;	   							/* IP-Adresse aufsetzen */
-	// sockname.sin_port = htons(port);							/* Portnummer des Services */
-	// sockname.sin_addr.s_addr = htonl(INADDR_ANY);				/* wildcard */
-
-
-    // if(bind(sockID, (const struct sockaddr*) &sockname, sizeof(sockname)) < 0){	    /* an Adresse binden */
-    //     console::error("unalbe to bind socket");
-    //     return 0;
-    // }
-
-    // if (type == SOCK_STREAM){
-    // 	struct sockaddr peer_addr;
-    // 	socklen_t addr_len;
-
-	// 	if (listen(sockID, queue_len) < 0){
-    //         console::error("unable to listen to clients");
-    //         return 0;
-	// 	}
-
-	// 	sockID = accept(sockID, &peer_addr, &addr_len);
-    // }
-
-	// return sockID;
-}
-
-int pcanMqttTask::priv_closeSocket(int sock){
-    shutdown(sock, SHUT_RDWR);
-	close(sock);
-	return 0;
-}
 
 void pcanMqttTask::on_connect(int rc){
     if(rc==MOSQ_ERR_SUCCESS)
@@ -194,4 +172,80 @@ void pcanMqttTask::on_log(int level, const char* str){
 
 void pcanMqttTask::on_error(){
 
+}
+
+int pcanMqttTask::parseDataMsg(unsigned char * p_buff, int len, S_LAN_MSG *p_msg){
+    /* check message length */
+	p_msg->size = ntohs(*((unsigned short*)&p_buff[0]));
+	if(p_msg->size != 36){
+        console::warn("wrong message length");
+		return -1;
+	}
+	if(p_msg->size > len){
+			console::warn("wrong buffer length. message maybe incomplete!");
+		return -2;
+	}
+
+	/* check message type */
+	p_msg->type = ntohs(*((unsigned short*)&p_buff[2]));
+	if(p_msg->type != 0x80){
+			console::warn("wrong message type");
+		return -1;
+	}
+
+	/* get message tag */
+	p_msg->tag =  ntohl(*((unsigned long*)&p_buff[4]));
+	p_msg->tag <<= 32;
+	p_msg->tag += ntohl(*((unsigned long*)&p_buff[8]));
+
+	/* get message time stamp */
+	p_msg->timestamp += ntohl(*((unsigned long*)&p_buff[16]));
+	p_msg->timestamp <<= 32;
+	p_msg->timestamp =  ntohl(*((unsigned long*)&p_buff[12]));
+
+	/* get message channel */
+	p_msg->channel = p_buff[20];
+
+	/* get message dlc */
+	p_msg->dlc = p_buff[21];
+	if(p_msg->dlc > 8){
+			console::warn("wrong dlc");
+		return -1;
+	}
+
+	/* get message dlc */
+	p_msg->flag = ntohs(*((unsigned short*)&p_buff[22]));
+
+	/* get message time stamp */
+	p_msg->id =  ntohl(*((unsigned long*)&p_buff[24]));
+
+	/* get value and set unused bytes to 0 */
+	memset(&(p_msg->value.Value8u[0]), 0, 8);
+	memcpy(&(p_msg->value.Value8u[0]), &p_buff[28], p_msg->dlc);
+
+	return p_msg->size;
+}
+
+int pcanMqttTask::printData(S_LAN_MSG *p_msg){
+    unsigned int i;
+
+    string data;
+
+    data = fmt::format("{:d}", p_msg->timestamp);
+    data+= fmt::format("{:x} ", p_msg->dlc);
+
+	if(p_msg->id & 0xE0000000)
+        data+=fmt::format("0x{:x}",(unsigned int) p_msg->id);
+	else
+        data+=fmt::format("0x{:x}",(unsigned int) p_msg->id);
+
+	if(p_msg->dlc)
+        data+=" : ";
+
+	for(i=0; i<p_msg->dlc; i++)
+        data+=fmt::format("0x{:x} ", p_msg->value.Value8u[i]);
+
+	console::info(data);
+
+	return 0;
 }
