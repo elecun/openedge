@@ -152,7 +152,7 @@ namespace oe::support {
 
     bool DKM_DX3000::set_rpm(unsigned short rpm){
         if(_modbus){
-            if(modbus_write_register(_modbus, 0x0002, rpm))
+            if(modbus_write_register(_modbus, 0x0001, rpm))
                 return true;
         }
         return false;

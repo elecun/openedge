@@ -62,6 +62,12 @@ class DKM_DX3000 : public oe::device::controller {
             SET_MEM_TORQUE3
         };
 
+        //command
+        enum class COMMAND : int {
+            STOP = 0,
+            MOVE
+        };
+
         DKM_DX3000(int id = 1, oe::device::bus* bus = nullptr);
         DKM_DX3000(int id = 1, const char* dev = nullptr, BAUDRATE baudrate = BAUDRATE::BAUDRATE_9600);
         virtual ~DKM_DX3000();

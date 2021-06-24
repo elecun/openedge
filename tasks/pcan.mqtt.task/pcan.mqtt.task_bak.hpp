@@ -15,7 +15,6 @@
 #include "pcan.parse.hpp"
 #include <thread>
 #include <vector>
-#include <openedge/net/udpserver.h>
 
 namespace zmq {
     #include <czmq.h>
