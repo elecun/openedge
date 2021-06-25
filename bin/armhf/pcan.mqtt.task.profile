@@ -21,7 +21,8 @@
             "keep_alive":60
         },
         "pcan":{
-            "dataport":50000
+            "dataport":50000,
+            "node":["0x600", "0x700", "0x701", "0x702", "0x703"]
         },
         "dx3000":{
             "access":"/dev/ttyUSB0",

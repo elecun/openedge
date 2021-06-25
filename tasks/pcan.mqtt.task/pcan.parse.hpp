@@ -57,6 +57,7 @@ typedef  struct _LAN_MSG
     unsigned short	flag;
     unsigned long	id;
     U_VALUE	value;
+	_LAN_MSG(){ memset(this, 0, sizeof(_LAN_MSG)); }
 } S_LAN_MSG;
 
 

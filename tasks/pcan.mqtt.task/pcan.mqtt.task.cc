@@ -4,6 +4,7 @@
 #include <openedge/device/bus.hpp>
 #include <openedge/device/controller.hpp>
 #include <support/device/dkm_dx3000.hpp>
+#include "uvlc.control.hpp"
 
 using namespace oe::support;
 
@@ -94,13 +95,18 @@ bool pcanMqttTask::configure(){
 
     //read PCAN UDP parameter & open socket
     if(config.find("pcan")!=config.end()){
-        FD_ZERO(&_fds_rd);
-	    FD_ZERO(&_fds_wr);
 
         json pcan_param = config["pcan"];
         if(pcan_param.find("dataport")!=pcan_param.end()) _pcan_dataport = pcan_param["dataport"].get<int>();
-
         console::info("> set PCAN Data Port : {}", _pcan_dataport);
+
+        if(pcan_param.find("node")!=pcan_param.end()){
+            json node = pcan_param["node"];
+            for(json::iterator itr = node.begin(); itr!=node.end(); ++itr){
+                _pcan_node[*itr] = new PCANNode();
+                console::info("> Add CAN node : {}", *itr);
+            }
+        }
 
         //start UDP Server
         if((_sockfd = ::socket(PF_INET, SOCK_DGRAM, 0))<0){
@@ -117,7 +123,7 @@ bool pcanMqttTask::configure(){
         }
 
         //config socket
-        memset((char*)&_sockname, 0, sizeof(struct sockaddr_in));
+        ::memset((char*)&_sockname, 0, sizeof(struct sockaddr_in));
         _sockname.sin_family = AF_INET;
         _sockname.sin_port = htons(_pcan_dataport);
         _sockname.sin_addr.s_addr = htonl(INADDR_ANY);
@@ -127,90 +133,38 @@ bool pcanMqttTask::configure(){
             console::error("unable to bind socket");
             return false;
         }
-
-        _psubTask = new std::thread{ &pcanMqttTask::subtask, this };
     }
 
     return true;
 }
 
 void pcanMqttTask::execute(){
-    // const char* msg = "this is test";
-    // this->publish(nullptr, _mqtt_topic.c_str(), strlen(msg), msg, 2, false);
+    const char* msg = "this is test";
+    this->publish(nullptr, _mqtt_pub_topic.c_str(), strlen(msg), msg, 2, false);
 
     const int max_length = 2048;
     unsigned char* buffer = new unsigned char[max_length];
-    memset(buffer, 0, sizeof(char)*max_length);
-    S_LAN_MSG rec_msg;
+    ::memset(buffer, 0, sizeof(char)*max_length);
 
-    // while(1){
-    //     int len = ::recvfrom(_sockfd, (char*)buffer, max_length, 0, nullptr, nullptr);
-    //     if(len>0){
-    //         console::info("receive length : {}", len);
-    //         this->parse_pcan_data(buffer, len, &rec_msg);
-    //         this->print_pcan_data(&rec_msg);
-    //     }
-    //     else break;
-    //     usleep(1);
-    // }
+    do {
+        int len = ::recvfrom(_sockfd, (char*)buffer, max_length, MSG_DONTWAIT, nullptr, nullptr);
+        if(len>0){
+            S_LAN_MSG rec_msg;
+            this->parse_pcan_data(buffer, len, &rec_msg);
+            this->print_pcan_data(&rec_msg);
+            this->process_pcan_data(&rec_msg);
 
-    //limit sensor check
-
-    delete []buffer;
-    
-}
-
-void pcanMqttTask::subtask(){
-    static bool run = true;
-    int fdmax = 0;
-
-    while(run){
-
-        if(_sockfd>0)
-			FD_SET(_sockfd, &_fds_rd);
-		FD_SET(STDIN_FILENO, &_fds_rd);
-
-        fdmax = (STDIN_FILENO>fdmax)?STDIN_FILENO:fdmax;
-		fdmax = (_sockfd>fdmax)?_sockfd:fdmax;
-
-        //start waiting
-        int fd_sel = select(fdmax+1, &_fds_rd, &_fds_wr, nullptr, nullptr);
-
-        //waiting failed
-        if(fd_sel<0){
-            console::warn("Waiting failed");
+            ::memset(buffer, 0, sizeof(char)*max_length);
         }
-        else if(fd_sel==0){ //time out
-            console::warn("Waiting timeout");
-            continue;
-        }
-
-        //check every bit set in descriptor set
-        for (int i=0; i<=fdmax; i++) {
-			if(FD_ISSET(i, &_fds_rd)) {
-				fd_sel--;
-				FD_CLR(i, &_fds_rd);
-
-				if(i==STDIN_FILENO){ //should be first
-					handle_loc_cmd(STDIN_FILENO);
-				}
-                else if (i==_sockfd){
-					handle_rem_data(i);
-				} else{
-
-				}
-			}
-
-			if (FD_ISSET(i, &_fds_wr)){
-				fd_sel--;
-				FD_CLR(i, &_fds_wr);
-			}
-
-			if (!fd_sel)
-				break;
-		}
+        else
+            break;
     }
+    while(1);
+    
+    delete []buffer;
+
 }
+
 
 void pcanMqttTask::cleanup(){
     DKM_DX3000* motor = dynamic_cast<DKM_DX3000*>(_controller);
@@ -221,6 +175,12 @@ void pcanMqttTask::cleanup(){
     //UDP connection close
     shutdown(_sockfd, SHUT_RDWR);
 	close(_sockfd);
+
+    //clear memory
+    for(map<string, PCANNode*>::iterator itr = _pcan_node.begin(); itr!=_pcan_node.end(); ++itr){
+        delete itr->second;
+    }
+    _pcan_node.clear();
 
     //MQTT connection close
     this->disconnect();
@@ -326,6 +286,48 @@ void pcanMqttTask::on_error(){
 
 }
 
+void pcanMqttTask::process_pcan_data(S_LAN_MSG* p_msg){
+    string str_id = fmt::format("0x{:x}", p_msg->id);
+    
+    if(_pcan_node.find(str_id)!=_pcan_node.end()){
+        _pcan_node[str_id]->set(p_msg);
+
+        int dlc = (int)_pcan_node[str_id]->get()->dlc;
+        switch(dlc){
+            case 4: {
+                union {
+                    unsigned long value;
+                    float f_value;
+                }u;
+                u.value = (_pcan_node[str_id]->get()->value.Value8u[3]&0xff)<<24;
+                u.value |= (_pcan_node[str_id]->get()->value.Value8u[2]&0xff)<<16;
+                u.value |= (_pcan_node[str_id]->get()->value.Value8u[1]&0xff)<<8;
+                u.value |= (_pcan_node[str_id]->get()->value.Value8u[0]&0xff);
+                console::info("value : {:f}", u.f_value);
+            } break;
+            case 2: {
+
+            } break;
+            case 1: {
+                DKM_DX3000* motor = dynamic_cast<DKM_DX3000*>(_controller);
+                //sensor is detected
+                if(!(_pcan_node[str_id]->get()->value.Value8u[0]&0x04)){
+                    motor->stop();
+                    console::info("motor stop by sensor");
+                }
+                if(!(_pcan_node[str_id]->get()->value.Value8u[0]&0x08)){
+                    motor->stop();
+                    console::info("motor stop by sensor");
+                }
+
+            } break;
+        }        
+    }
+    else {
+        console::info("cannot found id : {}", str_id);
+    }
+}
+
 int pcanMqttTask::parse_pcan_data(unsigned char * p_buff, int len, S_LAN_MSG *p_msg){
     /* check message length */
 	p_msg->size = ntohs(*((unsigned short*)&p_buff[0]));
@@ -384,7 +386,7 @@ int pcanMqttTask::print_pcan_data(S_LAN_MSG* p_msg){
     string data;
 
     data = fmt::format("{:d}", p_msg->timestamp);
-    data+= fmt::format("{:x} ", p_msg->dlc);
+    data+= fmt::format("({:x}) ", p_msg->dlc);
 
 	if(p_msg->id & 0xE0000000)
         data+=fmt::format("0x{:x}",(unsigned int) p_msg->id);
@@ -415,58 +417,6 @@ void pcanMqttTask::setmode(CONTROLMODE mode){
 }
 
 
-int pcanMqttTask::handle_loc_cmd(int fd){
-    char cmdbuf[MAX_LOC_CMD_LEN+1];
-	int len=0, i=0;
-
-	if(fd!=STDIN_FILENO) /* not STDIN_FILENO */
-		return -1;
-
-	len = read(fd, &cmdbuf[len], MAX_LOC_CMD_LEN-len);
-
-	if (verbose>3){
-		printf("got %d chars:\n   ", len);
-		for(i=0; i<len; i++)
-			printf("%0x2 ", cmdbuf[i]);
-	}
-
-	if (len == 0) {
-		if (verbose > 1)
-			printf("%s(): nothing to read on %d\n", __func__, fd);
-		return -2;
-	} else if(len == MAX_LOC_CMD_LEN){
-		if (verbose > 1)
-			printf("%s(): maybe more then %d chars to read on %d\n", __func__, MAX_LOC_CMD_LEN, fd);
-		//@ ToDo return here?
-		//return;
-	}
-	cmdbuf[len]=0;
-
-	if (verbose > 3)
-		printf("%s(): cmd line=%s\n", __func__, cmdbuf);
-
-	i=0;
-	while(loc_cmds[i].cmd_text){
-		if(strstr(cmdbuf, loc_cmds[i].cmd_text))
-			break;
-		else
-			i++;
-	}
-
-	if(!loc_cmds[i].cmd_text){
-		if (verbose > 2)
-				printf("%s(): no such command found: %s\n", __func__, cmdbuf);
-		return -3;
-	}
-
-	if(!loc_cmds[i].cmd_handler){
-		if (verbose > 2)
-				printf("%s(): no handler defined for command: %s\n", __func__, cmdbuf);
-		return -4;
-	}
-
-	return loc_cmds[i].cmd_handler(&cmdbuf[strlen(loc_cmds[i].cmd_text)]);
-}
 
 int pcanMqttTask::handle_rem_data(int fd){
 
@@ -477,22 +427,21 @@ int pcanMqttTask::handle_rem_data(int fd){
 	int res=0, i=0, rec_len;
 	S_LAN_MSG rec_msg;
 
-	::memset(&buff[remaining_data], 0,BUFF_SZ-remaining_data);
+	memset(&buff[remaining_data], 0,BUFF_SZ-remaining_data);
 	rec_len = recv(fd , &buff[remaining_data], BUFF_SZ-remaining_data, flgs );
 	rec_len += remaining_data;
 	remaining_data=0;
 
 	if (rec_len < 0){
-		if(verbose)
-			printf("%s(): error while receiving data (%s)\n",
-					__func__, strerror(errno));
-	} else if(rec_len ==0){
-		if(verbose)
-			printf("socket %d: remote disconnection\n", fd);
-		priv_closeSocket(fd);
+		console::info("{}(): error while receiving data ({})\n", __func__, strerror(errno));
+	} 
+    else if(rec_len ==0){
+		console::info("socket {}: remote disconnection", fd);
+		//priv_closeSocket(fd);
 		return -2;
-	}
+	} 
     else {
+
 		while(rec_len>(cur_pos+1)){
 			// parse Data until all CAN frames have been extracted
 			res=parse_pcan_data(&buff[cur_pos], rec_len-cur_pos, &rec_msg);
@@ -512,8 +461,7 @@ int pcanMqttTask::handle_rem_data(int fd){
 			}
 			cur_pos+=res;
 
-			if(verbose>1)
-				printData(&rec_msg);
+			print_pcan_data(&rec_msg);
 		}
 	}
 

@@ -13,8 +13,8 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include "pcan.parse.hpp"
-#include <thread>
 #include <vector>
+#include <map>
 #include <openedge/net/udpserver.h>
 
 namespace zmq {
@@ -34,6 +34,15 @@ class pcanMqttTask : public oe::core::task::runnable, private mosqpp::mosquittop
     enum class CONTROLMODE : int { 
         MANUAL = 0,
         AUTOMATIC = 1
+    };
+
+    class PCANNode {
+        public:
+            PCANNode(){}
+            const S_LAN_MSG* get() { return &msg; }
+            void set(S_LAN_MSG* src) { ::memcpy(&this->msg, src, sizeof(S_LAN_MSG));}
+        private:
+            S_LAN_MSG msg;
     };
 
     public:
@@ -59,22 +68,20 @@ class pcanMqttTask : public oe::core::task::runnable, private mosqpp::mosquittop
 		virtual void on_error() override;
 
     private:
-        //PCAN data parse
+        //PCAN data processing
         int parse_pcan_data(unsigned char * p_buff, int len, S_LAN_MSG *p_msg);
         int print_pcan_data(S_LAN_MSG* p_msg);
-        void setmode(CONTROLMODE mode);
-        int handle_loc_cmd(int fd);
+        void process_pcan_data(S_LAN_MSG* p_msg);
         int handle_rem_data(int fd);
 
     private:
-        //UDP subtasking
-        std::thread* _psubTask = nullptr;
-        void subtask();
+        void setmode(CONTROLMODE mode);
 
     private:
         zmq::zsock_t* _push = nullptr;
         device::controller* _controller = nullptr;
         CONTROLMODE _control_mode {CONTROLMODE::MANUAL };
+        map<string, PCANNode*> _pcan_node;
 
     private: //for mqtt
         string _mqtt_broker {"127.0.0.1"};
@@ -83,14 +90,13 @@ class pcanMqttTask : public oe::core::task::runnable, private mosqpp::mosquittop
         int _mqtt_pub_qos = 2;
         int _mqtt_keep_alive = {60};
         vector<string> _mqtt_sub_topics;
+        
 
     private: //for pcan UDP
         int _pcan_dataport {50000};
         long _sockfd = -1;
         long _sock_optval = 1;
         sockaddr_in _sockname;
-        fd_set _fds_rd;
-        fd_set _fds_wr;
 
 };
 
