@@ -1,7 +1,12 @@
 
 #include "pcan.mqtt.task.hpp"
 #include <openedge/log.hpp>
+#include <openedge/device/bus.hpp>
+#include <openedge/device/controller.hpp>
+#include <support/device/dkm_dx3000.hpp>
+#include "uvlc.control.hpp"
 
+using namespace oe::support;
 
 //static component instance that has only single instance
 static pcanMqttTask* _instance = nullptr;
@@ -10,6 +15,13 @@ void release(){ if(_instance){ delete _instance; _instance = nullptr; }}
 
 
 bool pcanMqttTask::configure(){
+
+    //clear controller instance
+    if(_controller){
+        _controller->close();
+        delete _controller;
+        _controller = nullptr;
+    }
 
     //initialize mosquitto
     if(const int ret = mosqpp::lib_init()!=MOSQ_ERR_SUCCESS){
@@ -20,6 +32,32 @@ bool pcanMqttTask::configure(){
     //read configuration from profile
     json config = json::parse(getProfile()->get("configurations"));
 
+    //read dx3000 parameters and create instance
+    if(config.find("dx3000")!=config.end()){
+        json dx3000_param = config["dx3000"];
+        if(dx3000_param.find("access")!=dx3000_param.end()){
+            string access_port = dx3000_param["access"].get<string>();
+            int slave_id = dx3000_param["slave_id"].get<int>();
+            int rpm = dx3000_param["rpm"].get<int>();
+
+            _controller = new oe::support::DKM_DX3000(slave_id, access_port.c_str());
+
+            if(!_controller->open())
+                return false;
+            else {
+                DKM_DX3000* motor = dynamic_cast<DKM_DX3000*>(_controller);
+                if(motor){
+                    motor->set_parameter(DKM_DX3000::PARAMETER::SET_ID, slave_id);
+                    motor->set_rpm(rpm);
+                    console::info("> Use DX3000 Controller ({}, {})", access_port, slave_id);
+                }
+            }
+        }
+    }
+    else {
+        console::error("cannot read configurations of DX3000 in profile");
+        return false;
+    }
 
     //read MQTT parameters & connect to the broker
     if(config.find("mqtt")!=config.end()){
@@ -101,8 +139,10 @@ bool pcanMqttTask::configure(){
 }
 
 void pcanMqttTask::execute(){
+    const char* msg = "this is test";
+    this->publish(nullptr, _mqtt_pub_topic.c_str(), strlen(msg), msg, 2, false);
 
-    const int max_length = 4096;
+    const int max_length = 2048;
     unsigned char* buffer = new unsigned char[max_length];
     ::memset(buffer, 0, sizeof(char)*max_length);
 
@@ -111,6 +151,7 @@ void pcanMqttTask::execute(){
         if(len>0){
             S_LAN_MSG rec_msg;
             this->parse_pcan_data(buffer, len, &rec_msg);
+            this->print_pcan_data(&rec_msg);
             this->process_pcan_data(&rec_msg);
 
             ::memset(buffer, 0, sizeof(char)*max_length);
@@ -126,6 +167,10 @@ void pcanMqttTask::execute(){
 
 
 void pcanMqttTask::cleanup(){
+    DKM_DX3000* motor = dynamic_cast<DKM_DX3000*>(_controller);
+    if(motor)
+        motor->stop();
+    _controller->close();
 
     //UDP connection close
     shutdown(_sockfd, SHUT_RDWR);
@@ -164,11 +209,65 @@ void pcanMqttTask::on_disconnect(int rc){
 }
 
 void pcanMqttTask::on_publish(int mid){
-    
+
 }
 
 void pcanMqttTask::on_message(const struct mosquitto_message* message){
-    
+    #define MAX_BUFFER_SIZE     4096
+
+    char* buffer = new char[MAX_BUFFER_SIZE];
+    memset(buffer, 0, sizeof(char)*MAX_BUFFER_SIZE);
+    memcpy(buffer, message->payload, sizeof(char)*message->payloadlen);
+    string strmsg = buffer;
+    delete []buffer;
+
+    try{
+        json msg = json::parse(strmsg);
+        DKM_DX3000* motor = dynamic_cast<DKM_DX3000*>(_controller);
+        if(!motor)
+            return;
+
+        //command
+        if(msg.find("command")!=msg.end()){
+            string command = msg["command"].get<string>();
+            std::transform(command.begin(), command.end(), command.begin(),[](unsigned char c){ return std::tolower(c); }); //to lower case
+
+            //move command
+            if(!command.compare("move")){
+                string direction = msg["direction"].get<string>();
+                std::transform(direction.begin(), direction.end(), direction.begin(),[](unsigned char c){ return std::tolower(c); });
+
+                if(!direction.compare("cw")){
+                    this->setmode(CONTROLMODE::MANUAL);
+                    motor->move(DKM_DX3000::DIRECTION::CW);
+                }
+                else if(!direction.compare("ccw")){
+                    this->setmode(CONTROLMODE::MANUAL);
+                    motor->move(DKM_DX3000::DIRECTION::CCW);
+                }
+            }
+            //stop command
+            else if(!command.compare("stop")){
+                this->setmode(CONTROLMODE::MANUAL);
+                motor->stop();
+            }
+            else if(!command.compare("mode")){
+                
+            }
+            else if(!command.compare("rpm")){
+                int value = msg["value"].get<int>();
+                motor->set_rpm((unsigned short)value);
+                
+            }
+            else {
+                console::warn("undefined command : {}", command);
+            }
+        }
+    }
+    catch(json::exception& e){
+        console::error("Message Error : {}", e.what());
+    }
+    console::info("mqtt data({}) : {}",message->payloadlen, strmsg);
 }
 
 void pcanMqttTask::on_subscribe(int mid, int qos_count, const int* granted_qos){
@@ -188,20 +287,45 @@ void pcanMqttTask::on_error(){
 }
 
 void pcanMqttTask::process_pcan_data(S_LAN_MSG* p_msg){
+    string str_id = fmt::format("0x{:x}", p_msg->id);
+    
+    if(_pcan_node.find(str_id)!=_pcan_node.end()){
+        _pcan_node[str_id]->set(p_msg);
 
-    json can_data;
-    can_data["id"] = fmt::format("0x{:x}", p_msg->id);
-    can_data["dlc"] = p_msg->dlc;
-    can_data["timestamp"] = p_msg->timestamp;
-    can_data["msgtype"] = fmt::format("0x{:x}", p_msg->type);
-    can_data["flag"] = p_msg->flag;
-    can_data["size"] = p_msg->size;
-    can_data["tag"] = p_msg->tag;
-    can_data["value"] = {p_msg->value.Value8u[0], p_msg->value.Value8u[1], p_msg->value.Value8u[2], p_msg->value.Value8u[3], p_msg->value.Value8u[4], p_msg->value.Value8u[5], p_msg->value.Value8u[6], p_msg->value.Value8u[7]};
+        int dlc = (int)_pcan_node[str_id]->get()->dlc;
+        switch(dlc){
+            case 4: {
+                union {
+                    unsigned long value;
+                    float f_value;
+                }u;
+                u.value = (_pcan_node[str_id]->get()->value.Value8u[3]&0xff)<<24;
+                u.value |= (_pcan_node[str_id]->get()->value.Value8u[2]&0xff)<<16;
+                u.value |= (_pcan_node[str_id]->get()->value.Value8u[1]&0xff)<<8;
+                u.value |= (_pcan_node[str_id]->get()->value.Value8u[0]&0xff);
+                console::info("value : {:f}", u.f_value);
+            } break;
+            case 2: {
 
-    string msg = can_data.dump();
-    this->publish(nullptr, _mqtt_pub_topic.c_str(), strlen(msg.c_str()), msg.c_str(), 2, false); //data publish
-    console::info(msg);
+            } break;
+            case 1: {
+                DKM_DX3000* motor = dynamic_cast<DKM_DX3000*>(_controller);
+                //sensor is detected
+                if(!(_pcan_node[str_id]->get()->value.Value8u[0]&0x04)){
+                    motor->stop();
+                    console::info("motor stop by sensor");
+                }
+                if(!(_pcan_node[str_id]->get()->value.Value8u[0]&0x08)){
+                    motor->stop();
+                    console::info("motor stop by sensor");
+                }
+
+            } break;
+        }        
+    }
+    else {
+        console::info("cannot found id : {}", str_id);
+    }
 }
 
 int pcanMqttTask::parse_pcan_data(unsigned char * p_buff, int len, S_LAN_MSG *p_msg){
@@ -279,6 +403,20 @@ int pcanMqttTask::print_pcan_data(S_LAN_MSG* p_msg){
 
 	return 0;
 }
+
+void pcanMqttTask::setmode(CONTROLMODE mode){
+    static CONTROLMODE prev_mode = CONTROLMODE::AUTOMATIC;
+    if(prev_mode!=mode){
+        _control_mode = mode;
+        switch(mode){
+            case CONTROLMODE::AUTOMATIC: console::info("Changed control mode : AUTOMATIC"); break;
+            case CONTROLMODE::MANUAL: console::info("Changed control mode : MANUAL"); break;
+        }
+        prev_mode = mode;
+    }
+}
+
+
 
 int pcanMqttTask::handle_rem_data(int fd){
 

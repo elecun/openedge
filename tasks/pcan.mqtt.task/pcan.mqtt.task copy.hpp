@@ -15,7 +15,6 @@
 #include "pcan.parse.hpp"
 #include <vector>
 #include <map>
-#include <string>
 #include <openedge/net/udpserver.h>
 
 namespace zmq {
@@ -31,6 +30,11 @@ namespace oe::device {
 }
 
 class pcanMqttTask : public oe::core::task::runnable, private mosqpp::mosquittopp {
+
+    enum class CONTROLMODE : int { 
+        MANUAL = 0,
+        AUTOMATIC = 1
+    };
 
     class PCANNode {
         public:
@@ -71,7 +75,12 @@ class pcanMqttTask : public oe::core::task::runnable, private mosqpp::mosquittop
         int handle_rem_data(int fd);
 
     private:
+        void setmode(CONTROLMODE mode);
+
+    private:
         zmq::zsock_t* _push = nullptr;
+        device::controller* _controller = nullptr;
+        CONTROLMODE _control_mode {CONTROLMODE::MANUAL };
         map<string, PCANNode*> _pcan_node;
 
     private: //for mqtt

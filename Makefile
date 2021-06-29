@@ -145,12 +145,23 @@ logger.task: $(BUILDDIR)logger.task.o
 $(BUILDDIR)logger.task.o: $(TASK_SOURCE_FILES)logger.task/logger.task.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
-uvlc.control.task: $(BUILDDIR)uvlc.control.task.o \
+uvlc.ag.control.task: $(BUILDDIR)uvlc.ag.control.task.o \
 					$(BUILDDIR)dkm_dx3000.o 
 	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) -lczmq -lzmq -lmodbus
-$(BUILDDIR)uvlc.control.task.o: $(TASK_SOURCE_FILES)uvlc.control.task/uvlc.control.task.cc
+$(BUILDDIR)uvlc.ag.control.task.o: $(TASK_SOURCE_FILES)uvlc.ag.control.task/uvlc.ag.control.task.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 $(BUILDDIR)dkm_dx3000.o: $(SUPPORT_SOURCE_FILES)device/dkm_dx3000.cc
+	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
+
+uvlc.control.task: $(BUILDDIR)uvlc.control.task.o
+	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) -lczmq -lzmq
+$(BUILDDIR)uvlc.control.task.o: $(TASK_SOURCE_FILES)uvlc.control.task/uvlc.control.task.cc
+	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
+agsys.manage.task: $(BUILDDIR)agsys.manage.task.o
+	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) -lczmq -lzmq -lmodbus
+$(BUILDDIR)agsys.manage.task.o: $(TASK_SOURCE_FILES)agsys.manage.task/agsys.manage.task.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
 modbusRTU.task: $(BUILDDIR)modbusRTU.task.o
@@ -214,7 +225,7 @@ $(BUILDDIR)modbus.rtu.service.o: $(SERVICE_SOURCE_FILES)modbus.rtu.service/modbu
 all : edge tasks services
 
 test : oeware_test
-tasks : simple.task simple2.task aop10t.pilot.task sys.mdns.manage.task qual.dmr.task sysmon.task procmanage.task uvlc.control.task pcan.mqtt.task
+tasks : simple.task simple2.task aop10t.pilot.task sys.mdns.manage.task qual.dmr.task sysmon.task procmanage.task uvlc.ag.control.task pcan.mqtt.task agsys.manage.task uvlc.contro.task
 services : lsis.fenet.connector.service mongodb.connector.service mqtt.publisher.service modbus.rtu.service
 deploy : FORCE
 	cp $(BUILDDIR)*.task $(BUILDDIR)edge $(BINDIR)

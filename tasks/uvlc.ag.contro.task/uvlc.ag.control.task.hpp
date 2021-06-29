@@ -1,11 +1,11 @@
 /**
- * @file    uvlc.control.task.hpp
- * @brief   UVC Lamp Cleaning System Control Task
+ * @file    uvlc.ag.control.task.hpp
+ * @brief   UVC Lamp Cleaning System Control Task for AG standalone
  * @author  Byunghun Hwang<bh.hwang@iae.re.kr>
  */
 
-#ifndef _OPENEDGE_UVLC_CONTROL_TASK_HPP_
-#define _OPENEDGE_UVLC_CONTROL_TASK_HPP_
+#ifndef _OPENEDGE_UVLC_AG_CONTROL_TASK_HPP_
+#define _OPENEDGE_UVLC_AG_CONTROL_TASK_HPP_
 
 #include <openedge/core.hpp>
 
@@ -22,10 +22,10 @@ namespace oe::device {
     class gpio;
 }
 
-class uvlcControlTask : public oe::core::task::runnable {
+class uvlcAGControlTask : public oe::core::task::runnable {
     public:
-        uvlcControlTask() = default;
-        virtual ~uvlcControlTask() = default;
+        uvlcAGControlTask() = default;
+        virtual ~uvlcAGControlTask() = default;
 
         //common interface
         bool configure() override;
@@ -36,6 +36,8 @@ class uvlcControlTask : public oe::core::task::runnable {
 
     private:
         zmq::zsock_t* _push = nullptr;
+        device::controller* _controller = nullptr;
+        map<int, device::gpio*> _limitsw; //60(motor side)
 
 };
 
