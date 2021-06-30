@@ -15,14 +15,14 @@
         "mqtt":{
             "broker":"192.168.100.71",
             "port":1883,
-            "pub_topic":"test",
+            "pub_topic":"aop/uvlc/sensor",
             "pub_qos":2,
             "sub_topic":["pcan.mqtt.task/sysctrl"],
             "keep_alive":60
         },
         "pcan":{
             "dataport":50000,
-            "node":["0x600", "0x700", "0x701", "0x702", "0x703"]
+            "acceptable":["0x600", "0x700", "0x701", "0x702", "0x703"]
         }
     }
 }

@@ -82,6 +82,8 @@ class DKM_DX3000 : public oe::device::controller {
         bool stop();    //stop motor
         bool set_parameter(PARAMETER opt, variant<int, double> param);
         bool set_rpm(unsigned short rpm);
+        unsigned short get_rpm();
+        unsigned short get_status();
 
     private:
         oe::device::bus* _bus = nullptr;

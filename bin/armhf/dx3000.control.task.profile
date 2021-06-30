@@ -1,7 +1,7 @@
 {
     "md5":"603239CAF2F774498037F944F5592F52",
     "info":{
-        "taskname":"pcan.mqtt.task",
+        "taskname":"dx3000.control.task",
         "version":"0.0.1",
         "cpu_affinity":1,
         "cycle_ns":1000000000,
@@ -15,14 +15,10 @@
         "mqtt":{
             "broker":"192.168.100.71",
             "port":1883,
-            "pub_topic":"test",
+            "pub_topic":"aop/uvlc/motor",
             "pub_qos":2,
-            "sub_topic":["pcan.mqtt.task/sysctrl"],
+            "sub_topic":["pcan.mqtt.task/sysctrl", "aop/uvlc/control"],
             "keep_alive":60
-        },
-        "pcan":{
-            "dataport":50000,
-            "node":["0x600", "0x700", "0x701", "0x702", "0x703"]
         },
         "dx3000":{
             "access":"/dev/ttyUSB0",

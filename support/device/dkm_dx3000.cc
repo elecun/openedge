@@ -158,5 +158,23 @@ namespace oe::support {
         return false;
     }
 
+    unsigned short DKM_DX3000::get_rpm(){
+        if(_modbus){
+            unsigned short rpm = 0;
+            if(modbus_read_input_registers(_modbus, 0x0002, 1, &rpm))
+                return rpm;
+        }
+        return 0;
+    }
+
+    unsigned short DKM_DX3000::get_status(){
+        if(_modbus){
+            unsigned short status = 0;
+            if(modbus_read_input_registers(_modbus, 0x0003, 1, &status))
+                return status;
+        }
+        return 0;
+    }
+
 } //namespace
 

@@ -9,6 +9,8 @@
 
 #include <openedge/core.hpp>
 #include <string>
+#include <3rdparty/mosquitto/cpp/mosquittopp.h>
+#include <map>
 
 namespace zmq {
     #include <czmq.h>
@@ -22,10 +24,10 @@ namespace oe::device {
     class bus;
 }
 
-class dx3000ControlTask : public oe::core::task::runnable  {
+class dx3000ControlTask : public oe::core::task::runnable, private mosqpp::mosquittopp  {
 
     public:
-        dx3000ControlTask() = default;
+        dx3000ControlTask():mosqpp::mosquittopp(){};
         virtual ~dx3000ControlTask() = default;
 
         //component common interface
@@ -34,6 +36,35 @@ class dx3000ControlTask : public oe::core::task::runnable  {
         void cleanup() override;
         void pause() override;
         void resume() override;
+
+    private:
+        //MQTT Callback functions
+        virtual void on_connect(int rc) override;
+		virtual void on_disconnect(int rc) override;
+		virtual void on_publish(int mid) override;
+		virtual void on_message(const struct mosquitto_message* message) override;
+		virtual void on_subscribe(int mid, int qos_count, const int* granted_qos) override;
+		virtual void on_unsubscribe(int mid) override;
+		virtual void on_log(int level, const char* str) override;
+		virtual void on_error() override;
+
+    private:
+        zmq::zsock_t* _push = nullptr;
+        device::controller* _controller = nullptr;
+        map<string, int> _dx_command {
+            {"move_cw", 1},
+            {"move_ccw", 2},
+            {"stop", 3},
+            {"rpm", 4}
+        };
+
+    private: //for mqtt
+        string _mqtt_broker {"127.0.0.1"};
+        int _mqtt_port {1883};
+        string _mqtt_pub_topic = {"undefined"};
+        int _mqtt_pub_qos = 2;
+        int _mqtt_keep_alive = {60};
+        vector<string> _mqtt_sub_topics;
 
 };
 

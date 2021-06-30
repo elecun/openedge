@@ -62,11 +62,11 @@ bool pcanMqttTask::configure(){
         if(pcan_param.find("dataport")!=pcan_param.end()) _pcan_dataport = pcan_param["dataport"].get<int>();
         console::info("> set PCAN Data Port : {}", _pcan_dataport);
 
-        if(pcan_param.find("node")!=pcan_param.end()){
-            json node = pcan_param["node"];
+        if(pcan_param.find("acceptable")!=pcan_param.end()){
+            json node = pcan_param["acceptable"];
             for(json::iterator itr = node.begin(); itr!=node.end(); ++itr){
                 _pcan_node[*itr] = new PCANNode();
-                console::info("> Add CAN node : {}", *itr);
+                console::info("> Acceptable CAN ID : {}", *itr);
             }
         }
 
@@ -197,7 +197,12 @@ void pcanMqttTask::process_pcan_data(S_LAN_MSG* p_msg){
     can_data["flag"] = p_msg->flag;
     can_data["size"] = p_msg->size;
     can_data["tag"] = p_msg->tag;
-    can_data["value"] = {p_msg->value.Value8u[0], p_msg->value.Value8u[1], p_msg->value.Value8u[2], p_msg->value.Value8u[3], p_msg->value.Value8u[4], p_msg->value.Value8u[5], p_msg->value.Value8u[6], p_msg->value.Value8u[7]};
+
+    vector<uint8_t> valset;
+    for(unsigned char v:p_msg->value.Value8u){
+        valset.emplace_back(v);
+    }
+    can_data["value"] = valset;
 
     string msg = can_data.dump();
     this->publish(nullptr, _mqtt_pub_topic.c_str(), strlen(msg.c_str()), msg.c_str(), 2, false); //data publish
@@ -276,56 +281,6 @@ int pcanMqttTask::print_pcan_data(S_LAN_MSG* p_msg){
         data+=fmt::format("0x{:x} ", p_msg->value.Value8u[i]);
 
 	console::info(data);
-
-	return 0;
-}
-
-int pcanMqttTask::handle_rem_data(int fd){
-
-    static unsigned char buff[BUFF_SZ];
-	unsigned int flgs=0;
-	unsigned int cur_pos=0;
-	static unsigned int remaining_data=0;
-	int res=0, i=0, rec_len;
-	S_LAN_MSG rec_msg;
-
-	memset(&buff[remaining_data], 0,BUFF_SZ-remaining_data);
-	rec_len = recv(fd , &buff[remaining_data], BUFF_SZ-remaining_data, flgs );
-	rec_len += remaining_data;
-	remaining_data=0;
-
-	if (rec_len < 0){
-		console::info("{}(): error while receiving data ({})\n", __func__, strerror(errno));
-	} 
-    else if(rec_len ==0){
-		console::info("socket {}: remote disconnection", fd);
-		//priv_closeSocket(fd);
-		return -2;
-	} 
-    else {
-
-		while(rec_len>(cur_pos+1)){
-			// parse Data until all CAN frames have been extracted
-			res=parse_pcan_data(&buff[cur_pos], rec_len-cur_pos, &rec_msg);
-			if(res == -2){
-				unsigned char tmp_buff[BUFF_SZ];
-				remaining_data = rec_len-cur_pos;
-				memcpy(tmp_buff, &buff[cur_pos], remaining_data);
-				memset(buff, 0, BUFF_SZ);
-				memcpy(buff, tmp_buff, remaining_data);
-				rec_len=0;
-				continue;
-			}
-			else if(res<0){
-				// error during parsing of the message -> quit loop
-				rec_len=0;
-				continue;
-			}
-			cur_pos+=res;
-
-			print_pcan_data(&rec_msg);
-		}
-	}
 
 	return 0;
 }

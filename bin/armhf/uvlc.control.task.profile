@@ -12,20 +12,19 @@
         }
     },
     "configurations":{
+        "mqtt":{
+            "broker":"192.168.100.71",
+            "port":1883,
+            "pub_topic":"aop/uvlc/control",
+            "pub_qos":2,
+            "sub_topic":["pcan.mqtt.task/sysctrl", "aop/uvlc/sensor"],
+            "keep_alive":60
+        },
         "dx3000":{
             "access":"/dev/ttyUSB0",
             "baudrate":9600,
-            "slave_id":1
-        },
-        "gpio_1":{
-            "pin":48,
-            "direction":"in",
-            "access":"/sys/class/gpio/gpio48"
-        },
-        "gpio_2":{
-            "pin":60,
-            "direction":"in",
-            "access":"/sys/class/gpio/gpio60"
+            "slave_id":1,
+            "rpm":100
         }
     }
 }

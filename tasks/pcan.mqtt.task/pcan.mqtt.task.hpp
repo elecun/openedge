@@ -68,7 +68,6 @@ class pcanMqttTask : public oe::core::task::runnable, private mosqpp::mosquittop
         int parse_pcan_data(unsigned char * p_buff, int len, S_LAN_MSG *p_msg);
         int print_pcan_data(S_LAN_MSG* p_msg);
         void process_pcan_data(S_LAN_MSG* p_msg);
-        int handle_rem_data(int fd);
 
     private:
         zmq::zsock_t* _push = nullptr;
