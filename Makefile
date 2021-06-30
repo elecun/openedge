@@ -9,7 +9,7 @@
 OS := $(shell uname)
 
 #Set Architecutre
-ARCH := armhf
+#ARCH := armhf
 
 #Compilers
 ifeq ($(ARCH),armhf)

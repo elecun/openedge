@@ -1,0 +1,9 @@
+{
+    "md5":"603239CAF2F774498037F944F5592F52",
+    "info":{
+        "taskname":"simple.task",
+        "version":"0.0.1",
+        "cpu_affinity":0,
+        "cycle_ns":100000000
+    }
+}

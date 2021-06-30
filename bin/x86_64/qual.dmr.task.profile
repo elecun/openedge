@@ -1,0 +1,35 @@
+{
+    "md5":"603239CAF2F774498037F944F5592F52",
+    "info":{
+        "taskname":"qual.dmr.task",
+        "version":"0.0.1",
+        "cpu_affinity":1,
+        "cycle_ns":50000000,
+        "policy":{
+            "check_jitter":true,
+            "check_overrun":true,
+            "fault_level":0
+        }
+    },
+    "services":{
+        "required":["modbus.rtu.service"],
+        "modbus.rtu.service":{
+            "info":{
+                "slave_id":1
+            },
+            "connection":{
+                "port":"/dev/tty0",
+                "baudrate":9600
+            }
+        }
+    },
+    "activity":{
+        "read_holding_registers":{
+            "address":0,
+            "size":1
+        },
+        "write_holding_register":{
+            "address":0
+        }
+    }
+}

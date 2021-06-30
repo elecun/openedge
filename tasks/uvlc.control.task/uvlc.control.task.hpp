@@ -11,6 +11,7 @@
 #include <3rdparty/mosquitto/cpp/mosquittopp.h>
 #include <string>
 #include <vector>
+#include <map>
 
 namespace zmq {
     #include <czmq.h>
@@ -54,6 +55,11 @@ class uvlcControlTask : public oe::core::task::runnable, private mosqpp::mosquit
     private:
         zmq::zsock_t* _push = nullptr;
         CONTROLMODE _control_mode {CONTROLMODE::MANUAL };
+
+        unsigned short _limit_id = 0x600;
+        map<string, unsigned short> _intensity_id;
+        unsigned char _limit_value = 0xc0;    //limit sensor value
+        map<unsigned short, float> _intensity_value;
 
         string _mqtt_broker {"127.0.0.1"};
         int _mqtt_port {1883};

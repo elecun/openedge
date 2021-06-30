@@ -52,13 +52,36 @@ bool uvlcControlTask::configure(){
         else
             console::warn("({}){}", conret, mosqpp::strerror(conret));
     }
+
+    //read uvlc configuration from profile
+    if(config.find("uvlc")!=config.end()){
+        json uvlc_param = config["uvlc"];
+        if(uvlc_param.find("limit_sensor")!=uvlc_param.end()){
+            string id = uvlc_param["limit_sensor"].get<string>();
+            _limit_id = std::stoul(id.c_str(), nullptr, 16);
+            console::info("> set UVLC Limit Sensor CAN ID : {}", _limit_id);
+        }
+
+        if(uvlc_param.find("intensity_sensor")!=uvlc_param.end()){
+            for(json::iterator itr=uvlc_param["intensity_sensor"].begin(); itr!=uvlc_param["intensity_sensor"].end(); ++itr){
+                string value = itr->get<string>();
+                _intensity_id[value] = (unsigned short)std::stoul(value.c_str(), nullptr, 16);
+                console::info("> set UVLC Intensity Sensor CAN ID : {}", _limit_id);
+            }
+        }
+
+    }
     
     return true;
 }
 
 void uvlcControlTask::execute(){
+    //publish control event (control mode,)
+    console::info("uvlc control task execution");
 
-
+    for(map<string, unsigned short>::iterator itr = _intensity_id.begin(); itr!=_intensity_id.end(); ++itr){
+        // _intensity_value[itr->second] = 
+    }
     
 }
 
@@ -95,7 +118,6 @@ void uvlcControlTask::on_publish(int mid){
 void uvlcControlTask::on_message(const struct mosquitto_message* message){
 
     #define MAX_BUFFER_SIZE     4096
-
     char* buffer = new char[MAX_BUFFER_SIZE];
     memset(buffer, 0, sizeof(char)*MAX_BUFFER_SIZE);
     memcpy(buffer, message->payload, sizeof(char)*message->payloadlen);
@@ -108,6 +130,7 @@ void uvlcControlTask::on_message(const struct mosquitto_message* message){
         try {
             json msg = json::parse(strmsg);
             if(msg.find("id")!=msg.end()){
+
                 console::info(msg.dump());
             }
         }
