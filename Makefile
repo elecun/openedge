@@ -9,7 +9,7 @@
 OS := $(shell uname)
 
 #Set Architecutre
-#ARCH := armhf
+ARCH := armhf
 
 #Compilers
 ifeq ($(ARCH),armhf)
@@ -155,7 +155,7 @@ $(BUILDDIR)dkm_dx3000.o: $(SUPPORT_SOURCE_FILES)device/dkm_dx3000.cc
 
 
 uvlc.control.task: $(BUILDDIR)uvlc.control.task.o
-	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) -lczmq -lzmq
+	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) -lczmq -lzmq -lmosquittopp -lmosquitto
 $(BUILDDIR)uvlc.control.task.o: $(TASK_SOURCE_FILES)uvlc.control.task/uvlc.control.task.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
@@ -188,7 +188,6 @@ pcan.mqtt.task: $(BUILDDIR)pcan.mqtt.task.o \
 	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) -lczmq -lzmq -lmosquittopp -lmosquitto
 $(BUILDDIR)pcan.mqtt.task.o: $(TASK_SOURCE_FILES)pcan.mqtt.task/pcan.mqtt.task.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
-
 
 dx3000.control.task: $(BUILDDIR)dx3000.control.task.o \
 				$(BUILDDIR)dkm_dx3000.o 

@@ -27,6 +27,18 @@ class uvlcControlTask : public oe::core::task::runnable, private mosqpp::mosquit
         AUTOMATIC = 1
     };
 
+    enum class LIMIT_STATE : int { 
+        NO_LIMIT_ACTIVE = 0,
+        L_LIMIT_ACTIVE = 1,
+        R_LIMIT_ACTIVE = 2,
+        BOTH_LIMIT_ACTIVE = 3
+    };
+
+    enum class UVLC_WORK_STATE : int {
+        READY = 0,
+        WORK = 1
+    };
+
 
     public:
         uvlcControlTask():mosqpp::mosquittopp(){};
@@ -52,6 +64,7 @@ class uvlcControlTask : public oe::core::task::runnable, private mosqpp::mosquit
 
         void setmode(CONTROLMODE mode);
 
+
     private:
         zmq::zsock_t* _push = nullptr;
         CONTROLMODE _control_mode {CONTROLMODE::MANUAL };
@@ -60,6 +73,7 @@ class uvlcControlTask : public oe::core::task::runnable, private mosqpp::mosquit
         map<string, unsigned short> _intensity_id;
         unsigned char _limit_value = 0xc0;    //limit sensor value
         map<unsigned short, float> _intensity_value;
+        float _intensity_threshold = 0.0;
 
         string _mqtt_broker {"127.0.0.1"};
         int _mqtt_port {1883};

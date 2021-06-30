@@ -22,7 +22,8 @@
         },
         "uvlc":{
             "limit_sensor":"0x600",
-            "intensity_sensor":["0x700", "0x701", "0x702", "0x703"]
+            "intensity_sensor":["0x700", "0x701", "0x702", "0x703"],
+            "intensity_threshold":10.0
         }
     }
 }

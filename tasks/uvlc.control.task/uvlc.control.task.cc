@@ -59,16 +59,19 @@ bool uvlcControlTask::configure(){
         if(uvlc_param.find("limit_sensor")!=uvlc_param.end()){
             string id = uvlc_param["limit_sensor"].get<string>();
             _limit_id = std::stoul(id.c_str(), nullptr, 16);
-            console::info("> set UVLC Limit Sensor CAN ID : {}", _limit_id);
+            console::info("> set UVLC Limit Sensor CAN ID : 0x{:x}", _limit_id);
         }
 
         if(uvlc_param.find("intensity_sensor")!=uvlc_param.end()){
             for(json::iterator itr=uvlc_param["intensity_sensor"].begin(); itr!=uvlc_param["intensity_sensor"].end(); ++itr){
                 string value = itr->get<string>();
                 _intensity_id[value] = (unsigned short)std::stoul(value.c_str(), nullptr, 16);
-                console::info("> set UVLC Intensity Sensor CAN ID : {}", _limit_id);
+                console::info("> set UVLC Intensity Sensor CAN ID : 0x{:x}", _intensity_id[value]);
             }
         }
+
+        if(uvlc_param.find("intensity_threshold")!=uvlc_param.end()) { _intensity_threshold = uvlc_param["intensity_threshold"].get<float>(); }
+        console::info("> set UVLC Intensity Threshold : {}", _intensity_threshold);
 
     }
     
@@ -76,16 +79,54 @@ bool uvlcControlTask::configure(){
 }
 
 void uvlcControlTask::execute(){
-    //publish control event (control mode,)
-    console::info("uvlc control task execution");
+    static LIMIT_STATE _limit_state = LIMIT_STATE::NO_LIMIT_ACTIVE;
+    static UVLC_WORK_STATE _uvlc_state = UVLC_WORK_STATE::READY;
 
+    if(!(_limit_value&0x0c) && _limit_state!=LIMIT_STATE::NO_LIMIT_ACTIVE){
+
+    }
+    else if(!(_limit_value&0x04) && _limit_state!=LIMIT_STATE::L_LIMIT_ACTIVE){
+        json cmd;
+        cmd["command"] = "move_cw";
+        string msg = cmd.dump();
+        this->publish(nullptr, _mqtt_pub_topic.c_str(), strlen(msg.c_str()), msg.c_str(), 2, false); //data publish
+        _limit_state = LIMIT_STATE::L_LIMIT_ACTIVE;
+    }
+    else if(!(_limit_value&0x08) && _limit_state!=LIMIT_STATE::R_LIMIT_ACTIVE){
+        json cmd;
+        cmd["command"] = "move_cw";
+        string msg = cmd.dump();
+        this->publish(nullptr, _mqtt_pub_topic.c_str(), strlen(msg.c_str()), msg.c_str(), 2, false); //data publish
+        _limit_state = LIMIT_STATE::R_LIMIT_ACTIVE;
+    }
+    else
+        console::warn("Undefined UVLC Sensor State : 0x{:x}", _limit_value);
+    
+
+    float avg = 0.0;
     for(map<string, unsigned short>::iterator itr = _intensity_id.begin(); itr!=_intensity_id.end(); ++itr){
-        // _intensity_value[itr->second] = 
+        avg += _intensity_value[itr->second];
+    }
+    avg = avg/_intensity_value.size();
+    if(avg<_intensity_threshold && _uvlc_state!=UVLC_WORK_STATE::WORK){
+        json cmd;
+        cmd["command"] = "move_cw";
+        string msg = cmd.dump();
+        this->publish(nullptr, _mqtt_pub_topic.c_str(), strlen(msg.c_str()), msg.c_str(), 2, false); //data publish
+        _uvlc_state=UVLC_WORK_STATE::WORK;
+    }
+    else {
+        _uvlc_state=UVLC_WORK_STATE::READY;
     }
     
 }
 
 void uvlcControlTask::cleanup(){
+    json cmd;
+    cmd["command"] = "stop";
+    string msg = cmd.dump();
+    this->publish(nullptr, _mqtt_pub_topic.c_str(), strlen(msg.c_str()), msg.c_str(), 2, false); //data publish
+
     //MQTT connection close
     this->disconnect();
     this->loop_stop();
@@ -130,8 +171,36 @@ void uvlcControlTask::on_message(const struct mosquitto_message* message){
         try {
             json msg = json::parse(strmsg);
             if(msg.find("id")!=msg.end()){
-
-                console::info(msg.dump());
+                int dlc = msg["dlc"].get<int>();
+                switch(dlc){
+                    case 4: {
+                        union {
+                            unsigned long value;
+                            float f_value;
+                        }u;
+                        vector<unsigned char> valueset = msg["value"];
+                        u.value = (valueset[3]&0xff)<<24;
+                        u.value |= (valueset[2]&0xff)<<16;
+                        u.value |= (valueset[1]&0xff)<<8;
+                        u.value |= (valueset[0]&0xff);
+                        string canid = msg["id"].get<string>();
+                        if(_intensity_id.count(canid)){
+                            if(_intensity_value.count(_intensity_id[msg["id"].get<string>()])){
+                                _intensity_value[_intensity_id[msg["id"].get<string>()]] = u.f_value;
+                            }
+                        }
+                        console::info("sensor value : {}({:f})", msg["id"].get<string>(), u.f_value);
+                    } break;
+            case 2: {
+                console::warn("Not support DLC(2) yet.");
+            } break;
+            case 1: {
+                vector<unsigned char> valueset = msg["value"];
+                _limit_value = valueset[0];
+                console::info("sensor value : {}(0x{:x})",msg["id"].get<string>(), valueset[0]);
+            } break;
+        }  
+                
             }
         }
         catch(json::exception& e){
