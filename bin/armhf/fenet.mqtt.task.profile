@@ -1,0 +1,28 @@
+{
+    "md5":"603239CAF2F774498037F944F5592F52",
+    "info":{
+        "taskname":"pcan.mqtt.task",
+        "version":"0.0.1",
+        "cpu_affinity":1,
+        "cycle_ns":1000000000,
+        "policy":{
+            "check_jitter":true,
+            "check_overrun":true,
+            "fault_level":0
+        }
+    },
+    "configurations":{
+        "mqtt":{
+            "broker":"192.168.100.71",
+            "port":1883,
+            "pub_topic":"aop/uvlc/sensor",
+            "pub_qos":2,
+            "sub_topic":["pcan.mqtt.task/sysctrl"],
+            "keep_alive":60
+        },
+        "pcan":{
+            "dataport":50000,
+            "acceptable":["0x600", "0x700", "0x701", "0x702", "0x703"]
+        }
+    }
+}

@@ -189,6 +189,11 @@ pcan.mqtt.task: $(BUILDDIR)pcan.mqtt.task.o \
 $(BUILDDIR)pcan.mqtt.task.o: $(TASK_SOURCE_FILES)pcan.mqtt.task/pcan.mqtt.task.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
+fenet.mqtt.task: $(BUILDDIR)fenet.mqtt.task.o
+	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) -lczmq -lzmq -lmosquittopp -lmosquitto
+$(BUILDDIR)fenet.mqtt.task.o: $(TASK_SOURCE_FILES)fenet.mqtt.task/fenet.mqtt.task.cc
+	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
 dx3000.control.task: $(BUILDDIR)dx3000.control.task.o \
 				$(BUILDDIR)dkm_dx3000.o 
 	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) -lczmq -lzmq -lmosquittopp -lmosquitto -lmodbus
@@ -231,7 +236,7 @@ $(BUILDDIR)modbus.rtu.service.o: $(SERVICE_SOURCE_FILES)modbus.rtu.service/modbu
 all : edge tasks services
 
 test : oeware_test
-tasks : simple.task simple2.task aop10t.pilot.task sys.mdns.manage.task qual.dmr.task sysmon.task procmanage.task uvlc.ag.control.task pcan.mqtt.task agsys.manage.task uvlc.contro.task
+tasks : simple.task simple2.task aop10t.pilot.task sys.mdns.manage.task qual.dmr.task sysmon.task procmanage.task uvlc.ag.control.task pcan.mqtt.task agsys.manage.task uvlc.contro.task fenet.mqtt.task
 services : lsis.fenet.connector.service mongodb.connector.service mqtt.publisher.service modbus.rtu.service
 deploy : FORCE
 	cp $(BUILDDIR)*.task $(BUILDDIR)edge $(BINDIR)
