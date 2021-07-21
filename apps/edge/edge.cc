@@ -35,6 +35,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include <openedge/log.hpp>
 #include <openedge/core.hpp>
 #include <stdexcept>
+#include <iostream>
 
 using namespace std;
 
@@ -83,12 +84,12 @@ int main(int argc, char* argv[])
     ::terminate();
   }
 
-  mlockall(MCL_CURRENT|MCL_FUTURE); //avoid swaping
+  mlockall(MCL_CURRENT|MCL_FUTURE); //avoid memory swaping
 
   int optc = 0;
-  string _conf;  //configuration file
+  string _conf_filename;  //configuration file
 
-  while((optc=getopt(argc, argv, "s:c:i:u:lvrh"))!=-1){
+  while((optc=getopt(argc, argv, "s:c:i:u:lvh"))!=-1){
     switch(optc){
       case 'i': { /* task installation dynamically */
         console::info("install {}", optarg);
@@ -100,47 +101,42 @@ int main(int argc, char* argv[])
       }
       break;
 
-      case 'l': //task list
-      {
+      case 'l': { /* show task list */
         console::info("list of tasks");
       }
       break;
 
-      case 'v': //version
+      case 'v': /* show version */
       {
-        console::info("{} (built {}/{})", _OE_VER_, __DATE__, __TIME__);
+        cout << fmt::format("{} (built {}/{})", _OE_VER_, __DATE__, __TIME__);
+        exit(EXIT_SUCCESS);
       }
       break;
 
-      case 'r': //realtime
-      {
-        console::info("Enable working as realtime");
+      case 'c': { /* read configuration file */
+        _conf_filename = optarg;
+        console::info("Load configuration file(*.config) : {}", _conf_filename);
       }
       break;
 
-      case 'h': //help
-      {
-        console::info("usage : ");
-      }
-      break;
+      case 's':{ /* stop task */
 
-      case 'c': //config
-      {
-        _conf = optarg;
-        console::info("Load configuration file(*.config) : {}", _conf);
       }
-      break;
 
-      case '?': //unkown
-        
+      case 'h':
+      default:
+        cout << fmt::format("Openedge Ver. {} (built {}/{})", _OE_VER_, __DATE__, __TIME__) << endl;
+        cout << "Usage: edge [-c Config file] [-i Task name] [-u Task name] [-l Task list] [-v version]" << endl;
+        cout << "-c\t Run edge by config file" << endl;
+        cout << "-v\t Print Edge version" << endl;
+        exit(EXIT_FAILURE);
       break;
     }
-
   }
 
   try{
-    if(!_conf.empty())
-      if(oe::app::initialize(_conf.c_str())){
+    if(!_conf_filename.empty())
+      if(oe::app::initialize(_conf_filename.c_str())){
         oe::app::run();
         pause(); //wait until getting SIGINT
       }
@@ -148,44 +144,6 @@ int main(int argc, char* argv[])
   catch(const std::exception& e){
     console::error("Exception : {}", e.what());
   }
-
-  // cxxopts::Options options(argv[0], "-  Options");
-	// options.add_options()
-  //       ("s,service", "openedge service") //it works as process manager (it assigns to RT timer signal index or status monitoring)
-  //       ("c,config", "Load Configuration File(*.config)", cxxopts::value<std::string>(), "File Path") //require rerun avoiding
-  //       ("i,install", "Install RT Task", cxxopts::value<std::string>(), "RT Task Component")
-  //       ("u,unintall", "Uninstall RT Task", cxxopts::value<std::string>(), "RT Task Component")
-  //       ("v,version", "Openedge Service Engine Version")
-  //       ("r,rt", "Enable working as RT(RealTime) System")
-  //       ("h,help", "Print Usage");
-       
-  // try
-  // {
-  //   auto args = options.parse(argc, argv);
-    
-  //   if(args.count("version")) { cout << _OE_VER_ << endl; ::terminate(); }
-  //   else if(args.count("rt")) { cout << "Not Support yet" << endl; ::terminate(); }
-  //   else if(args.count("install")) { cout << "Not Support yet" << endl; ::terminate(); }
-  //   else if(args.count("uninstall")) { cout << "Not Support yet" << endl; ::terminate(); }
-  //   else if(args.count("service")) { cout << "Not Support yet" << endl; ::terminate(); }
-  //   else if(args.count("help")) { cout << options.help() << endl; ::terminate(); }
-  //   //edge configuruation
-  //   else if(args.count("config")){
-  //     string _conf = args["config"].as<std::string>();
-
-  //     console::info("Starting Openedge Service Engine {} (built {}/{})", _OE_VER_, __DATE__, __TIME__);
-  //     console::info("Load Configuration File : {}", _conf);
-
-  //     //run task engine
-  //     if(oe::app::initialize(_conf.c_str()))
-  //         oe::app::run();
-      
-  //     pause(); //wait until getting SIGINT
-  //   }
-  // }
-  // catch(const cxxopts::OptionException& e){
-  //   console::error("Argument parse exception : {}", e.what());
-  // }
 
   ::terminate();
   return EXIT_SUCCESS;
