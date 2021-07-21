@@ -90,14 +90,12 @@ int main(int argc, char* argv[])
 
   while((optc=getopt(argc, argv, "s:c:i:u:lvrh"))!=-1){
     switch(optc){
-      case 'i': //install task
-      {
+      case 'i': { /* task installation dynamically */
         console::info("install {}", optarg);
       }
       break;
 
-      case 'u': //uninstall task
-      {
+      case 'u': { /* task termination dynamically */
         console::info("uninstall {}", optarg);
       }
       break;
