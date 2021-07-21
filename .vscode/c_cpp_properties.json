@@ -5,6 +5,7 @@
             "includePath": [
                 "${workspaceFolder}/**",
                 "${workspaceFolder}/include",
+                "${workspaceFolder}/support",
                 "/usr/local/include"
             ],
             "defines": [],

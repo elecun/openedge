@@ -73,14 +73,25 @@ namespace oe {
                     } serviceHandle;
                     map<string /*service name*/, serviceHandle /*service handle*/> serviceContainer;
 
+                    // Fault type definition of Realtime System
                     enum class fault_type_t : int {
-                        CRITICAL = 0,   //drop the all tasks, and show alert
-                        IGNORE = 100    //ignore the fault, no actions!
+                        PERMANENT = 101,
+                        TRANSIENT,
+                        INTERMITTENT
+                    };
+
+                    // Fault level definition for openedge middleware
+                    enum class fault_level_t : int {
+                        NO_FAULT = 0,
+                        INFORM, // just notification only, no system reaction
+                        WARN,   // starts fault counting, log faults, no system reaction
+                        SERIOUS, // pause specific tasks
+                        CRITICAL = 0 // terminate all tasks (hard)
                     };
 
                     string taskname { "unknown" };
                     Status status { Status::STOPPED };
-                    fault_type_t fault_level { fault_type_t::IGNORE };
+                    fault_level_t fault_level { fault_level_t::NO_FAULT };
 
                 private:
                     unique_ptr<core::profile> _profile;
@@ -98,7 +109,8 @@ namespace oe {
                 std::string Send(const std::string &request) override { return server.HandleRequest(request); }
             private:
                 jsonrpccxx::JsonRpcServer &server;
-        };
+            };
+
     } //namespace core
 
     typedef oe::core::task::runnable*(*create_task)(void);

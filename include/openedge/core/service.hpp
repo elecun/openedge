@@ -33,7 +33,6 @@ namespace oe {
                     }
                     return string("");
                 }
-                //virtual jsonrpccxx::JsonRpc2Server* getServicePort() const { return this->service.get(); }
                 virtual jsonrpccxx::JsonRpc2Server& getServicePort() const { return *this->service.get(); }
             protected:
                 shared_ptr<jsonrpccxx::JsonRpc2Server> service;
