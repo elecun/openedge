@@ -9,7 +9,7 @@
 
 #include <openedge/core.hpp>
 #include <3rdparty/mosquitto/cpp/mosquittopp.h>
-#include <openedge/support/bus/protocol/fenet.hpp>
+#include <support/bus/protocol/fenet.hpp>
 
 using namespace oe;
 using namespace std;

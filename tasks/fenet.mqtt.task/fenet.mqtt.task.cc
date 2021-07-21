@@ -1,4 +1,5 @@
 
+
 #include "fenet.mqtt.task.hpp"
 #include <openedge/log.hpp>
 
@@ -64,19 +65,19 @@ void fenetMqttTask::execute(){
     unsigned char* buffer = new unsigned char[max_length];
     ::memset(buffer, 0, sizeof(char)*max_length);
 
-    do {
-        int len = ::recvfrom(_sockfd, (char*)buffer, max_length, MSG_DONTWAIT, nullptr, nullptr);
-        if(len>0){
-            S_LAN_MSG rec_msg;
-            this->parse_pcan_data(buffer, len, &rec_msg);
-            this->process_pcan_data(&rec_msg);
+    // do {
+    //     int len = ::recvfrom(_sockfd, (char*)buffer, max_length, MSG_DONTWAIT, nullptr, nullptr);
+    //     if(len>0){
+    //         S_LAN_MSG rec_msg;
+    //         this->parse_pcan_data(buffer, len, &rec_msg);
+    //         this->process_pcan_data(&rec_msg);
 
-            ::memset(buffer, 0, sizeof(char)*max_length);
-        }
-        else
-            break;
-    }
-    while(1);
+    //         ::memset(buffer, 0, sizeof(char)*max_length);
+    //     }
+    //     else
+    //         break;
+    // }
+    // while(1);
     
     delete []buffer;
 
