@@ -17,6 +17,10 @@
 
 using namespace std;
 
+namespace oe::ipc {
+    #include <czmq.h>
+}
+
 namespace oe::core {
     namespace task {
 
@@ -35,33 +39,21 @@ namespace oe::core {
                 explicit driver(const char* taskname);
                 virtual ~driver();
 
-                //configure the task before execute
-                bool configure();
+                bool configure();   /* drive a task to configure before execution */
+                void execute();     /* drive a task to run periodically */
+                void cleanup();     /* drive a task to terminate */
+                void pause();       /* drive a task to pause*/
+                void resume();      /* drive a paused task to resume */
 
-                //start task to run
-                void execute();
-
-                //destory task
-                void cleanup();
-
-                //pause task
-                void pause();
-
-                //resume task
-                void resume();
-
-                //getting task name
-                const char* getTaskname() const { return _taskImpl->taskname.c_str(); }
+                /* get the name of task */
+                const char* getTaskname() { 
+                    return _taskImpl->taskname.c_str();
+                }
 
             private:
-                //Load task by task name
-                bool load(const char* taskname);
-
-                //Unload all task
-                void unload();
-
-                //start task process concurrently
-                void do_process();
+                bool load(const char* taskname);    /* load task with by name, true is success  */
+                void unload();  /* unload task */
+                void do_process();  /* call the concrete task execution */
 
                 //set task time spec. 
                 void set_rt_timer(unsigned long long nsec);

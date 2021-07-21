@@ -33,7 +33,7 @@ endif
 # OS
 ifeq ($(OS),Linux) #for Linux
 	LDFLAGS = -Wl,--export-dynamic
-	LDLIBS = -pthread -lrt -ldl -lm
+	LDLIBS = -pthread -lrt -ldl -lm -lczmq -lzmq
 	GTEST_LDLIBS = -lgtest
 endif
 
@@ -74,42 +74,40 @@ edge:	$(BUILDDIR)edge.o \
 		$(BUILDDIR)rt_timer.o
 		$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -o $(BUILDDIR)$@ $^ $(LDLIBS)
 
-#
-# edge service engine
-#
-$(BUILDDIR)edge.o: $(APP_SOURCE_FILES)edge/edge.cc
-				$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
-$(BUILDDIR)task_manager.o: $(APP_SOURCE_FILES)edge/task_manager.cc
-				$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+# edge application sources
+$(BUILDDIR)edge.o:	$(APP_SOURCE_FILES)edge/edge.cc
+					$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+$(BUILDDIR)task_manager.o:	$(APP_SOURCE_FILES)edge/task_manager.cc
+							$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 $(BUILDDIR)edge_instance.o: $(APP_SOURCE_FILES)edge/instance.cc
-				$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+							$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
 
-#openedge base
-$(BUILDDIR)rt_trigger.o: $(INCLUDE_FILES)openedge/core/rt_trigger.cc
-	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
-
-# include
-$(BUILDDIR)rt_timer.o: $(INCLUDE_FILES)openedge/core/rt_timer.cc
-	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
-
-############################ Openedge Cores
+# edge include files
+$(BUILDDIR)rt_trigger.o:	$(INCLUDE_FILES)openedge/core/rt_trigger.cc
+							$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+$(BUILDDIR)rt_timer.o:		$(INCLUDE_FILES)openedge/core/rt_timer.cc
+							$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 $(BUILDDIR)driver.o:	$(INCLUDE_FILES)openedge/core/driver.cc
-					$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+						$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 $(BUILDDIR)profile.o:	$(INCLUDE_FILES)openedge/core/profile.cc
-					$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+						$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 $(BUILDDIR)uuid.o:	$(INCLUDE_FILES)openedge/util/uuid.cc
 					$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 $(BUILDDIR)general.o:	$(INCLUDE_FILES)openedge/device/general.cc
-					$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
-
-############################ Openedge Sys
+						$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 $(BUILDDIR)info.o:	$(INCLUDE_FILES)openedge/sys/info.cc
 					$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 $(BUILDDIR)cpuload.o:	$(INCLUDE_FILES)openedge/sys/cpuload.cc
-					$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+						$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 $(BUILDDIR)netload.o:	$(INCLUDE_FILES)openedge/sys/netload.cc
-					$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+						$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
+
+# common files for task
+$(BUILDDIR)dkm_dx3000.o:	$(SUPPORT_SOURCE_FILES)device/dkm_dx3000.cc
+							$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
 
 ############################ Tasks
 simple.task: $(BUILDDIR)simple.task.o
@@ -199,8 +197,7 @@ dx3000.control.task: $(BUILDDIR)dx3000.control.task.o \
 	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) -lczmq -lzmq -lmosquittopp -lmosquitto -lmodbus
 $(BUILDDIR)dx3000.control.task.o: $(TASK_SOURCE_FILES)dx3000.control.task/dx3000.control.task.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
-$(BUILDDIR)dkm_dx3000.o: $(SUPPORT_SOURCE_FILES)device/dkm_dx3000.cc
-	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
 
 
 
