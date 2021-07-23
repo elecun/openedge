@@ -18,6 +18,20 @@ using namespace std;
 using namespace jsonrpccxx;
 using json = nlohmann::json;
 
+
+
+/* for local service interface definition */
+namespace oe::core {
+    class service {
+        public:
+            virtual bool init() = 0;
+            virtual bool request() = 0;
+            virtual bool valid() = 0;
+
+    }; /* service class */
+} /* namespace */
+
+/* for RPC-based service interface definition */
 namespace oe {
     namespace core {
 

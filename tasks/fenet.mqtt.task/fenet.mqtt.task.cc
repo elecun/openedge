@@ -2,6 +2,7 @@
 
 #include "fenet.mqtt.task.hpp"
 #include <openedge/log.hpp>
+#include "fenetservice.hpp" //fast ethernet service
 
 
 //static component instance that has only single instance
@@ -20,7 +21,6 @@ bool fenetMqttTask::configure(){
 
     //read configuration from profile
     json config = json::parse(getProfile()->get("configurations"));
-
 
     //read MQTT parameters & connect to the broker
     if(config.find("mqtt")!=config.end()){
@@ -54,32 +54,31 @@ bool fenetMqttTask::configure(){
         }
         else
             console::warn("({}){}", conret, mosqpp::strerror(conret));
+    } /* config for MQTT */
+
+    if(config.find("fenet")!=config.end()){
+        json fenet_param = config["fenet"];
+        string _fenet_address { "127.0.0.1" };
+        int _fenet_port {0};
+        if(fenet_param.find("address")!=fenet_param.end()) _fenet_address = fenet_param["address"].get<string>();
+        if(fenet_param.find("port")!=fenet_param.end()) _fenet_port = fenet_param["port"].get<int>();
+
+        console::info("> set FENET Address : {}", _fenet_address);
+        console::info("> set FENET Port : {}", _fenet_port);
+
+        //create FENet Instance
+        _service = make_unique<oe::core::service>(new oe::support::FENetService(_fenet_address.c_str(), _fenet_port));
     }
 
     return true;
 }
 
 void fenetMqttTask::execute(){
-
-    const int max_length = 4096;
-    unsigned char* buffer = new unsigned char[max_length];
-    ::memset(buffer, 0, sizeof(char)*max_length);
-
-    // do {
-    //     int len = ::recvfrom(_sockfd, (char*)buffer, max_length, MSG_DONTWAIT, nullptr, nullptr);
-    //     if(len>0){
-    //         S_LAN_MSG rec_msg;
-    //         this->parse_pcan_data(buffer, len, &rec_msg);
-    //         this->process_pcan_data(&rec_msg);
-
-    //         ::memset(buffer, 0, sizeof(char)*max_length);
-    //     }
-    //     else
-    //         break;
-    // }
-    // while(1);
-    
-    delete []buffer;
+    if(_service->valid()){
+        using oe::support::FENetService;
+        FENetService* impl = dynamic_cast<FENetService*>(_service.get());
+        vector<unsigned char> raw = impl->block_read();
+    }
 
 }
 

@@ -9,7 +9,8 @@
 
 #include <openedge/core.hpp>
 #include <3rdparty/mosquitto/cpp/mosquittopp.h>
-#include <support/bus/protocol/fenet.hpp>
+#include <memory>
+#include <fenetservice.hpp>
 
 using namespace oe;
 using namespace std;
@@ -37,6 +38,10 @@ class fenetMqttTask : public oe::core::task::runnable, private mosqpp::mosquitto
 		void on_unsubscribe(int mid) override;
 		void on_log(int level, const char* str) override;
 		void on_error() override;
+
+    private:
+        unique_ptr<oe::core::service> _service; //Fast Ethernet Service
+        
 
     private: //for mqtt
         string _mqtt_broker {"127.0.0.1"};

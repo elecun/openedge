@@ -15,6 +15,12 @@
 
 using namespace std;
 
+namespace oe::support::protocol {
+    class XGTDedicated {
+
+    }; /* XGTDedicated class */
+} /* namespace */
+
 namespace oe {
     namespace net {
         namespace protocol {
