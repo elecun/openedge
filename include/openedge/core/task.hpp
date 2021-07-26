@@ -40,7 +40,7 @@ namespace oe {
                 friend class oe::core::task::driver;
                 
                 public:
-                    enum class Status : int { STOPPED=0, RUNNING, PAUSED };
+                    enum class Status : int { STOPPED=0, WORKING, PAUSED, RESUMED, IDLE};
 
                     virtual Status getStatus() { return status; }
                     void setStatus(Status s) { status = s;  }

@@ -12,6 +12,8 @@
 #include <openedge/core/global.hpp>
 
 #define SIG_RUNTIME_TRIGGER (SIGRTMIN)
+#define SIG_PAUSE_TRIGGER   (SIGRTMAX-1)    //signal #63
+#define SIG_RESUME_TRIGGER  (SIGRTMAX-2)    //signal #62
 
 static int signalIndex = 0;
 
@@ -32,6 +34,9 @@ namespace oe::core::task {
                     _taskImpl->taskname = taskname;
                     _signalIndex = signalIndex++;
                     _taskImpl->setStatus(oe::core::task::runnable::Status::STOPPED);
+
+
+                    _actor = ipc::zactor_new(ipc::zbeacon, nullptr);
                 }
             }
         }
@@ -157,24 +162,39 @@ namespace oe::core::task {
         sigset_t thread_sigmask;
         sigemptyset(&thread_sigmask);
         sigaddset(&thread_sigmask, SIG_RUNTIME_TRIGGER+_signalIndex);
+        sigaddset(&thread_sigmask, SIG_PAUSE_TRIGGER);
+        sigaddset(&thread_sigmask, SIG_RESUME_TRIGGER);
         int _sig_no;
-        //auto t_prev = std::chrono::high_resolution_clock::now();
-        _taskImpl->status = oe::core::task::runnable::Status::RUNNING;
 
         while(1){
             sigwait(&thread_sigmask, &_sig_no);
             if(_sig_no==SIG_RUNTIME_TRIGGER+_signalIndex){
-                //auto t_now = std::chrono::high_resolution_clock::now();
+                _taskImpl->setStatus(oe::core::task::runnable::Status::WORKING);
+                auto t_now = std::chrono::high_resolution_clock::now();
                 if(_taskImpl){
                     _taskImpl->execute();
                 }
-                //auto t_elapsed = std::chrono::high_resolution_clock::now();
-                // spdlog::info("<{}>Processing Time : {} ns / {} ns",
-                // _taskImpl->_taskname,
-                // std::chrono::duration<double, std::chrono::seconds::period>(t_elapsed - t_now).count(),
-                // std::chrono::duration<double, std::chrono::seconds::period>(t_now - t_prev).count());
-                // t_prev = t_now;
-            }    
+                auto t_elapsed = std::chrono::high_resolution_clock::now();
+                spdlog::info("Processing Time : {} ns",
+                std::chrono::duration<double, std::chrono::seconds::period>(t_elapsed - t_now).count());
+            }
+            else if(_sig_no==SIG_PAUSE_TRIGGER) {
+                sigdelset(&thread_sigmask, SIG_RUNTIME_TRIGGER+_signalIndex);
+                _taskImpl->setStatus(oe::core::task::runnable::Status::PAUSED);
+                if(_taskImpl){
+                    _taskImpl->pause();
+                }
+
+            }
+            else if(_sig_no==SIG_RESUME_TRIGGER) {
+                _taskImpl->setStatus(oe::core::task::runnable::Status::RESUMED);
+                if(_taskImpl){
+                    _taskImpl->resume();
+                }
+                sigaddset(&thread_sigmask, SIG_RUNTIME_TRIGGER+_signalIndex);
+            }
+
+            _taskImpl->setStatus(oe::core::task::runnable::Status::IDLE);    
         }
     }
 } //namespace oe::core::task

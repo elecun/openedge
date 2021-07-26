@@ -70,6 +70,9 @@ namespace oe::core {
                 _time_jitter_t _jitter;
                 bool _overrun { false };
 
+                private:
+                    ipc::zactor_t* _actor { nullptr };
+
         };
     } //namespace task
 } //namespace oe
