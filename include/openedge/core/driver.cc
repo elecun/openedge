@@ -35,8 +35,6 @@ namespace oe::core::task {
                     _signalIndex = signalIndex++;
                     _taskImpl->setStatus(oe::core::task::runnable::Status::STOPPED);
 
-
-                    _actor = ipc::zactor_new(ipc::zbeacon, nullptr);
                 }
             }
         }

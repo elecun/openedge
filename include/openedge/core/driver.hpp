@@ -14,12 +14,11 @@
 #include <thread>
 #include <signal.h>
 #include <mutex>
+#include <include/3rdparty/zmq/zmq.hpp> //cppzmq (https://github.com/zeromq/cppzmq)
+#include <include/3rdparty/zmq/zmq_addon.hpp>
 
 using namespace std;
 
-namespace oe::ipc {
-    #include <czmq.h>
-}
 
 namespace oe::core {
     namespace task {
@@ -69,9 +68,7 @@ namespace oe::core {
                 struct itimerspec _time_spec;
                 _time_jitter_t _jitter;
                 bool _overrun { false };
-
-                private:
-                    ipc::zactor_t* _actor { nullptr };
+                    
 
         };
     } //namespace task
