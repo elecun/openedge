@@ -148,8 +148,6 @@ uvlc.ag.control.task: $(BUILDDIR)uvlc.ag.control.task.o \
 	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) -lczmq -lzmq -lmodbus
 $(BUILDDIR)uvlc.ag.control.task.o: $(TASK_SOURCE_FILES)uvlc.ag.control.task/uvlc.ag.control.task.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
-$(BUILDDIR)dkm_dx3000.o: $(SUPPORT_SOURCE_FILES)device/dkm_dx3000.cc
-	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
 
 uvlc.control.task: $(BUILDDIR)uvlc.control.task.o
@@ -196,6 +194,20 @@ dx3000.control.task: $(BUILDDIR)dx3000.control.task.o \
 				$(BUILDDIR)dkm_dx3000.o 
 	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) -lczmq -lzmq -lmosquittopp -lmosquitto -lmodbus
 $(BUILDDIR)dx3000.control.task.o: $(TASK_SOURCE_FILES)dx3000.control.task/dx3000.control.task.cc
+	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
+
+# test1.task for unit testing
+test1.task: $(BUILDDIR)test1.task.o
+	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS)
+$(BUILDDIR)test1.task.o: $(TASK_SOURCE_FILES)test1.task/test1.task.cc
+	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
+
+# test2.task for unit testing
+test2.task: $(BUILDDIR)test2.task.o
+	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS)
+$(BUILDDIR)test2.task.o: $(TASK_SOURCE_FILES)test2.task/test2.task.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
 

@@ -108,7 +108,7 @@ int main(int argc, char* argv[])
 
       case 'v': /* show version */
       {
-        cout << fmt::format("{} (built {}/{})", _OE_VER_, __DATE__, __TIME__);
+        cout << fmt::format("{} (built {}/{})", _OE_VER_, __DATE__, __TIME__) << endl;
         exit(EXIT_SUCCESS);
       }
       break;

@@ -3,6 +3,7 @@
 #include <openedge/log.hpp>
 #include <openedge/core/global.hpp>
 #include <openedge/util/validation.hpp>
+#include <openedge/core/registry.hpp>
 
 namespace oe::edge {
 
@@ -26,7 +27,8 @@ namespace oe::edge {
             return false;
         }
 
-        if(!util::exist(taskname)){
+        string config_fullpath = registry->get<std::string>("CONFIG_DIR")+string(taskname);
+        if(!util::exist(config_fullpath.c_str())){
             console::error("{} file does not exist", taskname);
             return false;
         }

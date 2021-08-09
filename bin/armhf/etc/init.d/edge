@@ -1,0 +1,41 @@
+#!/bin/sh
+### BEGIN INIT INFO
+# Provides:          edge
+# Required-Start:    $all
+# Required-Stop:
+# Default-Start:     2 3 4 5
+# Default-Stop:
+# Short-Description: openedge middleware
+### END INIT INFO
+
+PATH=/bin:/usr/bin:/sbin:/usr/sbin:/home/debian/bin/armhf
+DESC="openedge daemon"
+NAME=edge
+DAEMON=/home/debian/bin/armhf/edge
+PIDFILE=/var/run/edged.pid
+SCRIPTNAME=/etc/init.d/"$NAME"
+
+
+case "$1" in
+start)  log_daemon_msg "Starting openedge" "edge"
+        start_daemon -p $PIDFILE $DAEMON $EXTRA_OPTS
+        log_end_msg $?
+        ;;
+stop)   log_daemon_msg "Stopping openedge" "edge"
+        killproc -p $PIDFILE $DAEMON
+        RETVAL=$?
+        [ $RETVAL -eq 0 ] && [ -e "$PIDFILE" ] && rm -f $PIDFILE
+        log_end_msg $RETVAL
+        ;;
+restart) log_daemon_msg "Restarting openedge" "edge" 
+        $0 stop
+        $0 start
+        ;;
+status)
+        status_of_proc -p $PIDFILE $DAEMON $NAME && exit 0 || exit $?
+        ;;
+*)      log_action_msg "Usage: /etc/init.d/edge {start|stop|status|restart|reload}"
+        exit 2
+        ;;
+esac
+exit 0

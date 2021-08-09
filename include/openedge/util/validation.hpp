@@ -11,12 +11,10 @@
 
 #include <sys/stat.h>
 #include <unistd.h>
-// #include <string>
-// #include <fstream>
 
 //check for file existance
 namespace oe::util {
-  inline bool exist (const char* filepath) {
+  inline bool exist(const char* filepath) {
     struct stat buffer;   
     return (stat(filepath, &buffer) == 0); 
   }
