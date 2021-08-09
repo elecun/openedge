@@ -210,8 +210,11 @@ test2.task: $(BUILDDIR)test2.task.o
 $(BUILDDIR)test2.task.o: $(TASK_SOURCE_FILES)test2.task/test2.task.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
-
-
+# agw.manage.task (it only works for OSD3358-based AGW)
+agw.manage.task: $(BUILDDIR)agw.manage.task.o
+	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS)
+$(BUILDDIR)agw.manage.task.o: $(TASK_SOURCE_FILES)agw.manage.task/agw.manage.task.cc
+	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
 
 ############################ Services
