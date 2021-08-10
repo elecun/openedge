@@ -1,6 +1,7 @@
 
 #include "agw.manage.task.hpp"
 #include <openedge/log.hpp>
+#include <openedge/sys/info.hpp>
 
 //static component instance that has only single instance
 static agwManageTask* _instance = nullptr;
@@ -25,43 +26,14 @@ bool agwManageTask::configure(){
 void agwManageTask::execute(){
 
     if(this->mqttConnector::is_connected()){
-        string topic = "aop/test";
-        string msg = "test";
-        this->mqttConnector::publish(nullptr, topic.c_str(), msg.size(), msg.c_str(), 2, false);
+        string msg = edge_system->get_system_perform();
+        this->mqttConnector::publish(nullptr, this->_mqtt_pub_topic.c_str(), msg.size(), msg.c_str(), 2, false);
     }
-
-
-    // if(this->mqttConnector::is_connected()) {
-    //     int rc = this->loop();
-    //     if(rc!=MOSQ_ERR_SUCCESS){
-    //         this->mqttConnector::reconnect();
-    //         console::info("try reconnect...");
-    //     }
-
-    //     string topic = "aop/test";
-    //     string msg = "test";
-    //     this->mqttConnector::publish(nullptr, topic.c_str(), msg.size(), msg.c_str(), 2, false);
-          
-    // }
-
-    // if(!this->mqttConnector::is_connected()) {
-    //     if(int rc = this->mqttConnector::reconnect()!=MOSQ_ERR_SUCCESS)
-    //         console::info("try reconnecting to broker...");
-    //     else{
-    //         console::warn("{}", mosqpp::strerror(rc));
-    //         // periodically publish the system resource
-    //         string topic = "aop/test";
-    //         string msg = "test";
-    //         this->mqttConnector::publish(nullptr, topic.c_str(), msg.size(), msg.c_str(), 2, false);
-    //         this->mqttConnector::loop_write();
-    //     }
-    // }
-    // else {
-    //     // periodically publish the system resource
-    //     string topic = "aop/test";
-    //     string msg = "test";
-    //     this->mqttConnector::publish(nullptr, topic.c_str(), msg.size(), msg.c_str(), 2, false);
-    // }
+    else{
+        if(const int rc = this->mqttConnector::reconnect_async()!=MOSQ_ERR_SUCCESS){
+            console::warn("Reconnection failed({}) : {}", rc, mosqpp::strerror(rc));
+        }
+    }
     
 }
 

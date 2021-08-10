@@ -37,7 +37,8 @@ class mqttConnector : public mosqpp::mosquittopp {
 		void on_log(int level, const char* str) override;
 		void on_error() override;
 
-    private:
+    protected:
+        string _manage_topic {""};
         bool _connected = false;
         string _broker_address { "127.0.0.1" };
         int _broker_port {1883};
@@ -48,7 +49,7 @@ class mqttConnector : public mosqpp::mosquittopp {
 };
 
 // task class
-class agwManageTask : public oe::core::task::runnable, private mqttConnector {
+class agwManageTask : public oe::core::task::runnable, protected mqttConnector {
 
     public:
         agwManageTask() = default;

@@ -76,7 +76,7 @@ void mqttConnector::on_unsubscribe(int mid){
 }
 
 void mqttConnector::on_log(int level, const char* str){
-    console::info("MQTT Log({}) : {}", level, str);
+    //console::info("MQTT Log({}) : {}", level, str);
 }
 
 void mqttConnector::on_error(){

@@ -15,9 +15,9 @@
         "mqtt":{
             "broker":"192.168.3.105",
             "port":1883,
-            "pub_topic":"aop/uvlc/motor",
+            "pub_topic":"aop/dcagw01/perform",
             "pub_qos":2,
-            "sub_topic":["pcan.mqtt.task/sysctrl", "aop/uvlc/control"],
+            "sub_topic":["aop/dcagw01/control", "aop/all/control"],
             "keep_alive":60
         }
     }

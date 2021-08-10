@@ -14,6 +14,7 @@
 #include <vector>
 #include <chrono>
 #include <map>
+#include <openedge/arch/singleton.hpp>
 
 using namespace std;
 
@@ -123,17 +124,16 @@ namespace oe::sys {
             string _cpuName;
     };
 
-    class systemInfo {
+    class systemInfo : public oe::arch::singleton<systemInfo>{
         public:
-            systemInfo(){}
-            ~systemInfo(){}
-
+            systemInfo() = default;
+            virtual ~systemInfo() = default;
 
             /**
-             * @brief   getting systeminfo
-             * @return  json formatted system info
+             * @brief   obtain system resource & performance measurement
+             * @return  json formatted measured data
              */
-            string get_systeminfo();
+            string get_system_perform();
 
             /**
              * @brief   getting cpu occupy
@@ -151,5 +151,7 @@ namespace oe::sys {
     }; 
 
 } //namespace oe
+
+#define edge_system oe::sys::systemInfo::instance()
 
 #endif
