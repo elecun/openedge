@@ -1,5 +1,7 @@
 [Unit]
 Description=OpenEdge Middleware
+Wants=network-online.target
+After=network-online.target
  
 [Service]
 ExecStart=/home/debian/bin/armhf/edge -c /home/debian/bin/armhf/test1.config

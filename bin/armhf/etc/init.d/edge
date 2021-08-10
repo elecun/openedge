@@ -3,7 +3,7 @@
 # Provides:          edge
 # Required-Start:    $all
 # Required-Stop:
-# Default-Start:     2 3 4 5
+# Default-Start:     3 4 5
 # Default-Stop:
 # Short-Description: openedge middleware
 ### END INIT INFO

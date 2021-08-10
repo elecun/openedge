@@ -12,6 +12,7 @@
 #include <sys/sysinfo.h>
 #include <openedge/core/task.hpp>
 #include <openedge/core/registry.hpp>
+#include <openedge/util/validation.hpp>
 
 //#include <unistd.h>
 
@@ -34,6 +35,11 @@ namespace oe::app {
 
         json config;
         try {
+            if(!util::exist(conf_file)){
+                spdlog::error("Configuration file does not exist");
+                return false;
+            }
+
             std::ifstream file(conf_file);
             file >> config;
         }

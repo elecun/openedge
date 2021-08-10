@@ -115,6 +115,7 @@ int main(int argc, char* argv[])
 
       case 'c': { /* read configuration file */
         _conf_filename = optarg;
+        console::info("Openedge Ver. {} (built {}/{})", _OE_VER_, __DATE__, __TIME__);
         console::info("Load configuration file(*.config) : {}", _conf_filename);
       }
       break;

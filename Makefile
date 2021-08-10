@@ -210,10 +210,14 @@ test2.task: $(BUILDDIR)test2.task.o
 $(BUILDDIR)test2.task.o: $(TASK_SOURCE_FILES)test2.task/test2.task.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
+
 # agw.manage.task (it only works for OSD3358-based AGW)
-agw.manage.task: $(BUILDDIR)agw.manage.task.o
-	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS)
+agw.manage.task: $(BUILDDIR)agw.manage.task.o \
+				 $(BUILDDIR)agw.mqtt.o
+	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) -lmosquittopp -lmosquitto
 $(BUILDDIR)agw.manage.task.o: $(TASK_SOURCE_FILES)agw.manage.task/agw.manage.task.cc
+	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+$(BUILDDIR)agw.mqtt.o: $(TASK_SOURCE_FILES)agw.manage.task/agw.mqtt.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
 
