@@ -4,6 +4,7 @@
 
 namespace oe::sys {
 
+
     string systemInfo::get_system_perform(){
 
         sysinfo(&_sysinfo);

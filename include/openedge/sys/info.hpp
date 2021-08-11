@@ -1,7 +1,7 @@
 
 /**
  * @file    info.hpp
- * @brief   system information header
+ * @brief   system information & performance measure
  * @author  Byunghun Hwang<bh.hwang@iae.re.kr>
  * @ref     https://github.com/fuxey/Linux-System-Monitoring-Library.git
  */
@@ -19,6 +19,7 @@
 using namespace std;
 
 namespace oe::sys {
+
 
     class memload {
         public:
@@ -134,16 +135,6 @@ namespace oe::sys {
              * @return  json formatted measured data
              */
             string get_system_perform();
-
-            /**
-             * @brief   getting cpu occupy
-             */
-            unsigned long get_cpu_occupy(unsigned int pid);
-
-            /**
-             * 
-             */
-            unsigned long get_mem_occupy(unsigned int pid);
         
         private:
             struct sysinfo _sysinfo;
