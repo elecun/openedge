@@ -1,21 +1,34 @@
 
 
-#include "info.hpp"
-#include <cstdlib>
-#include <unistd.h>
-#include <cstdio>
-#include <dirent.h>
-#include <fstream>
-#include <sys/types.h>
-#include <csignal>
-#include <cstring>
-#include <netinet/in.h>
-#include <sys/statvfs.h>
-#include <sys/stat.h>
-#include <pwd.h>
-#include <thread>
+#include "system.hpp"
+// #include <cstdlib>
+// #include <unistd.h>
+// #include <cstdio>
+// #include <dirent.h>
+// #include <fstream>
+// #include <sys/types.h>
+// #include <csignal>
+// #include <cstring>
+// #include <netinet/in.h>
+// #include <sys/statvfs.h>
+// #include <sys/stat.h>
+// #include <pwd.h>
+// #include <thread>
 
 namespace oe::sys {
+
+    json system::summarize(){
+
+    }
+
+    string system::get_os_version(){
+        ifstream in("/proc/version_signature");
+        string v { "unrecognized" };
+        if(in.is_open())
+            in >> v;
+        in.close();
+        return v;
+    }
 
 
 int64_t system::getTemperature(const std::string &thermalZone) {

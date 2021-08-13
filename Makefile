@@ -98,9 +98,13 @@ $(BUILDDIR)general.o:	$(INCLUDE_FILES)openedge/device/general.cc
 						$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 $(BUILDDIR)info.o:	$(INCLUDE_FILES)openedge/sys/info.cc
 					$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
-$(BUILDDIR)cpuload.o:	$(INCLUDE_FILES)openedge/sys/cpuload.cc
+$(BUILDDIR)cpu.o:	$(INCLUDE_FILES)openedge/sys/cpu.cc
 						$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
-$(BUILDDIR)netload.o:	$(INCLUDE_FILES)openedge/sys/netload.cc
+$(BUILDDIR)network.o:	$(INCLUDE_FILES)openedge/sys/network.cc
+						$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+$(BUILDDIR)memory.o:	$(INCLUDE_FILES)openedge/sys/memory.cc
+						$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+$(BUILDDIR)system.o:	$(INCLUDE_FILES)openedge/sys/system.cc
 						$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
 

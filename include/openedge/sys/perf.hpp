@@ -10,8 +10,9 @@
 #ifndef _OPENEDGE_SYS_PERF_HPP_
 #define _OPENEDGE_SYS_PERF_HPP_
 
-#include <openedge/sys/cpuload.hpp>
-#include <openedge/sys/memload.hpp>
-#include <openedge/sys/netload.hpp>
+#include <openedge/sys/cpu.hpp>
+#include <openedge/sys/memory.hpp>
+#include <openedge/sys/network.hpp>
+#include <openedge/sys/system.hpp>
 
 #endif
