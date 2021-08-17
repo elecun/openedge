@@ -32,7 +32,7 @@ endif
 
 # OS
 ifeq ($(OS),Linux) #for Linux
-	LDFLAGS = -Wl,--export-dynamic
+	LDFLAGS = -Wl,--export-dynamic -Wl,-rpath,$(LD_LIBRARY_PATH)
 	LDLIBS = -pthread -lrt -ldl -lm -lczmq -lzmq
 	GTEST_LDLIBS = -lgtest
 endif
@@ -102,6 +102,8 @@ $(BUILDDIR)cpu.o:	$(INCLUDE_FILES)openedge/sys/cpu.cc
 						$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 $(BUILDDIR)network.o:	$(INCLUDE_FILES)openedge/sys/network.cc
 						$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+$(BUILDDIR)network_perf.o:	$(INCLUDE_FILES)openedge/sys/network_perf.cc
+						$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 $(BUILDDIR)memory.o:	$(INCLUDE_FILES)openedge/sys/memory.cc
 						$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 $(BUILDDIR)system.o:	$(INCLUDE_FILES)openedge/sys/system.cc
@@ -109,7 +111,7 @@ $(BUILDDIR)system.o:	$(INCLUDE_FILES)openedge/sys/system.cc
 
 
 # common files for task
-$(BUILDDIR)dkm_dx3000.o:	$(SUPPORT_SOURCE_FILES)device/dkm_dx3000.cc
+$(BUILDDIR)dkm_dx3000.o:	$(INCLUDE_FILES)/support/device/dkm_dx3000.cc
 							$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
 
@@ -183,8 +185,7 @@ procmanage.task: $(BUILDDIR)procmanage.o
 $(BUILDDIR)procmanage.o: $(TASK_SOURCE_FILES)procmanage.task/procmanage.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
-pcan.mqtt.task: $(BUILDDIR)pcan.mqtt.task.o \
-				$(BUILDDIR)dkm_dx3000.o 
+pcan.mqtt.task: $(BUILDDIR)pcan.mqtt.task.o
 	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) -lczmq -lzmq -lmosquittopp -lmosquitto
 $(BUILDDIR)pcan.mqtt.task.o: $(TASK_SOURCE_FILES)pcan.mqtt.task/pcan.mqtt.task.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
@@ -218,7 +219,9 @@ $(BUILDDIR)test2.task.o: $(TASK_SOURCE_FILES)test2.task/test2.task.cc
 # agw.manage.task (it only works for OSD3358-based AGW)
 agw.manage.task: $(BUILDDIR)agw.manage.task.o \
 				 $(BUILDDIR)agw.mqtt.o \
-				 $(BUILDDIR)info.o
+				 $(BUILDDIR)system.o \
+				 $(BUILDDIR)network.o \
+				 $(BUILDDIR)network_perf.o
 	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) -lmosquittopp -lmosquitto
 $(BUILDDIR)agw.manage.task.o: $(TASK_SOURCE_FILES)agw.manage.task/agw.manage.task.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@

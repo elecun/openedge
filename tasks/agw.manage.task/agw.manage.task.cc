@@ -1,7 +1,7 @@
 
 #include "agw.manage.task.hpp"
 #include <openedge/log.hpp>
-#include <openedge/sys/info.hpp>
+#include <openedge/sys/system.hpp>
 
 //static component instance that has only single instance
 static agwManageTask* _instance = nullptr;
@@ -26,7 +26,7 @@ bool agwManageTask::configure(){
 void agwManageTask::execute(){
 
     if(this->mqttConnector::is_connected()){
-        string msg = edge_system->get_system_perform();
+        string msg = this_system->summarize().dump();
         this->mqttConnector::publish(nullptr, this->_mqtt_pub_topic.c_str(), msg.size(), msg.c_str(), 2, false);
     }
     else{

@@ -135,14 +135,11 @@ namespace oe::sys {
              * @return  json formatted measured data
              */
             string get_system_perform();
-        
-        private:
-            struct sysinfo _sysinfo;
 
     }; 
 
 } //namespace oe
 
-#define edge_system oe::sys::systemInfo::instance()
+#define this_system oe::sys::systemInfo::instance()
 
 #endif

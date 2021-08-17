@@ -13,7 +13,7 @@
     },
     "configurations":{
         "mqtt":{
-            "broker":"192.168.100.71",
+            "broker":"192.168.3.105",
             "port":1883,
             "pub_topic":"aop/uvlc/sensor",
             "pub_qos":2,

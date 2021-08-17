@@ -9,32 +9,57 @@
 #ifndef _OPENEDGE_SYS_NETWORK_HPP_
 #define _OPENEDGE_SYS_NETWORK_HPP_
 
-#include <string>
 #include <openedge/arch/singleton.hpp>
 #include <3rdparty/json.hpp>
+#include <string>
+#include <map>
 
 using namespace std;
 using json = nlohmann::json;
 
+#if defined(__linux__)
+#include <sys/sysinfo.h>
 
-/* class for network performance measure*/
-namespace oe::sys::perf {
+namespace oe::sys {
 
-    #define NET_STATFILE    "/proc/net/dev"
-
-    class network : oe::arch::singleton<network> {
+    class network {
         public:
             explicit network(const char* interface);
+            virtual ~network() = default;
 
-            const char* getInterfaceName() const { return _interface.c_str(); }
-
+            const char* getInterfaceName() const { return _interface.c_str(); }     //get network interface use
+            string getMACAddress();     // get MAC address of network interface use
 
         private:
             string _interface { "eth0" };
-    };
+            
+
+    }; /* class */
+
+    namespace perf{
+
+        class network_perf : public oe::sys::network {
+            public:
+                explicit network_perf(const char* netif = "eth0", const char* procfile = "/proc/net/dev");
+                ~network_perf() = default;
+
+            json measure();                 //get all network performance
+
+            unsigned long getTXbps();       //get Transferred Bytes per second
+            unsigned long getTXbps_boot();  //get Transferred Bytes per second since startup
+            unsigned long getRXbps();       //get Recieved Bytes per second
+            unsigned long getRXbps_boot();  //get Transferred Bytes per second since startup
+
+            private:
+                const char* _procfile { nullptr };
+                std::map<std::string, std::string> _netstat;
+
+        }; /* class */
+    }
 
 } /* namespace */
 
-#define openedge_network oe::sys::perf::network::instance()
+#define this_network oe::sys::perf::network::instance()
 
-#endif
+#endif // for linux
+#endif //for header
