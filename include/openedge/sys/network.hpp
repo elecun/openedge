@@ -38,12 +38,12 @@ namespace oe::sys {
 
     namespace perf{
 
-        class network_perf : public oe::sys::network {
+        class network : public oe::sys::network {
             public:
-                explicit network_perf(const char* netif = "eth0", const char* procfile = "/proc/net/dev");
-                ~network_perf() = default;
+                explicit network(const char* netif = "eth0", const char* procfile = "/proc/net/dev");
+                ~network() = default;
 
-            json measure();                 //get all network performance
+            json perform();     //network resource measure
 
             unsigned long getTXbps();       //get Transferred Bytes per second
             unsigned long getTXbps_boot();  //get Transferred Bytes per second since startup

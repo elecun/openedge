@@ -1,29 +1,21 @@
 
 
 #include "system.hpp"
-// #include <cstdlib>
-// #include <unistd.h>
-// #include <cstdio>
-// #include <dirent.h>
-// #include <fstream>
-// #include <sys/types.h>
-// #include <csignal>
-// #include <cstring>
-// #include <netinet/in.h>
-// #include <sys/statvfs.h>
-// #include <sys/stat.h>
-// #include <pwd.h>
-// #include <thread>
 
 namespace oe::sys {
 
-    json system::summarize(){
-        json summarized;
+    // json system::summarize(){
+    //     json summarized;
 
-        //summarized["cpu"]["load1"] = 1;
-        summarized["network"] = _net_perf->measure();
+    //     //summarized["cpu"]["load1"] = 1;
+    //     summarized["network"] = _net_perf->measure();
 
-        return summarized;
+    //     return summarized;
+    // }
+
+    json system::getInfo(){
+        json data;
+        return data;
     }
 
     string system::get_os_version(){
@@ -33,6 +25,16 @@ namespace oe::sys {
             in >> v;
         in.close();
         return v;
+    }
+
+    json system::getCurrentResources(){
+        json data;
+        
+        data["cpu"] = _cpu->perform();
+        data["memory"] = _memory->perform();
+        data["network"] = _network->perform();
+        data["process"] = _process->perform("edge");
+        return data;
     }
 
 

@@ -24,23 +24,26 @@ namespace oe::sys {
 
     }; /* class */
 
-    class memory_perf : public memory {
-
-        public:
-            memory_perf(const char* procfile = "/proc/stat"):_profile(procfile){
-                
-            }
-            ~memory_perf() = default;
-
-
-        private:
-            const char* _profile { nullptr };
-
+    namespace perf {
         
+        class memory : public oe::sys::memory {
 
-    }; /* class */
+            public:
+                memory(const char* procfile = "/proc/stat"):_profile(procfile){
+                    
+                }
+                ~memory() = default;
 
-} /* namespace */
+                json perform(); //total memory resource measure
+
+
+            private:
+                const char* _profile { nullptr };
+
+            }; /* class */
+
+    } /* perf namespace */
+} /* sys namespace */
 
 #endif // for linux
 #endif //for header

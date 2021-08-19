@@ -14,9 +14,10 @@
 #include <fstream>
 #include <memory>
 
-#include "cpu.hpp"  // for CPU performance measure
+#include "cpu.hpp"      // for CPU performance measure
 #include "network.hpp"  //for network performance measure
 #include "memory.hpp"   //for memory performance measure
+#include "process.hpp"  //for specific process measure
 
 using namespace std;
 using json = nlohmann::json;
@@ -25,18 +26,22 @@ namespace oe::sys {
 
 class system : public oe::arch::singleton<system> {
 
-    //friend class oe::sys::perf::cpu_perf; 
-    friend class oe::sys::perf::network_perf;
-    //friend class oe::sys::perf::memory_perf;
+    friend class oe::sys::perf::cpu; 
+    friend class oe::sys::perf::network;
+    friend class oe::sys::perf::memory;
+    friend class oe::sys::perf::process;
 
     public:
         system(){
-            _net_perf = make_unique<perf::network_perf>("eth0", "/proc/net/dev");
+            _net = make_unique<perf::network>("eth0", "/proc/net/dev");
         }
         virtual ~system() = default;
 
-        /* return summarized measures */
-        json summarize();
+        /* return system information */
+        json getInfo();
+
+        /* return system resources use */
+        json getCurrentResources();
 
         /* get os version information */
         string get_os_version();
@@ -44,7 +49,10 @@ class system : public oe::arch::singleton<system> {
         private:
             //cpu_perf _cpu_perf;
             //memory_perf _mem_perf;
-            unique_ptr<perf::network_perf> _net_perf;
+            unique_ptr<perf::network> _network;
+            unique_ptr<perf::cpu> _cpu;
+            unique_ptr<perf::memory> _memory;
+            unique_ptr<perf::process> _process;
 
 
 

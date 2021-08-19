@@ -25,15 +25,18 @@ bool agwManageTask::configure(){
 
 void agwManageTask::execute(){
 
-    if(this->mqttConnector::is_connected()){
-        string msg = this_system->summarize().dump();
+    //1. periodically transmit the system resources use
+    if(this->mqttConnector::is_connected()) {
+        string msg = this_system->getCurrentResources().dump();
         this->mqttConnector::publish(nullptr, this->_mqtt_pub_topic.c_str(), msg.size(), msg.c_str(), 2, false);
     }
-    else{
+    else {
         if(const int rc = this->mqttConnector::reconnect_async()!=MOSQ_ERR_SUCCESS){
             console::warn("Reconnection failed({}) : {}", rc, mosqpp::strerror(rc));
         }
     }
+
+    //2. periodically transmit the CPU usage of openedge processes
     
 }
 

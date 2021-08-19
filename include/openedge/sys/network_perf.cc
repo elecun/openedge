@@ -34,7 +34,7 @@ namespace oe::sys::perf {
                     while((beg = line.find_first_not_of(delims, pos)) != std::string::npos)
                     {
                         pos = line.find_first_of(delims, beg + 1);
-                        line.substr(beg, pos - beg)
+                        line.substr(beg, pos - beg);
                         console::info("{}", line.substr(beg, pos - beg));
                     }
                 }

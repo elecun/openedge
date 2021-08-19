@@ -28,24 +28,25 @@ namespace oe::sys {
 
     }; /* class */
 
-    class cpu_perf : public cpu {
+    namespace perf {
+
+    class cpu : public oe::sys::cpu {
 
         public:
-            cpu_perf(const char* procfile = "/proc/stat"):_profile(procfile){
+            cpu(const char* procfile = "/proc/stat"):_profile(procfile){
 
             }
-            ~cpu_perf() = default;
+            ~cpu() = default;
 
             int get_nprocs() { return ::get_nprocs(); } /* return number of processors */
 
-
+            json perform(); //total cpu resource measure
 
         private:
             const char* _profile { nullptr };
 
-        
-
-    }; /* class */
+        }; /* class */
+    } /* perf namespace */
 
 } /* namespace */
 
