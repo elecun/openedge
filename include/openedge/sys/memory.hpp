@@ -24,7 +24,7 @@ namespace oe::sys {
 
     }; /* class */
 
-    namespace perf {
+    namespace stat {
         
         class memory : public oe::sys::memory {
 
@@ -34,7 +34,7 @@ namespace oe::sys {
                 }
                 ~memory() = default;
 
-                json perform(); //total memory resource measure
+                json stats(); //total memory resource measure
 
 
             private:

@@ -27,7 +27,7 @@ void agwManageTask::execute(){
 
     //1. periodically transmit the system resources use
     if(this->mqttConnector::is_connected()) {
-        string msg = this_system->getCurrentResources().dump();
+        string msg = this_system->getStats().dump();
         this->mqttConnector::publish(nullptr, this->_mqtt_pub_topic.c_str(), msg.size(), msg.c_str(), 2, false);
     }
     else {

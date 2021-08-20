@@ -30,14 +30,14 @@ namespace oe::sys {
 
     }; /* class */
 
-    namespace perf{
+    namespace stat {
 
         class process : public oe::sys::process {
             public:
                 explicit process();
                 ~process() = default;
 
-            json perform();                 //get all network performance
+            json stats(const char* proc);   /* get statistics on specific proc status */
 
         }; /* class */
     }

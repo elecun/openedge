@@ -28,7 +28,7 @@ namespace oe::sys {
 
     }; /* class */
 
-    namespace perf {
+    namespace stat {
 
     class cpu : public oe::sys::cpu {
 
@@ -40,7 +40,7 @@ namespace oe::sys {
 
             int get_nprocs() { return ::get_nprocs(); } /* return number of processors */
 
-            json perform(); //total cpu resource measure
+            json stats(); //total cpu resource measure
 
         private:
             const char* _profile { nullptr };

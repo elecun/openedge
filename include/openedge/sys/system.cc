@@ -4,36 +4,28 @@
 
 namespace oe::sys {
 
-    // json system::summarize(){
-    //     json summarized;
-
-    //     //summarized["cpu"]["load1"] = 1;
-    //     summarized["network"] = _net_perf->measure();
-
-    //     return summarized;
-    // }
 
     json system::getInfo(){
         json data;
         return data;
     }
 
-    string system::get_os_version(){
-        ifstream in("/proc/version_signature");
-        string v { "unrecognized" };
-        if(in.is_open())
-            in >> v;
-        in.close();
-        return v;
-    }
+    // string system::get_os_version(){
+    //     ifstream in("/proc/version_signature");
+    //     string v { "unrecognized" };
+    //     if(in.is_open())
+    //         in >> v;
+    //     in.close();
+    //     return v;
+    // }
 
-    json system::getCurrentResources(){
+    json system::getStats(){
         json data;
         
-        data["cpu"] = _cpu->perform();
-        data["memory"] = _memory->perform();
-        data["network"] = _network->perform();
-        data["process"] = _process->perform("edge");
+        data["cpu"] = _cpustat->stats();
+        data["memory"] = _memstat->stats();
+        data["network"] = _netstat->stats();
+        data["process"] = _procstat->stats("edge");
         return data;
     }
 
