@@ -1,7 +1,7 @@
 {
     "md5":"603239CAF2F774498037F944F5592F52",
     "info":{
-        "taskname":"pcan.mqtt.task",
+        "taskname":"fenet.task",
         "version":"0.0.1",
         "cpu_affinity":1,
         "cycle_ns":1000000000,
@@ -13,16 +13,27 @@
     },
     "configurations":{
         "mqtt":{
-            "broker":"192.168.100.71",
+            "broker":"192.168.3.105",
             "port":1883,
             "pub_topic":"aop/uvlc/sensor",
             "pub_qos":2,
             "sub_topic":["pcan.mqtt.task/sysctrl"],
             "keep_alive":60
         },
-        "pcan":{
-            "dataport":50000,
-            "acceptable":["0x600", "0x700", "0x701", "0x702", "0x703"]
+        "fenet":{
+            "parameter":{
+                "companyid":"LSIS-XGT",
+                "mode":"client",
+                "cpu_info":"xgb",
+                "slot_index":1,
+                "base_index":0,
+                "target_address":"192.168.1.11",
+                "target_port":2004
+            },
+            "read":{
+                "timeout_ns":500000000,
+                "address":"%MB400"
+            }
         }
     }
 }

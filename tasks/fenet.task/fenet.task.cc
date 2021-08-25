@@ -1,17 +1,17 @@
 
 
-#include "fenet.mqtt.task.hpp"
+#include "fenet.task.hpp"
 #include <openedge/log.hpp>
-#include "fenetservice.hpp" //fast ethernet service
+// #include "fenetservice.hpp" //fast ethernet service
 
 
 //static component instance that has only single instance
-static fenetMqttTask* _instance = nullptr;
-oe::core::task::runnable* create(){ if(!_instance) _instance = new fenetMqttTask(); return _instance; }
+static fenetTask* _instance = nullptr;
+oe::core::task::runnable* create(){ if(!_instance) _instance = new fenetTask(); return _instance; }
 void release(){ if(_instance){ delete _instance; _instance = nullptr; }}
 
 
-bool fenetMqttTask::configure(){
+bool fenetTask::configure(){
 
     //initialize mosquitto
     if(const int ret = mosqpp::lib_init()!=MOSQ_ERR_SUCCESS){
@@ -57,33 +57,37 @@ bool fenetMqttTask::configure(){
     } /* config for MQTT */
 
     if(config.find("fenet")!=config.end()){
-        json fenet_param = config["fenet"];
-        string _fenet_address { "127.0.0.1" };
-        int _fenet_port {0};
-        if(fenet_param.find("address")!=fenet_param.end()) _fenet_address = fenet_param["address"].get<string>();
-        if(fenet_param.find("port")!=fenet_param.end()) _fenet_port = fenet_param["port"].get<int>();
+        json fenet = config["fenet"];
+        if(fenet.find("parameter")!=fenet.end()){
+            json fenet_param = fenet["parameter"];
+            
+            if(fenet_param.find("target_address")!=fenet_param.end()) _target_address = fenet_param["target_address"].get<string>();
+            if(fenet_param.find("target_port")!=fenet_param.end()) _target_port = fenet_param["target_port"].get<int>();
 
-        console::info("> set FENET Address : {}", _fenet_address);
-        console::info("> set FENET Port : {}", _fenet_port);
+            console::info("> set FENET Address : {}", _target_address);
+            console::info("> set FENET Port : {}", _target_port);
+        }
 
         //create FENet Instance
-        _service = make_unique<oe::core::service>(new oe::support::FENetService(_fenet_address.c_str(), _fenet_port));
+        // _service = make_unique<oe::core::service>(new oe::support::FENetService(_fenet_address.c_str(), _fenet_port));
     }
 
     return true;
 }
 
-void fenetMqttTask::execute(){
-    if(_service->valid()){
-        using oe::support::FENetService;
-        FENetService* impl = dynamic_cast<FENetService*>(_service.get());
-        vector<unsigned char> raw = impl->block_read();
-    }
+void fenetTask::execute(){
+    // if(_service->valid()){
+    //     using oe::support::FENetService;
+    //     FENetService* impl = dynamic_cast<FENetService*>(_service.get());
+    //     vector<unsigned char> raw = impl->block_read();
+    // }
+
+    // _fenet->request();
 
 }
 
 
-void fenetMqttTask::cleanup(){
+void fenetTask::cleanup(){
 
     //MQTT connection close
     this->disconnect();
@@ -91,47 +95,47 @@ void fenetMqttTask::cleanup(){
     mosqpp::lib_cleanup();
 }
 
-void fenetMqttTask::pause(){
+void fenetTask::pause(){
 
 }
 
-void fenetMqttTask::resume(){
+void fenetTask::resume(){
 
 }
 
 
-void fenetMqttTask::on_connect(int rc){
+void fenetTask::on_connect(int rc){
     if(rc==MOSQ_ERR_SUCCESS)
         console::info("Successfully connected to MQTT Brocker({})", rc);
     else
         console::warn("MQTT Broker connection error : {}", rc);
 }
 
-void fenetMqttTask::on_disconnect(int rc){
+void fenetTask::on_disconnect(int rc){
 
 }
 
-void fenetMqttTask::on_publish(int mid){
+void fenetTask::on_publish(int mid){
     
 }
 
-void fenetMqttTask::on_message(const struct mosquitto_message* message){
+void fenetTask::on_message(const struct mosquitto_message* message){
     
 }
 
-void fenetMqttTask::on_subscribe(int mid, int qos_count, const int* granted_qos){
+void fenetTask::on_subscribe(int mid, int qos_count, const int* granted_qos){
     
 }
 
-void fenetMqttTask::on_unsubscribe(int mid){
+void fenetTask::on_unsubscribe(int mid){
 
 }
 
-void fenetMqttTask::on_log(int level, const char* str){
+void fenetTask::on_log(int level, const char* str){
 
 }
 
-void fenetMqttTask::on_error(){
+void fenetTask::on_error(){
 
 }
 

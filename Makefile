@@ -190,9 +190,9 @@ pcan.mqtt.task: $(BUILDDIR)pcan.mqtt.task.o
 $(BUILDDIR)pcan.mqtt.task.o: $(TASK_SOURCE_FILES)pcan.mqtt.task/pcan.mqtt.task.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
-fenet.mqtt.task: $(BUILDDIR)fenet.mqtt.task.o
-	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) -lczmq -lzmq -lmosquittopp -lmosquitto
-$(BUILDDIR)fenet.mqtt.task.o: $(TASK_SOURCE_FILES)fenet.mqtt.task/fenet.mqtt.task.cc
+fenet.task: $(BUILDDIR)fenet.task.o
+	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) -lmosquittopp -lmosquitto
+$(BUILDDIR)fenet.task.o: $(TASK_SOURCE_FILES)fenet.task/fenet.task.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
 dx3000.control.task: $(BUILDDIR)dx3000.control.task.o \

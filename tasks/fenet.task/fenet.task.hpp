@@ -1,25 +1,25 @@
 /**
- * @file    fenet.mqtt.task.hpp
- * @brief   LSIS PLC Fast Ethernet to MQTT
+ * @file    fenet.task.hpp
+ * @brief   LSIS PLC Fast Ethernet Read/Write Task
  * @author  Byunghun Hwang<bh.hwang@iae.re.kr>
  */
 
-#ifndef _OPENEDGE_FENET_MQTT_TASK_HPP_
-#define _OPENEDGE_FENET_MQTT_TASK_HPP_
+#ifndef _OPENEDGE_FENET_TASK_HPP_
+#define _OPENEDGE_FENET_TASK_HPP_
 
 #include <openedge/core.hpp>
 #include <3rdparty/mosquitto/cpp/mosquittopp.h>
 #include <memory>
-#include <fenetservice.hpp>
+// #include <fenetservice.hpp>
 
 using namespace oe;
 using namespace std;
 
-class fenetMqttTask : public oe::core::task::runnable, private mosqpp::mosquittopp {
+class fenetTask : public oe::core::task::runnable, private mosqpp::mosquittopp {
 
     public:
-        fenetMqttTask():mosqpp::mosquittopp(){};
-        virtual ~fenetMqttTask() = default;
+        fenetTask():mosqpp::mosquittopp(){};
+        virtual ~fenetTask() = default;
 
         //component common interface
         bool configure() override;
@@ -40,7 +40,12 @@ class fenetMqttTask : public oe::core::task::runnable, private mosqpp::mosquitto
 		void on_error() override;
 
     private:
-        unique_ptr<oe::core::service> _service; //Fast Ethernet Service
+        unique_ptr<oe::core::service> _fenet; //Fast Ethernet Service
+
+
+    private:    //for fenet
+        string _target_address { "127.0.0.1" };
+        int _target_port {0};
         
 
     private: //for mqtt
