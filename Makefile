@@ -228,6 +228,18 @@ $(BUILDDIR)agw.manage.task.o: $(TASK_SOURCE_FILES)agw.manage.task/agw.manage.tas
 $(BUILDDIR)agw.mqtt.o: $(TASK_SOURCE_FILES)agw.manage.task/agw.mqtt.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
+# nport udp task
+nport.udp.task: $(BUILDDIR)nport.udp.task.o
+	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS)
+$(BUILDDIR)nport.udp.task.o: $(TASK_SOURCE_FILES)nport.udp.task/nport.udp.task.cc
+	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
+# moxa io(iologik 1212 device) task
+moxa.io.task: $(BUILDDIR)moxa.io.task.o
+	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS)
+$(BUILDDIR)moxa.io.task.o: $(TASK_SOURCE_FILES)moxa.io.task/moxa.io.task.cc
+	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
 
 ############################ Services
 

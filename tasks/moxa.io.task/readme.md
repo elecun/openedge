@@ -1,0 +1,1 @@
+MOXA NPort 5232 Device의 UDP를 통해 통신 테스트
