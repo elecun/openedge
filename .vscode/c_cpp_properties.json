@@ -5,8 +5,8 @@
             "includePath": [
                 "${workspaceFolder}/**",
                 "${workspaceFolder}/include",
-                "${workspaceFolder}/support",
-                "/usr/local/include"
+                "/usr/local/include",
+                "${workspaceFolder}/include/3rdparty"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/g++",

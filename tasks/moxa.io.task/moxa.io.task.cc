@@ -101,38 +101,16 @@ bool moxaIoTask::configure(){
 
 void moxaIoTask::execute(){
 
+    //1. read 
     if(_modbus){
-        // unsigned short di_value = 0x0000;
-        //unsigned char di_value[2] = {0x00, 0x00};
-        unsigned short di_value = 0x000c;
+        unsigned short di_value = 0x0000;
         if(modbus_read_input_registers(_modbus, 48, 1, &di_value)!=-1){
-            console::info("{:x}", di_value);
+            
         }
         else{
             console::info("Modbus Error : {}", modbus_strerror(errno));
         }
-
-        // if(modbus_read_input_registers(_modbus, 30048, 1, &di_value))
-        //     console::info("0x{0:x}", di_value);
     }
-
-    // const int max_length = 4096;
-    // unsigned char* buffer = new unsigned char[max_length];
-    // ::memset(buffer, 0, sizeof(char)*max_length);
-
-    // do {
-    //     int len = ::recvfrom(_sockfd, (char*)buffer, max_length, MSG_DONTWAIT, nullptr, nullptr);
-    //     if(len>0){
-    //         console::info("{:x }", buffer);
-
-    //         ::memset(buffer, 0, sizeof(char)*max_length);
-    //     }
-    //     else
-    //         break;
-    // }
-    // while(1);
-    
-    // delete []buffer;
 
 }
 
