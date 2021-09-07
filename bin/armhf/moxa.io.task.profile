@@ -12,11 +12,25 @@
         }
     },
     "configurations":{
-        "network":{
-            "udp_port":4002
+        "device":{
+            "name":"MOXA ioLogik e1212",
+            "ip":"192.168.100.164",
+            "di":[
+                    {"name":"proximity_1", "pin":2},
+                    {"name":"proximity_2", "pin":3},
+                    {"name":"mc_wipe_once", "pin":4},
+                    {"name":"mc_wipe_forward", "pin":5},
+                    {"name":"mc_wipe_reverse", "pin":6},
+                    {"name":"mc_wipe_stop", "pin":7}
+                ],
+            "do":[
+                    {"name":"working", "pin":0},
+                    {"name":"over_current", "pin":1}
+            ]
+
         },
-        "io":{
-            "di":[2, 3]
+        "network":{
+            "dataport":4002
         }
     }
 }

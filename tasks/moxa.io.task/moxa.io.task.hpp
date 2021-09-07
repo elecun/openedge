@@ -37,10 +37,16 @@ class moxaIoTask : public oe::core::task::runnable {
         void resume() override;
 
     private: //for UDP
-        int _dataport {4001};
+        int _dataport = 4002;
         long _sockfd = -1;
         long _sock_optval = 1;
         sockaddr_in _sockname;
+
+    private: //for io
+        string _devicename = "unknown";
+        string _deviceip = "127.0.0.1";
+        map<string, int> di_container;
+        map<string, int> do_container;
 
 };
 
