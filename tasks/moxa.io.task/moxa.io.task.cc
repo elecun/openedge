@@ -102,9 +102,18 @@ bool moxaIoTask::configure(){
 void moxaIoTask::execute(){
 
     if(_modbus){
-        unsigned short di_value = 0x0000;
-        if(modbus_read_input_registers(_modbus, 30048, 2, &di_value))
-            console::info("0x{0:x}", di_value);
+        // unsigned short di_value = 0x0000;
+        //unsigned char di_value[2] = {0x00, 0x00};
+        unsigned short di_value = 0x000c;
+        if(modbus_read_input_registers(_modbus, 48, 1, &di_value)!=-1){
+            console::info("{:x}", di_value);
+        }
+        else{
+            console::info("Modbus Error : {}", modbus_strerror(errno));
+        }
+
+        // if(modbus_read_input_registers(_modbus, 30048, 1, &di_value))
+        //     console::info("0x{0:x}", di_value);
     }
 
     // const int max_length = 4096;
