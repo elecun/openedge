@@ -16,7 +16,8 @@
             "name":"MOXA ioLogik e1212",
             "ip":"192.168.100.164",
             "modbus_tcp":{
-                "di_address"
+                "di_address":48,
+                "do_address":48
             },
             "di":[
                     {"name":"proximity_1", "pin":2},

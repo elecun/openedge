@@ -45,6 +45,8 @@ class moxaIoTask : public oe::core::task::runnable {
     private: //for io
         string _devicename = "unknown";
         string _deviceip = "127.0.0.1";
+        int _di_address = 0;
+        
         map<string, int> di_container;
         map<string, int> do_container;
 
