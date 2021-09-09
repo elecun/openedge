@@ -59,10 +59,10 @@ class mqttConnector : public mosqpp::mosquittopp {
 
 };
 
-class moxaIoServiceTask : public oe::core::task::runnable, protected mqttConnector {
+class moxaIoServiceTask : public oe::core::task::runnable, protected mosqpp::mosquittopp {
 
     public:
-        moxaIoServiceTask(){};
+        moxaIoServiceTask():mosqpp::mosquittopp(){};
         virtual ~moxaIoServiceTask() = default;
 
         //component common interface
@@ -73,13 +73,24 @@ class moxaIoServiceTask : public oe::core::task::runnable, protected mqttConnect
         void resume() override;
 
     private:
-        void on_message(const struct mosquitto_message* message) override;
+        void on_connect(int rc) override;
+		void on_disconnect(int rc) override;
+		void on_publish(int mid) override;
+		virtual void on_message(const struct mosquitto_message* message) override;
+		void on_subscribe(int mid, int qos_count, const int* granted_qos) override;
+		void on_unsubscribe(int mid) override;
+		void on_log(int level, const char* str) override;
+		void on_error() override;
 
-    private: //for UDP
-        int _dataport = 4002;
-        long _sockfd = -1;
-        long _sock_optval = 1;
-        sockaddr_in _sockname;
+    private: //for mqtt
+        string _manage_topic {""};
+        bool _connected = false;
+        string _broker_address { "127.0.0.1" };
+        int _broker_port {1883};
+        string _mqtt_pub_topic = {"undefined"};
+        int _mqtt_pub_qos = 2;
+        int _mqtt_keep_alive = {60};
+        vector<string> _mqtt_sub_topics;
 
     private: //for io
         string _devicename = "unknown";
@@ -89,9 +100,9 @@ class moxaIoServiceTask : public oe::core::task::runnable, protected mqttConnect
         int _modbus_port = 502;
         
         map<int, string> _di_container;
-        map<int, bool> _di_values;
+        map<string, bool> _di_values;
         map<int, string> _do_container;
-        map<int, bool> _do_values;
+        map<string, bool> _do_values;
 
 };
 

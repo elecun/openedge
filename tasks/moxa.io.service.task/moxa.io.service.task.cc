@@ -17,40 +17,6 @@ bool moxaIoServiceTask::configure(){
     //1. read configurations
     json config = json::parse(getProfile()->get("configurations"));
 
-    //1.1 network configuration
-    if(config.find("network")!=config.end()){
-
-        json network = config["network"];
-        if(network.find("dataport")!=network.end()) _dataport = network["dataport"].get<int>();
-        console::info("> Data Port(UDP) : {}", _dataport);
-
-        //start UDP Server
-        if((_sockfd = ::socket(PF_INET, SOCK_DGRAM, 0))<0){
-            console::error("UDP Socket creation failed");
-            return false;
-        }
-
-        //setting socket options
-        if(setsockopt(_sockfd, SOL_SOCKET, SO_REUSEADDR, &_sock_optval, sizeof(_sock_optval))<0){
-            console::warn("socket error using setsockopt (SOL_SOCKET, SO_REUSEADDR");
-        }
-        if(setsockopt(_sockfd, SOL_IP, IP_RECVERR, &_sock_optval, sizeof(int))<0){
-            console::warn("socket error using setsockopt (SOL_IP, IP_RECVERR)");
-        }
-
-        //config socket
-        ::memset((char*)&_sockname, 0, sizeof(struct sockaddr_in));
-        _sockname.sin_family = AF_INET;
-        _sockname.sin_port = htons(_dataport);
-        _sockname.sin_addr.s_addr = htonl(INADDR_ANY);
-
-        //socket binding
-        if(::bind(_sockfd, (const struct sockaddr*)&_sockname, sizeof(_sockname))<0){
-            console::error("unable to bind socket");
-            return false;
-        }
-    }
-
     // 2. Device configuration
     if(config.find("device")!=config.end()){
         json device = config["device"];
@@ -64,7 +30,7 @@ bool moxaIoServiceTask::configure(){
             for(json::iterator itr=_di.begin(); itr!=_di.end(); ++itr){
                 console::info("Config DI : {}({})", (*itr)["name"].get<std::string>(), (*itr)["pin"].get<int>());
                 _di_container.insert(make_pair((*itr)["pin"].get<int>(), (*itr)["name"].get<std::string>()));
-                _di_values.insert(make_pair((*itr)["pin"].get<int>(), false));
+                _di_values.insert(make_pair((*itr)["name"].get<std::string>(), false));
             }
         }
 
@@ -74,7 +40,7 @@ bool moxaIoServiceTask::configure(){
             for(json::iterator itr=_do.begin(); itr!=_do.end(); ++itr){
                 console::info("Config DO : {}({})", (*itr)["name"].get<std::string>(), (*itr)["pin"].get<int>());
                 _do_container.insert(make_pair((*itr)["pin"].get<int>(), (*itr)["name"].get<std::string>()));
-                _do_values.insert(make_pair((*itr)["pin"].get<int>(), false));
+                _do_values.insert(make_pair((*itr)["name"].get<std::string>(), false));
             }
         }
 
@@ -112,39 +78,91 @@ bool moxaIoServiceTask::configure(){
         }
     }
 
+    //3. MQTT Config
+    if(config.find("mqtt")!=config.end()){
+        json mqtt_param = config["mqtt"];
+        if(mqtt_param.find("broker")!=mqtt_param.end()) _broker_address = mqtt_param["broker"].get<string>();
+        if(mqtt_param.find("port")!=mqtt_param.end()) _broker_port = mqtt_param["port"].get<int>();
+        if(mqtt_param.find("pub_topic")!=mqtt_param.end()) _mqtt_pub_topic = mqtt_param["pub_topic"].get<string>();
+        if(mqtt_param.find("pub_qos")!=mqtt_param.end()) _mqtt_pub_qos = mqtt_param["pub_qos"].get<int>();
+        if(mqtt_param.find("keep_alive")!=mqtt_param.end()) _mqtt_keep_alive = mqtt_param["keep_alive"].get<int>();
+        if(mqtt_param.find("sub_topic")!=mqtt_param.end()){
+            for(json::iterator itr=mqtt_param["sub_topic"].begin(); itr!=mqtt_param["sub_topic"].end(); ++itr){
+                _mqtt_sub_topics.emplace_back(*itr);
+            }
+        } 
+
+        console::info("> set MQTT Broker : {}", _broker_address);
+        console::info("> set MQTT Port : {}", _broker_port);
+        console::info("> set MQTT Pub. Topic : {}", _mqtt_pub_topic);
+        console::info("> set MQTT Pub. QoS : {}", _mqtt_pub_qos);
+        console::info("> set MQTT Keep-alive : {}", _mqtt_keep_alive);
+
+        //connect to MQTT broker
+        if(const int conret = this->connect_async(_broker_address.c_str(), _broker_port, _mqtt_keep_alive)==MOSQ_ERR_SUCCESS){
+            for(string topic:_mqtt_sub_topics){
+                this->subscribe(nullptr, topic.c_str(), 2);
+                console::info("> set MQTT Sub. Topic : {}", topic);
+            }
+                
+            if(const int ret = this->loop_start()!=MOSQ_ERR_SUCCESS)
+                console::warn("({}){}", ret, mosqpp::strerror(ret));
+        }
+        else
+            console::warn("({}){}", conret, mosqpp::strerror(conret));
+    }
+
     return true;
 }
 
 void moxaIoServiceTask::execute(){
 
-    //1. read 
+    //1. read IO from modbus
     if(_modbus){
         unsigned short val_di = 0x0000;
+        map<string, bool> _di_values_temp;
         if(modbus_read_input_registers(_modbus, 48, 1, &val_di)!=-1){
-            console::info("DI Value : {}", val_di);
             for(auto& di:_di_container){
-                _di_values[di.first] = static_cast<bool>(val_di&(0x0001<<di.first));
-                console::info("DI({}) : {}", di.first, _di_values[di.first]);
+                _di_values_temp[di.second] = static_cast<bool>(val_di&(0x0001<<di.first));
             }
         }
         else{
             console::info("Modbus Error : {}", modbus_strerror(errno));
         }
+
+        // check the value changed
+        for(auto& di:_di_container){
+            if(_di_values_temp[di.second]==_di_values[di.second]){
+                _di_values_temp.erase(_di_values_temp.find(di.second));
+            }
+            else{
+                _di_values[di.second] = _di_values_temp[di.second]; //update
+            }
+        }
+
+        //publish changed
+        if(_di_values_temp.size()){
+            json pub;
+            pub["di"] = _di_values_temp;
+            string str_pub = pub.dump();
+            this->publish(nullptr, _mqtt_pub_topic.c_str(), strlen(str_pub.c_str()), str_pub.c_str(), 2, false);
+            console::info("publish : {}", str_pub);
+        }
     }
-
 }
-
 
 void moxaIoServiceTask::cleanup(){
 
+    // 1. modbus conenction close
     if(_modbus){
         modbus_close(_modbus);
         modbus_free(_modbus);
     }
 
-    //UDP connection close
-    shutdown(_sockfd, SHUT_RDWR);
-	::close(_sockfd);
+    // 2. mqtt connection close
+    this->disconnect();
+    this->loop_stop();
+    mosqpp::lib_cleanup();
 }
 
 void moxaIoServiceTask::pause(){
@@ -155,14 +173,81 @@ void moxaIoServiceTask::resume(){
 
 }
 
+void moxaIoServiceTask::on_connect(int rc){
+    if(rc==MOSQ_ERR_SUCCESS)
+        console::info("Successfully connected to MQTT Brocker({})", rc);
+    else
+        console::warn("MQTT Broker connection error : {}", rc);
+}
+
+void moxaIoServiceTask::on_disconnect(int rc){
+
+}
+
+void moxaIoServiceTask::on_publish(int mid){
+
+}
+
 void moxaIoServiceTask::on_message(const struct mosquitto_message* message){
     #define MAX_BUFFER_SIZE     4096
+
     char* buffer = new char[MAX_BUFFER_SIZE];
     memset(buffer, 0, sizeof(char)*MAX_BUFFER_SIZE);
     memcpy(buffer, message->payload, sizeof(char)*message->payloadlen);
     string strmsg = buffer;
-
-    console::info("message : {}", strmsg);
-
     delete []buffer;
+
+    // try{
+    //     json msg = json::parse(strmsg);
+    //     DKM_DX3000* motor = dynamic_cast<DKM_DX3000*>(_controller);
+    //     if(!motor)
+    //         return;
+
+    //     //command
+    //     if(msg.find("command")!=msg.end()){
+    //         string command = msg["command"].get<string>();
+    //         std::transform(command.begin(), command.end(), command.begin(),[](unsigned char c){ return std::tolower(c); }); //to lower case
+
+    //         if(_dx_command.count(command)){
+    //             switch(_dx_command[command]){
+    //                 case 1: { //move cw
+    //                     motor->move(DKM_DX3000::DIRECTION::CW);
+    //                     console::info("Motor moves forward(CW)");
+    //                 } break;
+    //                 case 2: { //move ccw
+    //                     motor->move(DKM_DX3000::DIRECTION::CCW);
+    //                     console::info("Motor moves backward(CCW)");
+    //                 } break;
+    //                 case 3: { //stop
+    //                     motor->stop();
+    //                 } break;
+    //                 case 4: { //rpm
+    //                     int value = msg["value"].get<int>();
+    //                     motor->set_rpm((unsigned short)value);
+    //                     console::info("motor rpm set : {}", value);
+    //                 } break;
+    //             }
+    //         }
+    //     }
+    // }
+    // catch(json::exception& e){
+    //     console::error("Message Error : {}", e.what());
+    // }
+    console::info("mqtt data({}) : {}",message->payloadlen, strmsg);
+}
+
+void moxaIoServiceTask::on_subscribe(int mid, int qos_count, const int* granted_qos){
+    
+}
+
+void moxaIoServiceTask::on_unsubscribe(int mid){
+
+}
+
+void moxaIoServiceTask::on_log(int level, const char* str){
+
+}
+
+void moxaIoServiceTask::on_error(){
+
 }

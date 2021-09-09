@@ -236,7 +236,7 @@ $(BUILDDIR)nport.udp.task.o: $(TASK_SOURCE_FILES)nport.udp.task/nport.udp.task.c
 
 # moxa io(iologik 1212 device) task
 moxa.io.service.task: $(BUILDDIR)moxa.io.service.task.o
-	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) -lmodbus
+	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) -lmodbus -lmosquittopp -lmosquitto
 $(BUILDDIR)moxa.io.service.task.o: $(TASK_SOURCE_FILES)moxa.io.service.task/moxa.io.service.task.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 

@@ -4,7 +4,7 @@
         "taskname":"agw.manage.task",
         "version":"0.0.1",
         "cpu_affinity":1,
-        "cycle_ns":1000000000,
+        "cycle_ns":100000000,
         "policy":{
             "check_jitter":true,
             "check_overrun":true,
@@ -34,8 +34,13 @@
             ]
 
         },
-        "network":{
-            "dataport":4002
+        "mqtt":{
+            "broker":"192.168.3.105",
+            "port":1883,
+            "pub_topic":"aop/uvlc/io_1",
+            "pub_qos":2,
+            "sub_topic":["aop/sys/control"],
+            "keep_alive":60
         }
     }
 }
