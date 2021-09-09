@@ -17,7 +17,8 @@
             "ip":"192.168.100.164",
             "modbus_tcp":{
                 "di_address":48,
-                "do_address":48
+                "do_address":32,
+                "port":502
             },
             "di":[
                     {"name":"proximity_1", "pin":2},

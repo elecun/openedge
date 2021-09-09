@@ -32,7 +32,7 @@ endif
 
 # OS
 ifeq ($(OS),Linux) #for Linux
-	LDFLAGS = -Wl,--export-dynamic -Wl,-rpath,$(LD_LIBRARY_PATH)
+	LDFLAGS = -Wl,--export-dynamic -Wl,-rpath=$(LD_LIBRARY_PATH)
 	LDLIBS = -pthread -lrt -ldl -lm -lczmq -lzmq
 	GTEST_LDLIBS = -lgtest
 endif
@@ -235,9 +235,9 @@ $(BUILDDIR)nport.udp.task.o: $(TASK_SOURCE_FILES)nport.udp.task/nport.udp.task.c
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
 # moxa io(iologik 1212 device) task
-moxa.io.task: $(BUILDDIR)moxa.io.task.o
+moxa.io.service.task: $(BUILDDIR)moxa.io.service.task.o
 	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) -lmodbus
-$(BUILDDIR)moxa.io.task.o: $(TASK_SOURCE_FILES)moxa.io.task/moxa.io.task.cc
+$(BUILDDIR)moxa.io.service.task.o: $(TASK_SOURCE_FILES)moxa.io.service.task/moxa.io.service.task.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
 

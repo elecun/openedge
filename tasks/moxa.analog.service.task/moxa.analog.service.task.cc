@@ -1,18 +1,18 @@
 
-#include "moxa.io.task.hpp"
+#include "moxa.analog.service.task.hpp"
 #include <openedge/log.hpp>
 #include <3rdparty/libmodbus/modbus.h>
 
 
 //static component instance that has only single instance
-static moxaIoTask* _instance = nullptr;
-oe::core::task::runnable* create(){ if(!_instance) _instance = new moxaIoTask(); return _instance; }
+static moxaIoServiceTask* _instance = nullptr;
+oe::core::task::runnable* create(){ if(!_instance) _instance = new moxaIoServiceTask(); return _instance; }
 void release(){ if(_instance){ delete _instance; _instance = nullptr; }}
 
 //static instance
 static modbus_t* _modbus = nullptr;
 
-bool moxaIoTask::configure(){
+bool moxaIoServiceTask::configure(){
 
     //1. read configurations
     json config = json::parse(getProfile()->get("configurations"));
@@ -63,7 +63,8 @@ bool moxaIoTask::configure(){
             json _di = device["di"];
             for(json::iterator itr=_di.begin(); itr!=_di.end(); ++itr){
                 console::info("Config DI : {}({})", (*itr)["name"].get<std::string>(), (*itr)["pin"].get<int>());
-                di_container.insert(make_pair((*itr)["name"].get<std::string>(), (*itr)["pin"].get<int>()));
+                _di_container.insert(make_pair((*itr)["pin"].get<int>(), (*itr)["name"].get<std::string>()));
+                _di_values.insert(make_pair((*itr)["pin"].get<int>(), false));
             }
         }
 
@@ -72,40 +73,59 @@ bool moxaIoTask::configure(){
             json _do = device["do"];
             for(json::iterator itr=_do.begin(); itr!=_do.end(); ++itr){
                 console::info("Config DO : {}({})", (*itr)["name"].get<std::string>(), (*itr)["pin"].get<int>());
-                do_container.insert(make_pair((*itr)["name"].get<std::string>(), (*itr)["pin"].get<int>()));
+                _do_container.insert(make_pair((*itr)["pin"].get<int>(), (*itr)["name"].get<std::string>()));
+                _do_values.insert(make_pair((*itr)["pin"].get<int>(), false));
             }
         }
-    }
 
-    //3. config modbus
-    if(!_modbus){
-        _modbus = modbus_new_tcp(_deviceip.c_str(), 502);
-        if(!_modbus){
-            console::error("Unable to create the modbus context");
-            return false;
-        }
+        //2.3 modbus config
+        if(device.find("modbus_tcp")!=device.end()){
+            json modbus_tcp = device["modbus_tcp"];
+            if(modbus_tcp.find("port")!=modbus_tcp.end()){
+                _modbus_port = modbus_tcp["port"].get<int>();
+                console::info("> Modbus TCP Port : {}", _modbus_port);
+            }
+            if(modbus_tcp.find("di_address")!=modbus_tcp.end()){
+                _di_address = modbus_tcp["di_address"].get<int>();
+                console::info("> Modbus DI Address : {}", _di_address);
+            }
+                
+            if(modbus_tcp.find("do_address")!=modbus_tcp.end()){
+                _do_address = modbus_tcp["do_address"].get<int>();
+                console::info("> Modbus DO Address : {}", _do_address);
+            }
 
-        if(modbus_set_slave(_modbus, 1) == -1){
-            console::warn("Modbus Set slave failed");
-        }
+            // modbus connection
+            if(!_modbus){
+                _modbus = modbus_new_tcp(_deviceip.c_str(), _modbus_port);
+                if(!_modbus){
+                    console::error("Unable to create the modbus context");
+                    return false;
+                }
 
-        if(modbus_connect(_modbus)==-1){
-            console::error("Device connection failed : {}", modbus_strerror(errno));
-            modbus_free(_modbus);
-            return false;
+                if(modbus_connect(_modbus)==-1){
+                    console::error("Device connection failed : {}", modbus_strerror(errno));
+                    modbus_free(_modbus);
+                    return false;
+                }
+            }
         }
     }
 
     return true;
 }
 
-void moxaIoTask::execute(){
+void moxaIoServiceTask::execute(){
 
     //1. read 
     if(_modbus){
-        unsigned short di_value = 0x0000;
-        if(modbus_read_input_registers(_modbus, 48, 1, &di_value)!=-1){
-            
+        unsigned short val_di = 0x0000;
+        if(modbus_read_input_registers(_modbus, 48, 1, &val_di)!=-1){
+            console::info("DI Value : {}", val_di);
+            for(auto& di:_di_container){
+                _di_values[di.first] = static_cast<bool>(val_di&(0x0001<<di.first));
+                console::info("DI({}) : {}", di.first, _di_values[di.first]);
+            }
         }
         else{
             console::info("Modbus Error : {}", modbus_strerror(errno));
@@ -115,7 +135,7 @@ void moxaIoTask::execute(){
 }
 
 
-void moxaIoTask::cleanup(){
+void moxaIoServiceTask::cleanup(){
 
     if(_modbus){
         modbus_close(_modbus);
@@ -127,11 +147,11 @@ void moxaIoTask::cleanup(){
 	close(_sockfd);
 }
 
-void moxaIoTask::pause(){
+void moxaIoServiceTask::pause(){
 
 }
 
-void moxaIoTask::resume(){
+void moxaIoServiceTask::resume(){
 
 }
 
