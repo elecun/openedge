@@ -17,10 +17,11 @@
             "ip":"192.168.100.164",
             "modbus_tcp":{
                 "di_address":48,
-                "do_address":32,
+                "do_address":0,
                 "port":502
             },
             "di":[
+                    {"name":"emergency_reset", "pin":1},
                     {"name":"proximity_1", "pin":2},
                     {"name":"proximity_2", "pin":3},
                     {"name":"mc_wipe_once", "pin":4},
@@ -29,17 +30,18 @@
                     {"name":"mc_wipe_stop", "pin":7}
                 ],
             "do":[
-                    {"name":"working", "pin":0},
-                    {"name":"over_current", "pin":1}
+                    {"name":"emergency", "pin":0},
+                    {"name":"working", "pin":1},
+                    {"name":"over_current", "pin":2}
             ]
 
         },
         "mqtt":{
             "broker":"192.168.3.105",
             "port":1883,
-            "pub_topic":"aop/uvlc/io_1",
+            "pub_topic":"aop/uvlc/2/io",
             "pub_qos":2,
-            "sub_topic":["aop/sys/control"],
+            "sub_topic":["aop/sys/control", "aop/uvlc/2/control"],
             "keep_alive":60
         }
     }

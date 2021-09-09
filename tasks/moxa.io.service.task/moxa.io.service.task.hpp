@@ -16,6 +16,7 @@
 #include <string>
 #include <openedge/net/udpserver.h>
 #include <3rdparty/mosquitto/cpp/mosquittopp.h>
+#include <3rdparty/libmodbus/modbus.h>
 
 namespace zmq {
     #include <czmq.h>
@@ -23,41 +24,6 @@ namespace zmq {
 
 using namespace oe;
 using namespace std;
-
-class mqttConnector : public mosqpp::mosquittopp {
-    public:
-        mqttConnector():mosqpp::mosquittopp(){
-
-        }
-        virtual ~mqttConnector() = default;
-
-        bool open(json param);
-        void close();
-
-        bool is_connected() const { return _connected; }
-        int reconnect();
-
-        //MQTT Callback functions
-        void on_connect(int rc) override;
-		void on_disconnect(int rc) override;
-		void on_publish(int mid) override;
-		virtual void on_message(const struct mosquitto_message* message) override;
-		void on_subscribe(int mid, int qos_count, const int* granted_qos) override;
-		void on_unsubscribe(int mid) override;
-		void on_log(int level, const char* str) override;
-		void on_error() override;
-
-    protected:
-        string _manage_topic {""};
-        bool _connected = false;
-        string _broker_address { "127.0.0.1" };
-        int _broker_port {1883};
-        string _mqtt_pub_topic = {"undefined"};
-        int _mqtt_pub_qos = 2;
-        int _mqtt_keep_alive = {60};
-        vector<string> _mqtt_sub_topics;
-
-};
 
 class moxaIoServiceTask : public oe::core::task::runnable, protected mosqpp::mosquittopp {
 
@@ -82,6 +48,9 @@ class moxaIoServiceTask : public oe::core::task::runnable, protected mosqpp::mos
 		void on_log(int level, const char* str) override;
 		void on_error() override;
 
+    private: //for modbus
+        modbus_t* _modbus = nullptr;
+
     private: //for mqtt
         string _manage_topic {""};
         bool _connected = false;
@@ -103,6 +72,12 @@ class moxaIoServiceTask : public oe::core::task::runnable, protected mosqpp::mos
         map<string, bool> _di_values;
         map<int, string> _do_container;
         map<string, bool> _do_values;
+
+    private: //for mqtt service command
+        map<string, int> _service_cmd {
+            {"set_on", 1}, // with name defined in profile
+            {"set_off", 2} // with name defined in profile
+        };
 
 };
 

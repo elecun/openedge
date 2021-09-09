@@ -1,16 +1,12 @@
 
 #include "moxa.io.service.task.hpp"
 #include <openedge/log.hpp>
-#include <3rdparty/libmodbus/modbus.h>
 
 
 //static component instance that has only single instance
 static moxaIoServiceTask* _instance = nullptr;
 oe::core::task::runnable* create(){ if(!_instance) _instance = new moxaIoServiceTask(); return _instance; }
 void release(){ if(_instance){ delete _instance; _instance = nullptr; }}
-
-//static instance
-static modbus_t* _modbus = nullptr;
 
 bool moxaIoServiceTask::configure(){
 
@@ -74,6 +70,8 @@ bool moxaIoServiceTask::configure(){
                     modbus_free(_modbus);
                     return false;
                 }
+                else
+                    console::info("Successfully connected to Modbus TCP Server");
             }
         }
     }
@@ -127,7 +125,7 @@ void moxaIoServiceTask::execute(){
             }
         }
         else{
-            console::info("Modbus Error : {}", modbus_strerror(errno));
+            console::error("Modbus Error : {}", modbus_strerror(errno));
         }
 
         // check the value changed
@@ -140,7 +138,7 @@ void moxaIoServiceTask::execute(){
             }
         }
 
-        //publish changed
+        //publish changed di value
         if(_di_values_temp.size()){
             json pub;
             pub["di"] = _di_values_temp;
@@ -157,11 +155,12 @@ void moxaIoServiceTask::cleanup(){
     if(_modbus){
         modbus_close(_modbus);
         modbus_free(_modbus);
+        console::info("Modbus connection closed");
     }
 
     // 2. mqtt connection close
-    this->disconnect();
-    this->loop_stop();
+    this->mosqpp::mosquittopp::disconnect();
+    this->mosqpp::mosquittopp::loop_stop();
     mosqpp::lib_cleanup();
 }
 
@@ -175,7 +174,7 @@ void moxaIoServiceTask::resume(){
 
 void moxaIoServiceTask::on_connect(int rc){
     if(rc==MOSQ_ERR_SUCCESS)
-        console::info("Successfully connected to MQTT Brocker({})", rc);
+        console::info("Successfully connected to MQTT Broker({})", rc);
     else
         console::warn("MQTT Broker connection error : {}", rc);
 }
@@ -189,50 +188,80 @@ void moxaIoServiceTask::on_publish(int mid){
 }
 
 void moxaIoServiceTask::on_message(const struct mosquitto_message* message){
-    #define MAX_BUFFER_SIZE     4096
 
+    if(!_modbus){
+        console::warn("Cannot handle the IO Device(Device instance is null");
+        return;
+    }
+    
+    #define MAX_BUFFER_SIZE     4096
     char* buffer = new char[MAX_BUFFER_SIZE];
     memset(buffer, 0, sizeof(char)*MAX_BUFFER_SIZE);
     memcpy(buffer, message->payload, sizeof(char)*message->payloadlen);
     string strmsg = buffer;
     delete []buffer;
 
-    // try{
-    //     json msg = json::parse(strmsg);
-    //     DKM_DX3000* motor = dynamic_cast<DKM_DX3000*>(_controller);
-    //     if(!motor)
-    //         return;
+    try {
+        json msg = json::parse(strmsg);
+        if(msg.find("command")!=msg.end()){
+            string command = msg["command"].get<string>();
+            std::transform(command.begin(), command.end(), command.begin(),[](unsigned char c){ return std::tolower(c); }); //to lower case
 
-    //     //command
-    //     if(msg.find("command")!=msg.end()){
-    //         string command = msg["command"].get<string>();
-    //         std::transform(command.begin(), command.end(), command.begin(),[](unsigned char c){ return std::tolower(c); }); //to lower case
+            if(_service_cmd.count(command)){
+                switch(_service_cmd[command]){
 
-    //         if(_dx_command.count(command)){
-    //             switch(_dx_command[command]){
-    //                 case 1: { //move cw
-    //                     motor->move(DKM_DX3000::DIRECTION::CW);
-    //                     console::info("Motor moves forward(CW)");
-    //                 } break;
-    //                 case 2: { //move ccw
-    //                     motor->move(DKM_DX3000::DIRECTION::CCW);
-    //                     console::info("Motor moves backward(CCW)");
-    //                 } break;
-    //                 case 3: { //stop
-    //                     motor->stop();
-    //                 } break;
-    //                 case 4: { //rpm
-    //                     int value = msg["value"].get<int>();
-    //                     motor->set_rpm((unsigned short)value);
-    //                     console::info("motor rpm set : {}", value);
-    //                 } break;
-    //             }
-    //         }
-    //     }
-    // }
-    // catch(json::exception& e){
-    //     console::error("Message Error : {}", e.what());
-    // }
+                    // set on
+                    case 1: {   //set on
+                        if(msg.find("name")!=msg.end()){
+                            string name = msg["name"].get<string>();
+                            std::transform(name.begin(), name.end(), name.begin(),[](unsigned char c){ return std::tolower(c); }); //to lower case
+                            for(auto itr = _do_container.begin(); itr != _do_container.end(); ++itr){
+                                if(itr->second==name){
+                                    if(modbus_write_bit(_modbus, _do_address+itr->first, 1)==-1){
+                                        console::error("Modbus Error : {}", modbus_strerror(errno));
+                                    }
+                                    else{
+                                        json pub;
+                                        pub["do"][name] = true;
+                                        string str_pub = pub.dump();
+                                        this->publish(nullptr, _mqtt_pub_topic.c_str(), strlen(str_pub.c_str()), str_pub.c_str(), 2, false);
+                                        console::info("DO Published : {}", str_pub);
+                                    }
+                                }
+                            }
+                        }
+                    } break;
+
+                    //set off
+                    case 2: {
+                        if(msg.find("name")!=msg.end()){
+                            string name = msg["name"].get<string>();
+                            std::transform(name.begin(), name.end(), name.begin(),[](unsigned char c){ return std::tolower(c); }); //to lower case
+                            for(auto itr = _do_container.begin(); itr != _do_container.end(); ++itr){
+                                if(itr->second==name){
+                                    if(modbus_write_bit(_modbus, _do_address+itr->first, 0)==-1){
+                                        console::error("Modbus Error : {}", modbus_strerror(errno));
+                                    }
+                                    else{
+                                        json pub;
+                                        pub["do"][name] = true;
+                                        string str_pub = pub.dump();
+                                        this->publish(nullptr, _mqtt_pub_topic.c_str(), strlen(str_pub.c_str()), str_pub.c_str(), 2, false);
+                                        console::info("DO Published : {}", str_pub);
+                                    }
+                                }
+                            }
+                        }
+                    } break;
+                }
+            }
+
+        }
+    }
+    catch(json::exception& e){
+        console::error("Message Error : {}", e.what());
+    }
+
     console::info("mqtt data({}) : {}",message->payloadlen, strmsg);
 }
 
