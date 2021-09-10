@@ -194,68 +194,47 @@ void moxaIoServiceTask::on_message(const struct mosquitto_message* message){
         return;
     }
     
+    //1. receive payload
     #define MAX_BUFFER_SIZE     4096
     char* buffer = new char[MAX_BUFFER_SIZE];
     memset(buffer, 0, sizeof(char)*MAX_BUFFER_SIZE);
     memcpy(buffer, message->payload, sizeof(char)*message->payloadlen);
-    string strmsg = buffer;
+    string topic(message->topic);
+    string strmsg(buffer);
     delete []buffer;
 
+    //2. chekc acceptable topics
+    bool valid = false;
+    for(string t:_mqtt_sub_topics){
+        if(t==topic){
+            valid = true;
+            break;
+        }
+    }
+    if(!valid){
+        console::warn("<{}> topic is not acceptable", topic);
+        return;
+    }
+
+    //3. parse message payload
     try {
         json msg = json::parse(strmsg);
-        if(msg.find("command")!=msg.end()){
-            string command = msg["command"].get<string>();
-            std::transform(command.begin(), command.end(), command.begin(),[](unsigned char c){ return std::tolower(c); }); //to lower case
 
-            if(_service_cmd.count(command)){
-                switch(_service_cmd[command]){
+        if(msg.find("target")!=msg.end()){
+            string target = msg["target"].get<string>();
+            if(target==_devicename){
+                if(msg.find("command")!=msg.end()){
+                    string command = msg["command"].get<string>();
+                    std::transform(command.begin(), command.end(), command.begin(),[](unsigned char c){ return std::tolower(c); }); //to lower case
 
-                    // set on
-                    case 1: {   //set on
-                        if(msg.find("name")!=msg.end()){
-                            string name = msg["name"].get<string>();
-                            std::transform(name.begin(), name.end(), name.begin(),[](unsigned char c){ return std::tolower(c); }); //to lower case
-                            for(auto itr = _do_container.begin(); itr != _do_container.end(); ++itr){
-                                if(itr->second==name){
-                                    if(modbus_write_bit(_modbus, _do_address+itr->first, 1)==-1){
-                                        console::error("Modbus Error : {}", modbus_strerror(errno));
-                                    }
-                                    else{
-                                        json pub;
-                                        pub["do"][name] = true;
-                                        string str_pub = pub.dump();
-                                        this->publish(nullptr, _mqtt_pub_topic.c_str(), strlen(str_pub.c_str()), str_pub.c_str(), 2, false);
-                                        console::info("DO Published : {}", str_pub);
-                                    }
-                                }
-                            }
+                    if(_service_cmd.count(command)){
+                        switch(_service_cmd[command]){
+                            case 1: { service_set_on(msg); } break;    //set_on service commnad
+                            case 2: { service_set_off(msg); } break;   //set_off service command
                         }
-                    } break;
-
-                    //set off
-                    case 2: {
-                        if(msg.find("name")!=msg.end()){
-                            string name = msg["name"].get<string>();
-                            std::transform(name.begin(), name.end(), name.begin(),[](unsigned char c){ return std::tolower(c); }); //to lower case
-                            for(auto itr = _do_container.begin(); itr != _do_container.end(); ++itr){
-                                if(itr->second==name){
-                                    if(modbus_write_bit(_modbus, _do_address+itr->first, 0)==-1){
-                                        console::error("Modbus Error : {}", modbus_strerror(errno));
-                                    }
-                                    else{
-                                        json pub;
-                                        pub["do"][name] = true;
-                                        string str_pub = pub.dump();
-                                        this->publish(nullptr, _mqtt_pub_topic.c_str(), strlen(str_pub.c_str()), str_pub.c_str(), 2, false);
-                                        console::info("DO Published : {}", str_pub);
-                                    }
-                                }
-                            }
-                        }
-                    } break;
+                    }
                 }
             }
-
         }
     }
     catch(json::exception& e){
@@ -279,4 +258,47 @@ void moxaIoServiceTask::on_log(int level, const char* str){
 
 void moxaIoServiceTask::on_error(){
 
+}
+
+
+void moxaIoServiceTask::service_set_on(json& msg){
+    if(msg.find("name")!=msg.end()){
+        string name = msg["name"].get<string>();
+        std::transform(name.begin(), name.end(), name.begin(),[](unsigned char c){ return std::tolower(c); }); //to lower case
+        for(auto itr = _do_container.begin(); itr != _do_container.end(); ++itr){
+            if(itr->second==name){
+                if(modbus_write_bit(_modbus, _do_address+itr->first, 1)==-1){
+                    console::error("Modbus Error : {}", modbus_strerror(errno));
+                }
+                else{
+                    json pub;
+                    pub["do"][name] = true;
+                    string str_pub = pub.dump();
+                    this->publish(nullptr, _mqtt_pub_topic.c_str(), strlen(str_pub.c_str()), str_pub.c_str(), 2, false);
+                    console::info("DO Published : {}", str_pub);
+                }
+            }
+        }
+    }
+}
+
+void moxaIoServiceTask::service_set_off(json& msg){
+    if(msg.find("name")!=msg.end()){
+        string name = msg["name"].get<string>();
+        std::transform(name.begin(), name.end(), name.begin(),[](unsigned char c){ return std::tolower(c); }); //to lower case
+        for(auto itr = _do_container.begin(); itr != _do_container.end(); ++itr){
+            if(itr->second==name){
+                if(modbus_write_bit(_modbus, _do_address+itr->first, 0)==-1){
+                    console::error("Modbus Error : {}", modbus_strerror(errno));
+                }
+                else{
+                    json pub;
+                    pub["do"][name] = true;
+                    string str_pub = pub.dump();
+                    this->publish(nullptr, _mqtt_pub_topic.c_str(), strlen(str_pub.c_str()), str_pub.c_str(), 2, false);
+                    console::info("DO Published : {}", str_pub);
+                }
+            }
+        }
+    }
 }

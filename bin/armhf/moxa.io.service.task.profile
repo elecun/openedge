@@ -13,7 +13,8 @@
     },
     "configurations":{
         "device":{
-            "name":"MOXA ioLogik e1212",
+            "name":"DCRIO02",
+            "product":"MOXA ioLogik E1212",
             "ip":"192.168.100.164",
             "modbus_tcp":{
                 "di_address":48,
@@ -41,7 +42,7 @@
             "port":1883,
             "pub_topic":"aop/uvlc/2/io",
             "pub_qos":2,
-            "sub_topic":["aop/sys/control", "aop/uvlc/2/control"],
+            "sub_topic":["aop/sys/control", "aop/uvlc/io/control"],
             "keep_alive":60
         }
     }

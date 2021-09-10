@@ -48,6 +48,10 @@ class moxaIoServiceTask : public oe::core::task::runnable, protected mosqpp::mos
 		void on_log(int level, const char* str) override;
 		void on_error() override;
 
+    private:   //services
+        void service_set_on(json& msg);  //set_on mqtt command
+        void service_set_off(json& msg); //set_off mqtt command
+
     private: //for modbus
         modbus_t* _modbus = nullptr;
 
