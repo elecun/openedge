@@ -115,8 +115,9 @@ bool moxaIoServiceTask::configure(){
 
 void moxaIoServiceTask::execute(){
 
-    //1. read IO from modbus
     if(_modbus){
+
+        //1. read IO from modbus
         unsigned short val_di = 0x0000;
         map<string, bool> _di_values_temp;
         if(modbus_read_input_registers(_modbus, 48, 1, &val_di)!=-1){
@@ -146,6 +147,26 @@ void moxaIoServiceTask::execute(){
             this->publish(nullptr, _mqtt_pub_topic.c_str(), strlen(str_pub.c_str()), str_pub.c_str(), 2, false);
             console::info("publish : {}", str_pub);
         }
+
+        // read do values
+        unsigned char val_do = 0x00;
+        if(modbus_read_bits(_modbus, _do_address, 1, &val_do)!=-1){
+            console::info("DO :{}", val_do);
+            for(auto& d:_do_container){
+                _do_values[d.second] = static_cast<bool>(val_do&(0x0001<<d.first));
+            }
+        }
+
+        //emergency process
+        if(_do_values["emergency"] && _di_values["emergency_reset"]){
+            
+        }
+
+
+        //di value processing
+        //if(modbus_write_bit(_modbus, _do_address+itr->first, 0)==-1){
+        // if(modbus_read_bits(_modbus, _do_address+_do_container["emergency"])
+        // if(_di_values["emergency_reset"] && )
     }
 }
 

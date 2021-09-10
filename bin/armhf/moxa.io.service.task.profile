@@ -4,7 +4,7 @@
         "taskname":"agw.manage.task",
         "version":"0.0.1",
         "cpu_affinity":1,
-        "cycle_ns":100000000,
+        "cycle_ns":300000000,
         "policy":{
             "check_jitter":true,
             "check_overrun":true,
