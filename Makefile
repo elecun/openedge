@@ -113,6 +113,8 @@ $(BUILDDIR)system.o:	$(INCLUDE_FILES)openedge/sys/system.cc
 # common files for task
 $(BUILDDIR)dkm_dx3000.o:	$(INCLUDE_FILES)/support/device/dkm_dx3000.cc
 							$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+$(BUILDDIR)dkm_dx3000_native.o:	$(INCLUDE_FILES)/support/device/dkm_dx3000_native.cc
+							$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
 
 ############################ Tasks
@@ -199,6 +201,12 @@ dx3000.control.task: $(BUILDDIR)dx3000.control.task.o \
 				$(BUILDDIR)dkm_dx3000.o 
 	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) -lczmq -lzmq -lmosquittopp -lmosquitto -lmodbus
 $(BUILDDIR)dx3000.control.task.o: $(TASK_SOURCE_FILES)dx3000.control.task/dx3000.control.task.cc
+	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
+dx3000.udp.control.task: $(BUILDDIR)dx3000.udp.control.task.o \
+				$(BUILDDIR)dkm_dx3000_native.o 
+	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) -lczmq -lzmq -lmosquittopp -lmosquitto
+$(BUILDDIR)dx3000.udp.control.task.o: $(TASK_SOURCE_FILES)dx3000.udp.control.task/dx3000.udp.control.task.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
 

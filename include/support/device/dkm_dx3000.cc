@@ -9,6 +9,9 @@ static modbus_t* _modbus = nullptr;
 
 namespace oe::support {
 
+    DKM_DX3000::DKM_DX3000(int id){
+
+    }
 
     DKM_DX3000::DKM_DX3000(int id, oe::device::bus* bus)
     :oe::device:: controller(id) {
