@@ -114,6 +114,7 @@ void pcanMqttTask::execute(){
             this->process_pcan_data(&rec_msg);
 
             ::memset(buffer, 0, sizeof(char)*max_length);
+            ::usleep(10000);
         }
         else
             break;
@@ -206,7 +207,7 @@ void pcanMqttTask::process_pcan_data(S_LAN_MSG* p_msg){
 
     string msg = can_data.dump();
     this->publish(nullptr, _mqtt_pub_topic.c_str(), strlen(msg.c_str()), msg.c_str(), 2, false); //data publish
-    console::info(msg);
+    //console::info(msg);
 }
 
 int pcanMqttTask::parse_pcan_data(unsigned char * p_buff, int len, S_LAN_MSG *p_msg){

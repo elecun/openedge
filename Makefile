@@ -62,8 +62,11 @@ INSTALL_DIR = /usr/local/bin/
 openedge:	$(BUILDDIR)openedge.o
 			$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -o $(BUILDDIR)$@ $^ $(LDLIBS)
 
-oeware_test:	$(BUILDDIR)oeware_test.o
-				$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -o $(BUILDDIR)$@ $^ $(LDLIBS) $(GTEST_LDLIBS)
+# utiltiy
+testptp: $(BUILDDIR)testptp.o
+		$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -o $(BUILDDIR)$@ $^ $(LDLIBS) 
+$(BUILDDIR)testptp.o:	$(SOURCE_FILES)experimental/testptp/testptp.cc
+					$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
 # edge service engine
 edge:	$(BUILDDIR)edge.o \
@@ -279,7 +282,7 @@ $(BUILDDIR)modbus.rtu.service.o: $(SERVICE_SOURCE_FILES)modbus.rtu.service/modbu
 
 all : edge tasks services
 
-test : oeware_test
+test : testptp
 tasks : simple.task simple2.task aop10t.pilot.task sys.mdns.manage.task qual.dmr.task sysmon.task procmanage.task uvlc.ag.control.task pcan.mqtt.task agsys.manage.task uvlc.contro.task fenet.mqtt.task
 services : lsis.fenet.connector.service mongodb.connector.service mqtt.publisher.service modbus.rtu.service
 deploy : FORCE
