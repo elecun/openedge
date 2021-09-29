@@ -1,6 +1,6 @@
 /**
  * @file    uvlc.control.task.hpp
- * @brief   UVC Lamp Cleaning System Control Task
+ * @brief   UVC Lamp Cleaning System Control Task (IO Interface & Control Logic)
  * @author  Byunghun Hwang<bh.hwang@iae.re.kr>
  */
 
@@ -13,27 +13,26 @@
 #include <vector>
 #include <map>
 
-namespace zmq {
-    #include <czmq.h>
-}
-
 using namespace oe;
 using namespace std;
 
 class uvlcControlTask : public oe::core::task::runnable, private mosqpp::mosquittopp {
 
+    /* UVLC control mode */
     enum class CONTROLMODE : int { 
         MANUAL = 0,
         AUTOMATIC = 1
     };
 
-    enum class LIMIT_STATE : int { 
+    /* UVLC limit active check by Proximity sensors */
+    enum class LIMIT_ACTIVE : int { 
         NO_LIMIT_ACTIVE = 0,
-        L_LIMIT_ACTIVE = 1,
-        R_LIMIT_ACTIVE = 2,
+        FORWARD_LIMIT_ACTIVE = 1,
+        REVERSE_LIMIT_ACTIVE = 2,
         BOTH_LIMIT_ACTIVE = 3
     };
 
+    /* system working state */
     enum class UVLC_WORK_STATE : int {
         READY = 0,
         WORK = 1
@@ -66,7 +65,6 @@ class uvlcControlTask : public oe::core::task::runnable, private mosqpp::mosquit
 
 
     private:
-        zmq::zsock_t* _push = nullptr;
         CONTROLMODE _control_mode {CONTROLMODE::MANUAL };
 
         unsigned short _limit_id = 0x600;
