@@ -114,7 +114,6 @@ void pcanMqttTask::execute(){
             this->process_pcan_data(&rec_msg);
 
             ::memset(buffer, 0, sizeof(char)*max_length);
-            ::usleep(10000);
         }
         else
             break;
