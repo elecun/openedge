@@ -1,6 +1,6 @@
 /**
  * @file    agw.manage.task.hpp
- * @brief   Application gateway management task
+ * @brief   Application gateway management task (monitoring resource)
  * @author  Byunghun Hwang<bh.hwang@iae.re.kr>
  */
 
@@ -49,7 +49,7 @@ class mqttConnector : public mosqpp::mosquittopp {
 };
 
 // task class
-class agwManageTask : public oe::core::task::runnable, protected mqttConnector {
+class agwManageTask : public oe::core::task::runnable, private mosqpp::mosquittopp  {
 
     public:
         agwManageTask() = default;
@@ -63,7 +63,14 @@ class agwManageTask : public oe::core::task::runnable, protected mqttConnector {
         void resume() override;
 
     private:
-        void on_message(const struct mosquitto_message* message) override;
+        void on_connect(int rc) override;
+		void on_disconnect(int rc) override;
+		void on_publish(int mid) override;
+		void on_message(const struct mosquitto_message* message);
+		void on_subscribe(int mid, int qos_count, const int* granted_qos);
+		void on_unsubscribe(int mid) override;
+		void on_log(int level, const char* str) override;
+		void on_error() override;
 
 };
 

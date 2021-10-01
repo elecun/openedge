@@ -18,6 +18,7 @@ bool agwManageTask::configure(){
         if(!this->mqttConnector::open(mqtt_param)){
             console::info("MQTT connector open failed");
         }
+        
     }
 
     return true;
