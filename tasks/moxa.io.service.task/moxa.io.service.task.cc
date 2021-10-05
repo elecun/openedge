@@ -8,12 +8,10 @@ static moxaIoServiceTask* _instance = nullptr;
 oe::core::task::runnable* create(){ if(!_instance) _instance = new moxaIoServiceTask(); return _instance; }
 void release(){ if(_instance){ delete _instance; _instance = nullptr; }}
 
-bool moxaIoServiceTask::configure(){
+/* read device configuration file */
+bool moxaIoServiceTask::read_device_config(json& config){
 
-    //1. read configurations
-    json config = json::parse(getProfile()->get("configurations"));
-
-    // 2. Device configuration
+    // 1. Device configuration
     if(config.find("device")!=config.end()){
         json device = config["device"];
         _devicename = device["name"].get<string>();
@@ -74,9 +72,16 @@ bool moxaIoServiceTask::configure(){
                     console::info("Successfully connected to Modbus TCP Server");
             }
         }
+        else
+            return false;
     }
+    else
+        return false;
 
-    //3. MQTT Config
+    return true;
+}
+
+bool moxaIoServiceTask::read_mqtt_config(json& config){
     if(config.find("mqtt")!=config.end()){
         json mqtt_param = config["mqtt"];
         if(mqtt_param.find("broker")!=mqtt_param.end()) _broker_address = mqtt_param["broker"].get<string>();
@@ -113,60 +118,49 @@ bool moxaIoServiceTask::configure(){
     return true;
 }
 
+bool moxaIoServiceTask::configure(){
+
+    //1. read configurations
+    json config = json::parse(getProfile()->get("configurations"));
+
+    //2. read device configuration
+    read_device_config(config);
+
+    //3. read mqtt configuration
+    read_mqtt_config(config);
+
+    return true;
+}
+
 void moxaIoServiceTask::execute(){
 
     if(_modbus){
-
-        //1. read IO from modbus
+        //1. read DI data from modbus
         unsigned short val_di = 0x0000;
-        map<string, bool> _di_values_temp;
-        if(modbus_read_input_registers(_modbus, 48, 1, &val_di)!=-1){
-            for(auto& di:_di_container){
-                _di_values_temp[di.second] = static_cast<bool>(val_di&(0x0001<<di.first));
+        if(modbus_read_input_registers(_modbus, _di_address, 1, &val_di)!=-1){
+            for(auto& d:_di_container){
+                _di_values[d.second] = static_cast<bool>(val_di&(0x0001<<d.first));
             }
         }
         else{
             console::error("Modbus Error : {}", modbus_strerror(errno));
         }
 
-        // check the value changed
-        for(auto& di:_di_container){
-            if(_di_values_temp[di.second]==_di_values[di.second]){
-                _di_values_temp.erase(_di_values_temp.find(di.second));
-            }
-            else{
-                _di_values[di.second] = _di_values_temp[di.second]; //update
-            }
-        }
-
-        //publish changed di value
-        if(_di_values_temp.size()){
-            json pub;
-            pub["di"] = _di_values_temp;
-            string str_pub = pub.dump();
-            this->publish(nullptr, _mqtt_pub_topic.c_str(), strlen(str_pub.c_str()), str_pub.c_str(), 2, false);
-            console::info("publish : {}", str_pub);
-        }
-
-        // read do values
+        //2. read DO data from modbus
         unsigned char val_do = 0x00;
         if(modbus_read_bits(_modbus, _do_address, 1, &val_do)!=-1){
             console::info("DO :{}", val_do);
             for(auto& d:_do_container){
-                _do_values[d.second] = static_cast<bool>(val_do&(0x0001<<d.first));
+                _do_values[d.second] = static_cast<bool>(val_do&(0x01<<d.first));
             }
         }
 
-        //emergency process
-        if(_do_values["emergency"] && _di_values["emergency_reset"]){
-            
-        }
-
-
-        //di value processing
-        //if(modbus_write_bit(_modbus, _do_address+itr->first, 0)==-1){
-        // if(modbus_read_bits(_modbus, _do_address+_do_container["emergency"])
-        // if(_di_values["emergency_reset"] && )
+        //3. publish DI & DO data
+        json pubdata;
+        pubdata["di"] = _di_values;
+        pubdata["do"] = _do_values;
+        string str_pubdata = pubdata.dump();
+        console::info("publish : {}", str_pubdata);
     }
 }
 

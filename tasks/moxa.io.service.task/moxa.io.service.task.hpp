@@ -18,10 +18,6 @@
 #include <3rdparty/mosquitto/cpp/mosquittopp.h>
 #include <3rdparty/libmodbus/modbus.h>
 
-namespace zmq {
-    #include <czmq.h>
-}
-
 using namespace oe;
 using namespace std;
 
@@ -31,7 +27,7 @@ class moxaIoServiceTask : public oe::core::task::runnable, protected mosqpp::mos
         moxaIoServiceTask():mosqpp::mosquittopp(){};
         virtual ~moxaIoServiceTask() = default;
 
-        //component common interface
+        /* common component interface */
         bool configure() override;
         void execute() override;
         void cleanup() override;
@@ -39,14 +35,22 @@ class moxaIoServiceTask : public oe::core::task::runnable, protected mosqpp::mos
         void resume() override;
 
     private:
-        void on_connect(int rc) override;
-		void on_disconnect(int rc) override;
-		void on_publish(int mid) override;
+        virtual void on_connect(int rc) override;
+		virtual void on_disconnect(int rc) override;
+		virtual void on_publish(int mid) override;
 		virtual void on_message(const struct mosquitto_message* message) override;
-		void on_subscribe(int mid, int qos_count, const int* granted_qos) override;
-		void on_unsubscribe(int mid) override;
-		void on_log(int level, const char* str) override;
-		void on_error() override;
+		virtual void on_subscribe(int mid, int qos_count, const int* granted_qos) override;
+		virtual void on_unsubscribe(int mid) override;
+		virtual void on_log(int level, const char* str) override;
+		virtual void on_error() override;
+
+    private:
+        /* internal service function */
+        void set(const char* di_name, bool act);    //act true : on, false : off
+        void get();
+
+        bool read_device_config(json& config);
+        bool read_mqtt_config(json& config);
 
     private:   //services
         void service_set_on(json& msg);  //set_on mqtt command
