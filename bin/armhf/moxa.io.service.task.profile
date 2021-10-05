@@ -18,7 +18,7 @@
             "ip":"192.168.99.163",
             "modbus_tcp":{
                 "di_address":48,
-                "do_address":0,
+                "do_address":32,
                 "port":502
             },
             "di":[

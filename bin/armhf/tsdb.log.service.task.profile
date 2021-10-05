@@ -15,16 +15,10 @@
         "mqtt":{
             "broker":"192.168.3.105",
             "port":1883,
-            "pub_topic":"aop/uvlc/motor",
+            "pub_topic":"aop/log",
             "pub_qos":2,
-            "sub_topic":["aop/sys/control", "aop/uvlc/motor/control"],
+            "sub_topic":["aop/sys/control", "aop/log"],
             "keep_alive":60
-        },
-        "dx3000":{
-            "default_rpm":1000,
-            "port":4002,
-            "target":"192.168.100.166",
-            "slave_id":1
         }
     }
 }

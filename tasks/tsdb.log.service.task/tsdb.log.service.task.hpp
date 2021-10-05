@@ -16,32 +16,11 @@
 using namespace oe;
 using namespace std;
 
-class uvlcControlTask : public oe::core::task::runnable, private mosqpp::mosquittopp {
-
-    /* UVLC control mode */
-    enum class CONTROLMODE : int { 
-        MANUAL = 0,
-        AUTOMATIC = 1
-    };
-
-    /* UVLC limit active check by Proximity sensors */
-    enum class LIMIT_ACTIVE : int { 
-        NO_LIMIT_ACTIVE = 0,
-        FORWARD_LIMIT_ACTIVE = 1,
-        REVERSE_LIMIT_ACTIVE = 2,
-        BOTH_LIMIT_ACTIVE = 3
-    };
-
-    /* system working state */
-    enum class UVLC_WORK_STATE : int {
-        READY = 0,
-        WORK = 1
-    };
-
+class tsdbLogServiceTask : public oe::core::task::runnable, private mosqpp::mosquittopp {
 
     public:
-        uvlcControlTask():mosqpp::mosquittopp(){};
-        virtual ~uvlcControlTask() = default;
+        tsdbLogServiceTask():mosqpp::mosquittopp(){};
+        virtual ~tsdbLogServiceTask() = default;
 
         //common interface
         bool configure() override;
@@ -61,18 +40,8 @@ class uvlcControlTask : public oe::core::task::runnable, private mosqpp::mosquit
 		virtual void on_log(int level, const char* str) override;
 		virtual void on_error() override;
 
-        void setmode(CONTROLMODE mode);
-
 
     private:
-        CONTROLMODE _control_mode {CONTROLMODE::MANUAL };
-
-        unsigned short _limit_id = 0x600;
-        map<string, unsigned short> _intensity_id;
-        unsigned char _limit_value = 0xc0;    //limit sensor value
-        map<unsigned short, float> _intensity_value;
-        float _intensity_threshold = 0.0;
-
         string _mqtt_broker {"127.0.0.1"};
         int _mqtt_port {1883};
         string _mqtt_pub_topic = {"undefined"};

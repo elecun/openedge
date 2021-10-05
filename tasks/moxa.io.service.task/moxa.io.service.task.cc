@@ -24,7 +24,7 @@ bool moxaIoServiceTask::read_device_config(json& config){
             for(json::iterator itr=_di.begin(); itr!=_di.end(); ++itr){
                 console::info("Config DI : {}({})", (*itr)["name"].get<std::string>(), (*itr)["pin"].get<int>());
                 _di_container.insert(make_pair((*itr)["pin"].get<int>(), (*itr)["name"].get<std::string>()));
-                _di_values.insert(make_pair((*itr)["name"].get<std::string>(), false));
+                _di_value_container.insert(make_pair((*itr)["name"].get<std::string>(), false));
             }
         }
 
@@ -34,7 +34,7 @@ bool moxaIoServiceTask::read_device_config(json& config){
             for(json::iterator itr=_do.begin(); itr!=_do.end(); ++itr){
                 console::info("Config DO : {}({})", (*itr)["name"].get<std::string>(), (*itr)["pin"].get<int>());
                 _do_container.insert(make_pair((*itr)["pin"].get<int>(), (*itr)["name"].get<std::string>()));
-                _do_values.insert(make_pair((*itr)["name"].get<std::string>(), false));
+                _do_value_container.insert(make_pair((*itr)["name"].get<std::string>(), false));
             }
         }
 
@@ -135,32 +135,37 @@ bool moxaIoServiceTask::configure(){
 void moxaIoServiceTask::execute(){
 
     if(_modbus){
-        //1. read DI data from modbus
-        unsigned short val_di = 0x0000;
-        if(modbus_read_input_registers(_modbus, _di_address, 1, &val_di)!=-1){
+        //1. read DI data
+        if(modbus_read_input_registers(_modbus, _di_address, 1, &_di_values)!=-1){
             for(auto& d:_di_container){
-                _di_values[d.second] = static_cast<bool>(val_di&(0x0001<<d.first));
+                _di_value_container[d.second] = static_cast<bool>(_di_values&(0x0001<<d.first));
             }
         }
         else{
             console::error("Modbus Error : {}", modbus_strerror(errno));
         }
 
-        //2. read DO data from modbus
-        unsigned char val_do = 0x00;
-        if(modbus_read_bits(_modbus, _do_address, 1, &val_do)!=-1){
-            console::info("DO :{}", val_do);
+        // 2. read DO data
+        if(modbus_read_registers(_modbus, _do_address, 1, &_do_values)!=-1){
             for(auto& d:_do_container){
-                _do_values[d.second] = static_cast<bool>(val_do&(0x01<<d.first));
+                _do_value_container[d.second] = static_cast<bool>(_do_values&(0x0001<<d.first));
             }
         }
+        else{
+            console::error("Modbus Error : {}", modbus_strerror(errno));
+        }
+
 
         //3. publish DI & DO data
         json pubdata;
-        pubdata["di"] = _di_values;
-        pubdata["do"] = _do_values;
+        pubdata["di"] = _di_value_container;
+        pubdata["do"] = _do_value_container;
         string str_pubdata = pubdata.dump();
+        this->publish(nullptr, _mqtt_pub_topic.c_str(), strlen(str_pubdata.c_str()), str_pubdata.c_str(), 2, false);
+        
         console::info("publish : {}", str_pubdata);
+
+        
     }
 }
 
@@ -218,39 +223,34 @@ void moxaIoServiceTask::on_message(const struct mosquitto_message* message){
     string strmsg(buffer);
     delete []buffer;
 
-    //2. chekc acceptable topics
-    bool valid = false;
-    for(string t:_mqtt_sub_topics){
-        if(t==topic){
-            valid = true;
-            break;
-        }
-    }
-    if(!valid){
-        console::warn("<{}> topic is not acceptable", topic);
-        return;
-    }
+    
 
-    //3. parse message payload
+    //2. parse message payload
     try {
         json msg = json::parse(strmsg);
 
-        if(msg.find("target")!=msg.end()){
-            string target = msg["target"].get<string>();
-            if(target==_devicename){
-                if(msg.find("command")!=msg.end()){
-                    string command = msg["command"].get<string>();
-                    std::transform(command.begin(), command.end(), command.begin(),[](unsigned char c){ return std::tolower(c); }); //to lower case
-
-                    if(_service_cmd.count(command)){
-                        switch(_service_cmd[command]){
-                            case 1: { service_set_on(msg); } break;    //set_on service commnad
-                            case 2: { service_set_off(msg); } break;   //set_off service command
-                        }
-                    }
-                }
+        if(!topic.compare("aop/uvlc/1/io/control")){
+            if(msg.find("DO")!=msg.end()){
+                set_DO(msg["DO"].get<unsigned short>());
             }
         }
+
+        // if(msg.find("target")!=msg.end()){
+        //     string target = msg["target"].get<string>();
+        //     if(target==_devicename){
+        //         if(msg.find("command")!=msg.end()){
+        //             string command = msg["command"].get<string>();
+        //             std::transform(command.begin(), command.end(), command.begin(),[](unsigned char c){ return std::tolower(c); }); //to lower case
+
+        //             if(_service_cmd.count(command)){
+        //                 switch(_service_cmd[command]){
+        //                     case 1: { service_set_on(msg); } break;    //set_on service commnad
+        //                     case 2: { service_set_off(msg); } break;   //set_off service command
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
     }
     catch(json::exception& e){
         console::error("Message Error : {}", e.what());
@@ -315,5 +315,20 @@ void moxaIoServiceTask::service_set_off(json& msg){
                 }
             }
         }
+    }
+}
+
+void moxaIoServiceTask::set_DO(unsigned short value){
+    if(_modbus){
+        if(modbus_write_registers(_modbus, _do_address, 1, &value)!=-1){
+            
+        }
+        else {
+            console::error("Modbus Error : {}", modbus_strerror(errno));
+        }
+
+    }
+    else {
+        console::error("Unable to use MODBUS");
     }
 }

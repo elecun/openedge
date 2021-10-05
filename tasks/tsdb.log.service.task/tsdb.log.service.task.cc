@@ -1,14 +1,14 @@
 
-#include "uvlc.control.task.hpp"
+#include "tsdb.log.service.task.hpp"
 #include <openedge/log.hpp>
 
 //static component instance that has only single instance
-static uvlcControlTask* _instance = nullptr;
-oe::core::task::runnable* create(){ if(!_instance) _instance = new uvlcControlTask(); return _instance; }
+static tsdbLogServiceTask* _instance = nullptr;
+oe::core::task::runnable* create(){ if(!_instance) _instance = new tsdbLogServiceTask(); return _instance; }
 void release(){ if(_instance){ delete _instance; _instance = nullptr; }}
 
 
-bool uvlcControlTask::configure(){
+bool tsdbLogServiceTask::configure(){
 
     //initialize mosquitto
     if(const int ret = mosqpp::lib_init()!=MOSQ_ERR_SUCCESS){
@@ -52,33 +52,11 @@ bool uvlcControlTask::configure(){
         else
             console::warn("({}){}", conret, mosqpp::strerror(conret));
     }
-
-    //read uvlc configuration from profile
-    if(config.find("uvlc")!=config.end()){
-        json uvlc_param = config["uvlc"];
-        if(uvlc_param.find("limit_sensor")!=uvlc_param.end()){
-            string id = uvlc_param["limit_sensor"].get<string>();
-            _limit_id = std::stoul(id.c_str(), nullptr, 16);
-            console::info("> set UVLC Limit Sensor CAN ID : 0x{:x}", _limit_id);
-        }
-
-        if(uvlc_param.find("intensity_sensor")!=uvlc_param.end()){
-            for(json::iterator itr=uvlc_param["intensity_sensor"].begin(); itr!=uvlc_param["intensity_sensor"].end(); ++itr){
-                string value = itr->get<string>();
-                _intensity_id[value] = (unsigned short)std::stoul(value.c_str(), nullptr, 16);
-                console::info("> set UVLC Intensity Sensor CAN ID : 0x{:x}", _intensity_id[value]);
-            }
-        }
-
-        if(uvlc_param.find("intensity_threshold")!=uvlc_param.end()) { _intensity_threshold = uvlc_param["intensity_threshold"].get<float>(); }
-        console::info("> set UVLC Intensity Threshold : {}", _intensity_threshold);
-
-    }
     
     return true;
 }
 
-void uvlcControlTask::execute(){
+void tsdbLogServiceTask::execute(){
     static LIMIT_STATE _limit_state = LIMIT_STATE::NO_LIMIT_ACTIVE;
     static UVLC_WORK_STATE _uvlc_state = UVLC_WORK_STATE::READY;
 
@@ -121,7 +99,7 @@ void uvlcControlTask::execute(){
     
 }
 
-void uvlcControlTask::cleanup(){
+void tsdbLogServiceTask::cleanup(){
     json cmd;
     cmd["command"] = "stop";
     string msg = cmd.dump();
@@ -133,30 +111,30 @@ void uvlcControlTask::cleanup(){
     mosqpp::lib_cleanup();
 }
 
-void uvlcControlTask::pause(){
+void tsdbLogServiceTask::pause(){
 
 }
 
-void uvlcControlTask::resume(){
+void tsdbLogServiceTask::resume(){
 
 }
 
-void uvlcControlTask::on_connect(int rc){
+void tsdbLogServiceTask::on_connect(int rc){
     if(rc==MOSQ_ERR_SUCCESS)
         console::info("Successfully connected to MQTT Brocker({})", rc);
     else
         console::warn("MQTT Broker connection error : {}", rc);
 }
 
-void uvlcControlTask::on_disconnect(int rc){
+void tsdbLogServiceTask::on_disconnect(int rc){
 
 }
 
-void uvlcControlTask::on_publish(int mid){
+void tsdbLogServiceTask::on_publish(int mid){
 
 }
 
-void uvlcControlTask::on_message(const struct mosquitto_message* message){
+void tsdbLogServiceTask::on_message(const struct mosquitto_message* message){
 
     #define MAX_BUFFER_SIZE     4096
     char* buffer = new char[MAX_BUFFER_SIZE];
@@ -209,18 +187,18 @@ void uvlcControlTask::on_message(const struct mosquitto_message* message){
     }
 }
 
-void uvlcControlTask::on_subscribe(int mid, int qos_count, const int* granted_qos){
+void tsdbLogServiceTask::on_subscribe(int mid, int qos_count, const int* granted_qos){
     
 }
 
-void uvlcControlTask::on_unsubscribe(int mid){
+void tsdbLogServiceTask::on_unsubscribe(int mid){
 
 }
 
-void uvlcControlTask::on_log(int level, const char* str){
+void tsdbLogServiceTask::on_log(int level, const char* str){
 
 }
 
-void uvlcControlTask::on_error(){
+void tsdbLogServiceTask::on_error(){
 
 }

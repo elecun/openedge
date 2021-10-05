@@ -46,8 +46,7 @@ class moxaIoServiceTask : public oe::core::task::runnable, protected mosqpp::mos
 
     private:
         /* internal service function */
-        void set(const char* di_name, bool act);    //act true : on, false : off
-        void get();
+        void set_DO(unsigned short value);
 
         bool read_device_config(json& config);
         bool read_mqtt_config(json& config);
@@ -77,9 +76,11 @@ class moxaIoServiceTask : public oe::core::task::runnable, protected mosqpp::mos
         int _modbus_port = 502;
         
         map<int, string> _di_container;
-        map<string, bool> _di_values;
+        map<string, bool> _di_value_container;
         map<int, string> _do_container;
-        map<string, bool> _do_values;
+        map<string, bool> _do_value_container;
+        unsigned short _di_values;
+        unsigned short _do_values;
 
     private: //for mqtt service command
         map<string, int> _service_cmd {
