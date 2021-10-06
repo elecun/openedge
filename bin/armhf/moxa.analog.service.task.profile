@@ -2,7 +2,7 @@
     "md5":"603239CAF2F774498037F944F5592F52",
     "info":{
         "taskname":"moxa.analog.service.task",
-        "version":"0.0.1",
+        "version":"0.1.0",
         "cpu_affinity":1,
         "cycle_ns":300000000,
         "policy":{

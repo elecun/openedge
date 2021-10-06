@@ -1,7 +1,7 @@
 {
     "md5":"603239CAF2F774498037F944F5592F52",
     "info":{
-        "taskname":"dx3000.control.task",
+        "taskname":"dx3000.motor.service.task",
         "version":"0.0.1",
         "cpu_affinity":1,
         "cycle_ns":1000000000,
@@ -13,17 +13,18 @@
     },
     "configurations":{
         "mqtt":{
-            "broker":"192.168.3.105",
+            "broker":"168.126.66.23",
             "port":1883,
-            "pub_topic":"aop/uvlc/motor",
+            "pub_topic":"aop/uvlc/1/motor",
             "pub_qos":2,
-            "sub_topic":["aop/sys/control", "aop/uvlc/motor/control"],
-            "keep_alive":60
+            "sub_topic":["aop/sys/control", "aop/uvlc/1/motor/control"],
+            "keep_alive":60,
+            "method":"on_update"
         },
         "dx3000":{
             "default_rpm":1000,
-            "port":4002,
-            "target":"192.168.100.166",
+            "port":4001,
+            "gateway":"192.168.99.166",
             "slave_id":1
         }
     }

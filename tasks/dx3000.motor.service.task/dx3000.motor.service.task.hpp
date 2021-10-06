@@ -1,11 +1,11 @@
 /**
- * @file    dx3000.udp.control.task.hpp
+ * @file    dx3000.motor.service.task.hpp
  * @brief   DX3000 AC Motor Controller Service Task with UDP
  * @author  Byunghun Hwang<bh.hwang@iae.re.kr>
  */
 
-#ifndef _OPENEDGE_DX3000_UDP_CONTROL_TASK_HPP_
-#define _OPENEDGE_DX3000_UDP_CONTROL_TASK_HPP_
+#ifndef _OPENEDGE_DX3000_MOTOR_SERVICE_TASK_HPP_
+#define _OPENEDGE_DX3000_MOTOR_SERVICE_TASK_HPP_
 
 #include <openedge/core.hpp>
 #include <string>
@@ -15,10 +15,6 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
-namespace zmq {
-    #include <czmq.h>
-}
-
 using namespace oe;
 using namespace std;
 
@@ -27,11 +23,16 @@ namespace oe::device {
     class bus;
 }
 
-class dx3000UdpControlTask : public oe::core::task::runnable, private mosqpp::mosquittopp  {
+class dx3000MotorServiceTask : public oe::core::task::runnable, private mosqpp::mosquittopp  {
+
+    enum class PUBLISH_METHOD : int { 
+        ON_UPDATE,
+        ON_CHANGE
+    };
 
     public:
-        dx3000UdpControlTask():mosqpp::mosquittopp(){};
-        virtual ~dx3000UdpControlTask() = default;
+        dx3000MotorServiceTask():mosqpp::mosquittopp(){};
+        virtual ~dx3000MotorServiceTask() = default;
 
         //component common interface
         bool configure() override;
@@ -52,15 +53,14 @@ class dx3000UdpControlTask : public oe::core::task::runnable, private mosqpp::mo
 		virtual void on_error() override;
 
     private: //for UDP network
-        int _dataport = 4002;
-        string _target = "127.0.0.1";
+        int _port = 4002;
+        string _gateway = "127.0.0.1";
         long _sockfd = -1;
         long _sock_optval = 1;
         sockaddr_in _sockname;
         struct sockaddr_in targetAddr;
 
     private:
-        zmq::zsock_t* _push = nullptr;
         device::controller* _controller = nullptr;
         map<string, int> _dx_command {
             {"move_cw", 1},
@@ -70,12 +70,15 @@ class dx3000UdpControlTask : public oe::core::task::runnable, private mosqpp::mo
         };
 
     private: //for mqtt
-        string _mqtt_broker {"127.0.0.1"};
-        int _mqtt_port {1883};
+        string _manage_topic {""};
+        bool _connected = false;
+        string _broker_address { "127.0.0.1" };
+        int _broker_port {1883};
         string _mqtt_pub_topic = {"undefined"};
         int _mqtt_pub_qos = 2;
         int _mqtt_keep_alive = {60};
         vector<string> _mqtt_sub_topics;
+        PUBLISH_METHOD _pub_method = PUBLISH_METHOD::ON_UPDATE;
 
 };
 

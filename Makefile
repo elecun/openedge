@@ -251,10 +251,17 @@ moxa.io.service.task: $(BUILDDIR)moxa.io.service.task.o
 $(BUILDDIR)moxa.io.service.task.o: $(TASK_SOURCE_FILES)moxa.io.service.task/moxa.io.service.task.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
-# moxa analog task
+# moxa analog service task
 moxa.analog.service.task: $(BUILDDIR)moxa.analog.service.task.o
 	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) -lmodbus -lmosquittopp -lmosquitto
 $(BUILDDIR)moxa.analog.service.task.o: $(TASK_SOURCE_FILES)moxa.analog.service.task/moxa.analog.service.task.cc
+	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
+# dx3000 motor service task
+dx3000.motor.service.task: $(BUILDDIR)dx3000.motor.service.task.o \
+						$(BUILDDIR)dkm_dx3000_native.o 
+	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) -lmosquittopp -lmosquitto
+$(BUILDDIR)dx3000.motor.service.task.o: $(TASK_SOURCE_FILES)dx3000.motor.service.task/dx3000.motor.service.task.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
 
