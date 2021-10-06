@@ -23,6 +23,11 @@ using namespace std;
 
 class moxaIoServiceTask : public oe::core::task::runnable, protected mosqpp::mosquittopp {
 
+    enum class PUBLISH_METHOD : int { 
+        ON_UPDATE,
+        ON_DI_CHANGE
+    };
+
     public:
         moxaIoServiceTask():mosqpp::mosquittopp(){};
         virtual ~moxaIoServiceTask() = default;
@@ -47,16 +52,18 @@ class moxaIoServiceTask : public oe::core::task::runnable, protected mosqpp::mos
     private:
         /* internal service function */
         void set_DO(unsigned short value);
+        void set_DO_or(unsigned short value); //apply logical(OR)
 
         bool read_device_config(json& config);
         bool read_mqtt_config(json& config);
 
     private:   //services
-        void service_set_on(json& msg);  //set_on mqtt command
-        void service_set_off(json& msg); //set_off mqtt command
+        // void service_set_on(json& msg);  //set_on mqtt command
+        // void service_set_off(json& msg); //set_off mqtt command
 
     private: //for modbus
         modbus_t* _modbus = nullptr;
+        int _modbus_port = 502;
 
     private: //for mqtt
         string _manage_topic {""};
@@ -67,13 +74,14 @@ class moxaIoServiceTask : public oe::core::task::runnable, protected mosqpp::mos
         int _mqtt_pub_qos = 2;
         int _mqtt_keep_alive = {60};
         vector<string> _mqtt_sub_topics;
+        PUBLISH_METHOD _pub_method = PUBLISH_METHOD::ON_UPDATE;
+
 
     private: //for io
         string _devicename = "unknown";
         string _deviceip = "127.0.0.1";
         int _di_address = -1;
         int _do_address = -1;
-        int _modbus_port = 502;
         
         map<int, string> _di_container;
         map<string, bool> _di_value_container;

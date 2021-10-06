@@ -94,12 +94,17 @@ bool moxaIoServiceTask::read_mqtt_config(json& config){
                 _mqtt_sub_topics.emplace_back(*itr);
             }
         } 
+        if(mqtt_param.find("method")!=mqtt_param.end()){
+            if(!mqtt_param["method"].get<string>().compare("on_update")) _pub_method = PUBLISH_METHOD::ON_UPDATE;
+            else if(!mqtt_param["method"].get<string>().compare("on_di_change")) _pub_method = PUBLISH_METHOD::ON_DI_CHANGE;
+        }
 
         console::info("> set MQTT Broker : {}", _broker_address);
         console::info("> set MQTT Port : {}", _broker_port);
         console::info("> set MQTT Pub. Topic : {}", _mqtt_pub_topic);
         console::info("> set MQTT Pub. QoS : {}", _mqtt_pub_qos);
         console::info("> set MQTT Keep-alive : {}", _mqtt_keep_alive);
+        console::info("> set MQTT Pub. Method : {}", _pub_method);
 
         //connect to MQTT broker
         if(const int conret = this->connect_async(_broker_address.c_str(), _broker_port, _mqtt_keep_alive)==MOSQ_ERR_SUCCESS){
@@ -135,6 +140,8 @@ bool moxaIoServiceTask::configure(){
 void moxaIoServiceTask::execute(){
 
     if(_modbus){
+        unsigned short _prev_di_values = _di_values;
+
         //1. read DI data
         if(modbus_read_input_registers(_modbus, _di_address, 1, &_di_values)!=-1){
             for(auto& d:_di_container){
@@ -157,14 +164,24 @@ void moxaIoServiceTask::execute(){
 
 
         //3. publish DI & DO data
-        json pubdata;
-        pubdata["di"] = _di_value_container;
-        pubdata["do"] = _do_value_container;
-        string str_pubdata = pubdata.dump();
-        this->publish(nullptr, _mqtt_pub_topic.c_str(), strlen(str_pubdata.c_str()), str_pubdata.c_str(), 2, false);
-        
-        console::info("publish : {}", str_pubdata);
-
+        if(_pub_method==PUBLISH_METHOD::ON_UPDATE){
+            json pubdata;
+            pubdata["di"] = _di_value_container;
+            pubdata["do"] = _do_value_container;
+            string str_pubdata = pubdata.dump();
+            this->publish(nullptr, _mqtt_pub_topic.c_str(), strlen(str_pubdata.c_str()), str_pubdata.c_str(), 2, false);   
+            console::info("Publish Data : {}", str_pubdata);
+        }
+        else if(_pub_method==PUBLISH_METHOD::ON_DI_CHANGE){
+            if(_prev_di_values!=_di_values){
+                json pubdata;
+                pubdata["di"] = _di_value_container;
+                pubdata["do"] = _do_value_container;
+                string str_pubdata = pubdata.dump();
+                this->publish(nullptr, _mqtt_pub_topic.c_str(), strlen(str_pubdata.c_str()), str_pubdata.c_str(), 2, false);   
+                console::info("Publish Data : {}", str_pubdata);
+            }
+        }
         
     }
 }
@@ -210,7 +227,7 @@ void moxaIoServiceTask::on_publish(int mid){
 void moxaIoServiceTask::on_message(const struct mosquitto_message* message){
 
     if(!_modbus){
-        console::warn("Cannot handle the IO Device(Device instance is null");
+        console::error("Cannot handle the IO Device(Device instance is null");
         return;
     }
     
@@ -224,33 +241,23 @@ void moxaIoServiceTask::on_message(const struct mosquitto_message* message){
     delete []buffer;
 
     
-
     //2. parse message payload
     try {
         json msg = json::parse(strmsg);
-
         if(!topic.compare("aop/uvlc/1/io/control")){
-            if(msg.find("DO")!=msg.end()){
-                set_DO(msg["DO"].get<unsigned short>());
+            if(msg.find("operator")!=msg.end()){
+                string op = msg["operator"];
+                if(!op.compare("OR") && msg.find("DO")!=msg.end()){
+                    set_DO_or(msg["DO"].get<unsigned short>());
+                }
+            }
+            else {
+                if(msg.find("DO")!=msg.end()){
+                    set_DO(msg["DO"].get<unsigned short>());
+                }
             }
         }
 
-        // if(msg.find("target")!=msg.end()){
-        //     string target = msg["target"].get<string>();
-        //     if(target==_devicename){
-        //         if(msg.find("command")!=msg.end()){
-        //             string command = msg["command"].get<string>();
-        //             std::transform(command.begin(), command.end(), command.begin(),[](unsigned char c){ return std::tolower(c); }); //to lower case
-
-        //             if(_service_cmd.count(command)){
-        //                 switch(_service_cmd[command]){
-        //                     case 1: { service_set_on(msg); } break;    //set_on service commnad
-        //                     case 2: { service_set_off(msg); } break;   //set_off service command
-        //                 }
-        //             }
-        //         }
-        //     }
-        // }
     }
     catch(json::exception& e){
         console::error("Message Error : {}", e.what());
@@ -275,58 +282,21 @@ void moxaIoServiceTask::on_error(){
 
 }
 
-
-void moxaIoServiceTask::service_set_on(json& msg){
-    if(msg.find("name")!=msg.end()){
-        string name = msg["name"].get<string>();
-        std::transform(name.begin(), name.end(), name.begin(),[](unsigned char c){ return std::tolower(c); }); //to lower case
-        for(auto itr = _do_container.begin(); itr != _do_container.end(); ++itr){
-            if(itr->second==name){
-                if(modbus_write_bit(_modbus, _do_address+itr->first, 1)==-1){
-                    console::error("Modbus Error : {}", modbus_strerror(errno));
-                }
-                else{
-                    json pub;
-                    pub["do"][name] = true;
-                    string str_pub = pub.dump();
-                    this->publish(nullptr, _mqtt_pub_topic.c_str(), strlen(str_pub.c_str()), str_pub.c_str(), 2, false);
-                    console::info("DO Published : {}", str_pub);
-                }
-            }
-        }
-    }
-}
-
-void moxaIoServiceTask::service_set_off(json& msg){
-    if(msg.find("name")!=msg.end()){
-        string name = msg["name"].get<string>();
-        std::transform(name.begin(), name.end(), name.begin(),[](unsigned char c){ return std::tolower(c); }); //to lower case
-        for(auto itr = _do_container.begin(); itr != _do_container.end(); ++itr){
-            if(itr->second==name){
-                if(modbus_write_bit(_modbus, _do_address+itr->first, 0)==-1){
-                    console::error("Modbus Error : {}", modbus_strerror(errno));
-                }
-                else{
-                    json pub;
-                    pub["do"][name] = true;
-                    string str_pub = pub.dump();
-                    this->publish(nullptr, _mqtt_pub_topic.c_str(), strlen(str_pub.c_str()), str_pub.c_str(), 2, false);
-                    console::info("DO Published : {}", str_pub);
-                }
-            }
-        }
-    }
-}
-
 void moxaIoServiceTask::set_DO(unsigned short value){
     if(_modbus){
-        if(modbus_write_registers(_modbus, _do_address, 1, &value)!=-1){
-            
-        }
-        else {
+        if(modbus_write_registers(_modbus, _do_address, 1, &value)==-1)
             console::error("Modbus Error : {}", modbus_strerror(errno));
-        }
+    }
+    else {
+        console::error("Unable to use MODBUS");
+    }
+}
 
+void moxaIoServiceTask::set_DO_or(unsigned short value){
+    if(_modbus){
+        unsigned short _val = _do_values|value;
+        if(modbus_write_registers(_modbus, _do_address, 1, &_val)==-1)
+            console::error("Modbus Error : {}", modbus_strerror(errno));
     }
     else {
         console::error("Unable to use MODBUS");

@@ -2,7 +2,7 @@
     "md5":"603239CAF2F774498037F944F5592F52",
     "info":{
         "taskname":"agw.manage.task",
-        "version":"0.0.1",
+        "version":"0.1.0",
         "cpu_affinity":1,
         "cycle_ns":300000000,
         "policy":{
@@ -44,12 +44,13 @@
 
         },
         "mqtt":{
-            "broker":"192.168.3.105",
+            "broker":"168.126.66.23",
             "port":1883,
             "pub_topic":"aop/uvlc/1/io",
             "pub_qos":2,
             "sub_topic":["aop/sys/control", "aop/uvlc/1/io/control"],
-            "keep_alive":60
+            "keep_alive":60,
+            "method":"on_di_change"
         }
     }
 }
