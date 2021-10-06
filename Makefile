@@ -264,6 +264,12 @@ dx3000.motor.service.task: $(BUILDDIR)dx3000.motor.service.task.o \
 $(BUILDDIR)dx3000.motor.service.task.o: $(TASK_SOURCE_FILES)dx3000.motor.service.task/dx3000.motor.service.task.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
+# uvlc control logic task
+uvlc.control.logic.task: $(BUILDDIR)uvlc.control.logic.task.o
+	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) -lmosquittopp -lmosquitto
+$(BUILDDIR)uvlc.control.logic.task.o: $(TASK_SOURCE_FILES)uvlc.control.logic.task/uvlc.control.logic.task.cc
+	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
 
 ############################ Services
 

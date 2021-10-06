@@ -1,5 +1,5 @@
 /**
- * @file    uvlc.control.task.hpp
+ * @file    uvlc.control.logic.task.hpp
  * @brief   UVC Lamp Cleaning System Control Task (IO Interface & Control Logic)
  * @author  Byunghun Hwang<bh.hwang@iae.re.kr>
  */
@@ -16,7 +16,12 @@
 using namespace oe;
 using namespace std;
 
-class uvlcControlTask : public oe::core::task::runnable, private mosqpp::mosquittopp {
+class uvlcControLogiclTask : public oe::core::task::runnable, private mosqpp::mosquittopp {
+
+    enum class PUBLISH_METHOD : int { 
+        ON_UPDATE,
+        ON_CHANGE
+    };
 
     /* UVLC control mode */
     enum class CONTROLMODE : int { 
@@ -38,10 +43,9 @@ class uvlcControlTask : public oe::core::task::runnable, private mosqpp::mosquit
         WORK = 1
     };
 
-
     public:
-        uvlcControlTask():mosqpp::mosquittopp(){};
-        virtual ~uvlcControlTask() = default;
+        uvlcControLogiclTask():mosqpp::mosquittopp(){};
+        virtual ~uvlcControLogiclTask() = default;
 
         //common interface
         bool configure() override;
@@ -63,6 +67,14 @@ class uvlcControlTask : public oe::core::task::runnable, private mosqpp::mosquit
 
         void setmode(CONTROLMODE mode);
 
+    private: //for logic
+        bool check_stop_enable(const bool value);
+        bool check_l_proximity_enable(const bool value);
+        bool check_r_proximity_enable(const bool value);
+        bool check_wipe_forward(const bool value);
+        bool check_wipe_reverse(const bool value);
+        bool check_wipe_once(const bool value);
+
 
     private:
         CONTROLMODE _control_mode {CONTROLMODE::MANUAL };
@@ -73,12 +85,31 @@ class uvlcControlTask : public oe::core::task::runnable, private mosqpp::mosquit
         map<unsigned short, float> _intensity_value;
         float _intensity_threshold = 0.0;
 
-        string _mqtt_broker {"127.0.0.1"};
-        int _mqtt_port {1883};
+    private: //for mqtt
+        string _manage_topic {""};
+        bool _connected = false;
+        string _broker_address { "127.0.0.1" };
+        int _broker_port {1883};
         string _mqtt_pub_topic = {"undefined"};
         int _mqtt_pub_qos = 2;
         int _mqtt_keep_alive = {60};
         vector<string> _mqtt_sub_topics;
+        PUBLISH_METHOD _pub_method = PUBLISH_METHOD::ON_UPDATE;
+
+    private: //for logic
+        string _l_proximity_io;
+        string _r_proximity_io;
+        string _wipe_forward_io;
+        string _wipe_reverse_io;
+        string _wipe_once_io;
+        string _stop_io;
+        bool _l_proximityu_io_value = false;
+        bool _r_proximityu_io_value = false;
+        bool _wipe_forward_io_value = false;
+        bool _wipe_reverse_io_value = false;
+        bool _wipe_once_io_value = false;
+        bool _stop_io_value = false;
+
 
 };
 
