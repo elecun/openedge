@@ -1,11 +1,11 @@
 /**
  * @file    moxa.io.service.task.hpp
- * @brief   MOXA Nport Serial Device Server
+ * @brief   MOXA Remote IO service Task
  * @author  Byunghun Hwang<bh.hwang@iae.re.kr>
  */
 
-#ifndef _OPENEDGE_MOXA_IO_TASK_HPP_
-#define _OPENEDGE_MOXA_IO_TASK_HPP_
+#ifndef _OPENEDGE_MOXA_IO_SERVICE_TASK_HPP_
+#define _OPENEDGE_MOXA_IO_SERVICE_TASK_HPP_
 
 #include <openedge/core.hpp>
 #include <string>

@@ -251,6 +251,12 @@ moxa.io.service.task: $(BUILDDIR)moxa.io.service.task.o
 $(BUILDDIR)moxa.io.service.task.o: $(TASK_SOURCE_FILES)moxa.io.service.task/moxa.io.service.task.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
+# moxa analog task
+moxa.analog.service.task: $(BUILDDIR)moxa.analog.service.task.o
+	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) -lmodbus -lmosquittopp -lmosquitto
+$(BUILDDIR)moxa.analog.service.task.o: $(TASK_SOURCE_FILES)moxa.analog.service.task/moxa.analog.service.task.cc
+	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
 
 ############################ Services
 

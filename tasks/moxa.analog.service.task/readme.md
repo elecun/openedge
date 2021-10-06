@@ -2,17 +2,21 @@
 # MOXA IO Logik E1212 Device Component
 
 ## Specification
-* Digital Input channels : 0~7
-* Diguial In/Out channels : 0~7 (내부 Jumper로 In 또는 Out 변경 가능함)
+* Analog Input channels : 0~7
 
-## Connections for AOP Project
-* DI2 : UV Lamp Cleaning System Proximity Sensor #1 (Front)
-* DI3 : UV Lamp Cleaning System Proximity Sensor #2 (Back)
-* DI4 : Wipe Once Manual Control (1)
-* DI5 : Forward Wipe (정방향 회전)
-* DI6 : Reverse Wipe (역방향 회전)
-* DI7 : Wiping Stop (즉시 정지)
-* GND : Ground
-* COM(Upper-side) : 24V DC
-* DIO0(OUT) : Cleaning(Wiping) 동작중 상태
-* DIO1(OUT) : Motor Over Current Error
+## MQTT Protocol
+* AI Read
+```
+{ "ai":{"AI0":<float number>, ...}}
+```
+
+
+## Configuration
+* 변경된 AI 데이터가 있을때만 publish할 경우
+```
+"method" : "on_ai_change"
+```
+* 모든 데이터 주기적으로 publish 할 경우
+```
+"method":"on_update"
+```
