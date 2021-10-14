@@ -9,8 +9,8 @@
 OS := $(shell uname)
 
 #Set Architecutre
-# ARCH := armhf
-ARCH := x86_64
+ARCH := armhf
+# ARCH := x86_64
 
 #Compilers
 ifeq ($(ARCH),armhf)
@@ -271,11 +271,15 @@ uvlc.control.logic.task: $(BUILDDIR)uvlc.control.logic.task.o
 $(BUILDDIR)uvlc.control.logic.task.o: $(TASK_SOURCE_FILES)uvlc.control.logic.task/uvlc.control.logic.task.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
-# mex loadcell service task
-mex.loadcell.service.task: $(BUILDDIR)mex.loadcell.service.task.o
-	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) -lmosquittopp -lmosquitto -lCppLinuxSerial
-$(BUILDDIR)mex.loadcell.service.task.o: $(TASK_SOURCE_FILES)mex.loadcell.service.task/mex.loadcell.service.task.cc
+# Realtime performance test task
+rt.perf.test.task: $(BUILDDIR)rt.perf.test.task.o
+	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) -lmosquittopp -lmosquitto
+$(BUILDDIR)rt.perf.test.task.o: $(TASK_SOURCE_FILES)rt.perf.test.task/rt.perf.test.task.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+# $(BUILDDIR)manager.o: $(TASK_SOURCE_FILES)rt.perf.test.task/manager.cpp
+# 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+# $(BUILDDIR)const.o: $(TASK_SOURCE_FILES)rt.perf.test.task/const.cpp
+# 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
 
 ############################ Services

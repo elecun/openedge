@@ -27,7 +27,7 @@ namespace am335xrt {
                 this->close();
             }
 
-            bool open() override {
+            bool create() {
 
                 //export
                 int fd_export = ::open("/sys/class/gpio/export", O_WRONLY);
@@ -41,6 +41,10 @@ namespace am335xrt {
                 ::close(fd_export);
 
                 usleep(200000);
+                
+            }
+
+            bool open() override {
 
                 //direction
                 string access = fmt::format("/sys/class/gpio/gpio{}/direction", this->get_pin());
@@ -64,19 +68,19 @@ namespace am335xrt {
             bool close() override {
 
                 //export
-                int fd_unexport = -1;
-                if((fd_unexport = ::open("/sys/class/gpio/unexport", O_WRONLY))==-1){
-                    return false;
-                }
+                // int fd_unexport = -1;
+                // if((fd_unexport = ::open("/sys/class/gpio/unexport", O_WRONLY))==-1){
+                //     return false;
+                // }
 
-                string p = fmt::format_int(this->get_pin()).str();
-                if(::write(fd_unexport, p.c_str(), p.size())!=(int)p.size()){
-                    ::close(fd_unexport);
-                    return false;
-                }
+                // string p = fmt::format_int(this->get_pin()).str();
+                // if(::write(fd_unexport, p.c_str(), p.size())!=(int)p.size()){
+                //     ::close(fd_unexport);
+                //     return false;
+                // }
                 
-                if(fd_unexport)
-                    ::close(fd_unexport);
+                // if(fd_unexport)
+                //     ::close(fd_unexport);
 
                 return true;
 
@@ -89,25 +93,54 @@ namespace am335xrt {
                 //value
                 int fd_value = -1;
                 if((fd_value = ::open(access.c_str(), O_RDONLY))==-1){
+                    console::info("file open error to read");
+                    ::close(fd_value);
                     return LEVEL::ERROR;
                 }
 
-                char buffer[8] = {'\0', };
-                if(::read(fd_value, &buffer[0], sizeof(buffer))>0){
+                char buffer = '0';
+                if(::read(fd_value, &buffer, 1)>0){
                     ::close(fd_value);
-                    int value = std::stoi(buffer);
-                    if(value==1) return LEVEL::HIGH;
+                    if(buffer==0x31)
+                        return LEVEL::HIGH;
                     else return LEVEL::LOW;
                 }
 
-                if(fd_value)
+                if(fd_value<0)
                     ::close(fd_value);
 
                 return LEVEL::ERROR;
             }
 
-            void write(LEVEL value) override {
-                console::info("Not implemented yet");
+            bool write(LEVEL value) override {
+
+                string access = fmt::format("/sys/class/gpio/gpio{}/value", this->get_pin());
+                console::info("access : {}", access);
+
+                //value
+                int fd_value = -1;
+                if((fd_value = ::open(access.c_str(), O_RDWR|O_SYNC))==-1){
+                    console::info("file open error to write");
+                    return false;
+                }
+
+                if(value==LEVEL::HIGH){
+                    char value = '1';
+                    if(::write(fd_value, &value, 1)>0){
+                        console::info("wrote value 1");
+                    }
+                }
+                else if(value==LEVEL::LOW){
+                    char value = '0';
+                    if(::write(fd_value, &value, 1)>0){
+                        console::info("wrote value 0");
+                    }
+                }
+                
+
+                if(fd_value<0)
+                    ::close(fd_value);
+                
             }
     };
 

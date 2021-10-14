@@ -9,5 +9,5 @@ fi
 
 #copy execution file to the remote
 echo "copying all binary files to target board"
-scp -p -r ./bin/armhf/ debian@"$1":/home/debian/bin/
+sshpass -p 'temppwd' scp -p -r ./bin/armhf/ debian@"$1":/home/debian/bin/
 echo "copied"

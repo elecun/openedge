@@ -32,7 +32,7 @@ namespace oe::device {
             virtual bool open() = 0;
             virtual bool close() = 0;
             virtual const LEVEL read() = 0;
-            virtual void write(LEVEL value) = 0;
+            virtual bool write(LEVEL value) = 0;
 
             const int get_pin() { return this->pin; }
             const char* get_dir() { return this->dir.c_str(); }
