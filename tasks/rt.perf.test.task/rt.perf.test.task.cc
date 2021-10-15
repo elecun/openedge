@@ -68,20 +68,18 @@ bool rtPerfTestTask::configure(){
 }
 
 void rtPerfTestTask::execute(){
-    // auto pin_cycle = getPin("P9_15");
-    // if(pin_cycle){
-    //     if(_gp_manager->getValue(pin_cycle.value().gpio)==HIGH)
-    //         _gp_manager->setValue(pin_cycle.value().gpio, LOW);
-    //     else
-    //         _gp_manager->setValue(pin_cycle.value().gpio, HIGH);
-    // }
+    
+    // rt cycle signal1
     chdir("/sys/class/gpio/gpio48");
-    //::system("cd /sys/class/gpio/gpio48");
     if(_gpio_cycle)
         ::system("echo 0 > value");
     else
         ::system("echo 1 > value");
     _gpio_cycle=!_gpio_cycle;
+
+    //processing
+    chdir("/sys/class/gpio/gpio60");
+    ::system("echo 1 > value");
 
         
     
@@ -89,8 +87,6 @@ void rtPerfTestTask::execute(){
 }
 
 void rtPerfTestTask::cleanup(){
-
-    // _gp_manager->~GPIOManager();
 
     //MQTT connection close
     this->disconnect();
@@ -123,12 +119,45 @@ void rtPerfTestTask::on_publish(int mid){
 
 void rtPerfTestTask::on_message(const struct mosquitto_message* message){
 
-    // #define MAX_BUFFER_SIZE     4096
-    // char* buffer = new char[MAX_BUFFER_SIZE];
-    // memset(buffer, 0, sizeof(char)*MAX_BUFFER_SIZE);
-    // memcpy(buffer, message->payload, sizeof(char)*message->payloadlen);
-    // string strmsg = buffer;
-    // delete []buffer;
+    //receive
+    const int maxbuffer_size = 4096;
+    char* buffer = new char[maxbuffer_size];
+    memset(buffer, 0, sizeof(char)*maxbuffer_size);
+    memcpy(buffer, message->payload, sizeof(char)*message->payloadlen);
+    string strmsg = buffer;
+    string topic = message->topic;
+    delete []buffer;
+
+    //message topic comparison
+    if(!topic.compare("perf/io") && !_io_complete) {
+        complete |= 0x01;
+        _io_complete = true;
+    }
+    else if(!topic.compare("perf/ai")&& !_ai_complete) {
+        //console::info("perf ai received");
+        complete |= 0x02;
+        _ai_complete = true;
+    }
+    else if(!topic.compare("perf/can")&& !_can_complete) {
+        //console::info("perf can received");
+        complete |= 0x04;
+        _can_complete = true;
+    }
+
+    if(complete==0x07){
+        json pubdata;
+        pubdata["test"] = "completed";
+        string str_pubdata = pubdata.dump();
+        this->publish(nullptr, _mqtt_pub_topic.c_str(), strlen(str_pubdata.c_str()), str_pubdata.c_str(), 2, false);   
+
+        chdir("/sys/class/gpio/gpio60");
+        ::system("echo 0 > value");
+        complete = 0x00;
+        _io_complete = false;
+        _ai_complete = false;
+        _can_complete = false;
+    }
+    
 
     // string msg_topic(message->topic);
     // if(!msg_topic.compare("aop/uvlc/sensor")){ //sensor data

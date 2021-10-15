@@ -44,13 +44,13 @@
 
         },
         "mqtt":{
-            "broker":"168.126.66.23",
+            "broker":"192.168.3.105",
             "port":1883,
-            "pub_topic":"aop/uvlc/1/io",
+            "pub_topic":"perf/io",
             "pub_qos":2,
             "sub_topic":["aop/sys/control", "aop/uvlc/1/io/control"],
             "keep_alive":60,
-            "method":"on_di_change"
+            "method":"on_update"
         }
     }
 }

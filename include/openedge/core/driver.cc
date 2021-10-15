@@ -173,8 +173,7 @@ namespace oe::core::task {
                     _taskImpl->execute();
                 }
                 auto t_elapsed = std::chrono::high_resolution_clock::now();
-                spdlog::info("Processing Time : {} sec",
-                std::chrono::duration<double, std::chrono::seconds::period>(t_elapsed - t_now).count());
+                //spdlog::info("Processing Time : {} sec", std::chrono::duration<double, std::chrono::seconds::period>(t_elapsed - t_now).count());
             }
             else if(_sig_no==SIG_PAUSE_TRIGGER) {
                 sigdelset(&thread_sigmask, SIG_RUNTIME_TRIGGER+_signalIndex);

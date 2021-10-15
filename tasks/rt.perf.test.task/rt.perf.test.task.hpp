@@ -54,6 +54,10 @@ class rtPerfTestTask : public oe::core::task::runnable, private mosqpp::mosquitt
         //for measure performance signal
         // GPIOManager* _gp_manager = nullptr;
         bool _gpio_cycle = false;
+        unsigned char complete = 0x00;
+        bool _io_complete = false;
+        bool _ai_complete = false;
+        bool _can_complete = false;
 
 };
 

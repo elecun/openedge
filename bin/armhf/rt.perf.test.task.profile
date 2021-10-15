@@ -13,11 +13,11 @@
     },
     "configurations":{
         "mqtt":{
-            "broker":"192.168.100.71",
+            "broker":"192.168.3.105",
             "port":1883,
-            "pub_topic":"aop/uvlc/control",
+            "pub_topic":"perf/test",
             "pub_qos":2,
-            "sub_topic":["pcan.mqtt.task/sysctrl", "aop/uvlc/sensor"],
+            "sub_topic":["perf/io", "perf/ai", "perf/can"],
             "keep_alive":60
         }
     }

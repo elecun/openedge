@@ -147,7 +147,7 @@ void moxaAnalogServiceTask::execute(){
             pubdata["ai"] = _ai_value_container;
             string str_pubdata = pubdata.dump();
             this->publish(nullptr, _mqtt_pub_topic.c_str(), strlen(str_pubdata.c_str()), str_pubdata.c_str(), 2, false);   
-            console::info("Publish Data : {}", str_pubdata);
+            //console::info("Publish Data : {}", str_pubdata);
         }
         else if(_pub_method==PUBLISH_METHOD::ON_AI_CHANGE){
             bool changed = false;
@@ -155,7 +155,7 @@ void moxaAnalogServiceTask::execute(){
                 u.l = ((unsigned long)_prev_ai_values[i*2+1]<<16 | _prev_ai_values[i*2]);
                 if(u.f!=_ai_value_container[_ai_container[i]]){
                     changed = true;
-                    console::info("diff {} : {}, {}", i, u.f, _ai_value_container[_ai_container[i]]);
+                    //console::info("diff {} : {}, {}", i, u.f, _ai_value_container[_ai_container[i]]);
                     break;
                 }
             }
@@ -165,7 +165,7 @@ void moxaAnalogServiceTask::execute(){
                 pubdata["ai"] = _ai_value_container;
                 string str_pubdata = pubdata.dump();
                 this->publish(nullptr, _mqtt_pub_topic.c_str(), strlen(str_pubdata.c_str()), str_pubdata.c_str(), 2, false);   
-                console::info("Publish Data : {}", str_pubdata);
+                //console::info("Publish Data : {}", str_pubdata);
             }
         }
         

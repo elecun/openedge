@@ -170,7 +170,7 @@ void moxaIoServiceTask::execute(){
             pubdata["do"] = _do_value_container;
             string str_pubdata = pubdata.dump();
             this->publish(nullptr, _mqtt_pub_topic.c_str(), strlen(str_pubdata.c_str()), str_pubdata.c_str(), 2, false);   
-            console::info("Publish Data : {}", str_pubdata);
+            //console::info("Publish Data : {}", str_pubdata);
         }
         else if(_pub_method==PUBLISH_METHOD::ON_DI_CHANGE){
             if(_prev_di_values!=_di_values){
@@ -179,7 +179,7 @@ void moxaIoServiceTask::execute(){
                 pubdata["do"] = _do_value_container;
                 string str_pubdata = pubdata.dump();
                 this->publish(nullptr, _mqtt_pub_topic.c_str(), strlen(str_pubdata.c_str()), str_pubdata.c_str(), 2, false);   
-                console::info("Publish Data : {}", str_pubdata);
+                //console::info("Publish Data : {}", str_pubdata);
             }
         }
         
