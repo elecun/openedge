@@ -4,7 +4,7 @@
         "taskname":"dx3000.control.task",
         "version":"0.0.1",
         "cpu_affinity":1,
-        "cycle_ns":1000000000,
+        "cycle_ns":500000000,
         "policy":{
             "check_jitter":true,
             "check_overrun":true,
@@ -13,11 +13,11 @@
     },
     "configurations":{
         "mqtt":{
-            "broker":"192.168.100.71",
+            "broker":"192.168.99.2",
             "port":1883,
             "pub_topic":"aop/uvlc/motor",
             "pub_qos":2,
-            "sub_topic":["pcan.mqtt.task/sysctrl", "aop/uvlc/control"],
+            "sub_topic":["pcan.mqtt.task/sysctrl", "aop/uvlc/control", "perf/test"],
             "keep_alive":60
         },
         "dx3000":{

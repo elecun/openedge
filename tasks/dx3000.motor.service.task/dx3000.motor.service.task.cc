@@ -195,6 +195,7 @@ void dx3000MotorServiceTask::on_message(const struct mosquitto_message* message)
             string command = msg["command"].get<string>();
             std::transform(command.begin(), command.end(), command.begin(),[](unsigned char c){ return std::tolower(c); }); //to lower case
 
+            console::info("motor command : {}", command);
             if(_dx_command.count(command)){
                 switch(_dx_command[command]){
                     case 1: { //move cw

@@ -33,7 +33,7 @@
 
         },
         "mqtt":{
-            "broker":"192.168.3.105",
+            "broker":"192.168.99.2",
             "port":1883,
             "pub_topic":"perf/ai",
             "pub_qos":2,

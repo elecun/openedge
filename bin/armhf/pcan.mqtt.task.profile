@@ -4,7 +4,7 @@
         "taskname":"pcan.mqtt.task",
         "version":"0.0.1",
         "cpu_affinity":1,
-        "cycle_ns":1000000000,
+        "cycle_ns":300000000,
         "policy":{
             "check_jitter":true,
             "check_overrun":true,
@@ -13,7 +13,7 @@
     },
     "configurations":{
         "mqtt":{
-            "broker":"192.168.3.105",
+            "broker":"192.168.99.2",
             "port":1883,
             "pub_topic":"perf/can",
             "pub_qos":2,

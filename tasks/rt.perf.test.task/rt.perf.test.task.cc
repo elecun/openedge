@@ -68,6 +68,16 @@ bool rtPerfTestTask::configure(){
 }
 
 void rtPerfTestTask::execute(){
+
+    // if(!_initialize){
+    //     json cmd;
+    //     cmd["command"] = "set_rpm";
+    //     cmd["value"] = 500;
+    //     string msg = cmd.dump();
+    //     this->publish(nullptr, _mqtt_pub_topic.c_str(), strlen(msg.c_str()), msg.c_str(), 2, false); //data publish
+    //     _initialize = true;
+    //     console::info("motor init : {}", msg);
+    // }
     
     // rt cycle signal1
     chdir("/sys/class/gpio/gpio48");
@@ -77,13 +87,15 @@ void rtPerfTestTask::execute(){
         ::system("echo 1 > value");
     _gpio_cycle=!_gpio_cycle;
 
+    // complete = 0x00;
+    // _io_complete = false;
+    // _ai_complete = false;
+    // _can_complete = false;
+
     //processing
     chdir("/sys/class/gpio/gpio60");
     ::system("echo 1 > value");
 
-        
-    
-        
 }
 
 void rtPerfTestTask::cleanup(){
@@ -132,24 +144,62 @@ void rtPerfTestTask::on_message(const struct mosquitto_message* message){
     if(!topic.compare("perf/io") && !_io_complete) {
         complete |= 0x01;
         _io_complete = true;
+        _di = json::parse(strmsg);
     }
     else if(!topic.compare("perf/ai")&& !_ai_complete) {
         //console::info("perf ai received");
         complete |= 0x02;
         _ai_complete = true;
+        _ai = json::parse(strmsg);
     }
     else if(!topic.compare("perf/can")&& !_can_complete) {
         //console::info("perf can received");
         complete |= 0x04;
         _can_complete = true;
+        _can = json::parse(strmsg);
     }
 
+    //if(complete==0x07 && _can_complete && _ai_complete && _io_complete){
     if(complete==0x07){
-        json pubdata;
-        pubdata["test"] = "completed";
-        string str_pubdata = pubdata.dump();
-        this->publish(nullptr, _mqtt_pub_topic.c_str(), strlen(str_pubdata.c_str()), str_pubdata.c_str(), 2, false);   
+        // json pubdata;
+        // pubdata["test"] = "completed";
+        // string str_pubdata = pubdata.dump();
+        // this->publish(nullptr, _mqtt_pub_topic.c_str(), strlen(str_pubdata.c_str()), str_pubdata.c_str(), 2, false);   
 
+        console::info("DI Data : {}", _di.dump());
+        console::info("AI Data : {}", _ai.dump());
+        console::info("CAN Data : {}", _can.dump());
+
+        if(_di.find("di")!=_di.end()){
+            json values = _di["di"];
+            if(values.find("DI4")!=values.end()){
+                bool stop = values["DI4"].get<bool>();
+                if(_prev_stop==false && stop==true){
+                    //motor move
+                    json cmd;
+                    cmd["command"] = "stop";
+                    string msg = cmd.dump();
+                    this->publish(nullptr, _mqtt_pub_topic.c_str(), strlen(msg.c_str()), msg.c_str(), 2, false); //data publish
+                    console::info("motor : {}", msg);
+                }
+                _prev_stop = stop;
+            }
+
+            if(values.find("DI5")!=values.end()){
+                bool go = values["DI5"].get<bool>();
+                if(_prev_go==false && go==true){
+                    //motor move
+                    json cmd;
+                    cmd["command"] = "move_cw";
+                    string msg = cmd.dump();
+                    this->publish(nullptr, _mqtt_pub_topic.c_str(), strlen(msg.c_str()), msg.c_str(), 2, false); //data publish
+                    console::info("motor : {}", msg);
+                }
+                _prev_go = go;
+            }
+        }
+
+        
         chdir("/sys/class/gpio/gpio60");
         ::system("echo 0 > value");
         complete = 0x00;

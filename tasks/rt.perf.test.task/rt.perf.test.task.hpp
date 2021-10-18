@@ -59,6 +59,14 @@ class rtPerfTestTask : public oe::core::task::runnable, private mosqpp::mosquitt
         bool _ai_complete = false;
         bool _can_complete = false;
 
+        json _di;
+        json _ai;
+        json _can;
+
+        bool _prev_stop = false;
+        bool _prev_go = false;
+        bool _initialize = false;
+
 };
 
 EXPORT_TASK_API

@@ -4,7 +4,7 @@
         "taskname":"dx3000.motor.service.task",
         "version":"0.0.1",
         "cpu_affinity":1,
-        "cycle_ns":1000000000,
+        "cycle_ns":300000000,
         "policy":{
             "check_jitter":true,
             "check_overrun":true,
@@ -13,11 +13,11 @@
     },
     "configurations":{
         "mqtt":{
-            "broker":"168.126.66.23",
+            "broker":"192.168.99.2",
             "port":1883,
             "pub_topic":"aop/uvlc/1/motor",
             "pub_qos":2,
-            "sub_topic":["aop/sys/control", "aop/uvlc/1/motor/control"],
+            "sub_topic":["aop/sys/control", "aop/uvlc/1/motor/control", "perf/test"],
             "keep_alive":60,
             "method":"on_update"
         },
