@@ -13,7 +13,7 @@
     },
     "configurations":{
         "mqtt":{
-            "broker":"192.168.99.2",
+            "broker":"192.168.3.105",
             "port":1883,
             "pub_topic":"perf/can",
             "pub_qos":2,
