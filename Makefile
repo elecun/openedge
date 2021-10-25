@@ -196,6 +196,11 @@ pcan.mqtt.task: $(BUILDDIR)pcan.mqtt.task.o
 $(BUILDDIR)pcan.mqtt.task.o: $(TASK_SOURCE_FILES)pcan.mqtt.task/pcan.mqtt.task.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
+peak.pcan.mqtt.task: $(BUILDDIR)peak.pcan.mqtt.task.o
+	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) -lmosquittopp -lmosquitto
+$(BUILDDIR)peak.pcan.mqtt.task.o: $(TASK_SOURCE_FILES)peak.pcan.mqtt.task/peak.pcan.mqtt.task.cc
+	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
 fenet.task: $(BUILDDIR)fenet.task.o
 	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) -lmosquittopp -lmosquitto
 $(BUILDDIR)fenet.task.o: $(TASK_SOURCE_FILES)fenet.task/fenet.task.cc
