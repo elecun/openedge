@@ -5,20 +5,20 @@
  * @author  Byunghun Hwang<bh.hwang@iae.re.kr>
  */
 
-#ifndef _OPENEDGE_CORE_BUS_HPP_
-#define _OPENEDGE_CORE_BUS_HPP_
+#ifndef _OPENEDGE_INTERFACE_BUS_HPP_
+#define _OPENEDGE_INTERFACE_BUS_HPP_
 
-#include <openedge/core/device.hpp>
+#include <openedge/common/device.hpp>
 #include <functional>
 
-namespace oe::core::bus {
+namespace oe::interface {
 
-    class iDeviceBus : public iDevice {
+    class bus : public interface::device {
         public:
-            typedef std::function<void(uint8_t*, int)> readCallbackFunc;
+            typedef std::function<void(uint8_t*, int)> readcallback;
 
-            iDeviceBus(readCallbackFunc func = nullptr ):callback(func) {
-                this->type = DEVICE_TYPE::BUS;
+            bus(readcallback func = nullptr ):callback(func) {
+                this->type = dType::BUS;
             }
 			virtual bool open() = 0;
 			virtual void close() = 0;
@@ -26,18 +26,17 @@ namespace oe::core::bus {
 			virtual int write(const uint8_t* data, int len) = 0;
 
         protected:
-			virtual void setReadCallback(readCallbackFunc func) { callback = func; }
+			virtual void set_read_callback(readcallback func) { callback = func; }
 
 		protected:
-			readCallbackFunc callback = nullptr;
+			readcallback callback = nullptr;
             
-    }; //class iDeviceBus
+    }; //bus interface class
 
-
-    class iDeviceBusUART : public iDeviceBus {
+    class busUART : public interface::bus {
     public:
         /* UART Baudrate */
-        enum class UART_BAUDRATE : unsigned int {
+        enum class busBaudrate : unsigned int {
             BAUDRATE_110 = 110,
             BAUDRATE_300 = 300,
             BAUDRATE_600 = 600,
@@ -59,45 +58,40 @@ namespace oe::core::bus {
             BAUDRATE_750000 = 750000,
         };
 
-        enum class UART_PARITY : int {
+        enum class busParity : int {
             NONE = 0,
             ODD,
             EVEN,
         };
 
-        enum class UART_FLOW_CONTROL : int {
+        enum class busFlowControl : int {
             NONE = 0,
             SOFTWARE,
             HARDWARE
         };
 
-        enum class UART_STOPBITS : int {
+        enum class busStopbits : int {
             ONE = 0,
             ONE5,
             TWO,
         };
 
-        iDeviceBusUART(UART_BAUDRATE baudrate = UART_BAUDRATE::BAUDRATE_115200,
+        busUART(busBaudrate baudrate = busBaudrate::BAUDRATE_115200,
             unsigned int databits = 8,
-            UART_STOPBITS stopbits = UART_STOPBITS::ONE,
-            UART_PARITY parity = UART_PARITY::NONE,
-            UART_FLOW_CONTROL flowcontrol = UART_FLOW_CONTROL::NONE):
+            busStopbits stopbits = busStopbits::ONE,
+            busParity parity = busParity::NONE,
+            busFlowControl flowcontrol = busFlowControl::NONE):
             baudrate(baudrate), databits(databits), stopbits(stopbits), parity(parity), flowcontrol(flowcontrol){ }
 
     protected:
-        UART_BAUDRATE baudrate;
+        busBaudrate baudrate;
         unsigned int databits;
-        UART_STOPBITS stopbits;
-        UART_PARITY parity;
-        UART_FLOW_CONTROL flowcontrol;
-    }; //class
+        busStopbits stopbits;
+        busParity parity;
+        busFlowControl flowcontrol;
 
-    class iDeviceBusTCP {
-        public:
-            virtual bool connect(const char* ipv4_address, const int port) = 0;
-            virtual void disconnect() = 0;
-    }; //iDeviceBusTCP Class
+    }; //class busUART
 
-} //namespace oe::core
+} //namespace oe::interface
 
 #endif

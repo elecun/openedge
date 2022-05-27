@@ -1,0 +1,1256 @@
+make all --print-data-base --no-builtin-variables --no-builtin-rules --question
+# GNU Make 4.1
+# Built for x86_64-pc-linux-gnu
+# Copyright (C) 1988-2014 Free Software Foundation, Inc.
+# License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+# This is free software: you are free to change and redistribute it.
+# There is NO WARRANTY, to the extent permitted by law.
+
+# Make data base, printed on Fri May 27 07:22:07 2022
+
+# Variables
+
+# automatic
+<D = $(patsubst %/,%,$(dir $<))
+# automatic
+?F = $(notdir $?)
+# default
+.SHELLFLAGS := -c
+# environment
+VSCODE_AGENT_FOLDER = /home/user/.vscode-server
+# environment
+VSCODE_LOG_NATIVE = false
+# automatic
+?D = $(patsubst %/,%,$(dir $?))
+# automatic
+@D = $(patsubst %/,%,$(dir $@))
+# automatic
+@F = $(notdir $@)
+# default
+MAKE_VERSION := 4.1
+# makefile
+CURDIR := /home/user/dev/openedge
+# makefile
+SHELL = /bin/sh
+# makefile (from 'Makefile', line 49)
+RM = rm -rf
+# makefile (from 'Makefile', line 56)
+EXAMPLE_SOURCE_FILES = ./examples/
+# environment
+VSCODE_NLS_CONFIG = {"locale":"en","availableLanguages":{}}
+# environment
+_ = /home/user/.vscode-server/bin/c3511e6c69bb39013c4a4b7b9566ec1ca73fc4d5/node
+# makefile (from 'Makefile', line 1)
+MAKEFILE_LIST :=  Makefile
+# makefile (from 'Makefile', line 18)
+GCC := /usr/bin/arm-linux-gnueabihf-gcc-8
+# 'override' directive
+GNUMAKEFLAGS := 
+# makefile (from 'Makefile', line 48)
+CXXFLAGS = -O3 -fPIC -Wall -std=c++17 -D__cplusplus=201703L -D__MAJOR__=0 -D__MINOR__=0 -D__REV__=5
+# environment
+MAKELEVEL := 0
+# environment
+XDG_DATA_DIRS = /usr/local/share:/usr/share:/var/lib/snapd/desktop
+# environment
+DBUS_SESSION_BUS_ADDRESS = unix:path=/run/user/1000/bus
+# environment
+VSCODE_VERBOSE_LOGGING = true
+# makefile (from 'Makefile', line 21)
+BUILDDIR = ./bin/armhf/
+# environment
+LESSOPEN = | /usr/bin/lesspipe %s
+# environment
+LC_NAME = ko_KR.UTF-8
+# environment
+VSCODE_CWD = /home/user
+# environment
+SSH_CONNECTION = 192.168.200.96 55633 192.168.200.235 22
+# environment
+PATH = /home/user/.vscode-server/bin/c3511e6c69bb39013c4a4b7b9566ec1ca73fc4d5/bin/remote-cli:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+# environment
+XDG_RUNTIME_DIR = /run/user/1000
+# makefile (from 'Makefile', line 22)
+INCLUDE_DIR = -I./ -I./include/ -I./include/3rdparty/
+# environment
+VSCODE_LOG_STACK = false
+# environment
+LC_NUMERIC = ko_KR.UTF-8
+# makefile (from 'Makefile', line 36)
+LDFLAGS = -Wl,--export-dynamic -Wl,-rpath=$(LD_LIBRARY_PATH)
+# makefile (from 'Makefile', line 37)
+LDLIBS = -pthread -lrt -ldl -lm -lczmq -lzmq
+# makefile (from 'Makefile', line 55)
+APP_SOURCE_FILES = ./apps/
+# default
+.FEATURES := target-specific order-only second-expansion else-if shortest-stem undefine oneshell archives jobserver output-sync check-symlink load
+# environment
+LS_COLORS = 
+# makefile (from 'Makefile', line 53)
+INCLUDE_FILES = ./include/
+# automatic
+%F = $(notdir $%)
+# environment
+VSCODE_PIPE_LOGGING = true
+# environment
+PWD = /home/user/dev/openedge
+# environment
+VSCODE_IPC_HOOK_CLI = /run/user/1000/vscode-ipc-a3f0f163-b4af-4248-b115-8c6c9911f139.sock
+# automatic
+*D = $(patsubst %/,%,$(dir $*))
+# makefile (from 'Makefile', line 54)
+SOURCE_FILES = ./
+# environment
+VSCODE_AMD_ENTRYPOINT = vs/workbench/api/node/extensionHostProcess
+# environment
+HOME = /home/user
+# makefile (from 'Makefile', line 20)
+OUTDIR = ./bin/armhf/
+# makefile (from 'Makefile', line 23)
+LD_LIBRARY_PATH = -L./lib/armhf -L/usr/local/lib -L./lib/armhf
+# environment
+LESSCLOSE = /usr/bin/lesspipe %s %s
+# environment
+LOGNAME = user
+# environment
+APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = 1
+# automatic
++F = $(notdir $+)
+# environment
+VSCODE_HANDLES_UNCAUGHT_ERRORS = true
+# automatic
+^D = $(patsubst %/,%,$(dir $^))
+# environment
+LC_TIME = ko_KR.UTF-8
+# makefile (from 'Makefile', line 59)
+SUPPORT_SOURCE_FILES = ./support/
+# default
+MAKE = $(MAKE_COMMAND)
+# default
+MAKECMDGOALS := all
+# environment
+SHLVL = 3
+# makefile (from 'Makefile', line 17)
+CC := /usr/bin/arm-linux-gnueabihf-g++-8
+# environment
+XDG_SESSION_ID = 205
+# environment
+USER = user
+# environment
+LC_MONETARY = ko_KR.UTF-8
+# makefile
+.DEFAULT_GOAL := openedge
+# makefile (from 'Makefile', line 38)
+GTEST_LDLIBS = -lgtest
+# automatic
+%D = $(patsubst %/,%,$(dir $%))
+# environment
+LC_TELEPHONE = ko_KR.UTF-8
+# default
+MAKE_COMMAND := make
+# default
+.VARIABLES := 
+# automatic
+*F = $(notdir $*)
+# makefile (from 'Makefile', line 9)
+OS := Linux
+# makefile (from 'Makefile', line 12)
+ARCH := armhf
+# makefile
+MAKEFLAGS = pqrR
+# environment
+MFLAGS = -pqrR
+# environment
+SSH_CLIENT = 192.168.200.96 55633 22
+# environment
+MAIL = /var/mail/user
+# automatic
++D = $(patsubst %/,%,$(dir $+))
+# environment
+BROWSER = /home/user/.vscode-server/bin/c3511e6c69bb39013c4a4b7b9566ec1ca73fc4d5/bin/helpers/browser.sh
+# environment
+VSCODE_HANDLES_SIGPIPE = true
+# default
+MAKEFILES := 
+# automatic
+<F = $(notdir $<)
+# automatic
+^F = $(notdir $^)
+# environment
+LC_MEASUREMENT = ko_KR.UTF-8
+# environment
+LC_ALL = C
+# makefile (from 'Makefile', line 58)
+SERVICE_SOURCE_FILES = ./services/
+# makefile (from 'Makefile', line 57)
+TASK_SOURCE_FILES = ./tasks/
+# environment
+LC_PAPER = ko_KR.UTF-8
+# default
+SUFFIXES := 
+# makefile (from 'Makefile', line 60)
+INSTALL_DIR = /usr/local/bin/
+# default
+.INCLUDE_DIRS = /usr/include /usr/local/include /usr/include
+# environment
+LC_IDENTIFICATION = ko_KR.UTF-8
+# default
+.RECIPEPREFIX := 
+# environment
+LC_ADDRESS = ko_KR.UTF-8
+# default
+MAKE_HOST := x86_64-pc-linux-gnu
+# environment
+LANG = C
+# environment
+VSCODE_EXTHOST_WILL_SEND_SOCKET = true
+# variable set hash-table stats:
+# Load=97/1024=9%, Rehash=0, Collisions=13/299=4%
+
+# Pattern-specific Variable Values
+
+# No pattern-specific variable values.
+
+# Directories
+
+# . (device 2049, inode 5247160): 20 files, no impossibilities.
+
+# 20 files, no impossibilities in 1 directories.
+
+# Implicit Rules
+
+# No implicit rules.
+
+# Files
+
+fenet.task: bin/armhf/fenet.task.o
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 205):
+	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) -lmosquittopp -lmosquitto
+
+# Not a target:
+bin/armhf/cpuload.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+bin/armhf/aop10t.pilot.task.o: tasks/aop10t.pilot.task/aop10t.pilot.task.cc
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 138):
+	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
+# Not a target:
+tasks/qual.dmr.task/qual.dmr.task.cc:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+bin/armhf/netload.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+bin/armhf/edge.o: apps/edge/edge.cc
+#  Implicit rule search has not been done.
+#  Implicit/static pattern stem: ''
+#  File does not exist.
+#  File has been updated.
+#  Needs to be updated (-q is set).
+# automatic
+# @ := bin/armhf/edge.o
+# automatic
+# % := 
+# automatic
+# * := 
+# automatic
+# + := apps/edge/edge.cc
+# automatic
+# | := 
+# automatic
+# < := apps/edge/edge.cc
+# automatic
+# ^ := apps/edge/edge.cc
+# automatic
+# ? := apps/edge/edge.cc
+# variable set hash-table stats:
+# Load=8/32=25%, Rehash=0, Collisions=1/16=6%
+#  recipe to execute (from 'Makefile', line 83):
+ 
+					$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
+bin/armhf/driver.o: include/openedge/core/driver.cc
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 96):
+						$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
+all: edge tasks services
+#  Command line target.
+#  Implicit rule search has been done.
+#  File does not exist.
+#  File has been updated.
+#  Needs to be updated (-q is set).
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/6=0%
+
+FORCE:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+bin/armhf/mqtt.o: services/mqtt.publisher.service/mqtt.cc
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 311):
+	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
+bin/armhf/profile.o: include/openedge/core/profile.cc
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 98):
+						$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
+bin/armhf/sysmon.o: tasks/sysmon.task/sysmon.cc
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 187):
+	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
+# Not a target:
+tasks/dx3000.control.task/dx3000.control.task.cc:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+tasks/simple.task/simple.task.cc:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+bin/armhf/mongodb.connector.service.o: services/mongodb.connector.service/mongodb.connector.service.cc
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 303):
+	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
+# Not a target:
+tasks/uvlc.control.logic.task/uvlc.control.logic.task.cc:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+bin/armhf/logger.task.o: tasks/logger.task/logger.task.cc
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 156):
+	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
+bin/armhf/memory.o: include/openedge/sys/memory.cc
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 112):
+						$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
+logger.task: bin/armhf/logger.task.o
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 154):
+	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) -li2c
+
+bin/armhf/fenet.task.o: tasks/fenet.task/fenet.task.cc
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 207):
+	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
+bin/armhf/sys.mdns.manage.task.o: tasks/sys.mdns.manage.task/sys.mdns.manage.task.cc
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 144):
+	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
+# Not a target:
+include//support/device/dkm_dx3000_native.cc:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+simple2.task: bin/armhf/simple2.task.o
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 131):
+	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS)
+
+bin/armhf/uvlc.control.task.o: tasks/uvlc.control.task/uvlc.control.task.cc
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 168):
+	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
+# Not a target:
+services/modbus.rtu.service/modbus.rtu.service.cc:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+tasks/dx3000.motor.service.task/dx3000.motor.service.task.cc:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+tasks/uvlc.ag.control.task/uvlc.ag.control.task.cc:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+include//support/device/dkm_dx3000.cc:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+bin/armhf/test1.task.o: tasks/test1.task/test1.task.cc
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 226):
+	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
+bin/armhf/agw.mqtt.o: tasks/agw.manage.task/agw.mqtt.cc
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 246):
+	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
+bin/armhf/task_manager.o: apps/edge/task_manager.cc
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 85):
+							$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
+# Not a target:
+tasks/logger.task/logger.task.cc:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+services/mqtt.publisher.service/mqtt.cc:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+test1.task: bin/armhf/test1.task.o
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 224):
+	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS)
+
+bin/armhf/testptp.o: experimental/testptp/testptp.cc
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 70):
+					$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
+sysmon.task: bin/armhf/sysmon.o bin/armhf/info.o bin/armhf/cpuload.o bin/armhf/netload.o
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 185):
+	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) -lczmq -lzmq
+
+# Not a target:
+.SUFFIXES:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+modbusRTU.task: bin/armhf/modbusRTU.task.o
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 176):
+	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) -lczmq -lzmq
+
+# Not a target:
+tasks/pcan.mqtt.task/pcan.mqtt.task.cc:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+bin/armhf/agsys.manage.task.o: tasks/agsys.manage.task/agsys.manage.task.cc
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 173):
+	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
+bin/armhf/network.o: include/openedge/sys/network.cc
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 108):
+						$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
+# Not a target:
+Makefile:
+#  Implicit rule search has been done.
+#  Last modified 2022-05-26 08:04:01.884133022
+#  File has been updated.
+#  Successfully updated.
+
+bin/armhf/cpu.o: include/openedge/sys/cpu.cc
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 106):
+						$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
+lsis.fenet.connector.service: bin/armhf/lsis.fenet.connector.service.o bin/armhf/xgt.protocol.o
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 294):
+	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) ./lib/$(ARCH)/libsockpp.a
+
+testptp: bin/armhf/testptp.o
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 68):
+		$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -o $(BUILDDIR)$@ $^ $(LDLIBS) 
+
+agw.manage.task: bin/armhf/agw.manage.task.o bin/armhf/agw.mqtt.o bin/armhf/system.o bin/armhf/network.o bin/armhf/network_perf.o
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 242):
+	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) -lmosquittopp -lmosquitto
+
+# Not a target:
+include/openedge/util/uuid.cc:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+test: testptp
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+ 
+#  File has not been updated.
+
+# Not a target:
+uvlc.contro.task:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+moxa.analog.service.task: bin/armhf/moxa.analog.service.task.o
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 262):
+	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) -lmodbus -lmosquittopp -lmosquitto
+
+bin/armhf/modbus.rtu.service.o: services/modbus.rtu.service/modbus.rtu.service.cc
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 316):
+	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
+# Not a target:
+tasks/modbusRTU.task/modbusRTU.task.cc:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+include/openedge/core/rt_timer.cc:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+tasks/rt.perf.test.task/rt.perf.test.task.cc:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+tasks/sysmon.task/sysmon.cc:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+bin/armhf/dx3000.control.task.o: tasks/dx3000.control.task/dx3000.control.task.cc
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 213):
+	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
+bin/armhf/simple.task.o: tasks/simple.task/simple.task.cc
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 128):
+	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
+bin/armhf/uvlc.control.logic.task.o: tasks/uvlc.control.logic.task/uvlc.control.logic.task.cc
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 277):
+	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
+bin/armhf/network_perf.o: include/openedge/sys/network_perf.cc
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 110):
+						$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
+edge: bin/armhf/edge.o bin/armhf/edge_instance.o bin/armhf/task_manager.o bin/armhf/driver.o bin/armhf/profile.o bin/armhf/rt_timer.o
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has been updated.
+#  Needs to be updated (-q is set).
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/6=0%
+#  recipe to execute (from 'Makefile', line 79):
+		$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -o $(BUILDDIR)$@ $^ $(LDLIBS)
+
+bin/armhf/dx3000.motor.service.task.o: tasks/dx3000.motor.service.task/dx3000.motor.service.task.cc
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 271):
+	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
+bin/armhf/uvlc.ag.control.task.o: tasks/uvlc.ag.control.task/uvlc.ag.control.task.cc
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 162):
+	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
+peak.pcan.mqtt.task: bin/armhf/peak.pcan.mqtt.task.o
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 200):
+	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) -lmosquittopp -lmosquitto
+
+# Not a target:
+apps/edge/instance.cc:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+include/openedge/sys/memory.cc:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+dx3000.control.task: bin/armhf/dx3000.control.task.o bin/armhf/dkm_dx3000.o
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 211):
+	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) -lczmq -lzmq -lmosquittopp -lmosquitto -lmodbus
+
+bin/armhf/edge_instance.o: apps/edge/instance.cc
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 87):
+							$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
+# Not a target:
+services/lsis.fenet.connector.service/lsis.fenet.connector.service.cc:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+openedge: bin/armhf/openedge.o
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 64):
+			$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -o $(BUILDDIR)$@ $^ $(LDLIBS)
+
+dx3000.motor.service.task: bin/armhf/dx3000.motor.service.task.o bin/armhf/dkm_dx3000_native.o
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 269):
+	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) -lmosquittopp -lmosquitto
+
+# Not a target:
+tasks/aop10t.pilot.task/aop10t.pilot.task.cc:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+bin/armhf/procmanage.o: tasks/procmanage.task/procmanage.cc
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 192):
+	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
+test2.task: bin/armhf/test2.task.o
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 231):
+	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS)
+
+bin/armhf/general.o: include/openedge/device/general.cc
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 102):
+						$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
+bin/armhf/modbusRTU.task.o: tasks/modbusRTU.task/modbusRTU.task.cc
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 178):
+	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
+nport.udp.task: bin/armhf/nport.udp.task.o
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 250):
+	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS)
+
+uvlc.control.task: bin/armhf/uvlc.control.task.o
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 166):
+	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) -lczmq -lzmq -lmosquittopp -lmosquitto
+
+# Not a target:
+tasks/agw.manage.task/agw.mqtt.cc:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+include/openedge/sys/network.cc:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+bin/armhf/lsis.fenet.connector.service.o: services/lsis.fenet.connector.service/lsis.fenet.connector.service.cc
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 296):
+	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
+# Not a target:
+include/openedge/sys/cpu.cc:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+tasks/moxa.analog.service.task/moxa.analog.service.task.cc:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+bin/armhf/system.o: include/openedge/sys/system.cc
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 114):
+						$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
+bin/armhf/rt_timer.o: include/openedge/core/rt_timer.cc
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 94):
+							$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
+bin/armhf/qual.dmr.task.o: tasks/qual.dmr.task/qual.dmr.task.cc
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 149):
+	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
+bin/armhf/moxa.analog.service.task.o: tasks/moxa.analog.service.task/moxa.analog.service.task.cc
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 264):
+	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
+sys.mdns.manage.task: bin/armhf/sys.mdns.manage.task.o
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 142):
+	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) -ltinyxml2
+
+# Not a target:
+.DEFAULT:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+bin/armhf/uuid.o: include/openedge/util/uuid.cc
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 100):
+					$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
+bin/armhf/dkm_dx3000_native.o: include//support/device/dkm_dx3000_native.cc
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 121):
+							$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
+bin/armhf/dkm_dx3000.o: include//support/device/dkm_dx3000.cc
+ 
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 119):
+							$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
+# Not a target:
+include/openedge/sys/network_perf.cc:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+include/openedge/core/rt_trigger.cc:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+bin/armhf/moxa.io.service.task.o: tasks/moxa.io.service.task/moxa.io.service.task.cc
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 258):
+	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
+pcan.mqtt.task: bin/armhf/pcan.mqtt.task.o
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 195):
+	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) -lczmq -lzmq -lmosquittopp -lmosquitto
+
+# Not a target:
+bin/armhf/openedge.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+bin/armhf/peak.pcan.mqtt.task.o: tasks/peak.pcan.mqtt.task/peak.pcan.mqtt.task.cc
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 202):
+	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
+# Not a target:
+services/lsis.fenet.connector.service/xgt.protocol.cc:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+experimental/testptp/testptp.cc:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+uvlc.control.logic.task: bin/armhf/uvlc.control.logic.task.o
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 275):
+	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) -lmosquittopp -lmosquitto
+
+mqtt.publisher.service: bin/armhf/mqtt.publisher.service.o bin/armhf/mqtt.o
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 307):
+	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) -lmosquittopp
+
+modbus.rtu.service: bin/armhf/modbus.rtu.service.o
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 314):
+	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) -lmodbus
+
+# Not a target:
+services/mongodb.connector.service/mongodb.connector.service.cc:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+bin/armhf/info.o: include/openedge/sys/info.cc
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 104):
+					$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
+uvlc.ag.control.task: bin/armhf/uvlc.ag.control.task.o bin/armhf/dkm_dx3000.o
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 160):
+	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) -lczmq -lzmq -lmodbus
+
+aop10t.pilot.task: bin/armhf/aop10t.pilot.task.o
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 136):
+	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS)
+
+bin/armhf/nport.udp.task.o: tasks/nport.udp.task/nport.udp.task.cc
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 252):
+	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
+bin/armhf/mqtt.publisher.service.o: services/mqtt.publisher.service/mqtt.publisher.service.cc
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 309):
+	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
+# Not a target:
+tasks/fenet.task/fenet.task.cc:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+bin/armhf/dx3000.udp.control.task.o: tasks/dx3000.udp.control.task/dx3000.udp.control.task.cc
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 219):
+	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
+# Not a target:
+tasks/sys.mdns.manage.task/sys.mdns.manage.task.cc:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+tasks/peak.pcan.mqtt.task/peak.pcan.mqtt.task.cc:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+tasks: simple.task simple2.task aop10t.pilot.task sys.mdns.manage.task qual.dmr.task sysmon.task procmanage.task uvlc.ag.control.task pcan.mqtt.task agsys.manage.task uvlc.contro.task fenet.mqtt.task
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+tasks/uvlc.control.task/uvlc.control.task.cc:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+bin/armhf/xgt.protocol.o: services/lsis.fenet.connector.service/xgt.protocol.cc
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 298):
+	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
+bin/armhf/simple2.task.o: tasks/simple2.task/simple2.task.cc
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 133):
+	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
+dx3000.udp.control.task: bin/armhf/dx3000.udp.control.task.o bin/armhf/dkm_dx3000_native.o
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 217):
+	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) -lczmq -lzmq -lmosquittopp -lmosquitto
+
+simple.task: bin/armhf/simple.task.o
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 126):
+	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS)
+
+# Not a target:
+tasks/test1.task/test1.task.cc:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+fenet.mqtt.task:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+include/openedge/sys/system.cc:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+moxa.io.service.task: bin/armhf/moxa.io.service.task.o
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 256):
+	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) -lmodbus -lmosquittopp -lmosquitto
+
+# Not a target:
+tasks/nport.udp.task/nport.udp.task.cc:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+services/mqtt.publisher.service/mqtt.publisher.service.cc:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+qual.dmr.task: bin/armhf/qual.dmr.task.o
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 147):
+	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS)
+
+# Not a target:
+apps/edge/edge.cc:
+#  Implicit rule search has been done.
+#  Last modified 2022-05-26 08:04:01.884133022
+#  File has been updated.
+#  Successfully updated.
+
+deploy: FORCE
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 324):
+	cp $(BUILDDIR)*.task $(BUILDDIR)edge $(BINDIR)
+
+bin/armhf/rt_trigger.o: include/openedge/core/rt_trigger.cc
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 92):
+							$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
+# Not a target:
+tasks/dx3000.udp.control.task/dx3000.udp.control.task.cc:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+procmanage.task: bin/armhf/procmanage.o
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 190):
+	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) -lczmq -lzmq
+
+# Not a target:
+tasks/test2.task/test2.task.cc:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+include/openedge/core/driver.cc:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+bin/armhf/agw.manage.task.o: tasks/agw.manage.task/agw.manage.task.cc
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 244):
+	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
+ 
+# Not a target:
+include/openedge/core/profile.cc:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+mongodb.connector.service: bin/armhf/mongodb.connector.service.o
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 301):
+	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) -lbson-1.0 -lmongoc-1.0
+
+services: lsis.fenet.connector.service mongodb.connector.service mqtt.publisher.service modbus.rtu.service
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+tasks/agsys.manage.task/agsys.manage.task.cc:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+bin/armhf/pcan.mqtt.task.o: tasks/pcan.mqtt.task/pcan.mqtt.task.cc
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 197):
+	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
+rt.perf.test.task: bin/armhf/rt.perf.test.task.o
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 281):
+	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) -lmosquittopp -lmosquitto
+
+# Not a target:
+tasks/simple2.task/simple2.task.cc:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+include/openedge/sys/info.cc:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+tasks/moxa.io.service.task/moxa.io.service.task.cc:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+agsys.manage.task: bin/armhf/agsys.manage.task.o
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 171):
+	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) -lczmq -lzmq -lmodbus
+
+# Not a target:
+apps/edge/task_manager.cc:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+clean: FORCE
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 326):
+		$(RM) $(BUILDDIR)*.o $(BUILDDIR)openedge $(BUILDDIR)edge $(BUILDDIR)*.task $(BUILDDIR)*.service
+
+bin/armhf/rt.perf.test.task.o: tasks/rt.perf.test.task/rt.perf.test.task.cc
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 283):
+	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
+# Not a target:
+include/openedge/device/general.cc:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+bin/armhf/test2.task.o: tasks/test2.task/test2.task.cc
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 233):
+	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
+# Not a target:
+tasks/procmanage.task/procmanage.cc:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+tasks/agw.manage.task/agw.manage.task.cc:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# files hash-table stats:
+# Load=150/1024=15%, Rehash=0, Collisions=48/329=15%
+# VPATH Search Paths
+
+# No 'vpath' search paths.
+
+# No general ('VPATH' variable) search path.
+
+# strcache buffers: 1 (0) / strings = 170 / storage = 4305 B / avg = 25 B
+# current buf: size = 8162 B / used = 4305 B / count = 170 / avg = 25 B
+
+# strcache performance: lookups = 336 / hit rate = 49%
+# hash-table stats:
+# Load=170/8192=2%, Rehash=0, Collisions=6/336=2%
+# Finished Make data base on Fri May 27 07:22:07 2022
+
+ 
