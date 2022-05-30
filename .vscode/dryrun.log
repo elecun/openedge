@@ -1,7 +1,6 @@
 make --dry-run --always-make --keep-going --print-directory
 make: Entering directory '/home/user/dev/openedge'
+make: Leaving directory '/home/user/dev/openedge'
  
 make: *** No rule to make target 'bin/armhf/openedge.o', needed by 'openedge'.
 
-make: Leaving directory '/home/user/dev/openedge'
- 

@@ -2,17 +2,7 @@
 
 #include "uart.hpp"
 #include <openedge/log.hpp>
-
-#if defined(__linux__) || defined(__APPLE__)
-    #include <termios.h>
-    #include <sys/time.h>
-    #include <sys/types.h>
-    #include <sys/types.h>
-    #include <sys/stat.h>
-    #include <unistd.h>
-    #include <fcntl.h>
-    #include <strings.h>
-#endif
+#include <vector>
 
 namespace oe::bus {
 
@@ -109,7 +99,7 @@ namespace oe::bus {
         #if defined(_WIN32) || defined (_WIN64)
             console::error("Not support on this OS yet.")
         #elif defined (__linux__) || defined (__APPLE__)
-            close(_fd);
+            ::close(_fd);
             _fd = -1;
         #endif
     }
@@ -119,7 +109,26 @@ namespace oe::bus {
         #if defined(_WIN32) || defined (_WIN64)
             console::error("Not support on this OS yet.")
         #elif defined (__linux__) || defined (__APPLE__)
-            
+            return ::read(_fd, data, len);
+        #endif
+
+        return 0;
+    }
+
+    int syncUART::read_until(uint8_t* data, int len, unsigned int t_ms){
+        #if defined(_WIN32) || defined (_WIN64)
+            console::error("Not support on this OS yet.")
+        #elif defined (__linux__) || defined (__APPLE__)
+            timeout _timer;
+            #define MAX_BUFFER_SIZE 4096
+            uint8_t* rcv_buffer = new uint8_t[MAX_BUFFER_SIZE];
+            vector<uint8_t> buffer(MAX_BUFFER_SIZE);
+            int rcv_counter = 0;
+            while(_timer.elapsed_ms()<t_ms || t_ms==0){
+                uint8_t* rcv = new uint8_t[MAX_BUFFER_SIZE];
+                ssize_t size = ::read(_fd, rcv, MAX_BUFFER_SIZE);
+                delete []rcv;
+            }
         #endif
 
         return 0;

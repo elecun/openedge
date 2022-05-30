@@ -6,7 +6,7 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Fri May 27 07:22:07 2022
+# Make data base, printed on Mon May 30 14:40:36 2022
 
 # Variables
 
@@ -65,7 +65,7 @@ LC_NAME = ko_KR.UTF-8
 # environment
 VSCODE_CWD = /home/user
 # environment
-SSH_CONNECTION = 192.168.200.96 55633 192.168.200.235 22
+SSH_CONNECTION = 192.168.200.96 59838 192.168.200.235 22
 # environment
 PATH = /home/user/.vscode-server/bin/c3511e6c69bb39013c4a4b7b9566ec1ca73fc4d5/bin/remote-cli:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
 # environment
@@ -95,7 +95,7 @@ VSCODE_PIPE_LOGGING = true
 # environment
 PWD = /home/user/dev/openedge
 # environment
-VSCODE_IPC_HOOK_CLI = /run/user/1000/vscode-ipc-a3f0f163-b4af-4248-b115-8c6c9911f139.sock
+VSCODE_IPC_HOOK_CLI = /run/user/1000/vscode-ipc-c05450b2-10a3-4d3c-b170-f31c4e1f8666.sock
 # automatic
 *D = $(patsubst %/,%,$(dir $*))
 # makefile (from 'Makefile', line 54)
@@ -133,7 +133,7 @@ SHLVL = 3
 # makefile (from 'Makefile', line 17)
 CC := /usr/bin/arm-linux-gnueabihf-g++-8
 # environment
-XDG_SESSION_ID = 205
+XDG_SESSION_ID = 290
 # environment
 USER = user
 # environment
@@ -161,7 +161,7 @@ MAKEFLAGS = pqrR
 # environment
 MFLAGS = -pqrR
 # environment
-SSH_CLIENT = 192.168.200.96 55633 22
+SSH_CLIENT = 192.168.200.96 59838 22
 # environment
 MAIL = /var/mail/user
 # automatic
@@ -280,7 +280,6 @@ bin/armhf/edge.o: apps/edge/edge.cc
 # variable set hash-table stats:
 # Load=8/32=25%, Rehash=0, Collisions=1/16=6%
 #  recipe to execute (from 'Makefile', line 83):
- 
 					$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
 bin/armhf/driver.o: include/openedge/core/driver.cc
@@ -290,6 +289,7 @@ bin/armhf/driver.o: include/openedge/core/driver.cc
 #  recipe to execute (from 'Makefile', line 96):
 						$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
+ 
 all: edge tasks services
 #  Command line target.
 #  Implicit rule search has been done.
@@ -560,7 +560,6 @@ include/openedge/util/uuid.cc:
 test: testptp
 #  Implicit rule search has not been done.
 #  Modification time never checked.
- 
 #  File has not been updated.
 
 # Not a target:
@@ -570,6 +569,7 @@ uvlc.contro.task:
 #  File has not been updated.
 
 moxa.analog.service.task: bin/armhf/moxa.analog.service.task.o
+ 
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
@@ -847,12 +847,12 @@ bin/armhf/dkm_dx3000_native.o: include//support/device/dkm_dx3000_native.cc
 							$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
 bin/armhf/dkm_dx3000.o: include//support/device/dkm_dx3000.cc
- 
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
 #  recipe to execute (from 'Makefile', line 119):
 							$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+ 
 
 # Not a target:
 include/openedge/sys/network_perf.cc:
@@ -1128,10 +1128,10 @@ bin/armhf/agw.manage.task.o: tasks/agw.manage.task/agw.manage.task.cc
 #  recipe to execute (from 'Makefile', line 244):
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
- 
 # Not a target:
 include/openedge/core/profile.cc:
 #  Implicit rule search has not been done.
+ 
 #  Modification time never checked.
 #  File has not been updated.
 
@@ -1251,6 +1251,6 @@ tasks/agw.manage.task/agw.manage.task.cc:
 # strcache performance: lookups = 336 / hit rate = 49%
 # hash-table stats:
 # Load=170/8192=2%, Rehash=0, Collisions=6/336=2%
-# Finished Make data base on Fri May 27 07:22:07 2022
+# Finished Make data base on Mon May 30 14:40:36 2022
 
  

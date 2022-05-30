@@ -1,7 +1,7 @@
 
 /**
  * @file    bus.hpp
- * @brief   Bus Interface Class
+ * @brief   Bus Interface Class (Sync & Async)
  * @author  Byunghun Hwang<bh.hwang@iae.re.kr>
  */
 
@@ -13,27 +13,37 @@
 
 namespace oe::interface {
 
-    class bus : public interface::device {
+    class syncBus : public interface::device {
         public:
-            typedef std::function<void(uint8_t*, int)> readcallback;
-
-            bus(readcallback func = nullptr ):callback(func) {
+            syncBus() {
                 this->type = dType::BUS;
             }
 			virtual bool open() = 0;
 			virtual void close() = 0;
-			virtual int read(uint8_t* data, int len) = 0;
+			virtual int read(uint8_t* data, int len) = 0;   //read block
+            virtual int read_until(uint8_t* data, int len, unsigned int t_ms) = 0;  //read block with timeout
 			virtual int write(const uint8_t* data, int len) = 0;
-
-        protected:
-			virtual void set_read_callback(readcallback func) { callback = func; }
-
-		protected:
-			readcallback callback = nullptr;
             
     }; //bus interface class
 
-    class busUART : public interface::bus {
+    class asyncBus : public interface::device {
+        typedef std::function<void(uint8_t*, int)> readcallback;
+        public:
+            asyncBus(){}
+
+            /**
+             * @brief Set the read callback function pointer
+             * 
+             * @param func function pointer
+             */
+			virtual void set_read_callback(readcallback func) { pfCallback = func; }
+
+        protected:
+			readcallback pfCallback = nullptr;
+
+    }; //class async bus
+
+    class busUART {
     public:
         /* UART Baudrate */
         enum class busBaudrate : unsigned int {
