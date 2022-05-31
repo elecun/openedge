@@ -5,8 +5,9 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
+ 
 
-# Make data base, printed on Mon May 30 14:40:36 2022
+# Make data base, printed on Tue May 31 11:32:54 2022
 
 # Variables
 
@@ -65,7 +66,7 @@ LC_NAME = ko_KR.UTF-8
 # environment
 VSCODE_CWD = /home/user
 # environment
-SSH_CONNECTION = 192.168.200.96 59838 192.168.200.235 22
+SSH_CONNECTION = 192.168.200.96 49427 192.168.200.235 22
 # environment
 PATH = /home/user/.vscode-server/bin/c3511e6c69bb39013c4a4b7b9566ec1ca73fc4d5/bin/remote-cli:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
 # environment
@@ -95,7 +96,7 @@ VSCODE_PIPE_LOGGING = true
 # environment
 PWD = /home/user/dev/openedge
 # environment
-VSCODE_IPC_HOOK_CLI = /run/user/1000/vscode-ipc-c05450b2-10a3-4d3c-b170-f31c4e1f8666.sock
+VSCODE_IPC_HOOK_CLI = /run/user/1000/vscode-ipc-2104006e-fed9-47f1-b802-a108b0abab47.sock
 # automatic
 *D = $(patsubst %/,%,$(dir $*))
 # makefile (from 'Makefile', line 54)
@@ -133,7 +134,7 @@ SHLVL = 3
 # makefile (from 'Makefile', line 17)
 CC := /usr/bin/arm-linux-gnueabihf-g++-8
 # environment
-XDG_SESSION_ID = 290
+XDG_SESSION_ID = 319
 # environment
 USER = user
 # environment
@@ -161,7 +162,7 @@ MAKEFLAGS = pqrR
 # environment
 MFLAGS = -pqrR
 # environment
-SSH_CLIENT = 192.168.200.96 59838 22
+SSH_CLIENT = 192.168.200.96 49427 22
 # environment
 MAIL = /var/mail/user
 # automatic
@@ -213,9 +214,9 @@ VSCODE_EXTHOST_WILL_SEND_SOCKET = true
 
 # Directories
 
-# . (device 2049, inode 5247160): 20 files, no impossibilities.
+# . (device 2049, inode 5247160): 21 files, no impossibilities.
 
-# 20 files, no impossibilities in 1 directories.
+# 21 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
@@ -228,6 +229,7 @@ fenet.task: bin/armhf/fenet.task.o
 #  Modification time never checked.
 #  File has not been updated.
 #  recipe to execute (from 'Makefile', line 205):
+ 
 	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) -lmosquittopp -lmosquitto
 
 # Not a target:
@@ -289,7 +291,6 @@ bin/armhf/driver.o: include/openedge/core/driver.cc
 #  recipe to execute (from 'Makefile', line 96):
 						$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
- 
 all: edge tasks services
 #  Command line target.
 #  Implicit rule search has been done.
@@ -399,6 +400,7 @@ simple2.task: bin/armhf/simple2.task.o
 	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS)
 
 bin/armhf/uvlc.control.task.o: tasks/uvlc.control.task/uvlc.control.task.cc
+ 
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
@@ -530,6 +532,7 @@ bin/armhf/cpu.o: include/openedge/sys/cpu.cc
 #  recipe to execute (from 'Makefile', line 106):
 						$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
+ 
 lsis.fenet.connector.service: bin/armhf/lsis.fenet.connector.service.o bin/armhf/xgt.protocol.o
 #  Implicit rule search has not been done.
 #  Modification time never checked.
@@ -569,7 +572,6 @@ uvlc.contro.task:
 #  File has not been updated.
 
 moxa.analog.service.task: bin/armhf/moxa.analog.service.task.o
- 
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
@@ -672,6 +674,7 @@ apps/edge/instance.cc:
 #  Modification time never checked.
 #  File has not been updated.
 
+ 
 # Not a target:
 include/openedge/sys/memory.cc:
 #  Implicit rule search has not been done.
@@ -799,6 +802,7 @@ bin/armhf/system.o: include/openedge/sys/system.cc
 						$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
 bin/armhf/rt_timer.o: include/openedge/core/rt_timer.cc
+ 
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
@@ -852,7 +856,6 @@ bin/armhf/dkm_dx3000.o: include//support/device/dkm_dx3000.cc
 #  File has not been updated.
 #  recipe to execute (from 'Makefile', line 119):
 							$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
- 
 
 # Not a target:
 include/openedge/sys/network_perf.cc:
@@ -926,6 +929,7 @@ modbus.rtu.service: bin/armhf/modbus.rtu.service.o
 #  recipe to execute (from 'Makefile', line 314):
 	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) -lmodbus
 
+ 
 # Not a target:
 services/mongodb.connector.service/mongodb.connector.service.cc:
 #  Implicit rule search has not been done.
@@ -1052,6 +1056,7 @@ include/openedge/sys/system.cc:
 moxa.io.service.task: bin/armhf/moxa.io.service.task.o
 #  Implicit rule search has not been done.
 #  Modification time never checked.
+ 
 #  File has not been updated.
 #  recipe to execute (from 'Makefile', line 256):
 	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) -lmodbus -lmosquittopp -lmosquitto
@@ -1131,7 +1136,6 @@ bin/armhf/agw.manage.task.o: tasks/agw.manage.task/agw.manage.task.cc
 # Not a target:
 include/openedge/core/profile.cc:
 #  Implicit rule search has not been done.
- 
 #  Modification time never checked.
 #  File has not been updated.
 
@@ -1245,12 +1249,12 @@ tasks/agw.manage.task/agw.manage.task.cc:
 
 # No general ('VPATH' variable) search path.
 
-# strcache buffers: 1 (0) / strings = 170 / storage = 4305 B / avg = 25 B
-# current buf: size = 8162 B / used = 4305 B / count = 170 / avg = 25 B
+# strcache buffers: 1 (0) / strings = 171 / storage = 4312 B / avg = 25 B
+# current buf: size = 8162 B / used = 4312 B / count = 171 / avg = 25 B
 
-# strcache performance: lookups = 336 / hit rate = 49%
+# strcache performance: lookups = 337 / hit rate = 49%
 # hash-table stats:
-# Load=170/8192=2%, Rehash=0, Collisions=6/336=2%
-# Finished Make data base on Mon May 30 14:40:36 2022
+# Load=171/8192=2%, Rehash=0, Collisions=6/337=2%
+# Finished Make data base on Tue May 31 11:32:54 2022
 
  

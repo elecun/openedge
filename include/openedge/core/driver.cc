@@ -10,6 +10,7 @@
 #include <stdexcept>
 #include <openedge/core/registry.hpp>
 #include <openedge/core/global.hpp>
+#include <openedge/log.hpp>
 
 #define SIG_RUNTIME_TRIGGER (SIGRTMIN)
 #define SIG_PAUSE_TRIGGER   (SIGRTMAX-1)    //signal #63
@@ -26,20 +27,32 @@ namespace oe::core::task {
                     string profile_dir = registry->get<std::string>("PROFILE_DIR");
                     string path = profile_dir+string(taskname)+__PROFILE_EXT__;
                     if(util::exist(path.c_str())){
-                        spdlog::info("Task profile : {}", path);
+                        console::info("Task Profile : {}", path);
                         _taskImpl->_profile = make_unique<core::profile>(path.c_str()); //load profile
                     }
                     else
-                        spdlog::error("<{}> profile does not exist", taskname);
+                        console::error("<{}> profile does not exist", taskname);
                     _taskImpl->taskname = taskname;
                     _signalIndex = signalIndex++;
-                    _taskImpl->setStatus(oe::core::task::runnable::Status::STOPPED);
+                    _taskImpl->set_status(runnable::status_d::STOPPED);
 
                 }
             }
         }
         catch(std::runtime_error& e){
-            spdlog::error("{} driver cannot load", taskname);
+            console::error("{} driver cannot be loadded ({})", taskname, e.what());
+        }
+    }
+
+    driver::driver(task::runnable* instance){
+        try {
+            _taskImpl = std::move(instance);
+        }
+        catch(std::runtime_error& e){
+            if(instance){
+                console::error("{} driver cannot be loadded ({})", instance->get_name(), e.what());
+            }
+            
         }
     }
 
@@ -78,7 +91,7 @@ namespace oe::core::task {
     void driver::cleanup(){
         timer_delete(_timer_id);    //delete timer
         spdlog::info("Cleanup <{}>", _taskImpl->taskname);
-        _taskImpl->status = oe::core::task::runnable::Status::STOPPED;
+        _taskImpl->status = oe::core::task::runnable::status_d::STOPPED;
         if(_taskImpl)
             _taskImpl->cleanup();
         unload();

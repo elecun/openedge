@@ -13,10 +13,10 @@
 
 namespace oe::interface {
 
-    class syncBus : public interface::device {
+    class sync_bus : public interface::device {
         public:
-            syncBus() {
-                this->type = dType::BUS;
+            sync_bus() {
+                this->type = type_d::BUS;
             }
 			virtual bool open() = 0;
 			virtual void close() = 0;
@@ -26,27 +26,27 @@ namespace oe::interface {
             
     }; //bus interface class
 
-    class asyncBus : public interface::device {
-        typedef std::function<void(uint8_t*, int)> readcallback;
+    class async_bus : public interface::device {
+        typedef std::function<void(uint8_t*, int)> readcallback_d;
         public:
-            asyncBus(){}
+            async_bus(){}
 
             /**
              * @brief Set the read callback function pointer
              * 
              * @param func function pointer
              */
-			virtual void set_read_callback(readcallback func) { pfCallback = func; }
+			virtual void set_read_callback(readcallback_d func) { pfCallback = func; }
 
         protected:
-			readcallback pfCallback = nullptr;
+			readcallback_d pfCallback = nullptr;
 
     }; //class async bus
 
-    class busUART {
+    class bus_uart {
     public:
         /* UART Baudrate */
-        enum class busBaudrate : unsigned int {
+        enum class baudrate_d : unsigned int {
             BAUDRATE_110 = 110,
             BAUDRATE_300 = 300,
             BAUDRATE_600 = 600,
@@ -68,39 +68,39 @@ namespace oe::interface {
             BAUDRATE_750000 = 750000,
         };
 
-        enum class busParity : int {
+        enum class parity_d : int {
             NONE = 0,
             ODD,
             EVEN,
         };
 
-        enum class busFlowControl : int {
+        enum class flowcontrol_d : int {
             NONE = 0,
             SOFTWARE,
             HARDWARE
         };
 
-        enum class busStopbits : int {
+        enum class stopbits_d : int {
             ONE = 0,
             ONE5,
             TWO,
         };
 
-        busUART(busBaudrate baudrate = busBaudrate::BAUDRATE_115200,
+        bus_uart(baudrate_d baudrate = baudrate_d::BAUDRATE_115200,
             unsigned int databits = 8,
-            busStopbits stopbits = busStopbits::ONE,
-            busParity parity = busParity::NONE,
-            busFlowControl flowcontrol = busFlowControl::NONE):
+            stopbits_d stopbits = stopbits_d::ONE,
+            parity_d parity = parity_d::NONE,
+            flowcontrol_d flowcontrol = flowcontrol_d::NONE):
             baudrate(baudrate), databits(databits), stopbits(stopbits), parity(parity), flowcontrol(flowcontrol){ }
 
     protected:
-        busBaudrate baudrate;
+        baudrate_d baudrate;
         unsigned int databits;
-        busStopbits stopbits;
-        busParity parity;
-        busFlowControl flowcontrol;
+        stopbits_d stopbits;
+        parity_d parity;
+        flowcontrol_d flowcontrol;
 
-    }; //class busUART
+    }; //class bus_uart
 
 } //namespace oe::interface
 

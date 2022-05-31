@@ -14,7 +14,7 @@ CC := g++-8
 GCC := gcc-8
 LD_LIBRARY_PATH += -L./lib/x86_64
 BUILDDIR		= ../../dist/
-INCLUDE_DIR = -I../../include/ -I../../ -I ../../3rdparty/
+INCLUDE_DIR = -I../../include/ -I../../ -I../../include/3rdparty/
 LD_LIBRARY_PATH += -L/usr/local/lib -L./lib/x86_64
 
 
@@ -41,11 +41,15 @@ SOURCE_FILES = ./
 INSTALL_DIR = /usr/local/bin/
 
 # Make
-divelink_m64:	$(BUILDDIR)divelink_m64.o
+divelink_m64:	$(BUILDDIR)divelink_m64.o \
+				$(BUILDDIR)wl_m64.o \
+				$(BUILDDIR)sync_uart.o 
 		$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -o $(BUILDDIR)$@ $^ $(LDLIBS)
 $(BUILDDIR)divelink_m64.o:	./divelink_m64.cc
 						$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 $(BUILDDIR)wl_m64.o:	$(INCLUDE_DIR)device/waterlinked/m64.cc
+						$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+$(BUILDDIR)sync_uart.o:	$(INCLUDE_DIR)common/sync_uart.cc
 						$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
 all : divelink_m64

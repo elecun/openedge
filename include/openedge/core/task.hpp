@@ -111,7 +111,8 @@ namespace oe {
                     runnable() = default;
                     virtual ~runnable() = default;
 
-                    enum class Status : int { STOPPED=0, STOPPING, WORKING, PAUSED, IDLE };
+                    enum class status_d : int { STOPPED=0, STOPPING, WORKING, PAUSED, IDLE };
+                    enum class type_d : int { NT = 0, RT };
 
                     /* interface functons */
                     virtual void execute() = 0;
@@ -119,8 +120,10 @@ namespace oe {
                     virtual void cleanup() = 0;
                     virtual void pause() = 0;
                     virtual void resume() = 0;
+                    virtual const char* get_name() { return taskname.c_str(); }
 
-                    Status get_status() { return status; }
+                    const status_d get_status() { return status; }
+                    void set_status(status_d s) { status = s; }
 
                 protected:
                     const core::profile* get_profile() { 
@@ -130,7 +133,8 @@ namespace oe {
 
                 protected:
                     string taskname { "noname" };
-                    Status status { Status::STOPPED };
+                    status_d status { status_d::STOPPED };
+                    type_d rtype;
 
                 private:
                     unique_ptr<core::profile> _profile;
@@ -142,7 +146,9 @@ namespace oe {
              */
             class runnable_nt : public runnable {
                 public:
-                    runnable_nt() = default;
+                    runnable_nt(){
+                        this->rtype = type_d::NT;
+                    }
                     virtual ~runnable_nt() = default;
 
                     /**
@@ -174,19 +180,27 @@ namespace oe {
 
             class runnable_rt : public runnable {
                 public:
-                    runnable_rt() = default;
+                    runnable_rt(){
+                        this->rtype = type_d::RT;
+                    }
                     virtual ~runnable_rt() = default;
 
                 protected:
                     /* Fault Type Definition of RT System */
-                    enum class FaultType : int {
+                    /**
+                     * @brief Fault type Definitions
+                     * PERMANENT : They persist indefinitely(or at least until repair) after their occurrence
+                     * INTERMITTENT : They occur sporadically. This is a temporary situation that occurs sporadically such as loss of a relay contact.
+                     * TRANSIENT : They occur in isolation such as electromagnetic interference.
+                     */
+                    enum class fault_type_d : int {
                         PERMANENT = 101,
                         TRANSIENT,
                         INTERMITTENT
                     };
 
                     /* Fault Alarm Level Definition */
-                    enum class FaultLevel : int {
+                    enum class fault_level_d : int {
                         NONE = 0,   // Without Fault Alarm
                         INFORM,     // Notification only and No system reaction responsibility
                         WARN,       // Start Fault Counting and Logging Faults, but No system reaction responsibility
@@ -194,12 +208,16 @@ namespace oe {
                         CRITICAL    // Terminate all tasks (Hard RT)
                     };
 
+                protected:
+                    fault_type_d    f_type = fault_type_d::PERMANENT;
+                    fault_level_d   f_level = fault_level_d::NONE;
+
             }; /* class runnable for RT */
 
         
 
             /**
-             * @brief   Local Service Connector for RPC Client
+             * @brief   Local Service Connector for RPC Client (Deprecated)
              */
             class localServiceConnector : public jsonrpccxx::IClientConnector {
             public:

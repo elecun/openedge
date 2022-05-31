@@ -80,14 +80,14 @@ namespace oe::bus {
 
     }; /* timeout class */
 
-    class syncUART : public oe::interface::busUART, oe::interface::syncBus {
+    class sync_uart : public oe::interface::bus_uart, oe::interface::sync_bus {
     public:
-        syncUART(const char* dev, busUART::busBaudrate baudrate = busUART::busBaudrate::BAUDRATE_115200,
+        sync_uart(const char* dev, bus_uart::baudrate_d baudrate = bus_uart::baudrate_d::BAUDRATE_115200,
             unsigned int databits = 8,
-            busUART::busStopbits stopbits = busUART::busStopbits::ONE,
-            busUART::busParity parity = busUART::busParity::NONE,
-            busUART::busFlowControl flowcontrol = busUART::busFlowControl::NONE);
-        virtual ~syncUART();
+            bus_uart::stopbits_d stopbits = bus_uart::stopbits_d::ONE,
+            bus_uart::parity_d parity = bus_uart::parity_d::NONE,
+            bus_uart::flowcontrol_d flowcontrol = bus_uart::flowcontrol_d::NONE);
+        virtual ~sync_uart();
 
         /* sync bus interface function */
         bool open() override;
@@ -102,7 +102,12 @@ namespace oe::bus {
         #endif
         string _port;
         
-    }; //class
+    }; //class sync_uart
+
+    class async_uart : public oe::interface::bus_uart, oe::interface::async_bus {
+        public:
+            async_uart(const char* dev, )
+    }; //class async_uart
 
 } //namespace oe::bus
 

@@ -35,7 +35,8 @@ namespace oe::core {
 
         class driver {
             public:
-                explicit driver(const char* taskname);
+                driver(const char* taskname);
+                driver(task::runnable* instance);
                 virtual ~driver();
 
                 bool configure();   /* drive a task to configure before execution */

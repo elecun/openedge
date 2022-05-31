@@ -26,8 +26,8 @@ namespace oe::interface {
              * @brief Type definition for Device
              * 
              */
-            enum class dStatus : int { INACTIVE=0, ACTIVE };
-            enum class dType : int { 
+            enum class status_d : int { INACTIVE=0, ACTIVE };
+            enum class type_d : int { 
                 UNKNOWN = 0, 
                 BUS,
                 SENSOR,
@@ -39,9 +39,9 @@ namespace oe::interface {
              * 
              * @return dStatus 
              */
-            virtual const dStatus getStatus() const { return status; }
-			virtual const dStatus activate() { this->setStatus(dStatus::ACTIVE); return getStatus(); }
-			virtual const dStatus deactivate() { this->setStatus(dStatus::INACTIVE); return getStatus();}
+            virtual const status_d get_status() const { return status; }
+			virtual const status_d activate() { this->set_status(status_d::ACTIVE); return get_status(); }
+			virtual const status_d deactivate() { this->set_status(status_d::INACTIVE); return get_status();}
 
             /**
              * @brief Device Open Interface Function
@@ -63,11 +63,11 @@ namespace oe::interface {
              * 
              * @param s status (dStatus::INACTIVE or dSTtatus::ACTIVE)
              */
-            void setStatus(dStatus s){ status = s; }
+            void set_status(status_d s) { status = s; }
 
         protected:
-            dStatus status = dStatus::INACTIVE;
-            dType type = dType::UNKNOWN;
+            status_d status = status_d::INACTIVE;
+            type_d type = type_d::UNKNOWN;
     }; /* device class */
 
 } //namespace oe::core

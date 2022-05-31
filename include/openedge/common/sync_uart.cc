@@ -2,7 +2,9 @@
 
 #include "uart.hpp"
 #include <openedge/log.hpp>
-#include <vector>
+
+
+#define MAX_RCV_BUFFER_SIZE 4096    //Maximum size of receive buffer
 
 namespace oe::bus {
 
@@ -120,14 +122,19 @@ namespace oe::bus {
             console::error("Not support on this OS yet.")
         #elif defined (__linux__) || defined (__APPLE__)
             timeout _timer;
-            #define MAX_BUFFER_SIZE 4096
-            uint8_t* rcv_buffer = new uint8_t[MAX_BUFFER_SIZE];
-            vector<uint8_t> buffer(MAX_BUFFER_SIZE);
+            uint8_t* rcv_buffer = new uint8_t[MAX_RCV_BUFFER_SIZE];
             int rcv_counter = 0;
             while(_timer.elapsed_ms()<t_ms || t_ms==0){
-                uint8_t* rcv = new uint8_t[MAX_BUFFER_SIZE];
-                ssize_t size = ::read(_fd, rcv, MAX_BUFFER_SIZE);
+                uint8_t* rcv = new uint8_t[MAX_RCV_BUFFER_SIZE];
+                ssize_t size = ::read(_fd, rcv, MAX_RCV_BUFFER_SIZE);
+                if(size>0){
+                    memcpy(rcv_buffer+sizeof(uint8_t)*rcv_counter, rcv, size);
+                    rcv_counter += size;
+                }
                 delete []rcv;
+
+                if((int)rcv_counter==0)
+                    return -1;  //no received data
             }
         #endif
 
