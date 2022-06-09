@@ -13,20 +13,25 @@
 #define _OPENEDGE_AOP_H2O2GEN_EMERGENCY_P1_TASK_HPP_
 
 #include <openedge/core.hpp>
+#include <boost/interprocess/shared_memory_object.hpp>
 
 using namespace oe;
 
-class aop_h2o2gen_emg_p1_task : public oe::core::runnable_rt {
+class aop_h2o2gen_emg_p1_task : public oe::core::task::runnable_rt {
     public:
         aop_h2o2gen_emg_p1_task();
         ~aop_h2o2gen_emg_p1_task();
 
         /* basic interface functions */
-        virtual void execute();
-        virtual bool configure();
-        virtual void cleanup();
-        virtual void pause();
-        virtual void resume();
+        virtual void execute() override;
+        virtual void stop() override;
+        virtual bool configure() override;
+        virtual void cleanup() override;
+        virtual void pause() override;
+        virtual void resume() override;
+
+    private:
+        double _limit_temperature = 0.0;
 
 }; /* end class */
 

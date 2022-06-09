@@ -1,13 +1,13 @@
 make all --print-data-base --no-builtin-variables --no-builtin-rules --question
-# GNU Make 4.1
+# GNU Make 4.2.1
 # Built for x86_64-pc-linux-gnu
-# Copyright (C) 1988-2014 Free Software Foundation, Inc.
+# Copyright (C) 1988-2016 Free Software Foundation, Inc.
 # License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
  
 
-# Make data base, printed on Tue May 31 11:32:54 2022
+# Make data base, printed on Thu Jun  9 05:21:12 2022
 
 # Variables
 
@@ -18,7 +18,11 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # default
 .SHELLFLAGS := -c
 # environment
-VSCODE_AGENT_FOLDER = /home/user/.vscode-server
+XDG_SESSION_CLASS = user
+# environment
+VSCODE_AGENT_FOLDER = /home/aopadmin/.vscode-server
+# environment
+XDG_SESSION_TYPE = tty
 # environment
 VSCODE_LOG_NATIVE = false
 # automatic
@@ -28,9 +32,9 @@ VSCODE_LOG_NATIVE = false
 # automatic
 @F = $(notdir $@)
 # default
-MAKE_VERSION := 4.1
+MAKE_VERSION := 4.2.1
 # makefile
-CURDIR := /home/user/dev/openedge
+CURDIR := /home/aopadmin/dev/openedge
 # makefile
 SHELL = /bin/sh
 # makefile (from 'Makefile', line 49)
@@ -40,7 +44,7 @@ EXAMPLE_SOURCE_FILES = ./examples/
 # environment
 VSCODE_NLS_CONFIG = {"locale":"en","availableLanguages":{}}
 # environment
-_ = /home/user/.vscode-server/bin/c3511e6c69bb39013c4a4b7b9566ec1ca73fc4d5/node
+_ = /home/aopadmin/.vscode-server/bin/c3511e6c69bb39013c4a4b7b9566ec1ca73fc4d5/node
 # makefile (from 'Makefile', line 1)
 MAKEFILE_LIST :=  Makefile
 # makefile (from 'Makefile', line 18)
@@ -50,11 +54,9 @@ GNUMAKEFLAGS :=
 # makefile (from 'Makefile', line 48)
 CXXFLAGS = -O3 -fPIC -Wall -std=c++17 -D__cplusplus=201703L -D__MAJOR__=0 -D__MINOR__=0 -D__REV__=5
 # environment
-MAKELEVEL := 0
-# environment
 XDG_DATA_DIRS = /usr/local/share:/usr/share:/var/lib/snapd/desktop
 # environment
-DBUS_SESSION_BUS_ADDRESS = unix:path=/run/user/1000/bus
+DBUS_SESSION_BUS_ADDRESS = unix:path=/run/user/1001/bus
 # environment
 VSCODE_VERBOSE_LOGGING = true
 # makefile (from 'Makefile', line 21)
@@ -62,21 +64,19 @@ BUILDDIR = ./bin/armhf/
 # environment
 LESSOPEN = | /usr/bin/lesspipe %s
 # environment
-LC_NAME = ko_KR.UTF-8
+VSCODE_CWD = /home/aopadmin
 # environment
-VSCODE_CWD = /home/user
+SSH_CONNECTION = 192.168.11.51 62801 192.168.3.105 22
 # environment
-SSH_CONNECTION = 192.168.200.96 49427 192.168.200.235 22
+PATH = /home/aopadmin/.vscode-server/bin/c3511e6c69bb39013c4a4b7b9566ec1ca73fc4d5/bin/remote-cli:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
 # environment
-PATH = /home/user/.vscode-server/bin/c3511e6c69bb39013c4a4b7b9566ec1ca73fc4d5/bin/remote-cli:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
-# environment
-XDG_RUNTIME_DIR = /run/user/1000
+XDG_RUNTIME_DIR = /run/user/1001
 # makefile (from 'Makefile', line 22)
 INCLUDE_DIR = -I./ -I./include/ -I./include/3rdparty/
 # environment
 VSCODE_LOG_STACK = false
 # environment
-LC_NUMERIC = ko_KR.UTF-8
+VSCODE_IPC_HOOK_CLI = /run/user/1001/vscode-ipc-2383a491-34f7-43bd-8692-d7c12c153f6b.sock
 # makefile (from 'Makefile', line 36)
 LDFLAGS = -Wl,--export-dynamic -Wl,-rpath=$(LD_LIBRARY_PATH)
 # makefile (from 'Makefile', line 37)
@@ -94,9 +94,9 @@ INCLUDE_FILES = ./include/
 # environment
 VSCODE_PIPE_LOGGING = true
 # environment
-PWD = /home/user/dev/openedge
-# environment
-VSCODE_IPC_HOOK_CLI = /run/user/1000/vscode-ipc-2104006e-fed9-47f1-b802-a108b0abab47.sock
+PWD = /home/aopadmin/dev/openedge
+# default
+.LOADED := 
 # automatic
 *D = $(patsubst %/,%,$(dir $*))
 # makefile (from 'Makefile', line 54)
@@ -104,7 +104,7 @@ SOURCE_FILES = ./
 # environment
 VSCODE_AMD_ENTRYPOINT = vs/workbench/api/node/extensionHostProcess
 # environment
-HOME = /home/user
+HOME = /home/aopadmin
 # makefile (from 'Makefile', line 20)
 OUTDIR = ./bin/armhf/
 # makefile (from 'Makefile', line 23)
@@ -112,9 +112,10 @@ LD_LIBRARY_PATH = -L./lib/armhf -L/usr/local/lib -L./lib/armhf
 # environment
 LESSCLOSE = /usr/bin/lesspipe %s %s
 # environment
-LOGNAME = user
+LOGNAME = aopadmin
 # environment
 APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = 1
+ 
 # automatic
 +F = $(notdir $+)
 # environment
@@ -122,7 +123,7 @@ VSCODE_HANDLES_UNCAUGHT_ERRORS = true
 # automatic
 ^D = $(patsubst %/,%,$(dir $^))
 # environment
-LC_TIME = ko_KR.UTF-8
+MAKELEVEL := 0
 # makefile (from 'Makefile', line 59)
 SUPPORT_SOURCE_FILES = ./support/
 # default
@@ -130,25 +131,23 @@ MAKE = $(MAKE_COMMAND)
 # default
 MAKECMDGOALS := all
 # environment
-SHLVL = 3
+SHLVL = 1
 # makefile (from 'Makefile', line 17)
 CC := /usr/bin/arm-linux-gnueabihf-g++-8
 # environment
-XDG_SESSION_ID = 319
+XDG_SESSION_ID = 2956
 # environment
-USER = user
-# environment
-LC_MONETARY = ko_KR.UTF-8
+USER = aopadmin
 # makefile
 .DEFAULT_GOAL := openedge
 # makefile (from 'Makefile', line 38)
 GTEST_LDLIBS = -lgtest
 # automatic
 %D = $(patsubst %/,%,$(dir $%))
-# environment
-LC_TELEPHONE = ko_KR.UTF-8
 # default
 MAKE_COMMAND := make
+# environment
+OLDPWD = /home/aopadmin/.vscode-server/bin/c3511e6c69bb39013c4a4b7b9566ec1ca73fc4d5
 # default
 .VARIABLES := 
 # automatic
@@ -162,51 +161,45 @@ MAKEFLAGS = pqrR
 # environment
 MFLAGS = -pqrR
 # environment
-SSH_CLIENT = 192.168.200.96 49427 22
-# environment
-MAIL = /var/mail/user
+SSH_CLIENT = 192.168.11.51 62801 22
 # automatic
 +D = $(patsubst %/,%,$(dir $+))
 # environment
-BROWSER = /home/user/.vscode-server/bin/c3511e6c69bb39013c4a4b7b9566ec1ca73fc4d5/bin/helpers/browser.sh
+BROWSER = /home/aopadmin/.vscode-server/bin/c3511e6c69bb39013c4a4b7b9566ec1ca73fc4d5/bin/helpers/browser.sh
 # environment
 VSCODE_HANDLES_SIGPIPE = true
+# 'override' directive
+.SHELLSTATUS := 0
 # default
 MAKEFILES := 
 # automatic
 <F = $(notdir $<)
-# automatic
-^F = $(notdir $^)
-# environment
-LC_MEASUREMENT = ko_KR.UTF-8
 # environment
 LC_ALL = C
 # makefile (from 'Makefile', line 58)
 SERVICE_SOURCE_FILES = ./services/
 # makefile (from 'Makefile', line 57)
 TASK_SOURCE_FILES = ./tasks/
-# environment
-LC_PAPER = ko_KR.UTF-8
+# automatic
+^F = $(notdir $^)
 # default
 SUFFIXES := 
 # makefile (from 'Makefile', line 60)
 INSTALL_DIR = /usr/local/bin/
 # default
 .INCLUDE_DIRS = /usr/include /usr/local/include /usr/include
-# environment
-LC_IDENTIFICATION = ko_KR.UTF-8
 # default
 .RECIPEPREFIX := 
-# environment
-LC_ADDRESS = ko_KR.UTF-8
 # default
 MAKE_HOST := x86_64-pc-linux-gnu
 # environment
 LANG = C
 # environment
 VSCODE_EXTHOST_WILL_SEND_SOCKET = true
+# environment
+MOTD_SHOWN = pam
 # variable set hash-table stats:
-# Load=97/1024=9%, Rehash=0, Collisions=13/299=4%
+# Load=93/1024=9%, Rehash=0, Collisions=10/297=3%
 
 # Pattern-specific Variable Values
 
@@ -214,9 +207,9 @@ VSCODE_EXTHOST_WILL_SEND_SOCKET = true
 
 # Directories
 
-# . (device 2049, inode 5247160): 21 files, no impossibilities.
+# . (device 64768, inode 5114896): 20 files, no impossibilities.
 
-# 21 files, no impossibilities in 1 directories.
+# 20 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
@@ -229,7 +222,6 @@ fenet.task: bin/armhf/fenet.task.o
 #  Modification time never checked.
 #  File has not been updated.
 #  recipe to execute (from 'Makefile', line 205):
- 
 	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) -lmosquittopp -lmosquitto
 
 # Not a target:
@@ -296,6 +288,7 @@ all: edge tasks services
 #  Implicit rule search has been done.
 #  File does not exist.
 #  File has been updated.
+ 
 #  Needs to be updated (-q is set).
 # variable set hash-table stats:
 # Load=0/32=0%, Rehash=0, Collisions=0/6=0%
@@ -400,7 +393,6 @@ simple2.task: bin/armhf/simple2.task.o
 	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS)
 
 bin/armhf/uvlc.control.task.o: tasks/uvlc.control.task/uvlc.control.task.cc
- 
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
@@ -521,7 +513,7 @@ bin/armhf/network.o: include/openedge/sys/network.cc
 # Not a target:
 Makefile:
 #  Implicit rule search has been done.
-#  Last modified 2022-05-26 08:04:01.884133022
+#  Last modified 2022-06-09 04:32:41.47744807
 #  File has been updated.
 #  Successfully updated.
 
@@ -532,7 +524,6 @@ bin/armhf/cpu.o: include/openedge/sys/cpu.cc
 #  recipe to execute (from 'Makefile', line 106):
 						$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
- 
 lsis.fenet.connector.service: bin/armhf/lsis.fenet.connector.service.o bin/armhf/xgt.protocol.o
 #  Implicit rule search has not been done.
 #  Modification time never checked.
@@ -540,6 +531,7 @@ lsis.fenet.connector.service: bin/armhf/lsis.fenet.connector.service.o bin/armhf
 #  recipe to execute (from 'Makefile', line 294):
 	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) ./lib/$(ARCH)/libsockpp.a
 
+ 
 testptp: bin/armhf/testptp.o
 #  Implicit rule search has not been done.
 #  Modification time never checked.
@@ -674,7 +666,6 @@ apps/edge/instance.cc:
 #  Modification time never checked.
 #  File has not been updated.
 
- 
 # Not a target:
 include/openedge/sys/memory.cc:
 #  Implicit rule search has not been done.
@@ -802,7 +793,6 @@ bin/armhf/system.o: include/openedge/sys/system.cc
 						$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
 bin/armhf/rt_timer.o: include/openedge/core/rt_timer.cc
- 
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
@@ -842,6 +832,7 @@ bin/armhf/uuid.o: include/openedge/util/uuid.cc
 #  File has not been updated.
 #  recipe to execute (from 'Makefile', line 100):
 					$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+ 
 
 bin/armhf/dkm_dx3000_native.o: include//support/device/dkm_dx3000_native.cc
 #  Implicit rule search has not been done.
@@ -929,7 +920,6 @@ modbus.rtu.service: bin/armhf/modbus.rtu.service.o
 #  recipe to execute (from 'Makefile', line 314):
 	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) -lmodbus
 
- 
 # Not a target:
 services/mongodb.connector.service/mongodb.connector.service.cc:
 #  Implicit rule search has not been done.
@@ -1056,7 +1046,6 @@ include/openedge/sys/system.cc:
 moxa.io.service.task: bin/armhf/moxa.io.service.task.o
 #  Implicit rule search has not been done.
 #  Modification time never checked.
- 
 #  File has not been updated.
 #  recipe to execute (from 'Makefile', line 256):
 	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) -lmodbus -lmosquittopp -lmosquitto
@@ -1083,7 +1072,7 @@ qual.dmr.task: bin/armhf/qual.dmr.task.o
 # Not a target:
 apps/edge/edge.cc:
 #  Implicit rule search has been done.
-#  Last modified 2022-05-26 08:04:01.884133022
+#  Last modified 2022-06-09 04:32:41.47744807
 #  File has been updated.
 #  Successfully updated.
 
@@ -1155,6 +1144,7 @@ services: lsis.fenet.connector.service mongodb.connector.service mqtt.publisher.
 tasks/agsys.manage.task/agsys.manage.task.cc:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
+ 
 #  File has not been updated.
 
 bin/armhf/pcan.mqtt.task.o: tasks/pcan.mqtt.task/pcan.mqtt.task.cc
@@ -1249,12 +1239,12 @@ tasks/agw.manage.task/agw.manage.task.cc:
 
 # No general ('VPATH' variable) search path.
 
-# strcache buffers: 1 (0) / strings = 171 / storage = 4312 B / avg = 25 B
-# current buf: size = 8162 B / used = 4312 B / count = 171 / avg = 25 B
+# strcache buffers: 1 (0) / strings = 170 / storage = 4307 B / avg = 25 B
+# current buf: size = 8162 B / used = 4307 B / count = 170 / avg = 25 B
 
-# strcache performance: lookups = 337 / hit rate = 49%
+# strcache performance: lookups = 336 / hit rate = 49%
 # hash-table stats:
-# Load=171/8192=2%, Rehash=0, Collisions=6/337=2%
-# Finished Make data base on Tue May 31 11:32:54 2022
+# Load=170/8192=2%, Rehash=0, Collisions=6/336=2%
+# Finished Make data base on Thu Jun  9 05:21:12 2022
 
  

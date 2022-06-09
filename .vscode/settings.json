@@ -72,5 +72,6 @@
         "*.ipp": "cpp",
         "bit": "cpp",
         "shared_mutex": "cpp"
-    }
+    },
+    "cmake.configureOnOpen": false
 }

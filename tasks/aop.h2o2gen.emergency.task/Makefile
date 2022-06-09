@@ -12,29 +12,35 @@ OS := $(shell uname)
 ARCH := armhf
 # ARCH := x86_64
 
+CURRENT_DIR:=$(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
+CURRENT_DIR_NAME := $(notdir $(patsubst %/,%,$(dir $(CURRENT_DIR))))
+
+$(info $(CURRENT_DIR))
+
+
 #Compilers
 ifeq ($(ARCH),armhf)
 	CC := /usr/bin/arm-linux-gnueabihf-g++-8
 	GCC := /usr/bin/arm-linux-gnueabihf-gcc-8
 	LD_LIBRARY_PATH += -L./lib/armhf
-	OUTDIR		= ./bin/armhf/
-	BUILDDIR		= ./bin/armhf/
-	INCLUDE_DIR = -I./ -I./include/ -I./include/3rdparty/
+	OUTDIR		= $(CURRENT_DIR)/../../bin/armhf/
+	BUILDDIR		= $(CURRENT_DIR)/../../bin/armhf/
+	INCLUDE_DIR = -I./ -I$(CURRENT_DIR)/ -I$(CURRENT_DIR)/../../include/ -I$(CURRENT_DIR)/../../include/3rdparty/
 	LD_LIBRARY_PATH += -L/usr/local/lib -L./lib/armhf
 else
 	CC := g++
 	GCC := gcc
 	LD_LIBRARY_PATH += -L./lib/x86_64
-	OUTDIR		= ./bin/x86_64/
-	BUILDDIR		= ./bin/x86_64/
-	INCLUDE_DIR = -I./ -I./include/ -I./include/3rdparty/
-	LD_LIBRARY_PATH += -L/usr/local/lib -L./lib/x86_64
+	OUTDIR		= $(CURRENT_DIR)/../../bin/x86_64/
+	BUILDDIR		= $(CURRENT_DIR)/../../bin/x86_64/
+	INCLUDE_DIR = -I./ -I$(CURRENT_DIR)/ -I$(CURRENT_DIR)/../../include/ -I$(CURRENT_DIR)/../../include/3rdparty/
+	LD_LIBRARY_PATH += -L/usr/local/lib -L$(CURRENT_DIR)/../../lib/x86_64/
 endif
 
 # OS
 ifeq ($(OS),Linux) #for Linux
 	LDFLAGS = -Wl,--export-dynamic -Wl,-rpath=$(LD_LIBRARY_PATH)
-	LDLIBS = -pthread -lrt -ldl -lm -lczmq -lzmq
+	LDLIBS = -pthread -lrt -ldl -lm
 	GTEST_LDLIBS = -lgtest
 endif
 
@@ -52,18 +58,12 @@ RM	= rm -rf
 
 INCLUDE_FILES = ./include/
 SOURCE_FILES = ./
-APP_SOURCE_FILES = ./apps/
-EXAMPLE_SOURCE_FILES = ./examples/
-TASK_SOURCE_FILES = ./tasks/
-SERVICE_SOURCE_FILES = ./services/
-SUPPORT_SOURCE_FILES = ./support/
-INSTALL_DIR = /usr/local/bin/
 
 
 # Tasks
 aop.h2o2gen.emg.p1.task: $(BUILDDIR)aop.h2o2gen.emg.p1.task.o
 	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS)
-$(BUILDDIR)aop.h2o2gen.emg.p1.task.o: $(SOURCE_FILES)aop.h2o2gen.emg.p1.task.cc
+$(BUILDDIR)aop.h2o2gen.emg.p1.task.o: $(CURRENT_DIR)/aop.h2o2gen.emg.p1.task.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
 

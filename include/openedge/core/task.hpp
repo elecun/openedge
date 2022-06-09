@@ -116,6 +116,7 @@ namespace oe {
 
                     /* interface functons */
                     virtual void execute() = 0;
+                    virtual void stop() = 0;
                     virtual bool configure() = 0;
                     virtual void cleanup() = 0;
                     virtual void pause() = 0;
