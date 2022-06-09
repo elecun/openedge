@@ -13,6 +13,8 @@ aop_h2o2gen_emg_p1_task::~aop_h2o2gen_emg_p1_task(){
 
 void aop_h2o2gen_emg_p1_task::execute(){
 
+    // 1. read temperature from other component's shared on system
+    json a = this->ipc.read("")
     
     
 }

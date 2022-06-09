@@ -16,6 +16,7 @@
 #include <3rdparty/jsonrpccxx/iclientconnector.hpp>
 #include <3rdparty/jsonrpccxx/server.hpp>
 #include <any>
+#include <openedge/core/ipc.hpp>
 
 #include <cxxabi.h>
 inline const char* __demangle__(const char* name){
@@ -136,6 +137,7 @@ namespace oe {
                     string taskname { "noname" };
                     status_d status { status_d::STOPPED };
                     type_d rtype;
+                    oe::core::ipc::connector ipc;
 
                 private:
                     unique_ptr<core::profile> _profile;

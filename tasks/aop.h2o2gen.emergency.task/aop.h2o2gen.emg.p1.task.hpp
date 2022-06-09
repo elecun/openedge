@@ -13,7 +13,6 @@
 #define _OPENEDGE_AOP_H2O2GEN_EMERGENCY_P1_TASK_HPP_
 
 #include <openedge/core.hpp>
-#include <boost/interprocess/shared_memory_object.hpp>
 
 using namespace oe;
 
