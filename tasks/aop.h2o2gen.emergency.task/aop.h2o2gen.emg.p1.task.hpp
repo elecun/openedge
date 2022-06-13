@@ -30,7 +30,7 @@ class aop_h2o2gen_emg_p1_task : public oe::core::task::runnable_rt {
         virtual void resume() override;
 
     private:
-        double _limit_temperature = 0.0;
+        double _limit_upper_bound = 0.0;
 
 }; /* end class */
 

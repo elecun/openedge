@@ -25,7 +25,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #define _OPENEDGE_CORE_HPP_
 
 #include <openedge/core/task.hpp>
-#include <openedge/core/ipc.hpp>
+#include <openedge/core/dbus.hpp>
 
 #include <openedge/core/service.hpp>
 #include <openedge/core/version.hpp>

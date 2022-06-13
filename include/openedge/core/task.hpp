@@ -17,6 +17,7 @@
 #include <3rdparty/jsonrpccxx/server.hpp>
 #include <any>
 #include <openedge/core/ipc.hpp>
+#include <openedge/core/dbus.hpp>
 
 #include <cxxabi.h>
 inline const char* __demangle__(const char* name){
@@ -137,7 +138,8 @@ namespace oe {
                     string taskname { "noname" };
                     status_d status { status_d::STOPPED };
                     type_d rtype;
-                    oe::core::ipc::connector ipc;
+                    unique_ptr<core::dbus::connector> databus;
+
 
                 private:
                     unique_ptr<core::profile> _profile;
@@ -185,6 +187,7 @@ namespace oe {
                 public:
                     runnable_rt(){
                         this->rtype = type_d::RT;
+                        this->databus = make_unique<dbus::connector_zmq>();
                     }
                     virtual ~runnable_rt() = default;
 

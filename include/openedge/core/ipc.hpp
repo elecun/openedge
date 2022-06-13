@@ -12,9 +12,9 @@
 #ifndef _OPENEDGE_CORE_IPC_HPP_
 #define _OPENEDGE_CORE_IPC_HPP_
 
-#include <3rdparty/json.hpp>
-
-using json = nlohmann::json;
+namespace oe::core::ipc {
+    
+}
 
 namespace oe::core::ipc {
 
@@ -23,8 +23,12 @@ namespace oe::core::ipc {
             connector() = default;
             ~connector() = default;
 
-            const json read(const char* channel){
-                
+            void* consume(const char* channel){
+
+            }
+
+            void produce(){
+
             }
 
     }; /* end class */
