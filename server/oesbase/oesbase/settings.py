@@ -16,11 +16,11 @@ import sys
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+print(BASE_DIR)
 
 '''
 [EDIT] Additional path for APIs, APPs
 '''
-sys.path.append(os.path.join(BASE_DIR, 'apis'))
 sys.path.append(os.path.join(BASE_DIR, 'apps'))
 
 
@@ -49,7 +49,8 @@ INSTALLED_APPS = [
     #added apps
     'rest_framework',
 
-    'aop_uvlc'  # App for UV Lamp Cleaning System in AOP plant
+    'divelink',
+    #'aop_uvlc'  # App for UV Lamp Cleaning System in AOP plant
 ]
 
 MIDDLEWARE = [
@@ -128,7 +129,7 @@ USE_TZ = True
 STATIC_URL = 'static/'
 #[EDIT] Add static files
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),
+    os.path.join(BASE_DIR, 'staticfiles'),
 ]
 
 # Default primary key field type
