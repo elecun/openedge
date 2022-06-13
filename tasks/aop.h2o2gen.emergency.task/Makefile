@@ -66,9 +66,43 @@ aop.h2o2gen.emg.p1.task: $(BUILDDIR)aop.h2o2gen.emg.p1.task.o
 $(BUILDDIR)aop.h2o2gen.emg.p1.task.o: $(CURRENT_DIR)/aop.h2o2gen.emg.p1.task.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
+aop.h2o2gen.emg.p2.task: $(BUILDDIR)aop.h2o2gen.emg.p2.task.o
+	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS)
+$(BUILDDIR)aop.h2o2gen.emg.p2.task.o: $(CURRENT_DIR)/aop.h2o2gen.emg.p2.task.cc
+	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
+aop.h2o2gen.emg.p3.task: $(BUILDDIR)aop.h2o2gen.emg.p3.task.o
+	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS)
+$(BUILDDIR)aop.h2o2gen.emg.p3.task.o: $(CURRENT_DIR)/aop.h2o2gen.emg.p3.task.cc
+	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
+aop.h2o2gen.emg.p4.task: $(BUILDDIR)aop.h2o2gen.emg.p4.task.o
+	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS)
+$(BUILDDIR)aop.h2o2gen.emg.p4.task.o: $(CURRENT_DIR)/aop.h2o2gen.emg.p4.task.cc
+	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
+aop.h2o2gen.emg.p5.task: $(BUILDDIR)aop.h2o2gen.emg.p5.task.o
+	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS)
+$(BUILDDIR)aop.h2o2gen.emg.p5.task.o: $(CURRENT_DIR)/aop.h2o2gen.emg.p5.task.cc
+	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
+aop.h2o2gen.emg.p6.task: $(BUILDDIR)aop.h2o2gen.emg.p6.task.o
+	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS)
+$(BUILDDIR)aop.h2o2gen.emg.p6.task.o: $(CURRENT_DIR)/aop.h2o2gen.emg.p6.task.cc
+	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
+aop.h2o2gen.emg.p7.task: $(BUILDDIR)aop.h2o2gen.emg.p7.task.o
+	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS)
+$(BUILDDIR)aop.h2o2gen.emg.p7.task.o: $(CURRENT_DIR)/aop.h2o2gen.emg.p7.task.cc
+	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
+aop.h2o2gen.emg.p8.task: $(BUILDDIR)aop.h2o2gen.emg.p8.task.o
+	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS)
+$(BUILDDIR)aop.h2o2gen.emg.p8.task.o: $(CURRENT_DIR)/aop.h2o2gen.emg.p8.task.cc
+	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
 all : tasks
-tasks : aop.h2o2gen.emg.p1.task
+tasks : aop.h2o2gen.emg.p1.task aop.h2o2gen.emg.p2.task aop.h2o2gen.emg.p3.task aop.h2o2gen.emg.p4.task aop.h2o2gen.emg.p5.task aop.h2o2gen.emg.p6.task aop.h2o2gen.emg.p7.task aop.h2o2gen.emg.p8.task
 deploy : FORCE
 	cp $(BUILDDIR)*.task $(BINDIR)
 clean : FORCE 

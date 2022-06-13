@@ -6,7 +6,7 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Sun Jun 12 23:30:55 2022
+# Make data base, printed on Mon Jun 13 06:41:23 2022
 
 # Variables
 
@@ -65,7 +65,7 @@ LESSOPEN = | /usr/bin/lesspipe %s
 # environment
 VSCODE_CWD = /home/aopadmin
 # environment
-SSH_CONNECTION = 192.168.11.51 50665 192.168.3.105 22
+SSH_CONNECTION = 192.168.11.51 62007 192.168.3.105 22
 # environment
 PATH = /home/aopadmin/.vscode-server/bin/4af164ea3a06f701fe3e89a2bcbb421d2026b68f/bin/remote-cli:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
 # environment
@@ -75,7 +75,7 @@ INCLUDE_DIR = -I./ -I./include/ -I./include/3rdparty/
 # environment
 VSCODE_LOG_STACK = false
 # environment
-VSCODE_IPC_HOOK_CLI = /run/user/1001/vscode-ipc-6a742c8e-b6ee-4434-96a6-8c78bc4d3419.sock
+VSCODE_IPC_HOOK_CLI = /run/user/1001/vscode-ipc-8e466d05-ff6d-4049-9306-af5fdc4b1f75.sock
 # makefile (from 'Makefile', line 36)
 LDFLAGS = -Wl,--export-dynamic -Wl,-rpath=$(LD_LIBRARY_PATH)
 # makefile (from 'Makefile', line 37)
@@ -113,7 +113,7 @@ LESSCLOSE = /usr/bin/lesspipe %s %s
 # environment
 LOGNAME = aopadmin
 # environment
-APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = 1
+APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = true
 # automatic
 +F = $(notdir $+)
 # environment
@@ -133,7 +133,7 @@ SHLVL = 1
 # makefile (from 'Makefile', line 17)
 CC := /usr/bin/arm-linux-gnueabihf-g++-8
 # environment
-XDG_SESSION_ID = 3080
+XDG_SESSION_ID = 3090
 # environment
 USER = aopadmin
 # makefile
@@ -157,7 +157,7 @@ MAKEFLAGS = pqrR
 # environment
 MFLAGS = -pqrR
 # environment
-SSH_CLIENT = 192.168.11.51 50665 22
+SSH_CLIENT = 192.168.11.51 62007 22
 # automatic
 +D = $(patsubst %/,%,$(dir $+))
 # environment
@@ -203,9 +203,9 @@ MOTD_SHOWN = pam
 
 # Directories
 
-# . (device 64768, inode 5114896): 20 files, no impossibilities.
+# . (device 64768, inode 5114896): 21 files, no impossibilities.
 
-# 20 files, no impossibilities in 1 directories.
+# 21 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
@@ -286,9 +286,9 @@ all: edge tasks services
 #  File has been updated.
 #  Needs to be updated (-q is set).
 # variable set hash-table stats:
- 
 # Load=0/32=0%, Rehash=0, Collisions=0/6=0%
 
+ 
 FORCE:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
@@ -576,7 +576,6 @@ bin/armhf/modbus.rtu.service.o: services/modbus.rtu.service/modbus.rtu.service.c
 tasks/modbusRTU.task/modbusRTU.task.cc:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
- 
 #  File has not been updated.
 
 # Not a target:
@@ -585,6 +584,7 @@ include/openedge/core/rt_timer.cc:
 #  Modification time never checked.
 #  File has not been updated.
 
+ 
 # Not a target:
 tasks/rt.perf.test.task/rt.perf.test.task.cc:
 #  Implicit rule search has not been done.
@@ -877,8 +877,8 @@ bin/armhf/openedge.o:
 
 bin/armhf/peak.pcan.mqtt.task.o: tasks/peak.pcan.mqtt.task/peak.pcan.mqtt.task.cc
 #  Implicit rule search has not been done.
-#  Modification time never checked.
  
+#  Modification time never checked.
 #  File has not been updated.
 #  recipe to execute (from 'Makefile', line 202):
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
@@ -1174,6 +1174,7 @@ tasks/moxa.io.service.task/moxa.io.service.task.cc:
 #  Modification time never checked.
 #  File has not been updated.
 
+ 
 agsys.manage.task: bin/armhf/agsys.manage.task.o
 #  Implicit rule search has not been done.
 #  Modification time never checked.
@@ -1184,7 +1185,6 @@ agsys.manage.task: bin/armhf/agsys.manage.task.o
 # Not a target:
 apps/edge/task_manager.cc:
 #  Implicit rule search has not been done.
- 
 #  Modification time never checked.
 #  File has not been updated.
 
@@ -1235,12 +1235,12 @@ tasks/agw.manage.task/agw.manage.task.cc:
 
 # No general ('VPATH' variable) search path.
 
-# strcache buffers: 1 (0) / strings = 170 / storage = 4307 B / avg = 25 B
-# current buf: size = 8162 B / used = 4307 B / count = 170 / avg = 25 B
+# strcache buffers: 1 (0) / strings = 171 / storage = 4317 B / avg = 25 B
+# current buf: size = 8162 B / used = 4317 B / count = 171 / avg = 25 B
 
-# strcache performance: lookups = 336 / hit rate = 49%
+# strcache performance: lookups = 337 / hit rate = 49%
 # hash-table stats:
-# Load=170/8192=2%, Rehash=0, Collisions=6/336=2%
-# Finished Make data base on Sun Jun 12 23:30:55 2022
+# Load=171/8192=2%, Rehash=0, Collisions=6/337=2%
+# Finished Make data base on Mon Jun 13 06:41:23 2022
 
  

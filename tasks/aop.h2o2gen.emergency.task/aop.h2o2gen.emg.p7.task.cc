@@ -1,34 +1,34 @@
 
-#include "aop.h2o2gen.emg.p1.task.hpp"
+#include "aop.h2o2gen.emg.p7.task.hpp"
 #include <openedge/log.hpp>
 
-aop_h2o2gen_emg_p1_task::aop_h2o2gen_emg_p1_task(){
+aop_h2o2gen_emg_p7_task::aop_h2o2gen_emg_p7_task(){
 
 
 }
 
-aop_h2o2gen_emg_p1_task::~aop_h2o2gen_emg_p1_task(){
+aop_h2o2gen_emg_p7_task::~aop_h2o2gen_emg_p7_task(){
 
 }
 
-void aop_h2o2gen_emg_p1_task::execute(){
+void aop_h2o2gen_emg_p7_task::execute(){
 
     //1. read data from node
-    const char* nodename = "aop_h2o2_sensor_temperature";
-    double temperature = std::any_cast<double>(databus->read_from_node(nodename, 0x0000, sizeof(double)*1));
+    const char* nodename = "aop_h2o2_sensor_h2_concentration";
+    double concentration = std::any_cast<double>(databus->read_from_node(nodename, 0x0000, sizeof(double)*1));
 
     //2. check limit (over heat warning)
-    if(temperature>_limit_upper_bound){
-        //alarm & system shutdown
+    if(concentration>_limit_upper_bound){
+
     }
 
 }
 
-void aop_h2o2gen_emg_p1_task::stop(){
+void aop_h2o2gen_emg_p7_task::stop(){
 
 }
 
-bool aop_h2o2gen_emg_p1_task::configure(){
+bool aop_h2o2gen_emg_p7_task::configure(){
 
     json config = json::parse(get_profile()->get("configuration"));
 
@@ -50,14 +50,14 @@ bool aop_h2o2gen_emg_p1_task::configure(){
     
 }
 
-void aop_h2o2gen_emg_p1_task::cleanup(){
+void aop_h2o2gen_emg_p7_task::cleanup(){
     
 }
 
-void aop_h2o2gen_emg_p1_task::pause(){
+void aop_h2o2gen_emg_p7_task::pause(){
     
 }
 
-void aop_h2o2gen_emg_p1_task::resume(){
+void aop_h2o2gen_emg_p7_task::resume(){
     
 }
