@@ -8,17 +8,17 @@
 
 namespace oe::bus {
 
-    syncUART::syncUART(const char* dev, busUART::busBaudrate baudrate, unsigned int databits, busUART::busStopbits stopbits,
-            busUART::busParity parity, busUART::busFlowControl flowcontrol)
-            :_port(dev), busUART(baudrate, databits, stopbits, parity, flowcontrol){
+    sync_uart::sync_uart(const char* dev, bus_uart::baudrate_d baudrate, unsigned int databits, bus_uart::stopbits_d stopbits,
+            bus_uart::parity_d parity, bus_uart::flowcontrol_d flowcontrol)
+            :_port(dev), bus_uart(baudrate, databits, stopbits, parity, flowcontrol){
 
     }
 
-    syncUART::~syncUART(){
+    sync_uart::~sync_uart(){
         this->close();
     }
 
-    bool syncUART::open(){
+    bool sync_uart::open(){
 
         #if defined(_WIN32) || defined(_WIN64)
             console::info("Not supported yet for Windows");
@@ -33,17 +33,17 @@ namespace oe::bus {
 
                 speed_t baud;
                 switch(baudrate){
-                    case busUART::busBaudrate::BAUDRATE_110: baud = B110; break;
-                    case busUART::busBaudrate::BAUDRATE_300: baud = B300; break;
-                    case busUART::busBaudrate::BAUDRATE_600: baud = B600; break;
-                    case busUART::busBaudrate::BAUDRATE_1200: baud = B1200; break;
-                    case busUART::busBaudrate::BAUDRATE_2400: baud = B2400; break;
-                    case busUART::busBaudrate::BAUDRATE_4800: baud = B4800; break;
-                    case busUART::busBaudrate::BAUDRATE_9600: baud = B9600; break;
-                    case busUART::busBaudrate::BAUDRATE_19200: baud = B19200; break;
-                    case busUART::busBaudrate::BAUDRATE_38400: baud = B38400; break;
-                    case busUART::busBaudrate::BAUDRATE_57600: baud = B57600; break;
-                    case busUART::busBaudrate::BAUDRATE_115200: baud = B115200; break;
+                    case bus_uart::baudrate_d::BAUDRATE_110: baud = B110; break;
+                    case bus_uart::baudrate_d::BAUDRATE_300: baud = B300; break;
+                    case bus_uart::baudrate_d::BAUDRATE_600: baud = B600; break;
+                    case bus_uart::baudrate_d::BAUDRATE_1200: baud = B1200; break;
+                    case bus_uart::baudrate_d::BAUDRATE_2400: baud = B2400; break;
+                    case bus_uart::baudrate_d::BAUDRATE_4800: baud = B4800; break;
+                    case bus_uart::baudrate_d::BAUDRATE_9600: baud = B9600; break;
+                    case bus_uart::baudrate_d::BAUDRATE_19200: baud = B19200; break;
+                    case bus_uart::baudrate_d::BAUDRATE_38400: baud = B38400; break;
+                    case bus_uart::baudrate_d::BAUDRATE_57600: baud = B57600; break;
+                    case bus_uart::baudrate_d::BAUDRATE_115200: baud = B115200; break;
                     default: {
                         console::error("Invalid UART Baudrate");
                         return false;
@@ -64,8 +64,8 @@ namespace oe::bus {
 
                 int stopbits_flag = 0;
                 switch(stopbits){
-                    case busUART::busStopbits::ONE: stopbits_flag = 0; break;
-                    case busUART::busStopbits::TWO: stopbits_flag = CSTOPB; break;
+                    case bus_uart::stopbits_d::ONE: stopbits_flag = 0; break;
+                    case bus_uart::stopbits_d::TWO: stopbits_flag = CSTOPB; break;
                     default: {
                         console::error("Invalid UART Stopbits");
                         return false;
@@ -74,9 +74,9 @@ namespace oe::bus {
 
                 int parity_flag = 0;
                 switch(parity){
-                    case busUART::busParity::NONE: parity_flag = 0; break;
-                    case busUART::busParity::EVEN: parity_flag = PARENB; break;
-                    case busUART::busParity::ODD: parity_flag = (PARENB|PARODD); break;
+                    case bus_uart::parity_d::NONE: parity_flag = 0; break;
+                    case bus_uart::parity_d::EVEN: parity_flag = PARENB; break;
+                    case bus_uart::parity_d::ODD: parity_flag = (PARENB|PARODD); break;
                     default: {
                         console::error("Invalid UART Parity");
                         return false;
@@ -97,7 +97,7 @@ namespace oe::bus {
         return true;
     }
 
-    void syncUART::close(){
+    void sync_uart::close(){
         #if defined(_WIN32) || defined (_WIN64)
             console::error("Not support on this OS yet.")
         #elif defined (__linux__) || defined (__APPLE__)
@@ -106,7 +106,7 @@ namespace oe::bus {
         #endif
     }
 
-    int syncUART::read(uint8_t* data, int len){
+    int sync_uart::read(uint8_t* data, int len){
 
         #if defined(_WIN32) || defined (_WIN64)
             console::error("Not support on this OS yet.")
@@ -117,7 +117,7 @@ namespace oe::bus {
         return 0;
     }
 
-    int syncUART::read_until(uint8_t* data, int len, unsigned int t_ms){
+    int sync_uart::read_until(uint8_t* data, int len, unsigned int t_ms){
         #if defined(_WIN32) || defined (_WIN64)
             console::error("Not support on this OS yet.")
         #elif defined (__linux__) || defined (__APPLE__)
@@ -141,7 +141,7 @@ namespace oe::bus {
         return 0;
     }
 
-    int syncUART::write(const uint8_t* data, int len){
+    int sync_uart::write(const uint8_t* data, int len){
 
         #if defined(_WIN32) || defined (_WIN64)
             console::error("Not support on this OS yet.")

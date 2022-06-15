@@ -13,6 +13,7 @@
 #define _OPENEDGE_CORE_DBUS_HPP_
 
 #include <any>
+#include <3rdparty/zmq/zmq.hpp>
 
 using namespace std;
 
@@ -70,7 +71,11 @@ namespace oe::core::dbus {
             connector_zmq() = default;
             virtual ~connector_zmq() = default;
 
-
+            virtual bool connect(const char* address, int channel) override;
+            virtual bool disconnect() override;
+            virtual std::any read_from_node(const char* nodename, unsigned int address, int size) override;
+            virtual void write(std::any data) override;
+            virtual unsigned int find(const char* name) override;
 
     }; /* end class */
 

@@ -80,33 +80,33 @@ namespace oe::bus {
 
     }; /* timeout class */
 
-    class sync_uart : public oe::interface::bus_uart, oe::interface::sync_bus {
-    public:
-        sync_uart(const char* dev, bus_uart::baudrate_d baudrate = bus_uart::baudrate_d::BAUDRATE_115200,
-            unsigned int databits = 8,
-            bus_uart::stopbits_d stopbits = bus_uart::stopbits_d::ONE,
-            bus_uart::parity_d parity = bus_uart::parity_d::NONE,
-            bus_uart::flowcontrol_d flowcontrol = bus_uart::flowcontrol_d::NONE);
-        virtual ~sync_uart();
+    class sync_uart : public oe::interface::bus_uart, public oe::interface::sync_bus {
+        public:
+            sync_uart(const char* dev, bus_uart::baudrate_d baudrate = bus_uart::baudrate_d::BAUDRATE_115200,
+                unsigned int databits = 8,
+                bus_uart::stopbits_d stopbits = bus_uart::stopbits_d::ONE,
+                bus_uart::parity_d parity = bus_uart::parity_d::NONE,
+                bus_uart::flowcontrol_d flowcontrol = bus_uart::flowcontrol_d::NONE){}
+            virtual ~sync_uart();
 
-        /* sync bus interface function */
-        bool open() override;
-        void close() override;
-        int read(uint8_t* data, int len) override;
-        int read_until(uint8_t* data, int len, unsigned int t_ms) override;
-        int write(const uint8_t* data, int len) override;
+            /* sync bus interface function */
+            bool open() override;
+            void close() override;
+            int read(uint8_t* data, int len) override;
+            int read_until(uint8_t* data, int len, unsigned int t_ms) override;
+            int write(const uint8_t* data, int len) override;
 
-    private:
-        #if defined(__linux__) || defined(__APPLE__)
-            int _fd = -1;   //device file descriptor
-        #endif
-        string _port;
-        
+        private:
+            #if defined(__linux__) || defined(__APPLE__)
+                int _fd = -1;   //device file descriptor
+            #endif
+            string _port;
     }; //class sync_uart
 
     class async_uart : public oe::interface::bus_uart, oe::interface::async_bus {
         public:
-            async_uart(const char* dev, )
+            async_uart() = default;
+            virtual ~async_uart() = default;
     }; //class async_uart
 
 } //namespace oe::bus

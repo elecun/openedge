@@ -13,8 +13,6 @@
 #include <vector>
 #include <memory>
 #include <openedge/core/profile.hpp>
-#include <3rdparty/jsonrpccxx/iclientconnector.hpp>
-#include <3rdparty/jsonrpccxx/server.hpp>
 #include <any>
 #include <openedge/core/ipc.hpp>
 #include <openedge/core/dbus.hpp>
@@ -219,19 +217,6 @@ namespace oe {
                     fault_level_d   f_level = fault_level_d::NONE;
 
             }; /* class runnable for RT */
-
-        
-
-            /**
-             * @brief   Local Service Connector for RPC Client (Deprecated)
-             */
-            class localServiceConnector : public jsonrpccxx::IClientConnector {
-            public:
-                explicit localServiceConnector(jsonrpccxx::JsonRpcServer &server) : server(server) {}
-                std::string Send(const std::string &request) override { return server.HandleRequest(request); }
-            private:
-                jsonrpccxx::JsonRpcServer &server;
-            };
 
     } //namespace core
 

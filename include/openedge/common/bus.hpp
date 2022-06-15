@@ -18,6 +18,8 @@ namespace oe::interface {
             sync_bus() {
                 this->type = type_d::BUS;
             }
+            virtual ~sync_bus() = default;
+
 			virtual bool open() = 0;
 			virtual void close() = 0;
 			virtual int read(uint8_t* data, int len) = 0;   //read block
@@ -44,7 +46,7 @@ namespace oe::interface {
     }; //class async bus
 
     class bus_uart {
-    public:
+        public:
         /* UART Baudrate */
         enum class baudrate_d : unsigned int {
             BAUDRATE_110 = 110,
