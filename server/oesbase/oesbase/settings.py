@@ -46,9 +46,13 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    #added apps
+    #default apps required
+    'base',
+
+    # addred 3rdpaty apps required
     'rest_framework',
 
+    # custom apps
     'divelink',
     #'aop_uvlc'  # App for UV Lamp Cleaning System in AOP plant
 ]

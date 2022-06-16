@@ -6,7 +6,7 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Wed Jun 15 04:20:58 2022
+# Make data base, printed on Wed Jun 15 23:10:01 2022
 
 # Variables
 
@@ -43,7 +43,7 @@ EXAMPLE_SOURCE_FILES = ./examples/
 # environment
 VSCODE_NLS_CONFIG = {"locale":"en","availableLanguages":{}}
 # environment
-_ = /home/aopadmin/.vscode-server/bin/4af164ea3a06f701fe3e89a2bcbb421d2026b68f/node
+_ = /home/aopadmin/.vscode-server/bin/30d9c6cd9483b2cc586687151bcbcd635f373630/node
 # makefile (from 'Makefile', line 1)
 MAKEFILE_LIST :=  Makefile
 # makefile (from 'Makefile', line 18)
@@ -65,9 +65,9 @@ LESSOPEN = | /usr/bin/lesspipe %s
 # environment
 VSCODE_CWD = /home/aopadmin
 # environment
-SSH_CONNECTION = 192.168.201.133 55195 192.168.3.105 22
+SSH_CONNECTION = 192.168.201.133 49233 192.168.3.105 22
 # environment
-PATH = /home/aopadmin/.vscode-server/bin/4af164ea3a06f701fe3e89a2bcbb421d2026b68f/bin/remote-cli:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+PATH = /home/aopadmin/.vscode-server/bin/30d9c6cd9483b2cc586687151bcbcd635f373630/bin/remote-cli:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
 # environment
 XDG_RUNTIME_DIR = /run/user/1001
 # makefile (from 'Makefile', line 22)
@@ -75,7 +75,7 @@ INCLUDE_DIR = -I./ -I./include/ -I./include/3rdparty/
 # environment
 VSCODE_LOG_STACK = false
 # environment
-VSCODE_IPC_HOOK_CLI = /run/user/1001/vscode-ipc-c7c0888e-fbc5-49fd-bcb2-2a306fbbe20c.sock
+VSCODE_IPC_HOOK_CLI = /run/user/1001/vscode-ipc-820a795d-2b9d-4d94-8766-f22288e74b4f.sock
 # makefile (from 'Makefile', line 36)
 LDFLAGS = -Wl,--export-dynamic -Wl,-rpath=$(LD_LIBRARY_PATH)
 # makefile (from 'Makefile', line 37)
@@ -113,7 +113,7 @@ LESSCLOSE = /usr/bin/lesspipe %s %s
 # environment
 LOGNAME = aopadmin
 # environment
-APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = true
+APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = 1
 # automatic
 +F = $(notdir $+)
 # environment
@@ -133,7 +133,7 @@ SHLVL = 1
 # makefile (from 'Makefile', line 17)
 CC := /usr/bin/arm-linux-gnueabihf-g++-8
 # environment
-XDG_SESSION_ID = 3146
+XDG_SESSION_ID = 3180
 # environment
 USER = aopadmin
 # makefile
@@ -144,6 +144,8 @@ GTEST_LDLIBS = -lgtest
 %D = $(patsubst %/,%,$(dir $%))
 # default
 MAKE_COMMAND := make
+# environment
+OLDPWD = /home/aopadmin/.vscode-server/bin/30d9c6cd9483b2cc586687151bcbcd635f373630
 # default
 .VARIABLES := 
 # automatic
@@ -157,11 +159,11 @@ MAKEFLAGS = pqrR
 # environment
 MFLAGS = -pqrR
 # environment
-SSH_CLIENT = 192.168.201.133 55195 22
+SSH_CLIENT = 192.168.201.133 49233 22
 # automatic
 +D = $(patsubst %/,%,$(dir $+))
 # environment
-BROWSER = /home/aopadmin/.vscode-server/bin/4af164ea3a06f701fe3e89a2bcbb421d2026b68f/bin/helpers/browser.sh
+BROWSER = /home/aopadmin/.vscode-server/bin/30d9c6cd9483b2cc586687151bcbcd635f373630/bin/helpers/browser.sh
 # environment
 VSCODE_HANDLES_SIGPIPE = true
 # 'override' directive
@@ -195,7 +197,7 @@ VSCODE_EXTHOST_WILL_SEND_SOCKET = true
 # environment
 MOTD_SHOWN = pam
 # variable set hash-table stats:
-# Load=92/1024=9%, Rehash=0, Collisions=10/296=3%
+# Load=93/1024=9%, Rehash=0, Collisions=10/297=3%
 
 # Pattern-specific Variable Values
 
@@ -276,11 +278,11 @@ bin/armhf/driver.o: include/openedge/core/driver.cc
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
+ 
 #  recipe to execute (from 'Makefile', line 96):
 						$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
 all: edge tasks services
- 
 #  Command line target.
 #  Implicit rule search has been done.
 #  File does not exist.
@@ -555,11 +557,11 @@ test: testptp
 # Not a target:
 uvlc.contro.task:
 #  Implicit rule search has not been done.
+ 
 #  Modification time never checked.
 #  File has not been updated.
 
 moxa.analog.service.task: bin/armhf/moxa.analog.service.task.o
- 
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
@@ -838,7 +840,6 @@ bin/armhf/dkm_dx3000_native.o: include//support/device/dkm_dx3000_native.cc
 
 bin/armhf/dkm_dx3000.o: include//support/device/dkm_dx3000.cc
 #  Implicit rule search has not been done.
- 
 #  Modification time never checked.
 #  File has not been updated.
 #  recipe to execute (from 'Makefile', line 119):
@@ -848,6 +849,7 @@ bin/armhf/dkm_dx3000.o: include//support/device/dkm_dx3000.cc
 include/openedge/sys/network_perf.cc:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
+ 
 #  File has not been updated.
 
 # Not a target:
@@ -1116,7 +1118,6 @@ bin/armhf/agw.manage.task.o: tasks/agw.manage.task/agw.manage.task.cc
 #  Modification time never checked.
 #  File has not been updated.
 #  recipe to execute (from 'Makefile', line 244):
- 
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
 # Not a target:
@@ -1136,6 +1137,7 @@ services: lsis.fenet.connector.service mongodb.connector.service mqtt.publisher.
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
+ 
 
 # Not a target:
 tasks/agsys.manage.task/agsys.manage.task.cc:
@@ -1241,6 +1243,6 @@ tasks/agw.manage.task/agw.manage.task.cc:
 # strcache performance: lookups = 337 / hit rate = 49%
 # hash-table stats:
 # Load=171/8192=2%, Rehash=0, Collisions=6/337=2%
-# Finished Make data base on Wed Jun 15 04:20:58 2022
+# Finished Make data base on Wed Jun 15 23:10:01 2022
 
  

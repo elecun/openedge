@@ -19,6 +19,8 @@ from django.urls import path, include
 urlpatterns = [
     path('admin/', admin.site.urls),
 
+    path('', include('base.urls')),
+
     # for internal custom apps
     #path('apps/aop_uvlc/', include('aop_uvlc.urls')),
     path('app/divelink/', include('divelink.urls')),
