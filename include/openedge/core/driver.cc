@@ -65,8 +65,11 @@ namespace oe::core::task {
         try {
             if(_taskImpl){
                 //set configurations
-                _taskImpl->_check_jitter = _taskImpl->getProfile()->data["info"]["policy"]["check_jitter"].get<bool>();
-                _taskImpl->_check_overrun = _taskImpl->getProfile()->data["info"]["policy"]["check_overrun"].get<bool>();
+                if(_taskImpl->rtype==task::runnable::type_d::RT){
+                    _taskImpl->_option.check_jitter = _taskImpl->get_profile()->data["info"]["policy"]["check_jitter"].get<bool>();
+                    _taskImpl->_option.check_overrun = _taskImpl->get_profile()->data["info"]["policy"]["check_overrun"].get<bool>();
+                }
+                
                 return _taskImpl->configure();
             }
         }

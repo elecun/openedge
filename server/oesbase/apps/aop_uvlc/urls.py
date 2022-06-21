@@ -5,5 +5,5 @@ from aop_uvlc import views
 # api views
 urlpatterns = [
     
-    path('control', views.manual_control, name="aop_uvlc_control"),
+    path('', views.manual_control, name="aop_uvlc_view"),
 ]

@@ -14,7 +14,6 @@
 #include <memory>
 #include <openedge/core/profile.hpp>
 #include <any>
-#include <openedge/core/ipc.hpp>
 #include <openedge/core/dbus.hpp>
 
 #include <cxxabi.h>
@@ -100,6 +99,11 @@ namespace oe {
 
             // }; //class runnable
 
+            typedef struct _taskOptions {
+                bool check_jitter = false;
+                bool check_overrun = false;
+            } taskOptions;
+
             /**
              * @brief Runnable Class Base
              * 
@@ -112,7 +116,7 @@ namespace oe {
                     virtual ~runnable() = default;
 
                     enum class status_d : int { STOPPED=0, STOPPING, WORKING, PAUSED, IDLE };
-                    enum class type_d : int { NT = 0, RT };
+                    enum class type_d : int { NT = 0, RT }; //runnable task type (NT=Not RT)
 
                     /* interface functons */
                     virtual void execute() = 0;
@@ -141,6 +145,7 @@ namespace oe {
 
                 private:
                     unique_ptr<core::profile> _profile;
+                    taskOptions _option;
             };
 
             /**
@@ -213,8 +218,8 @@ namespace oe {
                     };
 
                 protected:
-                    fault_type_d    f_type = fault_type_d::PERMANENT;
-                    fault_level_d   f_level = fault_level_d::NONE;
+                    fault_type_d    fault_type = fault_type_d::PERMANENT;
+                    fault_level_d   fault_level = fault_level_d::NONE;
 
             }; /* class runnable for RT */
 

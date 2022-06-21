@@ -5,8 +5,9 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
+ 
 
-# Make data base, printed on Tue Jun 21 07:07:09 2022
+# Make data base, printed on Tue Jun 21 09:52:43 2022
 
 # Variables
 
@@ -78,6 +79,7 @@ VSCODE_LOG_STACK = false
 VSCODE_IPC_HOOK_CLI = /run/user/1001/vscode-ipc-dd690e8b-50d6-43e6-b77b-4099fd2e2e8d.sock
 # makefile (from 'Makefile', line 36)
 LDFLAGS = -Wl,--export-dynamic -Wl,-rpath=$(LD_LIBRARY_PATH)
+ 
 # makefile (from 'Makefile', line 37)
 LDLIBS = -pthread -lrt -ldl -lm -lczmq -lzmq
 # makefile (from 'Makefile', line 55)
@@ -113,7 +115,8 @@ LESSCLOSE = /usr/bin/lesspipe %s %s
 # environment
 LOGNAME = aopadmin
 # environment
-APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = true
+ 
+APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = 1
 # automatic
 +F = $(notdir $+)
 # environment
@@ -147,6 +150,7 @@ MAKE_COMMAND := make
 # default
 .VARIABLES := 
 # automatic
+ 
 *F = $(notdir $*)
 # makefile (from 'Makefile', line 9)
 OS := Linux
@@ -172,6 +176,7 @@ MAKEFILES :=
 <F = $(notdir $<)
 # environment
 LC_ALL = C
+ 
 # makefile (from 'Makefile', line 58)
 SERVICE_SOURCE_FILES = ./services/
 # makefile (from 'Makefile', line 57)
@@ -193,6 +198,7 @@ LANG = C
 # environment
 VSCODE_EXTHOST_WILL_SEND_SOCKET = true
 # environment
+ 
 MOTD_SHOWN = pam
 # variable set hash-table stats:
 # Load=92/1024=9%, Rehash=0, Collisions=10/296=3%
@@ -206,6 +212,7 @@ MOTD_SHOWN = pam
 # . (device 64768, inode 5114896): 21 files, no impossibilities.
 
 # 21 files, no impossibilities in 1 directories.
+ 
 
 # Implicit Rules
 
@@ -225,6 +232,7 @@ bin/armhf/cpuload.o:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
+ 
 
 bin/armhf/aop10t.pilot.task.o: tasks/aop10t.pilot.task/aop10t.pilot.task.cc
 #  Implicit rule search has not been done.
@@ -246,6 +254,7 @@ bin/armhf/netload.o:
 #  File has not been updated.
 
 bin/armhf/edge.o: apps/edge/edge.cc
+ 
 #  Implicit rule search has not been done.
 #  Implicit/static pattern stem: ''
 #  File does not exist.
@@ -265,6 +274,7 @@ bin/armhf/edge.o: apps/edge/edge.cc
 # < := apps/edge/edge.cc
 # automatic
 # ^ := apps/edge/edge.cc
+ 
 # automatic
 # ? := apps/edge/edge.cc
 # variable set hash-table stats:
@@ -278,10 +288,10 @@ bin/armhf/driver.o: include/openedge/core/driver.cc
 #  File has not been updated.
 #  recipe to execute (from 'Makefile', line 96):
 						$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
- 
 
 all: edge tasks services
 #  Command line target.
+ 
 #  Implicit rule search has been done.
 #  File does not exist.
 #  File has been updated.
@@ -302,6 +312,7 @@ bin/armhf/mqtt.o: services/mqtt.publisher.service/mqtt.cc
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
 bin/armhf/profile.o: include/openedge/core/profile.cc
+ 
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
@@ -557,7 +568,6 @@ uvlc.contro.task:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
- 
 
 moxa.analog.service.task: bin/armhf/moxa.analog.service.task.o
 #  Implicit rule search has not been done.
@@ -597,6 +607,7 @@ tasks/sysmon.task/sysmon.cc:
 #  Modification time never checked.
 #  File has not been updated.
 
+ 
 bin/armhf/dx3000.control.task.o: tasks/dx3000.control.task/dx3000.control.task.cc
 #  Implicit rule search has not been done.
 #  Modification time never checked.
@@ -668,6 +679,7 @@ include/openedge/sys/memory.cc:
 #  Modification time never checked.
 #  File has not been updated.
 
+ 
 dx3000.control.task: bin/armhf/dx3000.control.task.o bin/armhf/dkm_dx3000.o
 #  Implicit rule search has not been done.
 #  Modification time never checked.
@@ -728,6 +740,7 @@ bin/armhf/general.o: include/openedge/device/general.cc
 #  File has not been updated.
 #  recipe to execute (from 'Makefile', line 102):
 						$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+ 
 
 bin/armhf/modbusRTU.task.o: tasks/modbusRTU.task/modbusRTU.task.cc
 #  Implicit rule search has not been done.
@@ -757,6 +770,7 @@ tasks/agw.manage.task/agw.mqtt.cc:
 #  File has not been updated.
 
 # Not a target:
+ 
 include/openedge/sys/network.cc:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
@@ -793,6 +807,7 @@ bin/armhf/rt_timer.o: include/openedge/core/rt_timer.cc
 #  Modification time never checked.
 #  File has not been updated.
 #  recipe to execute (from 'Makefile', line 94):
+ 
 							$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
 bin/armhf/qual.dmr.task.o: tasks/qual.dmr.task/qual.dmr.task.cc
@@ -817,6 +832,7 @@ sys.mdns.manage.task: bin/armhf/sys.mdns.manage.task.o
 	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) -ltinyxml2
 
 # Not a target:
+ 
 .DEFAULT:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
@@ -837,7 +853,6 @@ bin/armhf/dkm_dx3000_native.o: include//support/device/dkm_dx3000_native.cc
 							$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
 bin/armhf/dkm_dx3000.o: include//support/device/dkm_dx3000.cc
- 
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
@@ -854,6 +869,7 @@ include/openedge/sys/network_perf.cc:
 include/openedge/core/rt_trigger.cc:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
+ 
 #  File has not been updated.
 
 bin/armhf/moxa.io.service.task.o: tasks/moxa.io.service.task/moxa.io.service.task.cc
@@ -879,6 +895,7 @@ bin/armhf/openedge.o:
 bin/armhf/peak.pcan.mqtt.task.o: tasks/peak.pcan.mqtt.task/peak.pcan.mqtt.task.cc
 #  Implicit rule search has not been done.
 #  Modification time never checked.
+ 
 #  File has not been updated.
 #  recipe to execute (from 'Makefile', line 202):
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
@@ -953,6 +970,7 @@ bin/armhf/nport.udp.task.o: tasks/nport.udp.task/nport.udp.task.cc
 bin/armhf/mqtt.publisher.service.o: services/mqtt.publisher.service/mqtt.publisher.service.cc
 #  Implicit rule search has not been done.
 #  Modification time never checked.
+ 
 #  File has not been updated.
 #  recipe to execute (from 'Makefile', line 309):
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
@@ -985,6 +1003,7 @@ tasks/peak.pcan.mqtt.task/peak.pcan.mqtt.task.cc:
 tasks: simple.task simple2.task aop10t.pilot.task sys.mdns.manage.task qual.dmr.task sysmon.task procmanage.task uvlc.ag.control.task pcan.mqtt.task agsys.manage.task uvlc.contro.task fenet.mqtt.task
 #  Implicit rule search has not been done.
 #  Modification time never checked.
+ 
 #  File has not been updated.
 
 # Not a target:
@@ -1011,6 +1030,7 @@ dx3000.udp.control.task: bin/armhf/dx3000.udp.control.task.o bin/armhf/dkm_dx300
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
+ 
 #  recipe to execute (from 'Makefile', line 217):
 	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) -lczmq -lzmq -lmosquittopp -lmosquitto
 
@@ -1044,6 +1064,7 @@ moxa.io.service.task: bin/armhf/moxa.io.service.task.o
 #  Modification time never checked.
 #  File has not been updated.
 #  recipe to execute (from 'Makefile', line 256):
+ 
 	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) -lmodbus -lmosquittopp -lmosquitto
 
 # Not a target:
@@ -1068,6 +1089,7 @@ qual.dmr.task: bin/armhf/qual.dmr.task.o
 # Not a target:
 apps/edge/edge.cc:
 #  Implicit rule search has been done.
+ 
 #  Last modified 2022-06-09 04:32:41.47744807
 #  File has been updated.
 #  Successfully updated.
@@ -1086,6 +1108,7 @@ bin/armhf/rt_trigger.o: include/openedge/core/rt_trigger.cc
 #  recipe to execute (from 'Makefile', line 92):
 							$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
+ 
 # Not a target:
 tasks/dx3000.udp.control.task/dx3000.udp.control.task.cc:
 #  Implicit rule search has not been done.
@@ -1111,11 +1134,11 @@ include/openedge/core/driver.cc:
 #  Modification time never checked.
 #  File has not been updated.
 
+ 
 bin/armhf/agw.manage.task.o: tasks/agw.manage.task/agw.manage.task.cc
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
- 
 #  recipe to execute (from 'Makefile', line 244):
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
@@ -1133,6 +1156,7 @@ mongodb.connector.service: bin/armhf/mongodb.connector.service.o
 	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) -lbson-1.0 -lmongoc-1.0
 
 services: lsis.fenet.connector.service mongodb.connector.service mqtt.publisher.service modbus.rtu.service
+ 
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
@@ -1156,6 +1180,7 @@ rt.perf.test.task: bin/armhf/rt.perf.test.task.o
 #  File has not been updated.
 #  recipe to execute (from 'Makefile', line 281):
 	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) -lmosquittopp -lmosquitto
+ 
 
 # Not a target:
 tasks/simple2.task/simple2.task.cc:
@@ -1179,6 +1204,7 @@ agsys.manage.task: bin/armhf/agsys.manage.task.o
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
+ 
 #  recipe to execute (from 'Makefile', line 171):
 	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) -lczmq -lzmq -lmodbus
 
@@ -1204,6 +1230,7 @@ bin/armhf/rt.perf.test.task.o: tasks/rt.perf.test.task/rt.perf.test.task.cc
 
 # Not a target:
 include/openedge/device/general.cc:
+ 
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
@@ -1236,11 +1263,12 @@ tasks/agw.manage.task/agw.manage.task.cc:
 # No general ('VPATH' variable) search path.
 
 # strcache buffers: 1 (0) / strings = 171 / storage = 4317 B / avg = 25 B
+ 
 # current buf: size = 8162 B / used = 4317 B / count = 171 / avg = 25 B
 
 # strcache performance: lookups = 337 / hit rate = 49%
 # hash-table stats:
 # Load=171/8192=2%, Rehash=0, Collisions=6/337=2%
-# Finished Make data base on Tue Jun 21 07:07:09 2022
+# Finished Make data base on Tue Jun 21 09:52:43 2022
 
  

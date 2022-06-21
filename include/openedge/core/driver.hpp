@@ -14,8 +14,8 @@
 #include <thread>
 #include <signal.h>
 #include <mutex>
-#include <include/3rdparty/zmq/zmq.hpp> //cppzmq (https://github.com/zeromq/cppzmq)
-#include <include/3rdparty/zmq/zmq_addon.hpp>
+#include <3rdparty/zmq/zmq.hpp>
+#include <3rdparty/zmq/zmq_addon.hpp>
 
 using namespace std;
 
