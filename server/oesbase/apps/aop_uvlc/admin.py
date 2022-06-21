@@ -1,3 +1,8 @@
 from django.contrib import admin
 
-# Register your models here.
+
+from django.contrib import admin
+from aop_uvlc.models import CommandSet, BrokerAddress
+
+admin.site.register(CommandSet)
+admin.site.register(BrokerAddress)

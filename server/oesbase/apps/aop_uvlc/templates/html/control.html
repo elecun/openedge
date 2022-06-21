@@ -17,11 +17,18 @@
 
         <!-- Broker connection -->
         <div class="row m-3">
-            <div class="col-3">
-                <input type="text" readonly class="form-control-plaintext" value="Broker IPv4 Address :">
+            <div class="col-3 float-right">
+                <label class="form-label text-right"> Broker IPv4 Address :</label>
             </div>
             <div class="col-auto">
-                <input type="text" class="form-control input-sm" id="input_broker_ipv4" placeholder="Broker IPv4 Address">
+                <!-- list of broker address -->
+                {% csrf_token %}
+                <select class="form-select" id="input_broker_ipv4">
+                    {% for address in addresses %}
+                    <option value="{{address.ip}}">{{address.name}} ({{address.ip}})</option>
+                    {% endfor %}
+                  </select>
+                
             </div>
             <div class="col-auto">
                 <button type="button" class="btn btn-success" id="btn_broker_connect">Connect</button>
@@ -109,10 +116,6 @@
         function mqtt_onMessageArrived(message){
             console.log(message.payloadString);
             // const payload = JSON.parse(message.payloadString);
-    
-            // if(payload["message"]!=undefined){
-            //     Metro.notify.create("Message : "+payload.message, "<i class='fas fa-envelope mr-2'> System Message", {cls: "white", width: 300, keepOpen: false});
-            // }
         }
     
         /* broker connect */

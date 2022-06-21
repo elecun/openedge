@@ -4,6 +4,7 @@
       "pk": 1,
       "fields": {
         "command":"move_cw",
+        "name":"Rotate Clock Wise Direction",
         "info": "시계방향 회전 (모터가 설치된 방향으로 진행)"
       }
     },
@@ -12,6 +13,7 @@
         "pk": 2,
         "fields": {
           "command":"move_ccw",
+          "name":"Rotate Counter Clock Wise Direction",
           "info": "반시계 방향 (모터가 설치된 반대방향으로 진행)"
         }
       },
@@ -20,6 +22,7 @@
         "pk": 3,
         "fields": {
           "command":"stop",
+          "name":"Rotate Stop",
           "info": "모터 회전 정지"
         }
       }

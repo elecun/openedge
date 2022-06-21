@@ -4,6 +4,7 @@
       "pk": 1,
       "fields": {
         "ip":"127.0.0.1",
+        "name":"Localhost",
         "info": "Localhost"
       }
     },
@@ -11,8 +12,27 @@
         "model": "aop_uvlc.BrokerAddress",
         "pk": 2,
         "fields": {
-          "ip":"192.168.100.1",
+          "ip":"192.168.3.130",
+          "name":"AOP Site",
           "info": "AOP Site"
         }
+    },
+    {
+      "model": "aop_uvlc.BrokerAddress",
+      "pk": 3,
+      "fields": {
+        "ip":"192.168.3.105",
+        "name":"IAE AOP Server (Internal)",
+        "info": "IAE AOP Server (Internal)"
+      }
+    },
+    {
+      "model": "aop_uvlc.BrokerAddress",
+      "pk": 4,
+      "fields": {
+        "ip":"168.126.66.23",
+        "name":"IAE AOP Server (External)",
+        "info": "IAE AOP Server (External)"
+      }
     }
-  ]
+]
