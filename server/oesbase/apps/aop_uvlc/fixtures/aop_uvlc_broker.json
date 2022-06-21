@@ -1,0 +1,18 @@
+[
+    {
+      "model": "aop_uvlc.BrokerAddress",
+      "pk": 1,
+      "fields": {
+        "ip":"127.0.0.1",
+        "info": "Localhost"
+      }
+    },
+    {
+        "model": "aop_uvlc.BrokerAddress",
+        "pk": 2,
+        "fields": {
+          "ip":"192.168.100.1",
+          "info": "AOP Site"
+        }
+    }
+  ]

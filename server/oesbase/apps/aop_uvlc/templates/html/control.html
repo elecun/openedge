@@ -1,0 +1,209 @@
+
+
+{% load static %}
+
+<script type="text/javascript" src="{% static 'js/jquery.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/bootstrap.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/paho-mqtt-min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/restapi.js' %}"></script>
+
+<link type="text/css" rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}"/>
+
+
+<body>
+
+    <!-- Container -->
+    <div class="container">
+
+        <!-- Broker connection -->
+        <div class="row m-3">
+            <div class="col-3">
+                <input type="text" readonly class="form-control-plaintext" value="Broker IPv4 Address :">
+            </div>
+            <div class="col-auto">
+                <input type="text" class="form-control input-sm" id="input_broker_ipv4" placeholder="Broker IPv4 Address">
+            </div>
+            <div class="col-auto">
+                <button type="button" class="btn btn-success" id="btn_broker_connect">Connect</button>
+            </div>
+        </div>
+
+        <!-- set parameter(rpm) -->
+        <div class="row m-3">
+            <div class="col-3">
+                <input type="text" readonly class="form-control-plaintext" value="UVLC-1 Set RPM : ">
+            </div>
+            <div class="col-auto">
+                <input type="text" class="form-control input-sm" id="text_uvlc1_rpm" placeholder="UVLC-1 RPM">
+            </div>
+            <div class="col-auto">
+                <button type="button" class="btn btn-outline-primary" id="btn_uvlc1_set_rpm">Set</button>
+            </div>
+        </div>
+
+
+        <!-- UVLC-1 Manual Control -->
+        <div class="row m-3">
+            <div class="col-3">
+                <input type="text" readonly class="form-control-plaintext" value="UVLC-1 Manual Control : ">
+            </div>
+            <div class="col-auto">
+                <button type="button" class="btn btn-outline-primary" id="btn_uvlc1_wipe_once">Wipe Once(Forward-Backward)</button>
+                <button type="button" class="btn btn-outline-dark" id="btn_uvlc1_wipe_forward">Forward Wipe</button>
+                <button type="button" class="btn btn-outline-dark" id="btn_uvlc1_wipe_backward">Backward Wipe</button>
+                <button type="button" class="btn btn-outline-danger" id="btn_uvlc1_wipe_stop">Stop</button>
+            </div>
+        </div>
+
+
+        <!-- set parameter(rpm) -->
+        <div class="row m-3">
+            <div class="col-3">
+                <input type="text" readonly class="form-control-plaintext" value="UVLC-2 Set RPM : ">
+            </div>
+            <div class="col-auto">
+                <input type="text" class="form-control input-sm" id="text_uvlc2_rpm" placeholder="UVLC-2 RPM">
+            </div>
+            <div class="col-auto">
+                <button type="button" class="btn btn-outline-primary" id="btn_uvlc2_set_rpm">Set</button>
+            </div>
+        </div>
+
+        <!-- UVLC-2 Manual Control -->
+        <div class="row m-3">
+            <div class="col-3">
+                <input type="text" readonly class="form-control-plaintext" value="UVLC-2 Manual Control : ">
+            </div>
+            <div class="col-auto">
+                <button type="button" class="btn btn-outline-primary" id="btn_uvlc2_wipe_once">Wipe Once(Forward-Backward)</button>
+                <button type="button" class="btn btn-outline-dark" id="btn_uvlc2_wipe_forward">Forward Wipe</button>
+                <button type="button" class="btn btn-outline-dark" id="btn_uvlc2_wipe_backward">Backward Wipe</button>
+                <button type="button" class="btn btn-outline-danger" id="btn_uvlc2_wipe_stop">Stop</button>
+            </div>
+        </div>
+
+
+    </div>
+
+    <script type="text/javascript">
+
+        let mqtt_client_id = "aop_uvlc_client_"+parseInt(Math.random()*10000, 10);
+        var mqtt_client = null;
+    
+        /* connect event function */
+        function mqtt_onConnect(){
+            //mqtt_client.subscribe("aop/device/#", {qos:2});
+            alert("Successfully connected");
+        }
+    
+        /* failure event function */
+        function mqtt_onFailure(){
+            alert("message transaction failed");
+        }
+    
+        /* connection lost event function */
+        function mqtt_onConnectionLost(responseObject){
+            alert("Connection lost!!");
+        }
+    
+        function mqtt_onMessageArrived(message){
+            console.log(message.payloadString);
+            // const payload = JSON.parse(message.payloadString);
+    
+            // if(payload["message"]!=undefined){
+            //     Metro.notify.create("Message : "+payload.message, "<i class='fas fa-envelope mr-2'> System Message", {cls: "white", width: 300, keepOpen: false});
+            // }
+        }
+    
+        /* broker connect */
+        document.getElementById('btn_broker_connect').addEventListener('click', function(){
+            let address = document.getElementById("input_broker_ipv4").value;
+
+            mqtt_client = new Paho.MQTT.Client(address, 8083, "", mqtt_client_id);
+            mqtt_client.onConnectionLost = mqtt_onConnectionLost;
+            mqtt_client.onMessageArrived = mqtt_onMessageArrived;
+            mqtt_client.connect({onSuccess:mqtt_onConnect, onFailure:mqtt_onFailure, reconnect: true, useSSL:false});
+        });
+
+        /* wipe forward(cw) */
+        document.getElementById('btn_uvlc1_wipe_forward').addEventListener('click', function(){
+            if(mqtt_client!=null){
+                let msg = {"command":"move_cw"};
+                mqtt_client.publish("aop/uvlc/1/motor/control", JSON.stringify(msg), 2, false);
+            }
+        });
+
+        document.getElementById('btn_uvlc2_wipe_forward').addEventListener('click', function(){
+            if(mqtt_client!=null){
+                let msg = {"command":"move_cw"};
+                mqtt_client.publish("aop/uvlc/2/motor/control", JSON.stringify(msg), 2, false);
+            }
+        });
+
+        /* wipe backward (ccw) */
+        document.getElementById('btn_uvlc1_wipe_backward').addEventListener('click', function(){
+            if(mqtt_client!=null){
+                let msg = {"command":"move_ccw"};
+                mqtt_client.publish("aop/uvlc/1/motor/control", JSON.stringify(msg), 2, false);
+            }
+        });
+
+        document.getElementById('btn_uvlc2_wipe_backward').addEventListener('click', function(){
+            if(mqtt_client!=null){
+                let msg = {"command":"move_ccw"};
+                mqtt_client.publish("aop/uvlc/2/motor/control", JSON.stringify(msg), 2, false);
+            }
+        });
+
+        /* wipe stop */
+        document.getElementById('btn_uvlc1_wipe_stop').addEventListener('click', function(){
+            if(mqtt_client!=null){
+                let msg = {"command":"stop"};
+                mqtt_client.publish("aop/uvlc/1/motor/control", JSON.stringify(msg), 2, false);
+            }
+        });
+
+        document.getElementById('btn_uvlc2_wipe_stop').addEventListener('click', function(){
+            if(mqtt_client!=null){
+                let msg = {"command":"stop"};
+                mqtt_client.publish("aop/uvlc/2/motor/control", JSON.stringify(msg), 2, false);
+            }
+        });
+
+        /* wipe once */
+        document.getElementById('btn_uvlc1_wipe_once').addEventListener('click', function(){
+            if(mqtt_client!=null){
+                
+            }
+        });
+
+        document.getElementById('btn_uvlc2_wipe_once').addEventListener('click', function(){
+            if(mqtt_client!=null){
+                
+            }
+        });
+
+        /* set RPM */
+        document.getElementById('btn_uvlc1_set_rpm').addEventListener('click', function(){
+            let rpm = document.getElementById('text_uvlc1_rpm').value;
+            if(mqtt_client!=null){
+                let msg = {"command":"set_rpm", "value":parseInt(rpm)};
+                mqtt_client.publish("aop/uvlc/1/motor/control", JSON.stringify(msg), 2, false);
+            }
+        });
+
+        document.getElementById('btn_uvlc2_set_rpm').addEventListener('click', function(){
+            let rpm = document.getElementById('text_uvlc2_rpm').value;
+            if(mqtt_client!=null){
+                let msg = {"command":"set_rpm", "value":parseInt(rpm)};
+                mqtt_client.publish("aop/uvlc/2/motor/control", JSON.stringify(msg), 2, false);
+            }
+        });
+    
+        window.addEventListener('DOMContentLoaded', function(){
+            
+        });
+    
+    </script>
+
+</body>

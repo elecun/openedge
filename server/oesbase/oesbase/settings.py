@@ -53,8 +53,8 @@ INSTALLED_APPS = [
     'rest_framework',
 
     # custom apps
-    'divelink',
-    #'aop_uvlc'  # App for UV Lamp Cleaning System in AOP plant
+    'divelink', # this is for divelink application
+    'aop_uvlc'  # this is for AOP plant management
 ]
 
 MIDDLEWARE = [

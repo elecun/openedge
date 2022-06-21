@@ -21,7 +21,9 @@ urlpatterns = [
 
     path('', include('base.urls')),
 
-    # for internal custom apps
-    #path('apps/aop_uvlc/', include('aop_uvlc.urls')),
+    # apps for aop
+    path('app/aop_uvlc/', include('aop_uvlc.urls')),
+
+    # apps for divelink
     path('app/divelink/', include('divelink.urls')),
 ]
