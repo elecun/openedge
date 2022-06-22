@@ -31,7 +31,7 @@
                 
             </div>
             <div class="col-auto">
-                <button type="button" class="btn btn-success" id="btn_broker_connect">Connect</button>
+                <button type="button" class="btn btn-danger" id="btn_broker_connect">Connect</button>
             </div>
         </div>
 
@@ -100,17 +100,18 @@
         /* connect event function */
         function mqtt_onConnect(){
             //mqtt_client.subscribe("aop/device/#", {qos:2});
-            alert("Successfully connected");
+            document.getElementById("btn_broker_connect").classList.replace("btn-danger", "btn-success");
         }
     
         /* failure event function */
         function mqtt_onFailure(){
-            alert("message transaction failed");
+            console.log("message transaction failed");
         }
     
         /* connection lost event function */
         function mqtt_onConnectionLost(responseObject){
-            alert("Connection lost!!");
+            console.log("Connection lost!");
+            document.getElementById("btn_broker_connect").classList.replace("btn-success", "btn-danger");
         }
     
         function mqtt_onMessageArrived(message){
