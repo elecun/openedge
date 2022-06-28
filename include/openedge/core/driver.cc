@@ -13,10 +13,9 @@
 #include <openedge/log.hpp>
 
 #define SIG_RUNTIME_TRIGGER (SIGRTMIN)
-#define SIG_PAUSE_TRIGGER   (SIGRTMAX-1)    //signal #63
-#define SIG_RESUME_TRIGGER  (SIGRTMAX-2)    //signal #62
-
-static int signalIndex = 0;
+#define SIG_PAUSE_TRIGGER   (SIGRTMAX-1)    //signal #63 : Pause Process
+#define SIG_RESUME_TRIGGER  (SIGRTMAX-2)    //signal #62 : Resume Process
+#define SIG_STOP_TRIGGER    (SIGRTMAX-3)    //signal #61 : Process Termination
 
 namespace oe::core::task {
 
@@ -33,7 +32,6 @@ namespace oe::core::task {
                     else
                         console::error("<{}> profile does not exist", taskname);
                     _taskImpl->taskname = taskname;
-                    _signalIndex = signalIndex++;
                     _taskImpl->set_status(runnable::status_d::STOPPED);
 
                 }
@@ -154,7 +152,7 @@ namespace oe::core::task {
         
         /* Set and enable alarm */ 
         _sig_evt.sigev_notify = SIGEV_SIGNAL; 
-        _sig_evt.sigev_signo = SIG_RUNTIME_TRIGGER+_signalIndex; 
+        _sig_evt.sigev_signo = SIG_RUNTIME_TRIGGER; 
         _sig_evt.sigev_value.sival_ptr = _timer_id; 
         if(timer_create(CLOCK_REALTIME, &_sig_evt, &_timer_id)==-1)
             spdlog::error("timer create error");
@@ -175,15 +173,16 @@ namespace oe::core::task {
         //signal set for threading
         sigset_t thread_sigmask;
         sigemptyset(&thread_sigmask);
-        sigaddset(&thread_sigmask, SIG_RUNTIME_TRIGGER+_signalIndex);
+        sigaddset(&thread_sigmask, SIG_RUNTIME_TRIGGER);
         sigaddset(&thread_sigmask, SIG_PAUSE_TRIGGER);
         sigaddset(&thread_sigmask, SIG_RESUME_TRIGGER);
+        sigaddset(&thread_sigmask, SIG_STOP_TRIGGER);
         int _sig_no;
 
         while(1){
             sigwait(&thread_sigmask, &_sig_no);
-            if(_sig_no==SIG_RUNTIME_TRIGGER+_signalIndex){
-                _taskImpl->setStatus(oe::core::task::runnable::Status::WORKING);
+            if(_sig_no==SIG_RUNTIME_TRIGGER){
+                _taskImpl->set_status(oe::core::task::runnable::status_d::WORKING);
                 auto t_now = std::chrono::high_resolution_clock::now();
                 if(_taskImpl){
                     _taskImpl->execute();
@@ -192,22 +191,22 @@ namespace oe::core::task {
                 //spdlog::info("Processing Time : {} sec", std::chrono::duration<double, std::chrono::seconds::period>(t_elapsed - t_now).count());
             }
             else if(_sig_no==SIG_PAUSE_TRIGGER) {
-                sigdelset(&thread_sigmask, SIG_RUNTIME_TRIGGER+_signalIndex);
-                _taskImpl->setStatus(oe::core::task::runnable::Status::PAUSED);
+                sigdelset(&thread_sigmask, SIG_RUNTIME_TRIGGER);
+                _taskImpl->set_status(oe::core::task::runnable::status_d::PAUSED);
                 if(_taskImpl){
                     _taskImpl->pause();
                 }
 
             }
             else if(_sig_no==SIG_RESUME_TRIGGER) {
-                _taskImpl->setStatus(oe::core::task::runnable::Status::RESUMED);
+                _taskImpl->set_status(oe::core::task::runnable::status_d::WORKING);
                 if(_taskImpl){
                     _taskImpl->resume();
                 }
-                sigaddset(&thread_sigmask, SIG_RUNTIME_TRIGGER+_signalIndex);
+                sigaddset(&thread_sigmask, SIG_RUNTIME_TRIGGER);
             }
 
-            _taskImpl->setStatus(oe::core::task::runnable::Status::IDLE);    
+            _taskImpl->set_status(oe::core::task::runnable::status_d::IDLE);    
         }
     }
 } //namespace oe::core::task
