@@ -1,4 +1,13 @@
-
+/**
+ * @file driver.cc
+ * @author Byunghun Hwang (bh.hwang@iae.re.kr)
+ * @brief Component Driver Handling
+ * @version 0.1
+ * @date 2022-06-28
+ * 
+ * @copyright Copyright (c) 2022
+ * 
+ */
 
 #include "driver.hpp"
 #include <3rdparty/spdlog/spdlog.h>
@@ -12,13 +21,22 @@
 #include <openedge/core/global.hpp>
 #include <openedge/log.hpp>
 
-#define SIG_RUNTIME_TRIGGER (SIGRTMIN)
-#define SIG_PAUSE_TRIGGER   (SIGRTMAX-1)    //signal #63 : Pause Process
-#define SIG_RESUME_TRIGGER  (SIGRTMAX-2)    //signal #62 : Resume Process
-#define SIG_STOP_TRIGGER    (SIGRTMAX-3)    //signal #61 : Process Termination
+
+#if defined(linux) || defined(__linux) || defined(__linux__)
+    static const int SIG_RUNTIME_TRIGGER = (SIGRTMIN);     //signal #64 : Runtime Error
+    static const int SIG_PAUSE_TRIGGER = (SIGRTMIN-1);     //signal #63 : Pause Process
+    static const int SIG_RESUME_TRIGGER = (SIGRTMIN-2);    //signal #62 : Resume Process
+    static const int SIG_STOP_TRIGGER = (SIGRTMAX-3);      //signal #61 : Process Termination
+#endif
+
 
 namespace oe::core::task {
 
+    /**
+     * @brief Construct a new driver instance with its profile
+     * 
+     * @param taskname Task Name, It must be unique.
+     */
     driver::driver(const char* taskname){
         try {
             if(load(taskname)){
@@ -110,9 +128,16 @@ namespace oe::core::task {
         }
     }
 
-    //load task component
+    /**
+     * @brief Task Load
+     * 
+     * @param taskname taskname to be loaded
+     * @return true if load success
+     * @return false if load failed
+     */
     bool driver::load(const char* taskname){
-        string path = registry->get<std::string>("BIN_DIR") +string(taskname); //same dir
+        if(registry->find("BIN_DIR"))
+        string path = registry->get<std::string>("BIN_DIR")+string(taskname); //same dir
         spdlog::info("Load {}", path);
         _task_handle = dlopen(path.c_str(), RTLD_LAZY|RTLD_LOCAL);
         if(_task_handle){
@@ -204,6 +229,13 @@ namespace oe::core::task {
                     _taskImpl->resume();
                 }
                 sigaddset(&thread_sigmask, SIG_RUNTIME_TRIGGER);
+            }
+            
+
+            switch(_sig_no){
+                case SIG_STOP_TRIGGER: {
+
+                } break;
             }
 
             _taskImpl->set_status(oe::core::task::runnable::status_d::IDLE);    

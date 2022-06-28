@@ -6,7 +6,7 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Tue Jun 28 04:08:27 2022
+# Make data base, printed on Tue Jun 28 06:13:25 2022
 
 # Variables
 
@@ -75,7 +75,7 @@ INCLUDE_DIR = -I./ -I./include/ -I./include/3rdparty/
 # environment
 VSCODE_LOG_STACK = false
 # environment
-VSCODE_IPC_HOOK_CLI = /run/user/1001/vscode-ipc-a17da9c4-3703-4ea6-a783-86c00467152c.sock
+VSCODE_IPC_HOOK_CLI = /run/user/1001/vscode-ipc-b201d27b-649a-4e63-b089-9d48c55aa427.sock
 # makefile (from 'Makefile', line 36)
 LDFLAGS = -Wl,--export-dynamic -Wl,-rpath=$(LD_LIBRARY_PATH)
 # makefile (from 'Makefile', line 37)
@@ -113,7 +113,7 @@ LESSCLOSE = /usr/bin/lesspipe %s %s
 # environment
 LOGNAME = aopadmin
 # environment
-APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = true
+APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = 1
 # automatic
 +F = $(notdir $+)
 # environment
@@ -153,6 +153,7 @@ OS := Linux
 # makefile (from 'Makefile', line 12)
 ARCH := armhf
 # makefile
+ 
 MAKEFLAGS = pqrR
 # environment
 MFLAGS = -pqrR
@@ -278,7 +279,6 @@ bin/armhf/driver.o: include/openedge/core/driver.cc
 #  File has not been updated.
 #  recipe to execute (from 'Makefile', line 96):
 						$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
- 
 
 all: edge tasks services
 #  Command line target.
@@ -442,6 +442,7 @@ bin/armhf/task_manager.o: apps/edge/task_manager.cc
 
 # Not a target:
 tasks/logger.task/logger.task.cc:
+ 
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
@@ -570,7 +571,6 @@ bin/armhf/modbus.rtu.service.o: services/modbus.rtu.service/modbus.rtu.service.c
 #  Modification time never checked.
 #  File has not been updated.
 #  recipe to execute (from 'Makefile', line 316):
- 
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
 # Not a target:
@@ -732,6 +732,7 @@ bin/armhf/general.o: include/openedge/device/general.cc
 bin/armhf/modbusRTU.task.o: tasks/modbusRTU.task/modbusRTU.task.cc
 #  Implicit rule search has not been done.
 #  Modification time never checked.
+ 
 #  File has not been updated.
 #  recipe to execute (from 'Makefile', line 178):
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
@@ -886,7 +887,6 @@ bin/armhf/peak.pcan.mqtt.task.o: tasks/peak.pcan.mqtt.task/peak.pcan.mqtt.task.c
 services/lsis.fenet.connector.service/xgt.protocol.cc:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
- 
 #  File has not been updated.
 
 # Not a target:
@@ -1010,6 +1010,7 @@ bin/armhf/simple2.task.o: tasks/simple2.task/simple2.task.cc
 dx3000.udp.control.task: bin/armhf/dx3000.udp.control.task.o bin/armhf/dkm_dx3000_native.o
 #  Implicit rule search has not been done.
 #  Modification time never checked.
+ 
 #  File has not been updated.
 #  recipe to execute (from 'Makefile', line 217):
 	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) -lczmq -lzmq -lmosquittopp -lmosquitto
@@ -1164,7 +1165,6 @@ tasks/simple2.task/simple2.task.cc:
 
 # Not a target:
 include/openedge/sys/info.cc:
- 
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
@@ -1241,6 +1241,6 @@ tasks/agw.manage.task/agw.manage.task.cc:
 # strcache performance: lookups = 337 / hit rate = 49%
 # hash-table stats:
 # Load=171/8192=2%, Rehash=0, Collisions=6/337=2%
-# Finished Make data base on Tue Jun 28 04:08:27 2022
+# Finished Make data base on Tue Jun 28 06:13:25 2022
 
  

@@ -1,8 +1,12 @@
-
 /**
- * @file    registry.hpp
- * @brief   system registry (key-value paired memory map)
- * @author  Byunghun hwang@iae.re.kr
+ * @file registry.hpp
+ * @author Byunghun Hwang (bh.hwang@iae.re.kr)
+ * @brief Openedge core registry 
+ * @version 0.1
+ * @date 2022-06-28
+ * 
+ * @copyright Copyright (c) 2022
+ * 
  */
 
 
@@ -17,7 +21,7 @@
 
 using namespace std;
 
-namespace oe::global {
+namespace oe {
     
     class registry : public oe::arch::singleton<registry> {
         public:
