@@ -58,6 +58,6 @@ namespace oe {
     };
 } //namespace
 
-#define registry oe::global::registry::instance()
+#define registry oe::registry::instance()
 
 #endif

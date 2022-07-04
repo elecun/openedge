@@ -80,14 +80,43 @@ namespace oe::bus {
 
     }; /* timeout class */
 
-    class sync_uart : public oe::interface::bus_uart, public oe::interface::sync_bus {
+    class sync_uart : public oe::bus::uart, public oe::bus::sync_bus {
         public:
-            sync_uart(const char* dev, bus_uart::baudrate_d baudrate = bus_uart::baudrate_d::BAUDRATE_115200,
+            sync_uart(const char* dev, bus::uart::baudrate_d baudrate = bus::uart::baudrate_d::BAUDRATE_115200,
                 unsigned int databits = 8,
-                bus_uart::stopbits_d stopbits = bus_uart::stopbits_d::ONE,
-                bus_uart::parity_d parity = bus_uart::parity_d::NONE,
-                bus_uart::flowcontrol_d flowcontrol = bus_uart::flowcontrol_d::NONE){}
+                bus::uart::stopbits_d stopbits = bus::uart::stopbits_d::ONE,
+                bus::uart::parity_d parity = bus::uart::parity_d::NONE,
+                bus::uart::flowcontrol_d flowcontrol = bus::uart::flowcontrol_d::NONE){}
             virtual ~sync_uart();
+
+            sync_uart(const char* dev, unsigned int baud){
+                switch (baud){
+                    case 110: this->baudrate = bus::uart::baudrate_d::BAUDRATE_110; break;
+                    case 300: this->baudrate = bus::uart::baudrate_d::BAUDRATE_300; break;
+                    case 600: this->baudrate = bus::uart::baudrate_d::BAUDRATE_600; break;
+                    case 1200: this->baudrate = bus::uart::baudrate_d::BAUDRATE_1200; break;
+                    case 2400: this->baudrate = bus::uart::baudrate_d::BAUDRATE_2400; break;
+                    case 4800: this->baudrate = bus::uart::baudrate_d::BAUDRATE_4800; break;
+                    case 9600: this->baudrate = bus::uart::baudrate_d::BAUDRATE_9600; break;
+                    case 14400: this->baudrate = bus::uart::baudrate_d::BAUDRATE_14400; break;
+                    case 19200: this->baudrate = bus::uart::baudrate_d::BAUDRATE_19200; break;
+                    case 38400: this->baudrate = bus::uart::baudrate_d::BAUDRATE_38400; break;
+                    case 56000: this->baudrate = bus::uart::baudrate_d::BAUDRATE_56000; break;
+                    case 57600: this->baudrate = bus::uart::baudrate_d::BAUDRATE_57600; break;
+                    case 115200: this->baudrate = bus::uart::baudrate_d::BAUDRATE_115200; break;
+                    case 128000: this->baudrate = bus::uart::baudrate_d::BAUDRATE_128000; break;
+                    case 230400: this->baudrate = bus::uart::baudrate_d::BAUDRATE_230400; break;
+                    case 256000: this->baudrate = bus::uart::baudrate_d::BAUDRATE_256000; break;
+                    case 500000: this->baudrate = bus::uart::baudrate_d::BAUDRATE_500000; break;
+                    case 750000: this->baudrate = bus::uart::baudrate_d::BAUDRATE_750000; break;
+                    default:
+                        this->baudrate = bus::uart::baudrate_d::BAUDRATE_9600;
+                }
+                this->databits = 8;
+                this->stopbits = bus::uart::stopbits_d::ONE;
+                this->parity = bus::uart::parity_d::NONE;
+                this->flowcontrol = bus::uart::flowcontrol_d::NONE;
+            }
 
             /* sync bus interface function */
             bool open() override;
@@ -103,7 +132,7 @@ namespace oe::bus {
             string _port;
     }; //class sync_uart
 
-    class async_uart : public oe::interface::bus_uart, oe::interface::async_bus {
+    class async_uart : public oe::bus::uart, oe::bus::async_bus {
         public:
             async_uart() = default;
             virtual ~async_uart() = default;

@@ -1,7 +1,7 @@
 /**
- * @file divelink.m64.control.task.hpp
+ * @file divelink.m64.connector.task.hpp
  * @author Byunghun Hwang (bh.hwang@iae.re.kr)
- * @brief Waterlink M64 Acoustic Modem Control Task for Divelink
+ * @brief Waterlinked M64 Acoustic Modem Control Task for Divelink
  * @version 0.1
  * @date 2022-06-15
  * 
@@ -9,8 +9,8 @@
  * 
  */
 
-#ifndef _OPENEDGE_DIVELINK_M64_CONTROL_TASK_HPP_
-#define _OPENEDGE_DIVELINK_M64_CONTROL_TASK_HPP_
+#ifndef _OPENEDGE_DIVELINK_M64_CONNECTOR_TASK_HPP_
+#define _OPENEDGE_DIVELINK_M64_CONNECTOR_TASK_HPP_
 
 #include <openedge/core.hpp>
 #include <openedge/common/bus.hpp>
@@ -24,7 +24,7 @@ class divelink_m64_connector_task : public oe::core::task::runnable_nt {
         divelink_m64_connector_task();
         ~divelink_m64_connector_task();
 
-        /* basic interface functions */
+        /* basic interface functions for nt */
         virtual void execute() override;
         virtual void stop() override;
         virtual bool configure() override;
@@ -35,7 +35,8 @@ class divelink_m64_connector_task : public oe::core::task::runnable_nt {
         virtual void on_request(std::any data) override;
 
     private:
-        interface::sync_bus* _com;
+        oe::bus::sync_bus* _device = nullptr;   //serial device
+        double _t_out = 0.5;    //0.5 sec
         
 
 }; /* end class */

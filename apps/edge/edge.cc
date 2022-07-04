@@ -38,9 +38,10 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include <iostream>
 
 using namespace std;
+using namespace oe;
 
-void terminate() {
-  oe::app::cleanup();
+void terminate(){
+  app::cleanup();
   console::info("Successfully terminated");
   exit(EXIT_SUCCESS);
 }

@@ -11,7 +11,7 @@
 #include <openedge/common/device.hpp>
 #include <functional>
 
-namespace oe::interface {
+namespace oe::bus {
 
     class sync_bus : public interface::device {
         public:
@@ -45,7 +45,7 @@ namespace oe::interface {
 
     }; //class async bus
 
-    class bus_uart {
+    class uart {
         public:
         /* UART Baudrate */
         enum class baudrate_d : unsigned int {
@@ -88,7 +88,7 @@ namespace oe::interface {
             TWO,
         };
 
-        bus_uart(baudrate_d baudrate = baudrate_d::BAUDRATE_115200,
+        uart(baudrate_d baudrate = baudrate_d::BAUDRATE_115200,
             unsigned int databits = 8,
             stopbits_d stopbits = stopbits_d::ONE,
             parity_d parity = parity_d::NONE,

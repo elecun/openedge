@@ -20,6 +20,10 @@
 #include <openedge/core/registry.hpp>
 #include <openedge/core/global.hpp>
 #include <openedge/log.hpp>
+#include <filesystem.h> //to use c++17 filesystem
+
+namespace fs = std::filesystem;
+using namespace std;
 
 
 #if defined(linux) || defined(__linux) || defined(__linux__)
@@ -41,7 +45,15 @@ namespace oe::core::task {
         try {
             if(load(taskname)){
                 if(_taskImpl){
-                    string profile_dir = registry->get<std::string>("PROFILE_DIR");
+                    if(registry->find("HOME_DIR")){
+                        
+                    }
+                    if(registry->find("PROFILE_DIR")){
+                        fs::path profile_dir = registry->get<string>("PROFILE_DIR");
+                        //string profile_dir = registry->get<string>("PROFILE_DIR");
+                    }
+
+                    //string profile_dir = registry->get<string>("PROFILE_DIR");
                     string path = profile_dir+string(taskname)+__PROFILE_EXT__;
                     if(util::exist(path.c_str())){
                         console::info("Task Profile : {}", path);
@@ -136,9 +148,15 @@ namespace oe::core::task {
      * @return false if load failed
      */
     bool driver::load(const char* taskname){
-        if(registry->find("BIN_DIR"))
-        string path = registry->get<std::string>("BIN_DIR")+string(taskname); //same dir
-        spdlog::info("Load {}", path);
+
+        std::filesystem::current_path()
+
+        string path = ".";
+        if(registry->find("BIN_DIR")){
+            path = registry->get<std::string>("BIN_DIR")+string(taskname); //same dir
+            console::info("Load Component : {}", path);
+        }
+        
         _task_handle = dlopen(path.c_str(), RTLD_LAZY|RTLD_LOCAL);
         if(_task_handle){
             create_task pfcreate = (create_task)dlsym(_task_handle, "create");
