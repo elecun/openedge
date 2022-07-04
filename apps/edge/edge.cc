@@ -69,7 +69,6 @@ int main(int argc, char* argv[])
   for(const int& s:signals)
     signal(s, cleanup);
 
-  //signal masking
   sigset_t sigmask;
   if(!sigfillset(&sigmask)){
     for(int signal:signals)
@@ -80,7 +79,7 @@ int main(int argc, char* argv[])
     ::terminate(); //if failed, do termination
   }
 
-  if(pthread_sigmask(SIG_SETMASK, &sigmask, nullptr)!=0){ // signal masking for this thread(main)
+  if(pthread_sigmask(SIG_SETMASK, &sigmask, nullptr)!=0){ // signal masking for main thread
     console::error("Signal Masking Error");
     ::terminate();
   }
@@ -89,47 +88,58 @@ int main(int argc, char* argv[])
 
   int optc = 0;
   string _conf_filename;  //configuration file
+  string _comp;         //specific component to manage
 
   while((optc=getopt(argc, argv, "s:c:i:u:lvh"))!=-1){
     switch(optc){
       case 'i': { /* task installation dynamically */
-        console::info("install {}", optarg);
+        console::warn("install {} (Not support yet)", optarg);
       }
       break;
 
       case 'u': { /* task termination dynamically */
-        console::info("uninstall {}", optarg);
+        console::warn("uninstall {} (Not support yet)", optarg);
       }
       break;
 
       case 'l': { /* show task list */
-        console::info("list of tasks");
+        console::warn("Show status of tasks (Not support yet)");
       }
       break;
 
       case 'v': /* show version */
       {
-        cout << fmt::format("{} (built {}/{})", _OE_VER_, __DATE__, __TIME__) << endl;
+        console::info("OpenEdge Framework Engine Ver. {} (built {}/{})", _OE_VER_, __DATE__, __TIME__);
         exit(EXIT_SUCCESS);
       }
       break;
 
       case 'c': { /* read configuration file */
         _conf_filename = optarg;
-        console::info("Openedge Ver. {} (built {}/{})", _OE_VER_, __DATE__, __TIME__);
         console::info("Load configuration file(*.config) : {}", _conf_filename);
       }
       break;
 
       case 's':{ /* stop task */
-
+        _comp = optarg;
+        if(!_comp.empty()){
+          console::warn("Stop the {} component(task) (Not support yet)", _comp);
+        }
+        else {
+          console::warn("Stop all tasks (Not support yet)");
+        }
+        
       }
 
       case 'h':
       default:
-        cout << fmt::format("Openedge Ver. {} (built {}/{})", _OE_VER_, __DATE__, __TIME__) << endl;
-        cout << "Usage: edge [-c Config file] [-i Task name] [-u Task name] [-l Task list] [-v version]" << endl;
-        cout << "-c\t Run edge by config file" << endl;
+        cout << fmt::format("OpenEdge Framework Engine Ver. {} (built {}/{})", _OE_VER_, __DATE__, __TIME__) << endl;
+        cout << "Usage: edge [-c Config file] [-i Task name] [-s Task name] [-u Task name] [-l Task list] [-v version]" << endl;
+        cout << "-c\t Load configuration file and Run tasks" << endl;
+        cout << "-i\t Install the specific task" << endl;
+        cout << "-s\t Stop the specific task" << endl;
+        cout << "-u\t Uninstall the specific task" << endl;
+        cout << "-l\t Show list of tasks" << endl;
         cout << "-v\t Print Edge version" << endl;
         exit(EXIT_FAILURE);
       break;
@@ -138,8 +148,8 @@ int main(int argc, char* argv[])
 
   try{
     if(!_conf_filename.empty())
-      if(oe::app::initialize(_conf_filename.c_str())){
-        oe::app::run();
+      if(app::initialize(_conf_filename.c_str())){
+        app::run();
         pause(); //wait until getting SIGINT
       }
   }

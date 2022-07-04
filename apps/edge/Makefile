@@ -103,7 +103,6 @@ $(BUILDDIR)system.o:	$(INCLUDE_FILES)openedge/sys/system.cc
 
 all : edge
 
-
 deploy : FORCE
 	cp $(BUILDDIR)*.task $(BUILDDIR)edge $(BINDIR)
 clean : FORCE 
