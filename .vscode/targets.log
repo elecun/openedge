@@ -6,7 +6,7 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Tue Jul  5 07:54:00 2022
+# Make data base, printed on Tue Jul  5 11:49:26 2022
 
 # Variables
 
@@ -20,7 +20,6 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 VSCODE_AGENT_FOLDER = /home/hwang/.vscode-server
 # environment
 VSCODE_LOG_NATIVE = false
- 
 # automatic
 ?D = $(patsubst %/,%,$(dir $?))
 # automatic
@@ -90,7 +89,7 @@ VSCODE_PIPE_LOGGING = true
 # environment
 PWD = /home/hwang/dev/openedge
 # environment
-VSCODE_IPC_HOOK_CLI = /run/user/1000/vscode-ipc-2f41772c-e1f7-4ee2-bb46-c37a78f4f29b.sock
+VSCODE_IPC_HOOK_CLI = /run/user/1000/vscode-ipc-32e9df61-4b49-4846-baca-2cf199725bc1.sock
 # automatic
 *D = $(patsubst %/,%,$(dir $*))
 # makefile (from 'Makefile', line 54)
@@ -197,7 +196,6 @@ VSCODE_EXTHOST_WILL_SEND_SOCKET = true
 # Directories
 
 # . (device 2049, inode 3817017): 21 files, no impossibilities.
- 
 
 # 21 files, no impossibilities in 1 directories.
 
@@ -288,6 +286,7 @@ FORCE:
 #  File has not been updated.
 
 bin/armhf/mqtt.o: services/mqtt.publisher.service/mqtt.cc
+ 
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
@@ -461,7 +460,6 @@ bin/armhf/testptp.o: experimental/testptp/testptp.cc
 
 sysmon.task: bin/armhf/sysmon.o bin/armhf/info.o bin/armhf/cpuload.o bin/armhf/netload.o
 #  Implicit rule search has not been done.
- 
 #  Modification time never checked.
 #  File has not been updated.
 #  recipe to execute (from 'Makefile', line 185):
@@ -580,6 +578,7 @@ include/openedge/core/rt_timer.cc:
 
 # Not a target:
 tasks/rt.perf.test.task/rt.perf.test.task.cc:
+ 
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
@@ -770,7 +769,6 @@ include/openedge/sys/cpu.cc:
 
 # Not a target:
 tasks/moxa.analog.service.task/moxa.analog.service.task.cc:
- 
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
@@ -866,6 +864,7 @@ pcan.mqtt.task: bin/armhf/pcan.mqtt.task.o
 # Not a target:
 bin/armhf/openedge.o:
 #  Implicit rule search has not been done.
+ 
 #  Modification time never checked.
 #  File has not been updated.
 
@@ -1048,7 +1047,6 @@ tasks/nport.udp.task/nport.udp.task.cc:
 # Not a target:
 services/mqtt.publisher.service/mqtt.publisher.service.cc:
 #  Implicit rule search has not been done.
- 
 #  Modification time never checked.
 #  File has not been updated.
 
@@ -1062,7 +1060,7 @@ qual.dmr.task: bin/armhf/qual.dmr.task.o
 # Not a target:
 apps/edge/edge.cc:
 #  Implicit rule search has been done.
-#  Last modified 2022-07-05 07:45:54.985635397
+#  Last modified 2022-07-05 08:16:33.715781139
 #  File has been updated.
 #  Successfully updated.
 
@@ -1152,6 +1150,7 @@ rt.perf.test.task: bin/armhf/rt.perf.test.task.o
 
 # Not a target:
 tasks/simple2.task/simple2.task.cc:
+ 
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
@@ -1234,6 +1233,6 @@ tasks/agw.manage.task/agw.manage.task.cc:
 # strcache performance: lookups = 337 / hit rate = 49%
 # hash-table stats:
 # Load=171/8192=2%, Rehash=0, Collisions=6/337=2%
-# Finished Make data base on Tue Jul  5 07:54:00 2022
+# Finished Make data base on Tue Jul  5 11:49:26 2022
 
  

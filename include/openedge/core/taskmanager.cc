@@ -1,15 +1,26 @@
 
-#include "manager.hpp"
+#include <openedge/core/manager.hpp>
 #include <openedge/log.hpp>
+#include <openedge/util/validation.hpp>
+#include <openedge/core/registry.hpp>
+#include <openedge/core/def.hpp>
+#include <filesystem>
+
+namespace fs = std::filesystem;
 
 namespace oe::core {
 
     task_manager::task_manager() {
-
+        
     }
 
     task_manager::~task_manager(){
-
+        if(_task_container.size()>0){
+            for(task_container_t::iterator itr = _task_container.begin(); itr!=_task_container.end();++itr){
+                itr->second->cleanup();
+            }
+            _task_container.clear();
+        }
     }
 
     bool task_manager::install(const char* taskname){
@@ -44,12 +55,29 @@ namespace oe::core {
     }
 
     bool task_manager::install(const char* taskname, oe::core::task::runnable* instannce){
-        
-        //check task name existance
-        if(!taskname){
-            console::warn("Task name was not specified. It must be required.");
-            return false;
+
+        /* concreate instance install */
+        if(instance){
+
         }
+
+        /* install from component file */
+        else {
+            if(!taskname){
+                console::warn("Task was not specified. It must be required.", taskname);
+                return false;
+            }
+
+            // 1. check file existance
+            if(registry->find(PATH_BIN_DIR)){
+                fs::path _comp = registry->get<string>(PATH_BIN_DIR);
+                _comp /= fs::path{fmt::format("{}{}",taskname, TASKFILE_EXT)};
+                console::info("Install Component file : {}", _comp.c_str());
+            }
+            
+
+        }
+    
 
         //check instance
         _task_uid_map.insert(unordered_map<string, util::uuid_t>::value_type(taskname, _uuid_gen.generate()));

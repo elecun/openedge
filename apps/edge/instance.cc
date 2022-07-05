@@ -7,22 +7,18 @@
 #include <vector>
 #include <string>
 #include <map>
-#include "task_manager.hpp"
+//#include "task_manager.hpp"
 #include "global.hpp"
 #include <sys/sysinfo.h>
-#include <openedge/core/task.hpp>
-#include <openedge/core/registry.hpp>
+#include <openedge/core/task.hpp>       //task component
+#include <openedge/core/registry.hpp>   //registry container
 #include <openedge/util/validation.hpp> //file existance check
+#include <openedge/core/manager.hpp>
 
 using namespace std;
 using json = nlohmann::json;
 
 namespace oe::app {
-
-    #define CONFIG_ENV_KEY "environment"
-    #define CONFIG_PATH_KEY "path"
-    #define CONFIG_REQ_KEY  "required"
-    #define CONFIG_TASKS_KEY "tasks"
 
     /**
      * @brief application  initialize
@@ -79,9 +75,9 @@ namespace oe::app {
             if(config[CONFIG_REQ_KEY].find(CONFIG_TASKS_KEY)!=config[CONFIG_REQ_KEY].end()){
                 vector<string> required_tasks = config[CONFIG_REQ_KEY][CONFIG_TASKS_KEY].get<std::vector<string>>();
                 for(string& task:required_tasks){
-                    edge_task_manager->install(task.c_str());
+                    task_manager->install(task.c_str());
                 }
-                spdlog::info("Totally installed : {}", edge_task_manager->size());
+                spdlog::info("Totally installed : {}", task_manager->size());
             }
         }
         return true;
@@ -89,12 +85,12 @@ namespace oe::app {
 
     /* Run all the installed task */
     void run(){
-        edge_task_manager->run();
+        task_manager->run();
     }
 
     /* stop & uninstall the tasks */
     void cleanup(){
-        edge_task_manager->uninstall();
+        task_manager->uninstall();
     }
 
 } //namespace edge
