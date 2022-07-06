@@ -99,7 +99,7 @@ namespace oe::core::task {
     bool driver::configure(){
         try {
             if(_taskImpl){
-                if(_taskImpl->rtype==task::type_d::RT){
+                if(_taskImpl->rtype==task::rtype_d::RT){
                     _taskImpl->_option.check_jitter = _taskImpl->get_profile()->data["info"]["policy"]["check_jitter"].get<bool>();
                     _taskImpl->_option.check_overrun = _taskImpl->get_profile()->data["info"]["policy"]["check_overrun"].get<bool>();
                 }
@@ -117,17 +117,24 @@ namespace oe::core::task {
     void driver::execute(){
         if(_taskImpl) {
             if(_taskImpl->get_status()==task::status_d::STOPPED || _taskImpl->get_status()==task::status_d::IDLE){
-                if(_taskImpl->_profile){
-                    unsigned long long rtime = _taskImpl->_profile->data["info"]["cycle_ns"].get<unsigned long long>();
-                    console::info("<{}> RT Time Period : {} ns",_taskImpl->get_name(), rtime);
-                    set_rt_timer(rtime);
-                    _ptrThread = new thread{ &oe::core::task::driver::do_process, this };
+                if(_taskImpl->rtype==task::rtype_d::NT || _taskImpl->rtype==task::rtype_d::RT){
+                    if(_taskImpl->_profile){
+                        unsigned long long rtime = _taskImpl->_profile->data["info"]["cycle_ns"].get<unsigned long long>();
+                        console::info("<{}> Time Period : {} ns",_taskImpl->get_name(), rtime);
+                        set_rt_timer(rtime);
+                        _ptrThread = new thread{ &oe::core::task::driver::do_process, this };
+                    }
+                }
+                else {
+                    console::info("<{}> task is not a runnable(periodic) task.", _taskImpl->get_name());
                 }
             }
             else {
-                console::warn("{} is still working.", _taskImpl->get_name());
+                console::warn("<{}> is still working. Task should be on STOPPED or IDLE state for execution.", _taskImpl->get_name());
             }
-            
+        }
+        else {
+            console::error("<{}> Invalid instance. The instance is null.", _taskImpl->get_name());
         }
     }
 

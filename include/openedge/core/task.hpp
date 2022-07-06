@@ -105,7 +105,7 @@ namespace oe {
             } taskOptions;
 
             enum class status_d : int { STOPPED=0, STOPPING, WORKING, PAUSED, IDLE };
-            enum class type_d : int { NT = 0, RT, NP }; //runnable task type (NT=Non RT), NR(=Non Periodic)
+            enum class rtype_d : int { NT = 0, RT, NP }; //runnable task type (NT=Non RT), NR(=Non Periodic)
 
             /**
              * @brief Runnable Class Base
@@ -138,7 +138,7 @@ namespace oe {
 
                 protected:
                     status_d status { status_d::STOPPED };
-                    type_d rtype;
+                    rtype_d rtype;
                     unique_ptr<core::dbus::connector> databus;
 
 
@@ -155,7 +155,7 @@ namespace oe {
             class runnable_nt : public runnable {
                 public:
                     runnable_nt(){
-                        this->rtype = type_d::NT;
+                        this->rtype = rtype_d::NT;
                     }
                     virtual ~runnable_nt() = default;
 
@@ -189,7 +189,7 @@ namespace oe {
             class runnable_rt : public runnable {
                 public:
                     runnable_rt(){
-                        this->rtype = type_d::RT;
+                        this->rtype = rtype_d::RT;
                         this->databus = make_unique<dbus::connector_zmq>();
                     }
                     virtual ~runnable_rt() = default;
