@@ -23,6 +23,7 @@
 
 namespace fs = std::filesystem;
 using namespace std;
+using namespace oe::core;
 
 
 #if defined(linux) || defined(__linux) || defined(__linux__)
@@ -53,7 +54,7 @@ namespace oe::core::task {
                         if(fs::exists(_profile)){
                             _taskImpl->_profile = make_unique<core::profile>(_profile.c_str());
                             _taskImpl->_taskname = taskname;
-                            _taskImpl->set_status(runnable::status_d::IDLE);
+                            _taskImpl->set_status(task::status_d::IDLE);
                         }
                         else {
                             console::error("<{}> profile does not exist.", taskname);
@@ -98,7 +99,7 @@ namespace oe::core::task {
     bool driver::configure(){
         try {
             if(_taskImpl){
-                if(_taskImpl->rtype==task::runnable::type_d::RT){
+                if(_taskImpl->rtype==task::type_d::RT){
                     _taskImpl->_option.check_jitter = _taskImpl->get_profile()->data["info"]["policy"]["check_jitter"].get<bool>();
                     _taskImpl->_option.check_overrun = _taskImpl->get_profile()->data["info"]["policy"]["check_overrun"].get<bool>();
                 }
@@ -115,19 +116,25 @@ namespace oe::core::task {
 
     void driver::execute(){
         if(_taskImpl) {
-            if(_taskImpl->_profile){
-                unsigned long long rtime = _taskImpl->_profile->data["info"]["cycle_ns"].get<unsigned long long>();
-                console::info("<{}> RT Time Period : {} ns",_taskImpl->get_name(), rtime);
-                set_rt_timer(rtime);
-                _ptrThread = new thread{ &oe::core::task::driver::do_process, this };
+            if(_taskImpl->get_status()==task::status_d::STOPPED || _taskImpl->get_status()==task::status_d::IDLE){
+                if(_taskImpl->_profile){
+                    unsigned long long rtime = _taskImpl->_profile->data["info"]["cycle_ns"].get<unsigned long long>();
+                    console::info("<{}> RT Time Period : {} ns",_taskImpl->get_name(), rtime);
+                    set_rt_timer(rtime);
+                    _ptrThread = new thread{ &oe::core::task::driver::do_process, this };
+                }
             }
+            else {
+                console::warn("{} is still working.", _taskImpl->get_name());
+            }
+            
         }
     }
 
     void driver::cleanup(){
         timer_delete(_timer_id);    //delete timer
         console::info("Cleanup <{}>", _taskImpl->get_name());
-        _taskImpl->set_status(runnable::status_d::STOPPED);
+        _taskImpl->set_status(task::status_d::STOPPED);
         if(_taskImpl)
             _taskImpl->cleanup();
         unload();
@@ -245,7 +252,7 @@ namespace oe::core::task {
         while(1){
             sigwait(&thread_sigmask, &_sig_no);
             if(_sig_no==SIG_RUNTIME_TRIGGER){
-                _taskImpl->set_status(runnable::status_d::WORKING);
+                _taskImpl->set_status(task::status_d::WORKING);
                 //auto t_now = std::chrono::high_resolution_clock::now();
                 if(_taskImpl){
                     _taskImpl->execute();
@@ -255,21 +262,21 @@ namespace oe::core::task {
             }
             else if(_sig_no==SIG_PAUSE_TRIGGER) {
                 sigdelset(&thread_sigmask, SIG_RUNTIME_TRIGGER);
-                _taskImpl->set_status(runnable::status_d::PAUSED);
+                _taskImpl->set_status(task::status_d::PAUSED);
                 if(_taskImpl){
                     _taskImpl->pause();
                 }
 
             }
             else if(_sig_no==SIG_RESUME_TRIGGER) {
-                _taskImpl->set_status(runnable::status_d::WORKING);
+                _taskImpl->set_status(task::status_d::WORKING);
                 if(_taskImpl){
                     _taskImpl->resume();
                 }
                 sigaddset(&thread_sigmask, SIG_RUNTIME_TRIGGER);
             }
 
-            _taskImpl->set_status(runnable::status_d::IDLE);    
+            _taskImpl->set_status(task::status_d::IDLE);    
         }
     }
 } /* namespace */

@@ -61,7 +61,7 @@ SOURCE_FILES = .
 
 # Tasks
 divelink.m64.connector.task: $(BUILDDIR)divelink.m64.connector.task.o
-	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) -lzmq
+	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS)
 
 $(BUILDDIR)divelink.m64.connector.task.o: $(CURRENT_DIR)/divelink.m64.connector.task.cc
 										  $(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@

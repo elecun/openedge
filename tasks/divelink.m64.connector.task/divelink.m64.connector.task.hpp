@@ -19,7 +19,7 @@
 using namespace oe;
 using namespace std;
 
-class divelink_m64_connector_task : public oe::core::task::runnable_nt {
+class divelink_m64_connector_task : public core::task::runnable_nt {
     public:
         divelink_m64_connector_task();
         ~divelink_m64_connector_task();

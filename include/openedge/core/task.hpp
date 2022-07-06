@@ -104,6 +104,9 @@ namespace oe {
                 bool check_overrun = false;
             } taskOptions;
 
+            enum class status_d : int { STOPPED=0, STOPPING, WORKING, PAUSED, IDLE };
+            enum class type_d : int { NT = 0, RT, NP }; //runnable task type (NT=Non RT), NR(=Non Periodic)
+
             /**
              * @brief Runnable Class Base
              * 
@@ -114,9 +117,6 @@ namespace oe {
                 public:
                     runnable() = default;
                     virtual ~runnable() = default;
-
-                    enum class status_d : int { STOPPED=0, STOPPING, WORKING, PAUSED, IDLE };
-                    enum class type_d : int { NT = 0, RT }; //runnable task type (NT=Not RT)
 
                     /* interface functons */
                     virtual void execute() = 0;
