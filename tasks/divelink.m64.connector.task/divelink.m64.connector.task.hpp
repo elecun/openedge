@@ -35,7 +35,7 @@ class divelink_m64_connector_task : public oe::core::task::runnable_nt {
         virtual void on_request(std::any data) override;
 
     private:
-        oe::bus::sync_bus* _device = nullptr;   //serial device
+        bus::sync_bus* _device = nullptr;   //serial device
         double _t_out = 0.5;    //0.5 sec
         
 

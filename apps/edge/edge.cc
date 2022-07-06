@@ -33,12 +33,12 @@ void terminate(){
 
 void cleanup(int sig) {
     switch(sig){
-        case SIGSEGV: { console::warn("Segmentation violation"); } break;
-        case SIGABRT: { console::warn("Abnormal termination"); } break;
-        case SIGKILL: { console::warn("Process killed"); } break;
-        case SIGBUS: { console::warn("Bus Error"); } break;
-        case SIGTERM: { console::warn("Termination requested"); } break;
-        case SIGINT: { console::warn("interrupted"); } break;
+        case SIGSEGV: { console::warn("Signal : Segmentation violation"); } break;
+        case SIGABRT: { console::warn("Signal : Abnormal termination"); } break;
+        case SIGKILL: { console::warn("Signal : Process killed"); } break;
+        case SIGBUS: { console::warn("Signal : Bus Error"); } break;
+        case SIGTERM: { console::warn("Signal : Termination requested"); } break;
+        case SIGINT: { console::warn("Signal : Interrupted"); } break;
         default:
         console::info("Cleaning up the program");
     }

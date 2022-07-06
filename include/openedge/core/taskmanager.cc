@@ -23,37 +23,6 @@ namespace oe::core {
         }
     }
 
-    // bool task_manager::install(const char* taskname){
-    //     static int ntasks = 0;
-    //     if(ntasks>__TASKS_LIMITS__){
-    //         console::error("Task Container is Full!! (LIMIT={})", __TASKS_LIMITS__);
-    //         return false;
-    //     }
-
-    //     if(!taskname){
-    //         console::warn("Task was not specified to be installed");
-    //         return false;
-    //     }
-
-    //     string config_fullpath = registry->get<std::string>("CONFIG_DIR")+string(taskname);
-    //     if(!util::exist(config_fullpath.c_str())){
-    //         console::error("{} file does not exist", taskname);
-    //         return false;
-    //     }
-            
-    //     //insert task into container with uuid
-    //     //(todo) requries file existance in task respository path
-    //     _container_map.insert(taskContainer_map::value_type(taskname, _uuid_gen.generate()));
-    //     _task_container.insert(taskContainer_t::value_type(_container_map[taskname], new core::task::driver(taskname)));
-
-    //     console::info("Installed {} Component(UUID:{})", taskname, _container_map[taskname].str());
-
-    //     if(!_task_container[_container_map[taskname]]->configure()){
-    //         uninstall(taskname);
-    //     }
-    //     return true;
-    // }
-
     bool task_manager::install(const char* taskname, oe::core::task::runnable* instance){
 
         /* static installation */
@@ -72,11 +41,16 @@ namespace oe::core {
             // 1. check file existance
             if(registry->find(PATH_BIN_DIR)){
                 fs::path _bin = registry->get<string>(PATH_BIN_DIR);
-                fs::path _task = _bin /= fs::path{fmt::format("{}{}",taskname, FILE_EXT_TASK)};
-                fs::path _profile = _bin /= fs::path{fmt::format("{}{}",taskname, FILE_EXT_PROFILE)};
+                fs::path _task = _bin / fs::path{fmt::format("{}{}",taskname, FILE_EXT_TASK)};
+                fs::path _profile = _bin / fs::path{fmt::format("{}{}",taskname, FILE_EXT_PROFILE)};
 
-                if(!fs::exists(_task) || !fs::exists(_profile)){
-                    console::error("{} component files(*{}, *{}) do not exist.", taskname, FILE_EXT_TASK, FILE_EXT_PROFILE);
+                if(!fs::exists(_task)){
+                    console::error("{}{} doest not exist. please check path or task file.", taskname, FILE_EXT_TASK);
+                    return false;
+                }
+
+                if(!fs::exists(_profile)){
+                    console::error("{}{} doest not exist. please check path or profile file.", taskname, FILE_EXT_PROFILE);
                     return false;
                 }
             }

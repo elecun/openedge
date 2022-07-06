@@ -47,8 +47,8 @@ namespace oe::core::task {
                     /* load profile */
                     if(registry->find(PATH_BIN_DIR)){
                         fs::path _bin = registry->get<string>(PATH_BIN_DIR);
-                        fs::path _task = _bin /= fs::path{fmt::format("{}{}",taskname, FILE_EXT_TASK)};
-                        fs::path _profile = _bin /= fs::path{fmt::format("{}{}",taskname, FILE_EXT_PROFILE)};
+                        fs::path _task = _bin / fs::path{fmt::format("{}{}",taskname, FILE_EXT_TASK)};
+                        fs::path _profile = _bin / fs::path{fmt::format("{}{}",taskname, FILE_EXT_PROFILE)};
 
                         if(fs::exists(_profile)){
                             _taskImpl->_profile = make_unique<core::profile>(_profile.c_str());
@@ -56,7 +56,7 @@ namespace oe::core::task {
                             _taskImpl->set_status(runnable::status_d::IDLE);
                         }
                         else {
-                            console::error("<{}> profile doest not exist.", taskname);
+                            console::error("<{}> profile does not exist.", taskname);
                         }
                     }
                 }
@@ -155,12 +155,17 @@ namespace oe::core::task {
         if(registry->find(PATH_BIN_DIR)){
 
             fs::path _bin = registry->get<string>(PATH_BIN_DIR);
-            fs::path _task = _bin /= fs::path{fmt::format("{}{}",taskname, FILE_EXT_TASK)};
-            fs::path _profile = _bin /= fs::path{fmt::format("{}{}",taskname, FILE_EXT_PROFILE)};
+            fs::path _task = _bin / fs::path{fmt::format("{}{}",taskname, FILE_EXT_TASK)};
+            fs::path _profile = _bin / fs::path{fmt::format("{}{}",taskname, FILE_EXT_PROFILE)};
 
             // 1. check file existance
-            if(!fs::exists(_task) || !fs::exists(_profile)){
-                console::error("{} component files(*{}, *{}) do not exist.", taskname, FILE_EXT_TASK, FILE_EXT_PROFILE);
+            if(!fs::exists(_task)){
+                console::error("{}{} doest not exist. please check path or task file.", taskname, FILE_EXT_TASK);
+                return false;
+            }
+
+            if(!fs::exists(_profile)){
+                console::error("{}{} doest not exist. please check path or profile file.", taskname, FILE_EXT_PROFILE);
                 return false;
             }
             
@@ -169,7 +174,7 @@ namespace oe::core::task {
             if(_task_handle){
                 create_task pfcreate = (create_task)dlsym(_task_handle, "create");
                 if(!pfcreate){
-                    spdlog::error("{} instance cannot be created", taskname);
+                    console::error("{} instance cannot be created", taskname);
                     dlclose(_task_handle);
                     _task_handle = nullptr;
                     return false;
@@ -179,6 +184,8 @@ namespace oe::core::task {
             }
             else {
                 console::error("{} load error occured : {}", taskname, dlerror());
+                dlclose(_task_handle);
+                _task_handle = nullptr;
             }
         }
         else {

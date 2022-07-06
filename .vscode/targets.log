@@ -5,8 +5,9 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
+ 
 
-# Make data base, printed on Wed Jul  6 17:04:15 2022
+# Make data base, printed on Wed Jul  6 19:09:18 2022
 
 # Variables
 
@@ -285,7 +286,6 @@ FORCE:
 #  Modification time never checked.
 #  File has not been updated.
 
- 
 bin/armhf/mqtt.o: services/mqtt.publisher.service/mqtt.cc
 #  Implicit rule search has not been done.
 #  Modification time never checked.
@@ -324,6 +324,7 @@ bin/armhf/mongodb.connector.service.o: services/mongodb.connector.service/mongod
 #  Modification time never checked.
 #  File has not been updated.
 #  recipe to execute (from 'Makefile', line 303):
+ 
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
 # Not a target:
@@ -568,7 +569,6 @@ bin/armhf/modbus.rtu.service.o: services/modbus.rtu.service/modbus.rtu.service.c
 tasks/modbusRTU.task/modbusRTU.task.cc:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
- 
 #  File has not been updated.
 
 # Not a target:
@@ -607,6 +607,7 @@ bin/armhf/uvlc.control.logic.task.o: tasks/uvlc.control.logic.task/uvlc.control.
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
+ 
 #  recipe to execute (from 'Makefile', line 277):
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
@@ -856,7 +857,6 @@ bin/armhf/moxa.io.service.task.o: tasks/moxa.io.service.task/moxa.io.service.tas
 
 pcan.mqtt.task: bin/armhf/pcan.mqtt.task.o
 #  Implicit rule search has not been done.
- 
 #  Modification time never checked.
 #  File has not been updated.
 #  recipe to execute (from 'Makefile', line 195):
@@ -902,6 +902,7 @@ mqtt.publisher.service: bin/armhf/mqtt.publisher.service.o bin/armhf/mqtt.o
 	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) -lmosquittopp
 
 modbus.rtu.service: bin/armhf/modbus.rtu.service.o
+ 
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
@@ -1060,7 +1061,7 @@ qual.dmr.task: bin/armhf/qual.dmr.task.o
 # Not a target:
 apps/edge/edge.cc:
 #  Implicit rule search has been done.
-#  Last modified 2022-07-06 14:14:27.696826052
+#  Last modified 2022-07-06 19:00:42.917994712
 #  File has been updated.
 #  Successfully updated.
 
@@ -1144,7 +1145,6 @@ bin/armhf/pcan.mqtt.task.o: tasks/pcan.mqtt.task/pcan.mqtt.task.cc
 rt.perf.test.task: bin/armhf/rt.perf.test.task.o
 #  Implicit rule search has not been done.
 #  Modification time never checked.
- 
 #  File has not been updated.
 #  recipe to execute (from 'Makefile', line 281):
 	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) -lmosquittopp -lmosquitto
@@ -1196,6 +1196,7 @@ bin/armhf/rt.perf.test.task.o: tasks/rt.perf.test.task/rt.perf.test.task.cc
 
 # Not a target:
 include/openedge/device/general.cc:
+ 
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
@@ -1233,6 +1234,6 @@ tasks/agw.manage.task/agw.manage.task.cc:
 # strcache performance: lookups = 337 / hit rate = 49%
 # hash-table stats:
 # Load=171/8192=2%, Rehash=0, Collisions=6/337=2%
-# Finished Make data base on Wed Jul  6 17:04:15 2022
+# Finished Make data base on Wed Jul  6 19:09:18 2022
 
  

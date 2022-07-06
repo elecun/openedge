@@ -51,22 +51,22 @@ $(shell mkdir -p $(BUILDDIR))
 CXXFLAGS = -O3 -fPIC -Wall -std=c++17 -D__cplusplus=201703L
 
 #custom definitions
-CXXFLAGS += -D__MAJOR__=0 -D__MINOR__=0 -D__REV__=5
+CXXFLAGS += -D__MAJOR__=0 -D__MINOR__=0 -D__REV__=2
 RM	= rm -rf
 
 #directories
-
-INCLUDE_FILES = ./include/
-SOURCE_FILES = ./
+INCLUDE_FILES = $(CURRENT_DIR)/../../include
+SOURCE_FILES = .
 
 
 # Tasks
 divelink.m64.connector.task: $(BUILDDIR)divelink.m64.connector.task.o
 	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) -lzmq
+
 $(BUILDDIR)divelink.m64.connector.task.o: $(CURRENT_DIR)/divelink.m64.connector.task.cc
-	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
-$(BUILDDIR)sync_uart.o: $(OPENEDGE_INCLUDE_DIR)/common/sync_uart.cc
-	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+										  $(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+$(BUILDDIR)sync_uart.o: $(INCLUDE_FILES)openedge/common/sync_uart.cc
+						$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
 all : tasks
 tasks : divelink.m64.connector.task

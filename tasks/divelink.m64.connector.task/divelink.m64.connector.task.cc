@@ -26,35 +26,36 @@ void divelink_m64_connector_task::stop(){
 }
 
 bool divelink_m64_connector_task::configure(){
+    console::info("Configuring {}", this->get_name());
 
-    if(_device)
-        _device->close();
+    // if(_device)
+    //     _device->close();
 
-    json config = json::parse(get_profile()->get("configuration"));
-    if(config.find("serial")!=config.end()){
+    // json config = json::parse(get_profile()->get("configuration"));
+    // if(config.find("serial")!=config.end()){
         
-        if(config["serial"].find("device")!=config["serial"].end() && config["serial"].find("baudrate")!=config["serial"].end()){
-            string dev = config["serial"]["device"].get<string>();
-            unsigned int baud = config["serial"]["baudrate"].get<unsigned int>();
+    //     if(config["serial"].find("device")!=config["serial"].end() && config["serial"].find("baudrate")!=config["serial"].end()){
+    //         string dev = config["serial"]["device"].get<string>();
+    //         unsigned int baud = config["serial"]["baudrate"].get<unsigned int>();
 
-            console::info("> Open Device for m64 : {}({})", dev, baud);
+    //         console::info("> Open Device for m64 : {}({})", dev, baud);
             
-            _device = new bus::sync_uart(dev.c_str(), baud);
+    //         _device = new bus::sync_uart(dev.c_str(), baud);
 
-            if(config["serial"].find("timeout")!=config["serial"].end()){
-                _t_out = config["serial"]["timeout"].get<double>();
-                console::info("> Set read timeout : {}sec.", _t_out);
-            }
+    //         if(config["serial"].find("timeout")!=config["serial"].end()){
+    //             _t_out = config["serial"]["timeout"].get<double>();
+    //             console::info("> Set read timeout : {}sec.", _t_out);
+    //         }
 
-            if(!_device->open()){
-                console::error("Device {} cannnot open. Check the device.", dev);
-                return false;
-            }
-        }
-        else {
-            console::error("Wrong configuration for the device. Device port and bauadrate are required."); 
-        }
-    }
+    //         if(!_device->open()){
+    //             console::error("Device {} cannnot open. Check the device.", dev);
+    //             return false;
+    //         }
+    //     }
+    //     else {
+    //         console::error("Wrong configuration for the device. Device port and bauadrate are required."); 
+    //     }
+    // }
     return true;
     
 }
