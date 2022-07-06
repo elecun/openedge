@@ -18,7 +18,7 @@ divelink_m64_connector_task::~divelink_m64_connector_task(){
 }
 
 void divelink_m64_connector_task::execute(){
-
+    
 }
 
 void divelink_m64_connector_task::stop(){
@@ -26,12 +26,16 @@ void divelink_m64_connector_task::stop(){
 }
 
 bool divelink_m64_connector_task::configure(){
-    console::info("Configuring {}", this->get_name());
 
-    // if(_device)
-    //     _device->close();
+    if(_device)
+        _device->close();
 
-    // json config = json::parse(get_profile()->get("configuration"));
+    json config = json::parse(get_profile()->get(PROFILE_CONFIGURATIONS_KEY));
+    if(config.empty()){
+        
+    }
+
+    // json config = json::parse(get_profile()->get("configurations"));
     // if(config.find("serial")!=config.end()){
         
     //     if(config["serial"].find("device")!=config["serial"].end() && config["serial"].find("baudrate")!=config["serial"].end()){

@@ -19,6 +19,8 @@
 #define CONFIG_REQ_KEY  "required"
 #define CONFIG_TASKS_KEY "tasks"
 
+#define PROFILE_CONFIGURATIONS_KEY "configurations"
+
 /* Directories */
 #define PATH_HOME_DIR       "HOME_DIR"
 #define PATH_BIN_DIR        "BIN_DIR"

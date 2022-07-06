@@ -15,7 +15,8 @@
 #include <cstring>
 #include <string>
 #include <3rdparty/json.hpp>
-#include <3rdparty/spdlog/spdlog.h>
+#include <openedge/log.hpp>
+#include <openedge/core/def.hpp>
 
 using namespace std;
 using json = nlohmann::json;
@@ -27,7 +28,6 @@ namespace oe::core {
         class driver;
     }
 
-    //JSON-based Profile
     class profile {
 
         friend class oe::core::task::driver;
@@ -38,26 +38,18 @@ namespace oe::core {
                 data.clear();
             }
 
-            bool isValid() const { return valid; }
-            string getDumped() const { return data.dump(); }
-
-            //functional
-            vector<string> getRequiredServices() const { 
-                return static_cast<vector<string>>(this->data["services"]["required"]);
-            }
+            bool is_valid() const { return valid; }
+            string get_dumped() const { return data.dump(); }
 
             string get(const char* key = nullptr) const {
-                if(key!=nullptr)
-                    return this->data[key].dump();
-
+                if(key!=nullptr){
+                    if(data.find(key)!=data.end())
+                        return data[key].dump();
+                    else {
+                        console::warn("{} key cannot be found.", key);
+                    }
+                }
                 return string("{}");
-            }
-
-            string getServiceProfile(const char* servicename = nullptr) const {
-                if(!servicename)
-                    return string("{}");
-
-                return this->data["services"][servicename].dump();
             }
 
         protected:
