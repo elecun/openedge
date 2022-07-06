@@ -79,9 +79,6 @@ namespace oe::core {
                     console::error("{} component files(*{}, *{}) do not exist.", taskname, FILE_EXT_TASK, FILE_EXT_PROFILE);
                     return false;
                 }
-                    
-                console::info("Component Install : {}", _task.c_str());
-                console::info("Profile Load : {}", _profile.c_str());
             }
 
             // 2. check for already working
@@ -96,7 +93,7 @@ namespace oe::core {
 
             // 4. check load fail or success
             if(_task_container[_task_uid_map[taskname]]->good()){
-                console::info("Successfully installed <{}>", taskname);
+                console::info("Successfully installed <{}>(UID:{})", taskname, _task_uid_map[taskname].str());
                 if(!_task_container[_task_uid_map[taskname]]->configure()){
                     console::error("<{}> component has a problem to configure.", taskname);
                     this->uninstall(taskname);

@@ -3,7 +3,6 @@
 #include <fstream>
 #include <3rdparty/json.hpp>
 #include <3rdparty/spdlog/spdlog.h>
-#include "exception.hpp"
 #include <vector>
 #include <string>
 #include <map>
