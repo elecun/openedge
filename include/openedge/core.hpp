@@ -26,11 +26,9 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 #include <openedge/core/task.hpp>
 #include <openedge/core/dbus.hpp>
-
-#include <openedge/core/service.hpp>
 #include <openedge/core/version.hpp>
 #include <openedge/core/exception.hpp>
-#include <openedge/core/global.hpp>
+#include <openedge/core/def.hpp>
 
 
 using namespace oe;

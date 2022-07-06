@@ -20,22 +20,22 @@ namespace oe::app {
 
 }
 
-namespace oe::manager {
+// namespace oe::manager {
 
-    /**
-     * @brief   initialize process manager
-     */
-    bool initialize_proc();
+//     /**
+//      * @brief   initialize process manager
+//      */
+//     bool initialize_proc();
 
-    /**
-     * @brief   start process manager
-     */
-    void run();
+//     /**
+//      * @brief   start process manager
+//      */
+//     void run();
 
-    /**
-     * @brief   terminate process manager
-     */
-    void cleanup();
-}
+//     /**
+//      * @brief   terminate process manager
+//      */
+//     void cleanup();
+// }
 
 #endif

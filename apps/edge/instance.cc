@@ -7,13 +7,12 @@
 #include <vector>
 #include <string>
 #include <map>
-//#include "task_manager.hpp"
-#include "global.hpp"
 #include <sys/sysinfo.h>
 #include <openedge/core/task.hpp>       //task component
 #include <openedge/core/registry.hpp>   //registry container
 #include <openedge/util/validation.hpp> //file existance check
 #include <openedge/core/manager.hpp>
+#include <openedge/core/def.hpp>
 
 using namespace std;
 using json = nlohmann::json;
@@ -75,9 +74,9 @@ namespace oe::app {
             if(config[CONFIG_REQ_KEY].find(CONFIG_TASKS_KEY)!=config[CONFIG_REQ_KEY].end()){
                 vector<string> required_tasks = config[CONFIG_REQ_KEY][CONFIG_TASKS_KEY].get<std::vector<string>>();
                 for(string& task:required_tasks){
-                    task_manager->install(task.c_str());
+                    manager->install(task.c_str());
                 }
-                spdlog::info("Totally installed : {}", task_manager->size());
+                spdlog::info("Totally installed : {}", manager->size());
             }
         }
         return true;
@@ -85,12 +84,12 @@ namespace oe::app {
 
     /* Run all the installed task */
     void run(){
-        task_manager->run();
+        manager->run();
     }
 
     /* stop & uninstall the tasks */
     void cleanup(){
-        task_manager->uninstall();
+        manager->uninstall();
     }
 
 } //namespace edge

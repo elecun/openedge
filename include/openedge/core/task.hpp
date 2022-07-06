@@ -125,7 +125,7 @@ namespace oe {
                     virtual void cleanup() = 0;
                     virtual void pause() = 0;
                     virtual void resume() = 0;
-                    virtual const char* get_name() { return taskname.c_str(); }
+                    virtual const char* get_name() { return _taskname.c_str(); }
 
                     const status_d get_status() { return status; }
                     void set_status(status_d s) { status = s; }
@@ -137,7 +137,6 @@ namespace oe {
                     }
 
                 protected:
-                    string taskname { "noname" };
                     status_d status { status_d::STOPPED };
                     type_d rtype;
                     unique_ptr<core::dbus::connector> databus;
@@ -146,6 +145,7 @@ namespace oe {
                 private:
                     unique_ptr<core::profile> _profile;
                     taskOptions _option;
+                    string _taskname = {"noname"};
             };
 
             /**

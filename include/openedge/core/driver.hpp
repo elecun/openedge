@@ -16,62 +16,64 @@
 #include <mutex>
 #include <3rdparty/zmq/zmq.hpp>
 #include <3rdparty/zmq/zmq_addon.hpp>
+#include <filesystem> // requried c++17
 
 using namespace std;
+namespace fs = std::filesystem;
 
+namespace oe::core::task {
 
-namespace oe::core {
-    namespace task {
+    //RT timer jitter data
+    typedef struct _time_jitter_t {
+        unsigned long long max {0};
+        unsigned long long min {1000000000};
+        void set(unsigned long long val){
+            if(val>max) max=val;
+            if(val<min) min=val;
+        }   
+    } time_jitter;
 
-        //RT timer jitter data
-        typedef struct _time_jitter_t {
-            unsigned long long max {0};
-            unsigned long long min {1000000000};
-            void set(unsigned long long val){
-                if(val>max) max=val;
-                if(val<min) min=val;
-            }   
-        } time_jitter;
+    class driver {
+        public:
+            driver(const char* taskname);
+            driver(task::runnable* instance);
+            driver(const fs::path component);
+            virtual ~driver();
 
-        class driver {
-            public:
-                driver(const char* taskname);
-                driver(task::runnable* instance);
-                virtual ~driver();
+            bool configure();   /* drive a task to configure before execution */
+            void execute();     /* drive a task to run periodically */
+            void cleanup();     /* drive a task to terminate */
+            void pause();       /* drive a task to pause*/
+            void resume();      /* drive a paused task to resume */
 
-                bool configure();   /* drive a task to configure before execution */
-                void execute();     /* drive a task to run periodically */
-                void cleanup();     /* drive a task to terminate */
-                void pause();       /* drive a task to pause*/
-                void resume();      /* drive a paused task to resume */
+            /* get the name of task */
+            const char* get_name() { 
+                return _taskImpl->get_name();
+            }
 
-                /* get the name of task */
-                const char* getTaskname() { 
-                    return _taskImpl->taskname.c_str();
-                }
+            bool good(){ return (_taskImpl)?true:false; }
 
-            private:
-                bool load(const char* taskname);    /* load task with by name, true is success  */
-                void unload();  /* unload task */
-                void do_process();  /* call the concrete task execution */
+        private:
+            bool load(const char* taskname);    /* load task with by name, true is success  */
+            void unload();  /* unload task */
+            void do_process();  /* call the concrete task execution */
 
-                //set task time spec. 
-                void set_rt_timer(unsigned long long nsec);
+            //set task time spec. 
+            void set_rt_timer(unsigned long long nsec);
 
-            private:
-                task::runnable* _taskImpl = nullptr;    //concrete implementation
-                void* _task_handle = nullptr;   //for dl
-                std::thread* _ptrThread = nullptr;
-                std::mutex _mutex;
-                timer_t _timer_id {0};
-                struct sigevent _sig_evt;
-                struct itimerspec _time_spec;
-                _time_jitter_t _jitter;
-                bool _overrun { false };
-                    
+        private:
+            task::runnable* _taskImpl = nullptr;    //concrete implementation
+            void* _task_handle = nullptr;   //for dl
+            std::thread* _ptrThread = nullptr;
+            std::mutex _mutex;
+            timer_t _timer_id {0};
+            struct sigevent _sig_evt;
+            struct itimerspec _time_spec;
+            _time_jitter_t _jitter;
+            bool _overrun { false };
+                
 
-        };
-    } //namespace task
+    };
 } //namespace oe
 
 #endif

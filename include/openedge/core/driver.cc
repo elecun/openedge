@@ -10,7 +10,6 @@
  */
 
 #include "driver.hpp"
-#include <3rdparty/spdlog/spdlog.h>
 #include <dlfcn.h>
 #include <signal.h>
 #include <chrono>
@@ -18,7 +17,7 @@
 #include <openedge/util/validation.hpp>
 #include <stdexcept>
 #include <openedge/core/registry.hpp>
-#include <openedge/core/global.hpp>
+#include <openedge/core/def.hpp>
 #include <openedge/log.hpp>
 #include <filesystem> //to use c++17 filesystem
 
@@ -45,30 +44,33 @@ namespace oe::core::task {
         try {
             if(load(taskname)){
                 if(_taskImpl){
-                    if(registry->find("HOME_DIR")){
-                        
-                    }
-                    if(registry->find("PROFILE_DIR")){
-                        fs::path profile_dir = registry->get<string>("PROFILE_DIR");
-                        //string profile_dir = registry->get<string>("PROFILE_DIR");
-                    }
+                    /* load profile */
+                    if(registry->find(PATH_BIN_DIR)){
+                        fs::path _bin = registry->get<string>(PATH_BIN_DIR);
+                        fs::path _task = _bin /= fs::path{fmt::format("{}{}",taskname, FILE_EXT_TASK)};
+                        fs::path _profile = _bin /= fs::path{fmt::format("{}{}",taskname, FILE_EXT_PROFILE)};
 
-                    //string profile_dir = registry->get<string>("PROFILE_DIR");
-                    string path = profile_dir+string(taskname)+__PROFILE_EXT__;
-                    if(util::exist(path.c_str())){
-                        console::info("Task Profile : {}", path);
-                        _taskImpl->_profile = make_unique<core::profile>(path.c_str()); //load profile
+                        if(fs::exists(_profile)){
+                            _taskImpl->_profile = make_unique<core::profile>(_profile.c_str());
+                            _taskImpl->_taskname = taskname;
+                            _taskImpl->set_status(runnable::status_d::IDLE);
+                        }
+                        else {
+                            console::error("<{}> profile doest not exist.", taskname);
+                        }
                     }
-                    else
-                        console::error("<{}> profile does not exist", taskname);
-                    _taskImpl->taskname = taskname;
-                    _taskImpl->set_status(runnable::status_d::STOPPED);
-
                 }
+                else {
+                    console::error("Component successfully loaded, but the instance has null pointer.");
+                }
+            }
+            else {
+                _taskImpl = nullptr;
+                console::error("Component load failed.");
             }
         }
         catch(std::runtime_error& e){
-            console::error("{} driver cannot be loadded ({})", taskname, e.what());
+            console::error("<{}> driver cannot be loadded ({})", taskname, e.what());
         }
     }
 
@@ -78,10 +80,14 @@ namespace oe::core::task {
         }
         catch(std::runtime_error& e){
             if(instance){
-                console::error("{} driver cannot be loadded ({})", instance->get_name(), e.what());
+                console::error("<{}> driver cannot be loadded ({})", instance->get_name(), e.what());
             }
             
         }
+    }
+
+    driver::driver(fs::path component){
+
     }
 
     driver::~driver(){
@@ -92,7 +98,6 @@ namespace oe::core::task {
     bool driver::configure(){
         try {
             if(_taskImpl){
-                //set configurations
                 if(_taskImpl->rtype==task::runnable::type_d::RT){
                     _taskImpl->_option.check_jitter = _taskImpl->get_profile()->data["info"]["policy"]["check_jitter"].get<bool>();
                     _taskImpl->_option.check_overrun = _taskImpl->get_profile()->data["info"]["policy"]["check_overrun"].get<bool>();
@@ -102,7 +107,7 @@ namespace oe::core::task {
             }
         }
         catch(const std::runtime_error& e){
-            spdlog::error("Runtime Error : {}", e.what());
+            console::error("Runtime Error : {}", e.what());
         }
 
         return false;
@@ -112,7 +117,7 @@ namespace oe::core::task {
         if(_taskImpl) {
             if(_taskImpl->_profile){
                 unsigned long long rtime = _taskImpl->_profile->data["info"]["cycle_ns"].get<unsigned long long>();
-                spdlog::info("<{}> RT Time Period : {} ns",_taskImpl->taskname, rtime);
+                console::info("<{}> RT Time Period : {} ns",_taskImpl->get_name(), rtime);
                 set_rt_timer(rtime);
                 _ptrThread = new thread{ &oe::core::task::driver::do_process, this };
             }
@@ -121,8 +126,8 @@ namespace oe::core::task {
 
     void driver::cleanup(){
         timer_delete(_timer_id);    //delete timer
-        spdlog::info("Cleanup <{}>", _taskImpl->taskname);
-        _taskImpl->status = oe::core::task::runnable::status_d::STOPPED;
+        console::info("Cleanup <{}>", _taskImpl->get_name());
+        _taskImpl->set_status(runnable::status_d::STOPPED);
         if(_taskImpl)
             _taskImpl->cleanup();
         unload();
@@ -130,48 +135,56 @@ namespace oe::core::task {
 
     void driver::pause(){
         if(_taskImpl){
-            
+            console::warn("Not support yet.");
         }
     }
 
     void driver::resume(){
         if(_taskImpl){
-            
+            console::warn("Not support yet.");
         }
     }
 
-    /**
-     * @brief Task Load
-     * 
-     * @param taskname taskname to be loaded
-     * @return true if load success
-     * @return false if load failed
-     */
     bool driver::load(const char* taskname){
 
-        std::filesystem::current_path()
-
-        string path = ".";
-        if(registry->find("BIN_DIR")){
-            path = registry->get<std::string>("BIN_DIR")+string(taskname); //same dir
-            console::info("Load Component : {}", path);
+        if(!taskname){
+            console::warn("Task was not specified. It must be requred.", taskname);
+            return false;
         }
-        
-        _task_handle = dlopen(path.c_str(), RTLD_LAZY|RTLD_LOCAL);
-        if(_task_handle){
-            create_task pfcreate = (create_task)dlsym(_task_handle, "create");
-            if(!pfcreate){
-                spdlog::error("{} instance cannot be created", taskname);
-                dlclose(_task_handle);
-                _task_handle = nullptr;
+
+        if(registry->find(PATH_BIN_DIR)){
+
+            fs::path _bin = registry->get<string>(PATH_BIN_DIR);
+            fs::path _task = _bin /= fs::path{fmt::format("{}{}",taskname, FILE_EXT_TASK)};
+            fs::path _profile = _bin /= fs::path{fmt::format("{}{}",taskname, FILE_EXT_PROFILE)};
+
+            // 1. check file existance
+            if(!fs::exists(_task) || !fs::exists(_profile)){
+                console::error("{} component files(*{}, *{}) do not exist.", taskname, FILE_EXT_TASK, FILE_EXT_PROFILE);
                 return false;
             }
-            _taskImpl = pfcreate();
-            return true;
+            
+            // 2. open component(shared library)
+            _task_handle = dlopen(_task.c_str(), RTLD_LAZY|RTLD_LOCAL);
+            if(_task_handle){
+                create_task pfcreate = (create_task)dlsym(_task_handle, "create");
+                if(!pfcreate){
+                    spdlog::error("{} instance cannot be created", taskname);
+                    dlclose(_task_handle);
+                    _task_handle = nullptr;
+                    return false;
+                }
+                _taskImpl = pfcreate();
+                return true;
+            }
+            else {
+                console::error("{} load error occured : {}", taskname, dlerror());
+            }
         }
-        else{
-            spdlog::error("{} : {}", taskname, dlerror());
+        else {
+            console::error("Cannot find PATH in config file. You should define BIN_DIR.");
         }
+
         return false;
     }
 
@@ -198,7 +211,7 @@ namespace oe::core::task {
         _sig_evt.sigev_signo = SIG_RUNTIME_TRIGGER; 
         _sig_evt.sigev_value.sival_ptr = _timer_id; 
         if(timer_create(CLOCK_REALTIME, &_sig_evt, &_timer_id)==-1)
-            spdlog::error("timer create error");
+            console::error("timer create error");
     
         const unsigned long long nano = (1000000000L);
         _time_spec.it_value.tv_sec = nsec / nano;
@@ -207,7 +220,7 @@ namespace oe::core::task {
         _time_spec.it_interval.tv_nsec = nsec % nano;
 
         if(timer_settime(_timer_id, 0, &_time_spec, nullptr)==-1)
-            spdlog::error("timer setting error");
+            console::error("timer setting error");
     }
 
     //concreate process impl.
@@ -225,38 +238,31 @@ namespace oe::core::task {
         while(1){
             sigwait(&thread_sigmask, &_sig_no);
             if(_sig_no==SIG_RUNTIME_TRIGGER){
-                _taskImpl->set_status(oe::core::task::runnable::status_d::WORKING);
-                auto t_now = std::chrono::high_resolution_clock::now();
+                _taskImpl->set_status(runnable::status_d::WORKING);
+                //auto t_now = std::chrono::high_resolution_clock::now();
                 if(_taskImpl){
                     _taskImpl->execute();
                 }
-                auto t_elapsed = std::chrono::high_resolution_clock::now();
+                //kauto t_elapsed = std::chrono::high_resolution_clock::now();
                 //spdlog::info("Processing Time : {} sec", std::chrono::duration<double, std::chrono::seconds::period>(t_elapsed - t_now).count());
             }
             else if(_sig_no==SIG_PAUSE_TRIGGER) {
                 sigdelset(&thread_sigmask, SIG_RUNTIME_TRIGGER);
-                _taskImpl->set_status(oe::core::task::runnable::status_d::PAUSED);
+                _taskImpl->set_status(runnable::status_d::PAUSED);
                 if(_taskImpl){
                     _taskImpl->pause();
                 }
 
             }
             else if(_sig_no==SIG_RESUME_TRIGGER) {
-                _taskImpl->set_status(oe::core::task::runnable::status_d::WORKING);
+                _taskImpl->set_status(runnable::status_d::WORKING);
                 if(_taskImpl){
                     _taskImpl->resume();
                 }
                 sigaddset(&thread_sigmask, SIG_RUNTIME_TRIGGER);
             }
-            
 
-            switch(_sig_no){
-                case SIG_STOP_TRIGGER: {
-
-                } break;
-            }
-
-            _taskImpl->set_status(oe::core::task::runnable::status_d::IDLE);    
+            _taskImpl->set_status(runnable::status_d::IDLE);    
         }
     }
-} //namespace oe::core::task
+} /* namespace */

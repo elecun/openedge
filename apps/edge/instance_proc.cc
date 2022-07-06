@@ -6,7 +6,7 @@
 #include <vector>
 #include <string>
 #include <map>
-#include "task_manager.hpp"
+#include <openedge/core/manager.hpp>
 #include <sys/sysinfo.h>
 #include <openedge/core/task.hpp>
 #include <openedge/core/registry.hpp>
@@ -31,7 +31,7 @@ namespace oe::manager {
             console::info("> Target system hostname = {}", hostname);
         }
         else {
-            conf
+            
         }
         switch(err){
             case 0: {

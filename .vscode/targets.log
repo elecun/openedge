@@ -6,7 +6,7 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Tue Jul  5 11:49:26 2022
+# Make data base, printed on Wed Jul  6 17:04:15 2022
 
 # Variables
 
@@ -61,7 +61,7 @@ LESSOPEN = | /usr/bin/lesspipe %s
 # environment
 VSCODE_CWD = /home/hwang
 # environment
-SSH_CONNECTION = 192.168.201.26 60818 192.168.200.99 22
+SSH_CONNECTION = 192.168.201.26 64821 192.168.200.99 22
 # environment
 PATH = /home/hwang/.vscode-server/bin/30d9c6cd9483b2cc586687151bcbcd635f373630/bin/remote-cli:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
 # environment
@@ -89,7 +89,7 @@ VSCODE_PIPE_LOGGING = true
 # environment
 PWD = /home/hwang/dev/openedge
 # environment
-VSCODE_IPC_HOOK_CLI = /run/user/1000/vscode-ipc-32e9df61-4b49-4846-baca-2cf199725bc1.sock
+VSCODE_IPC_HOOK_CLI = /run/user/1000/vscode-ipc-ff5a6ae0-fad7-4596-abf1-1ba174bb3a9d.sock
 # automatic
 *D = $(patsubst %/,%,$(dir $*))
 # makefile (from 'Makefile', line 54)
@@ -127,7 +127,7 @@ SHLVL = 3
 # makefile (from 'Makefile', line 17)
 CC := /usr/bin/arm-linux-gnueabihf-g++-8
 # environment
-XDG_SESSION_ID = 199
+XDG_SESSION_ID = 231
 # environment
 USER = hwang
 # makefile
@@ -151,7 +151,7 @@ MAKEFLAGS = pqrR
 # environment
 MFLAGS = -pqrR
 # environment
-SSH_CLIENT = 192.168.201.26 60818 22
+SSH_CLIENT = 192.168.201.26 64821 22
 # environment
 MAIL = /var/mail/hwang
 # automatic
@@ -285,8 +285,8 @@ FORCE:
 #  Modification time never checked.
 #  File has not been updated.
 
-bin/armhf/mqtt.o: services/mqtt.publisher.service/mqtt.cc
  
+bin/armhf/mqtt.o: services/mqtt.publisher.service/mqtt.cc
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
@@ -568,6 +568,7 @@ bin/armhf/modbus.rtu.service.o: services/modbus.rtu.service/modbus.rtu.service.c
 tasks/modbusRTU.task/modbusRTU.task.cc:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
+ 
 #  File has not been updated.
 
 # Not a target:
@@ -578,7 +579,6 @@ include/openedge/core/rt_timer.cc:
 
 # Not a target:
 tasks/rt.perf.test.task/rt.perf.test.task.cc:
- 
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
@@ -856,6 +856,7 @@ bin/armhf/moxa.io.service.task.o: tasks/moxa.io.service.task/moxa.io.service.tas
 
 pcan.mqtt.task: bin/armhf/pcan.mqtt.task.o
 #  Implicit rule search has not been done.
+ 
 #  Modification time never checked.
 #  File has not been updated.
 #  recipe to execute (from 'Makefile', line 195):
@@ -864,7 +865,6 @@ pcan.mqtt.task: bin/armhf/pcan.mqtt.task.o
 # Not a target:
 bin/armhf/openedge.o:
 #  Implicit rule search has not been done.
- 
 #  Modification time never checked.
 #  File has not been updated.
 
@@ -1060,7 +1060,7 @@ qual.dmr.task: bin/armhf/qual.dmr.task.o
 # Not a target:
 apps/edge/edge.cc:
 #  Implicit rule search has been done.
-#  Last modified 2022-07-05 08:16:33.715781139
+#  Last modified 2022-07-06 14:14:27.696826052
 #  File has been updated.
 #  Successfully updated.
 
@@ -1144,13 +1144,13 @@ bin/armhf/pcan.mqtt.task.o: tasks/pcan.mqtt.task/pcan.mqtt.task.cc
 rt.perf.test.task: bin/armhf/rt.perf.test.task.o
 #  Implicit rule search has not been done.
 #  Modification time never checked.
+ 
 #  File has not been updated.
 #  recipe to execute (from 'Makefile', line 281):
 	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) -lmosquittopp -lmosquitto
 
 # Not a target:
 tasks/simple2.task/simple2.task.cc:
- 
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
@@ -1233,6 +1233,6 @@ tasks/agw.manage.task/agw.manage.task.cc:
 # strcache performance: lookups = 337 / hit rate = 49%
 # hash-table stats:
 # Load=171/8192=2%, Rehash=0, Collisions=6/337=2%
-# Finished Make data base on Tue Jul  5 11:49:26 2022
+# Finished Make data base on Wed Jul  6 17:04:15 2022
 
  

@@ -36,7 +36,7 @@ endif
 # OS
 ifeq ($(OS),Linux) #for Linux
 	LDFLAGS = -Wl,--export-dynamic -Wl,-rpath=$(LD_LIBRARY_PATH)
-	LDLIBS = -pthread -lrt -ldl -lm
+	LDLIBS = -pthread -lrt -ldl -lm -lstdc++fs
 	GTEST_LDLIBS = -lgtest
 endif
 
@@ -47,7 +47,7 @@ $(shell mkdir -p $(BUILDDIR))
 CXXFLAGS = -O3 -fPIC -Wall -std=c++17 -D__cplusplus=201703L
 
 #custom definitions
-CXXFLAGS += -D__MAJOR__=0 -D__MINOR__=0 -D__REV__=5
+CXXFLAGS += -D__MAJOR__=0 -D__MINOR__=0 -D__REV__=6
 RM	= rm -rf
 
 #directories
@@ -59,7 +59,7 @@ SOURCE_FILES = .
 # edge service engine
 edge:	$(BUILDDIR)edge.o \
 		$(BUILDDIR)edge_instance.o \
-		$(BUILDDIR)task_manager.o \
+		$(BUILDDIR)taskmanager.o \
 		$(BUILDDIR)driver.o \
 		$(BUILDDIR)profile.o \
 		$(BUILDDIR)rt_timer.o
@@ -68,8 +68,6 @@ edge:	$(BUILDDIR)edge.o \
 # edge application sources
 $(BUILDDIR)edge.o:	$(CURRENT_DIR)/edge.cc
 					$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
-$(BUILDDIR)task_manager.o:	$(CURRENT_DIR)/task_manager.cc
-							$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 $(BUILDDIR)edge_instance.o: $(CURRENT_DIR)/instance.cc
 							$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
@@ -79,25 +77,27 @@ $(BUILDDIR)driver.o:	$(INCLUDE_FILES)/openedge/core/driver.cc
 # edge include files
 $(BUILDDIR)rt_trigger.o:	$(INCLUDE_DIR)/openedge/core/rt_trigger.cc
 							$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
-$(BUILDDIR)rt_timer.o:		$(INCLUDE_FILES)openedge/core/rt_timer.cc
+$(BUILDDIR)rt_timer.o:		$(INCLUDE_FILES)/openedge/core/rt_timer.cc
 							$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
-$(BUILDDIR)profile.o:	$(INCLUDE_FILES)openedge/core/profile.cc
+$(BUILDDIR)profile.o:	$(INCLUDE_FILES)/openedge/core/profile.cc
 						$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
-$(BUILDDIR)uuid.o:	$(INCLUDE_FILES)openedge/util/uuid.cc
+$(BUILDDIR)uuid.o:	$(INCLUDE_FILES)/openedge/util/uuid.cc
 					$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
-$(BUILDDIR)general.o:	$(INCLUDE_FILES)openedge/device/general.cc
+$(BUILDDIR)general.o:	$(INCLUDE_FILES)/openedge/device/general.cc
 						$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
-$(BUILDDIR)info.o:	$(INCLUDE_FILES)openedge/sys/info.cc
+$(BUILDDIR)info.o:	$(INCLUDE_FILES)/openedge/sys/info.cc
 					$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
-$(BUILDDIR)cpu.o:	$(INCLUDE_FILES)openedge/sys/cpu.cc
+$(BUILDDIR)cpu.o:	$(INCLUDE_FILES)/openedge/sys/cpu.cc
 						$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
-$(BUILDDIR)network.o:	$(INCLUDE_FILES)openedge/sys/network.cc
+$(BUILDDIR)network.o:	$(INCLUDE_FILES)/openedge/sys/network.cc
 						$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
-$(BUILDDIR)network_perf.o:	$(INCLUDE_FILES)openedge/sys/network_perf.cc
+$(BUILDDIR)network_perf.o:	$(INCLUDE_FILES)/openedge/sys/network_perf.cc
 						$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
-$(BUILDDIR)memory.o:	$(INCLUDE_FILES)openedge/sys/memory.cc
+$(BUILDDIR)memory.o:	$(INCLUDE_FILES)/openedge/sys/memory.cc
 						$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
-$(BUILDDIR)system.o:	$(INCLUDE_FILES)openedge/sys/system.cc
+$(BUILDDIR)system.o:	$(INCLUDE_FILES)/openedge/sys/system.cc
+						$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+$(BUILDDIR)taskmanager.o:	$(INCLUDE_FILES)/openedge/core/taskmanager.cc
 						$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
 

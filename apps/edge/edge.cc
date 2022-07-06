@@ -26,7 +26,6 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#include <3rdparty/cxxopts.hpp>
 #include <unistd.h>
 #include <csignal>
 #include <sys/mman.h>
@@ -36,13 +35,16 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include <openedge/core.hpp>
 #include <stdexcept>
 #include <iostream>
+#include <string>
+#include <3rdparty/cxxopts.hpp>
+#include <vector>
 
 using namespace std;
 using namespace oe;
 
 void terminate(){
   app::cleanup();
-  console::info("Successfully terminated");
+  console::info("Cleaned up");
   exit(EXIT_SUCCESS);
 }
 
@@ -63,6 +65,22 @@ void cleanup(int sig) {
 
 int main(int argc, char* argv[])
 {
+
+  string desc = fmt::format("Ver. {} (built {}/{})", _OE_VER_, __DATE__, __TIME__);
+  cxxopts::Options options("OpenEdge Framework Engine", desc.c_str());
+  options.add_options()
+    ("c,config", "Application start with configuration file(*.conf)", cxxopts::value<string>())
+    ("i,install", "Install Component(Task)", cxxopts::value<vector<string>>())
+    ("u,uninstall", "Uninstall Component(Task)", cxxopts::value<vector<string>>())
+    ("l,list", "Show list of installed components(Task)")
+    ("h,help", "Print usage");
+
+  auto optval = options.parse(argc, argv);
+  if(optval.count("help")){
+    std::cout << options.help() << std::endl;
+    exit(EXIT_SUCCESS);
+  }
+
   console::stdout_color_st("console");
 
   const int signals[] = { SIGINT, SIGTERM, SIGBUS, SIGKILL, SIGABRT, SIGSEGV };
@@ -86,69 +104,23 @@ int main(int argc, char* argv[])
 
   mlockall(MCL_CURRENT|MCL_FUTURE); //avoid memory swaping
 
-  int optc = 0;
-  string _conf_filename;  //configuration file
-  string _comp;         //specific component to manage
-
-  while((optc=getopt(argc, argv, "s:c:i:u:lvh"))!=-1){
-    switch(optc){
-      case 'i': { /* task installation dynamically */
-        console::warn("install {} (Not support yet)", optarg);
-      }
-      break;
-
-      case 'u': { /* task termination dynamically */
-        console::warn("uninstall {} (Not support yet)", optarg);
-      }
-      break;
-
-      case 'l': { /* show task list */
-        console::warn("Show status of tasks (Not support yet)");
-      }
-      break;
-
-      case 'v': /* show version */
-      {
-        console::info("OpenEdge Framework Engine Ver. {} (built {}/{})", _OE_VER_, __DATE__, __TIME__);
-        exit(EXIT_SUCCESS);
-      }
-      break;
-
-      case 'c': { /* read configuration file */
-        _conf_filename = optarg;
-        console::info("Load configuration file(*.config) : {}", _conf_filename);
-      }
-      break;
-
-      case 's':{ /* stop task */
-        _comp = optarg;
-        if(!_comp.empty()){
-          console::warn("Stop the {} component(task) (Not support yet)", _comp);
-        }
-        else {
-          console::warn("Stop all tasks (Not support yet)");
-        }
-        
-      }
-
-      case 'h':
-      default:
-        cout << fmt::format("OpenEdge Framework Engine Ver. {} (built {}/{})", _OE_VER_, __DATE__, __TIME__) << endl;
-        cout << "Usage: edge [-c Config file] [-i Task name] [-s Task name] [-u Task name] [-l Task list] [-v version]" << endl;
-        cout << "-c\t Load configuration file and Run tasks" << endl;
-        cout << "-i\t Install the specific task" << endl;
-        cout << "-s\t Stop the specific task" << endl;
-        cout << "-u\t Uninstall the specific task" << endl;
-        cout << "-l\t Show list of tasks" << endl;
-        cout << "-v\t Print Edge version" << endl;
-        exit(EXIT_FAILURE);
-      break;
-    }
+  
+  /* option arguments */
+  string _config {""};
+  vector<string> _comps;
+  if(optval.count("config")){
+    _config = optval["config"].as<string>();
+  }
+  else if(optval.count("install")){
+    _comps = optval["install"].as<vector<string>>();
+  }
+  else if(optval.count("uninstall")){
+    _comps = optval["uninstall"].as<vector<string>>();
   }
 
   try{
-    if(!_conf_filename.empty())
-      if(app::initialize(_conf_filename.c_str())){
+    if(!_config.empty())
+      if(app::initialize(_config.c_str())){
         app::run();
         pause(); //wait until getting SIGINT
       }
