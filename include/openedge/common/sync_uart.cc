@@ -2,20 +2,28 @@
 
 #include "uart.hpp"
 #include <openedge/log.hpp>
+#include <sys/stat.h>
+#include <fcntl.h>
 
 
 #define MAX_RCV_BUFFER_SIZE 4096    //Maximum size of receive buffer
 
 namespace oe::bus {
 
-    sync_uart::sync_uart(const char* dev, bus_uart::baudrate_d baudrate, unsigned int databits, bus_uart::stopbits_d stopbits,
-            bus_uart::parity_d parity, bus_uart::flowcontrol_d flowcontrol)
-            :_port(dev), bus_uart(baudrate, databits, stopbits, parity, flowcontrol){
+    // sync_uart::sync_uart(const char* dev, uart::baudrate_d baudrate, unsigned int databits, uart::stopbits_d stopbits,
+    //         uart::parity_d parity, uart::flowcontrol_d flowcontrol)
+    //         :_port(dev), bus::uart(baudrate, databits, stopbits, parity, flowcontrol){
 
-    }
+    // }
 
     sync_uart::~sync_uart(){
         this->close();
+    }
+
+    bool sync_uart::is_open(){
+        if(_fd!=-1)
+            return true;
+        return false;
     }
 
     bool sync_uart::open(){
@@ -25,6 +33,7 @@ namespace oe::bus {
             return false;
         #elif defined(__linux__) || defined(__APPLE__)
             struct termios options;
+            console::info("sync_uart open : {}", _port);
             _fd = ::open(_port.c_str(), O_RDWR|O_NOCTTY|O_NDELAY);
             if(_fd!=-1){
                 fcntl(_fd, F_SETFL, FNDELAY);   //open the device in nonblocking mode
@@ -33,17 +42,17 @@ namespace oe::bus {
 
                 speed_t baud;
                 switch(baudrate){
-                    case bus_uart::baudrate_d::BAUDRATE_110: baud = B110; break;
-                    case bus_uart::baudrate_d::BAUDRATE_300: baud = B300; break;
-                    case bus_uart::baudrate_d::BAUDRATE_600: baud = B600; break;
-                    case bus_uart::baudrate_d::BAUDRATE_1200: baud = B1200; break;
-                    case bus_uart::baudrate_d::BAUDRATE_2400: baud = B2400; break;
-                    case bus_uart::baudrate_d::BAUDRATE_4800: baud = B4800; break;
-                    case bus_uart::baudrate_d::BAUDRATE_9600: baud = B9600; break;
-                    case bus_uart::baudrate_d::BAUDRATE_19200: baud = B19200; break;
-                    case bus_uart::baudrate_d::BAUDRATE_38400: baud = B38400; break;
-                    case bus_uart::baudrate_d::BAUDRATE_57600: baud = B57600; break;
-                    case bus_uart::baudrate_d::BAUDRATE_115200: baud = B115200; break;
+                    case uart::baudrate_d::BAUDRATE_110: baud = B110; break;
+                    case uart::baudrate_d::BAUDRATE_300: baud = B300; break;
+                    case uart::baudrate_d::BAUDRATE_600: baud = B600; break;
+                    case uart::baudrate_d::BAUDRATE_1200: baud = B1200; break;
+                    case uart::baudrate_d::BAUDRATE_2400: baud = B2400; break;
+                    case uart::baudrate_d::BAUDRATE_4800: baud = B4800; break;
+                    case uart::baudrate_d::BAUDRATE_9600: baud = B9600; break;
+                    case uart::baudrate_d::BAUDRATE_19200: baud = B19200; break;
+                    case uart::baudrate_d::BAUDRATE_38400: baud = B38400; break;
+                    case uart::baudrate_d::BAUDRATE_57600: baud = B57600; break;
+                    case uart::baudrate_d::BAUDRATE_115200: baud = B115200; break;
                     default: {
                         console::error("Invalid UART Baudrate");
                         return false;
@@ -64,8 +73,8 @@ namespace oe::bus {
 
                 int stopbits_flag = 0;
                 switch(stopbits){
-                    case bus_uart::stopbits_d::ONE: stopbits_flag = 0; break;
-                    case bus_uart::stopbits_d::TWO: stopbits_flag = CSTOPB; break;
+                    case uart::stopbits_d::ONE: stopbits_flag = 0; break;
+                    case uart::stopbits_d::TWO: stopbits_flag = CSTOPB; break;
                     default: {
                         console::error("Invalid UART Stopbits");
                         return false;
@@ -74,9 +83,9 @@ namespace oe::bus {
 
                 int parity_flag = 0;
                 switch(parity){
-                    case bus_uart::parity_d::NONE: parity_flag = 0; break;
-                    case bus_uart::parity_d::EVEN: parity_flag = PARENB; break;
-                    case bus_uart::parity_d::ODD: parity_flag = (PARENB|PARODD); break;
+                    case uart::parity_d::NONE: parity_flag = 0; break;
+                    case uart::parity_d::EVEN: parity_flag = PARENB; break;
+                    case uart::parity_d::ODD: parity_flag = (PARENB|PARODD); break;
                     default: {
                         console::error("Invalid UART Parity");
                         return false;
@@ -90,6 +99,9 @@ namespace oe::bus {
                 options.c_cc[VTIME]=0;  //timer unused
                 options.c_cc[VMIN]=0;   //at least on character before satisfy reading
                 tcsetattr(_fd, TCSANOW, &options);  //activate the settings
+            }
+            else {
+                console::error("{} open failed.(error : {})", _port, _fd);
             }
 
         #endif
@@ -146,7 +158,8 @@ namespace oe::bus {
         #if defined(_WIN32) || defined (_WIN64)
             console::error("Not support on this OS yet.")
         #elif defined (__linux__) || defined (__APPLE__)
-                return (int)::write(_fd, data, (size_t)len);
+            console::info("write to bus");
+            return (int)::write(_fd, data, (size_t)len);
         #endif
 
         return 0;

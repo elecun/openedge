@@ -17,9 +17,9 @@
 #include <algorithm>
 #include <string>
 #include <sstream>
-#include <include/openedge/core/bus.hpp>
+#include <openedge/common/bus.hpp> //for sync_bus
 
-
+using namespace oe;
 using namespace std;
 
 namespace oe::device {
@@ -44,17 +44,6 @@ namespace oe::device {
         #define _M64_CMD_QUEUE_PACKET_       'q'
         #define _M64_CMD_FLUSH_              'f'
         #define _M64_RESP_GOT_PACKET_        'p'
-        // const char* _M64_ALL_VALID_[] = {
-        //     _M64_CMD_GET_VERSION_,
-        //     _M64_CMD_GET_PAYLOAD_SIZE_,
-        //     _M64_CMD_GET_BUFFER_LENGTH_,
-        //     _M64_CMD_GET_DIAGNOSTIC_,
-        //     _M64_CMD_GET_SETTINGS_,
-        //     _M64_CMD_SET_SETTINGS_,
-        //     _M64_CMD_QUEUE_PACKET_,
-        //     _M64_CMD_FLUSH_,
-        //     _M64_RESP_GOT_PACKET_,
-        // };
 
         static const uint8_t _M64_LOOKUP_TABLE_[] = {
             0x00U,0x07U,0x0EU,0x09U,0x1CU,0x1BU,0x12U,0x15U,
@@ -142,11 +131,15 @@ namespace oe::device {
 
         class m64 {
             public:
-                m64(core::bus::iDeviceBusUART* bus = nullptr):_bus(bus){}
+                m64(bus::sync_bus* bus):_bus(bus){ }
                 virtual ~m64() = default;
 
                 typedef struct _version {
-                    int major, minor, patch;
+                    int _major, _minor, _patch;
+                    string str(){
+                        return fmt::format("{}.{}.{}", _major, _minor, _patch);
+                    }
+                    _version(int mj, int mi, int pt):_major(mj),_minor(mi),_patch(pt){}
                 } version;
 
                 /**
@@ -155,11 +148,15 @@ namespace oe::device {
                  */
                 version get_version(){
                     if(_bus){
-                        if(_bus->is_connected()){
-                            const char packet[] = {'w', 'c', 'v', '*'};
-                            // _bus->write()
+                        if(_bus->is_open()){
+                            const unsigned char packet[] = {'w', 'c', 'v', '*'};
+                            _bus->write(packet, sizeof(packet));
                         }
                     }
+                    else {
+                        console::warn("Waterlinked M64 interface is not working...");
+                    }
+                    return version(0,0,1);
                 }
 
             private:
@@ -220,11 +217,10 @@ namespace oe::device {
 
                     if(fragments.size()<2)
                         return -1;
-                }   
+                }
 
-            protected:
-                oe::core::bus::iDeviceBusUART* _bus = nullptr;
-
+            private:
+                bus::sync_bus* _bus = nullptr;
             
         }; /* class */
 

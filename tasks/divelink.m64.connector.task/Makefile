@@ -60,12 +60,16 @@ SOURCE_FILES = .
 
 
 # Tasks
-divelink.m64.connector.task: $(BUILDDIR)divelink.m64.connector.task.o
+divelink.m64.connector.task: $(BUILDDIR)divelink.m64.connector.task.o \
+							  $(BUILDDIR)sync_uart.o \
+							  $(BUILDDIR)m64.o
 	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS)
 
 $(BUILDDIR)divelink.m64.connector.task.o: $(CURRENT_DIR)/divelink.m64.connector.task.cc
 										  $(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
-$(BUILDDIR)sync_uart.o: $(INCLUDE_FILES)openedge/common/sync_uart.cc
+$(BUILDDIR)sync_uart.o: $(INCLUDE_FILES)/openedge/common/sync_uart.cc
+						$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+$(BUILDDIR)m64.o: $(INCLUDE_FILES)/support/device/waterlinked/m64.cc
 						$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
 all : tasks
@@ -73,5 +77,5 @@ tasks : divelink.m64.connector.task
 deploy : FORCE
 	cp $(BUILDDIR)*.task $(BINDIR)
 clean : FORCE 
-		$(RM) $(BUILDDIR)*.o $(BUILDDIR)*.task
+		$(RM) $(BUILDDIR)divelink.m64.connector.task.o $(BUILDDIR)sync_uart.o $(BUILDDIR)m64.o $(BUILDDIR)divelink.m64.connector.task
 FORCE : 

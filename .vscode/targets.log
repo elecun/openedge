@@ -6,7 +6,7 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Thu Jul  7 07:18:16 2022
+# Make data base, printed on Thu Jul  7 15:04:23 2022
 
 # Variables
 
@@ -89,7 +89,7 @@ VSCODE_PIPE_LOGGING = true
 # environment
 PWD = /home/hwang/dev/openedge
 # environment
-VSCODE_IPC_HOOK_CLI = /run/user/1000/vscode-ipc-e378c2b1-a902-46f2-a646-fe55a53ecaad.sock
+VSCODE_IPC_HOOK_CLI = /run/user/1000/vscode-ipc-f90176a3-441b-45bc-8499-93460b4971c4.sock
 # automatic
 *D = $(patsubst %/,%,$(dir $*))
 # makefile (from 'Makefile', line 54)
@@ -278,7 +278,6 @@ all: edge tasks services
 #  File has been updated.
 #  Needs to be updated (-q is set).
 # variable set hash-table stats:
- 
 # Load=0/32=0%, Rehash=0, Collisions=0/6=0%
 
 FORCE:
@@ -320,6 +319,7 @@ tasks/simple.task/simple.task.cc:
 #  File has not been updated.
 
 bin/armhf/mongodb.connector.service.o: services/mongodb.connector.service/mongodb.connector.service.cc
+ 
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
@@ -569,7 +569,6 @@ tasks/modbusRTU.task/modbusRTU.task.cc:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
- 
 
 # Not a target:
 include/openedge/core/rt_timer.cc:
@@ -599,6 +598,7 @@ bin/armhf/dx3000.control.task.o: tasks/dx3000.control.task/dx3000.control.task.c
 bin/armhf/simple.task.o: tasks/simple.task/simple.task.cc
 #  Implicit rule search has not been done.
 #  Modification time never checked.
+ 
 #  File has not been updated.
 #  recipe to execute (from 'Makefile', line 128):
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
@@ -837,6 +837,7 @@ bin/armhf/dkm_dx3000.o: include//support/device/dkm_dx3000.cc
 
 # Not a target:
 include/openedge/sys/network_perf.cc:
+ 
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
@@ -867,7 +868,6 @@ bin/armhf/openedge.o:
 #  Modification time never checked.
 #  File has not been updated.
 
- 
 bin/armhf/peak.pcan.mqtt.task.o: tasks/peak.pcan.mqtt.task/peak.pcan.mqtt.task.cc
 #  Implicit rule search has not been done.
 #  Modification time never checked.
@@ -1115,6 +1115,7 @@ include/openedge/core/profile.cc:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
+ 
 
 mongodb.connector.service: bin/armhf/mongodb.connector.service.o
 #  Implicit rule search has not been done.
@@ -1148,7 +1149,6 @@ rt.perf.test.task: bin/armhf/rt.perf.test.task.o
 #  recipe to execute (from 'Makefile', line 281):
 	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) -lmosquittopp -lmosquitto
 
- 
 # Not a target:
 tasks/simple2.task/simple2.task.cc:
 #  Implicit rule search has not been done.
@@ -1233,6 +1233,6 @@ tasks/agw.manage.task/agw.manage.task.cc:
 # strcache performance: lookups = 337 / hit rate = 49%
 # hash-table stats:
 # Load=171/8192=2%, Rehash=0, Collisions=6/337=2%
-# Finished Make data base on Thu Jul  7 07:18:16 2022
+# Finished Make data base on Thu Jul  7 15:04:23 2022
 
  

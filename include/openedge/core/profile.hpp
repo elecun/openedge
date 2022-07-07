@@ -39,18 +39,37 @@ namespace oe::core {
             }
 
             bool is_valid() const { return valid; }
-            string get_dumped() const { return data.dump(); }
 
-            string get(const char* key = nullptr) const {
-                if(key!=nullptr){
-                    if(data.find(key)!=data.end())
+            /**
+             * @brief Get the dumped JSON profile
+             * 
+             * @param key find by key
+             * @return string dumped string
+             */
+            string get_dumped(const char* key = nullptr) const {
+                if(key){
+                    if(data.find(key)!=data.end()){
                         return data[key].dump();
+                    }
                     else {
                         console::warn("{} key cannot be found.", key);
                     }
                 }
+                else {
+                    return data.dump();
+                }
                 return string("{}");
             }
+
+            /**
+             * @brief get access to JSON profile data
+             * 
+             * @return const json* 
+             */
+            const json& get() const { 
+                return data;
+            };
+            
 
         protected:
             json data;

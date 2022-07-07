@@ -9,6 +9,7 @@
 #define _OPENEDGE_BUS_UART_HPP_
 
 #include <openedge/common/bus.hpp>
+#include <openedge/log.hpp>
 #include <functional>
 #include <string>
 
@@ -25,6 +26,7 @@
 
 
 using namespace std;
+using namespace oe;
 
 namespace oe::bus {
 
@@ -80,16 +82,22 @@ namespace oe::bus {
 
     }; /* timeout class */
 
-    class sync_uart : public oe::bus::uart, public oe::bus::sync_bus {
+    /**
+     * @brief synchronous UART communication class
+     * 
+     */
+    class sync_uart : public bus::uart, public bus::sync_bus {
         public:
-            sync_uart(const char* dev, bus::uart::baudrate_d baudrate = bus::uart::baudrate_d::BAUDRATE_115200,
-                unsigned int databits = 8,
-                bus::uart::stopbits_d stopbits = bus::uart::stopbits_d::ONE,
-                bus::uart::parity_d parity = bus::uart::parity_d::NONE,
-                bus::uart::flowcontrol_d flowcontrol = bus::uart::flowcontrol_d::NONE){}
-            virtual ~sync_uart();
+            // sync_uart(const char* dev, 
+            //     bus::uart::baudrate_d baudrate = bus::uart::baudrate_d::BAUDRATE_115200,
+            //     unsigned int databits = 8,
+            //     bus::uart::stopbits_d stopbits = bus::uart::stopbits_d::ONE,
+            //     bus::uart::parity_d parity = bus::uart::parity_d::NONE,
+            //     bus::uart::flowcontrol_d flowcontrol = bus::uart::flowcontrol_d::NONE);
 
             sync_uart(const char* dev, unsigned int baud){
+                this->_port = dev;
+                console::info("port : {}", dev);
                 switch (baud){
                     case 110: this->baudrate = bus::uart::baudrate_d::BAUDRATE_110; break;
                     case 300: this->baudrate = bus::uart::baudrate_d::BAUDRATE_300; break;
@@ -118,7 +126,10 @@ namespace oe::bus {
                 this->flowcontrol = bus::uart::flowcontrol_d::NONE;
             }
 
+            virtual ~sync_uart();
+
             /* sync bus interface function */
+            bool is_open() override;
             bool open() override;
             void close() override;
             int read(uint8_t* data, int len) override;
