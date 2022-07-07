@@ -134,7 +134,7 @@ namespace oe::core::task {
             }
         }
         else {
-            console::error("<{}> Invalid instance. The instance is null.", _taskImpl->get_name());
+            console::error("Invalid task instance. The instance is null.");
         }
     }
 

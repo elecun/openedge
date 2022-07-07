@@ -47,8 +47,10 @@ namespace oe::core::task {
             void resume();      /* drive a paused task to resume */
 
             /* get the name of task */
-            const char* get_name() { 
-                return _taskImpl->get_name();
+            const char* get_name() {
+                if(_taskImpl)
+                    return _taskImpl->get_name();
+                return nullptr;
             }
 
             bool good(){ return (_taskImpl)?true:false; }

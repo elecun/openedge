@@ -23,7 +23,7 @@ divelink_lora_connector_task::~divelink_lora_connector_task(){
 
 void divelink_lora_connector_task::execute(){
     if(_ulory){
-        
+        _ulory->help();
     }
     else {
         console::warn("SystemBase uLory device is not working...");
