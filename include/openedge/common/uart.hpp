@@ -97,7 +97,6 @@ namespace oe::bus {
 
             sync_uart(const char* dev, unsigned int baud){
                 this->_port = dev;
-                console::info("port : {}", dev);
                 switch (baud){
                     case 110: this->baudrate = bus::uart::baudrate_d::BAUDRATE_110; break;
                     case 300: this->baudrate = bus::uart::baudrate_d::BAUDRATE_300; break;

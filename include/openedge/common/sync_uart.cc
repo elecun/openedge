@@ -33,7 +33,6 @@ namespace oe::bus {
             return false;
         #elif defined(__linux__) || defined(__APPLE__)
             struct termios options;
-            console::info("sync_uart open : {}", _port);
             _fd = ::open(_port.c_str(), O_RDWR|O_NOCTTY|O_NDELAY);
             if(_fd!=-1){
                 fcntl(_fd, F_SETFL, FNDELAY);   //open the device in nonblocking mode

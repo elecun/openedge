@@ -1,16 +1,16 @@
 /**
- * @file m64.hpp
+ * @file uloray.hpp
  * @author Byunghun Hwang (bh.hwang@iae.re.kr)
- * @brief Waterlinked's M64 Acoustic Modem Library
+ * @brief sysbase ulory device
  * @version 0.1
- * @date 2022-05-20
+ * @date 2022-07-07
  * 
  * @copyright Copyright (c) 2022
  * 
  */
 
-#ifndef _OPENEDGE_SUPPORT_DEVICE_WATERLINKED_M64_HPP_
-#define _OPENEDGE_SUPPORT_DEVICE_WATERLINKED_M64_HPP_
+#ifndef _OPENEDGE_SUPPORT_DEVICE_SYSTEMBASE_ULORY_HPP_
+#define _OPENEDGE_SUPPORT_DEVICE_SYSTEMBASE_ULORY_HPP_
 
 #include <vector>
 #include <array>
@@ -24,7 +24,7 @@ using namespace oe;
 using namespace std;
 
 namespace oe::device {
-    namespace waterlink {
+    namespace systembase {
 
         #define _M64_START_     'w'
         #define _M64_COMMAND_   'c'
@@ -84,10 +84,10 @@ namespace oe::device {
         /**
          * @brief   Water Linked Modem Protocol Parser
          */
-        class m64_parser {
+        class ulory_parser {
             public:
-                m64_parser() = default;
-                virtual ~m64_parser() = default;
+                ulory_parser() = default;
+                virtual ~ulory_parser() = default;
 
                 vector<unsigned char> do_format_checksum(unsigned char checksum){
                     
@@ -130,10 +130,10 @@ namespace oe::device {
 
         }; /* class */
 
-        class m64 {
+        class ulory {
             public:
-                m64(bus::sync_bus* bus):_bus(bus){ }
-                virtual ~m64() = default;
+                ulory(bus::sync_bus* bus):_bus(bus){ }
+                virtual ~ulory() = default;
 
                 typedef struct _version {
                     int _major, _minor, _patch;
@@ -158,6 +158,15 @@ namespace oe::device {
                         console::warn("Waterlinked M64 interface is not working...");
                     }
                     return version(0,0,1);
+                }
+
+                void reset(){
+                    if(_bus){
+                        if(_bus->is_open()){
+                            const unsigned char packet[] = {'A', 'T', '&', 'Z'};
+                            _bus->write(packet, sizeof(packet));
+                        }
+                    }
                 }
 
             private:
