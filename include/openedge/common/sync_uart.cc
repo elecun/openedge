@@ -6,7 +6,7 @@
 #include <fcntl.h>
 
 
-#define MAX_RCV_BUFFER_SIZE 4096    //Maximum size of receive buffer
+#define MAX_RCV_BUFFER_SIZE (1024*8)    //Maximum size of receive buffer
 
 namespace oe::bus {
 
@@ -128,14 +128,23 @@ namespace oe::bus {
         return 0;
     }
 
-    int sync_uart::read_until(uint8_t* data, int len, unsigned int t_ms){
+    int sync_uart::read_until(uint8_t* data, int len, unsigned int t_ms, unsigned int t_ms_space){
         #if defined(_WIN32) || defined (_WIN64)
             console::error("Not support on this OS yet.")
         #elif defined (__linux__) || defined (__APPLE__)
             timeout _timer;
             uint8_t* rcv_buffer = new uint8_t[MAX_RCV_BUFFER_SIZE];
             int rcv_counter = 0;
-            while(_timer.elapsed_ms()<t_ms || t_ms==0){
+            int prev_rcv_counter = 0;
+            unsigned long prev_elapsed = 0;
+            while(1){
+                unsigned long elapsed = _timer.elapsed_ms();
+                console::info("elapsed : {}", elapsed);
+                if(elapsed>t_ms || t_ms!=0){
+                    console::info("timeout : {}", elapsed);
+                    break;
+                }
+
                 uint8_t* rcv = new uint8_t[MAX_RCV_BUFFER_SIZE];
                 ssize_t size = ::read(_fd, rcv, MAX_RCV_BUFFER_SIZE);
                 if(size>0){
@@ -144,9 +153,21 @@ namespace oe::bus {
                 }
                 delete []rcv;
 
-                if((int)rcv_counter==0)
-                    return -1;  //no received data
+                if((elapsed-prev_elapsed)>=t_ms_space && rcv_counter==prev_rcv_counter)
+                    break;
+
+                prev_rcv_counter = rcv_counter;
+                prev_elapsed = elapsed;
             }
+
+            if(rcv_counter>0){
+                if(len>rcv_counter)
+                    memcpy(data, rcv_buffer, rcv_counter);
+                else
+                    console::warn("Received data is bigger than buffer. It requires more buffer memory");
+                delete []rcv_buffer;
+            }
+            return rcv_counter;
         #endif
 
         return 0;

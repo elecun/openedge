@@ -132,7 +132,7 @@ namespace oe::bus {
             bool open() override;
             void close() override;
             int read(uint8_t* data, int len) override;
-            int read_until(uint8_t* data, int len, unsigned int t_ms) override;
+            int read_until(uint8_t* data, int len, unsigned int t_ms, unsigned int t_ms_space) override;
             int write(const uint8_t* data, int len) override;
 
         private:

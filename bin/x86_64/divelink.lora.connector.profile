@@ -4,7 +4,7 @@
         "taskname":"divelink.lora.connector.task",
         "version":"0.0.1",
         "cpu_affinity":1,
-        "cycle_ns":1000000000,
+        "cycle_ns":5000000000,
         "policy":{
             "check_jitter":false,
             "check_overrun":false,

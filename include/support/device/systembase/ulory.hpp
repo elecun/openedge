@@ -66,17 +66,74 @@ namespace oe::device {
                 }
 
                 string help(){
+                    const char command[] = {'a', 't', '&', 'v', 0x0d}; //with carriage return
+                    bool rc = transaction(command, 5000);
+                }
+
+                string get_parameters(){
+                    const char* command = "at&v";
+                    int byte = transfer(command);
+                    if(byte!=(int)strlen(command))
+                        return string("");
+                }
+            private:
+                /**
+                 * @brief transfer the dedicated AT command for uLory
+                 * 
+                 * @param command string AT command
+                 * @return int transferred bytes
+                 */
+                int transfer(const char* command){
                     if(_bus){
                         if(_bus->is_open()){
-                            const char* command = "at&h";
-                            const unsigned char* ucommand = reinterpret_cast<const unsigned char *>(command);
-                            _bus->write(ucommand, (int)strlen((const char*)command));
+                            const unsigned char* ucommand = reinterpret_cast<const unsigned char*>(command);
+                            return _bus->write(ucommand, (int)strlen((const char*)command));
                         }
                         else {
-                            console::error("uLory bus interface is closed.");
+                            console::warn("Bus interface is closed.");
                         }
                     }
-                    return string("");
+                    else {
+                        console::warn("Invalid bus interface. It cannot be transferred.");
+                    }
+                    return 0;
+                }
+
+                bool transaction(const char* command, unsigned int timeout, unsigned int space = 100){
+                    if(_bus){
+                        if(_bus->is_open()){
+
+                            /* write command */
+                            const unsigned char* ucommand = reinterpret_cast<const unsigned char*>(command);
+                            int wbyte = _bus->write(ucommand, (int)strlen((const char*)command));
+                            if(wbyte!=(int)strlen(command)){
+                                console::warn("Wrong transfer : {}bytes transferred", wbyte);
+                                return false;
+                            }
+
+                            /* receive data until  */
+                            #define MAX_RCV_BUFFER  2048
+                            unsigned char* rcvdata = new unsigned char[MAX_RCV_BUFFER];
+                            int rbyte = _bus->read_until(rcvdata, sizeof(unsigned char)*MAX_RCV_BUFFER, timeout, space);
+                            if(rbyte>0)
+                                console::info("{}bytes received", rbyte);
+                            
+                            // const char* data = reinterpret_cast<const char*>(rcvdata);
+                            // std::cout << data << endl;
+                            // string strdata {data};
+                            // console::info("received : {}", strdata);
+                            delete []rcvdata;
+
+                            return true;
+                        }
+                        else {
+                            console::warn("Bus interface is closed.");
+                        }
+                    }
+                    else {
+                        console::warn("Invalid bus interface. It cannot be transferred.");
+                    }
+                    return false;
                 }
 
             private:
