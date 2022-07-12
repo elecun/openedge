@@ -16,6 +16,10 @@
             "device":"/dev/ttyUSB0",
             "baudrate":9600,
             "timeout":1.0
+        },
+        "lora":{
+            "sid":163,
+            "did":164
         }
     }
 }

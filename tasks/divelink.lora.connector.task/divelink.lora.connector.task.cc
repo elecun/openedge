@@ -57,7 +57,16 @@ bool divelink_lora_connector_task::configure(){
                     console::warn("SystemBase uLory bus interface is closed.");
                 }
             }
+
+            if(conf.contains("lora")){
+                _sid = conf["lora"]["sid"].get<long>();
+                _did = conf["lora"]["did"].get<long>();
+                
+
+
+            }
         }
+
 
     }
     catch(const json::exception& e){
