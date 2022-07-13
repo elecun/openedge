@@ -88,15 +88,9 @@ namespace oe::bus {
      */
     class sync_uart : public bus::uart, public bus::sync_bus {
         public:
-            // sync_uart(const char* dev, 
-            //     bus::uart::baudrate_d baudrate = bus::uart::baudrate_d::BAUDRATE_115200,
-            //     unsigned int databits = 8,
-            //     bus::uart::stopbits_d stopbits = bus::uart::stopbits_d::ONE,
-            //     bus::uart::parity_d parity = bus::uart::parity_d::NONE,
-            //     bus::uart::flowcontrol_d flowcontrol = bus::uart::flowcontrol_d::NONE);
 
-            sync_uart(const char* dev, unsigned int baud){
-                this->_port = dev;
+            sync_uart(const char* dev, unsigned int baud, bool canonical=false)
+            :_port(dev){
                 switch (baud){
                     case 110: this->baudrate = bus::uart::baudrate_d::BAUDRATE_110; break;
                     case 300: this->baudrate = bus::uart::baudrate_d::BAUDRATE_300; break;
@@ -129,23 +123,34 @@ namespace oe::bus {
 
             /* sync bus interface function */
             bool is_open() override;
-            bool open() override;
+            bool open(unsigned int timeout_s=0) override;
             void close() override;
             int read(uint8_t* data, int len) override;
+            int read_some(uint8_t* data, int len) override;
             int read_until(uint8_t* data, int len, unsigned int t_ms, unsigned int t_ms_space) override;
             int write(const uint8_t* data, int len) override;
 
         private:
             #if defined(__linux__) || defined(__APPLE__)
-                int _fd = -1;   //device file descriptor
+                int _fd = -1;
             #endif
             string _port;
+            
+            struct termios _otio;   //old
+            struct termios _ntio;   //new
+
     }; //class sync_uart
 
     class async_uart : public oe::bus::uart, oe::bus::async_bus {
         public:
             async_uart() = default;
             virtual ~async_uart() = default;
+
+        private:
+            #if defined(__linux__) || defined(__APPLE__)
+                int _fd = -1;
+            #endif
+            string _port;
     }; //class async_uart
 
 } //namespace oe::bus

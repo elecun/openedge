@@ -61,14 +61,9 @@ namespace oe::core {
                 return string("{}");
             }
 
-            /**
-             * @brief get access to JSON profile data
-             * 
-             * @return const json* 
-             */
-            const json& get() const { 
+            const json& raw() const {
                 return data;
-            };
+            }
             
 
         protected:

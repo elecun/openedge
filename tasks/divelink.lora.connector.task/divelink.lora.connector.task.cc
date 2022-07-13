@@ -40,7 +40,7 @@ bool divelink_lora_connector_task::configure(){
         _device->close();
 
     try {
-        const json& prof = this->get_profile()->get();
+        const json& prof = this->get_profile()->raw();
         if(prof.contains(PROFILE_CONFIGURATIONS_KEY)){
             json conf = prof[PROFILE_CONFIGURATIONS_KEY];
 

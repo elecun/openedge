@@ -1,10 +1,10 @@
 {
     "md5":"603239CAF2F774498037F944F5592F52",
     "info":{
-        "taskname":"divelink.lora.connector.task",
+        "taskname":"test.serial.connector.task",
         "version":"0.0.1",
         "cpu_affinity":1,
-        "cycle_ns":5000000000,
+        "cycle_ns":1000000000,
         "policy":{
             "check_jitter":false,
             "check_overrun":false,
@@ -15,11 +15,8 @@
         "serial":{
             "device":"/dev/ttyUSB0",
             "baudrate":115200,
+            "canonical":true,
             "timeout":1.0
-        },
-        "lora":{
-            "sid":163,
-            "did":164
         }
     }
 }
