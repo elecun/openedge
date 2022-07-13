@@ -30,7 +30,7 @@ void test_serial_connector_task::execute(){
     }
     else {
         console::warn("Device connection is not completed.");
-    })
+    }
 
 }
 
@@ -49,13 +49,9 @@ bool test_serial_connector_task::configure(){
             if(conf.contains("serial")){
                 string port = conf["serial"]["device"].get<string>();
                 unsigned int baud = conf["serial"]["baudrate"].get<unsigned int>();
-                bool canonical = conf["serial"]["canonical"].get<bool>();
-
 
                 _device = new bus::sync_uart(port.c_str(), baud);
                 if(_device->open()){
-                    _device = new bus::sync_uart(port.c_str(), baud);
-                    _device->open();
                     console::info("[{}] open device : {}({})", this->get_name(), port, baud);
                 }
                 else {

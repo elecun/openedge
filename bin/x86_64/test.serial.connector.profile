@@ -15,7 +15,6 @@
         "serial":{
             "device":"/dev/ttyUSB0",
             "baudrate":115200,
-            "canonical":true,
             "timeout":1.0
         }
     }

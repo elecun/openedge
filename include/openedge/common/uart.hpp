@@ -89,7 +89,7 @@ namespace oe::bus {
     class sync_uart : public bus::uart, public bus::sync_bus {
         public:
 
-            sync_uart(const char* dev, unsigned int baud, bool canonical=false)
+            sync_uart(const char* dev, unsigned int baud)
             :_port(dev){
                 switch (baud){
                     case 110: this->baudrate = bus::uart::baudrate_d::BAUDRATE_110; break;
@@ -123,8 +123,11 @@ namespace oe::bus {
 
             /* sync bus interface function */
             bool is_open() override;
-            bool open(unsigned int timeout_s=0) override;
+            bool open() override;
             void close() override;
+
+            void set_timeout(unsigned int timeout_s) override;
+
             int read(uint8_t* data, int len) override;
             int read_some(uint8_t* data, int len) override;
             int read_until(uint8_t* data, int len, unsigned int t_ms, unsigned int t_ms_space) override;

@@ -22,8 +22,10 @@ namespace oe::bus {
 
             virtual bool is_open() = 0;
 
-			virtual bool open(unsigned int timeout_s=0) = 0;
+			virtual bool open() = 0;
 			virtual void close() = 0;
+
+            virtual void set_timeout(unsigned int timeout_s) = 0;
 
 			virtual int read(uint8_t* data, int len) = 0;   //read block
             virtual int read_some(uint8_t* data, int len) = 0;

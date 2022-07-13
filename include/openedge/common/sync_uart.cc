@@ -20,13 +20,12 @@ namespace oe::bus {
         return false;
     }
 
-    bool sync_uart::open(unsigned int timeout_s){
+    bool sync_uart::open(){
 
         #if defined(_WIN32) || defined(_WIN64)
             console::info("Not supported yet for Windows");
             return false;
         #elif defined(__linux__) || defined(__APPLE__)
-            struct termios options;
             _fd = ::open(_port.c_str(), O_RDWR|O_NOCTTY);
             if(_fd<0) {
                 console::error("{} open failed.(error : {})", _port, _fd);
@@ -95,7 +94,7 @@ namespace oe::bus {
             _ntio.c_oflag = 0;
 
             
-            _ntio.c_cc[VTIME]    = sec*10;
+            _ntio.c_cc[VTIME]    = 10;  //10*0.1 sec timeout
             _ntio.c_cc[VMIN]     = 0;
 
             tcflush(_fd, TCIFLUSH);
@@ -104,6 +103,23 @@ namespace oe::bus {
         #endif
 
         return true;
+    }
+
+    void sync_uart::set_timeout(unsigned int timeout_s){
+        #if defined(_WIN32) || defined (_WIN64)
+        #elif defined (__linux__) || defined (__APPLE__)
+            if(_fd<0){
+                console::error("device is not opened");
+                return;
+            }
+
+            _ntio.c_cc[VTIME]    = timeout_s*10;
+            _ntio.c_cc[VMIN]     = 0;
+
+            tcflush(_fd, TCIFLUSH);
+            tcsetattr(_fd,TCSANOW,&_ntio);  //activate the settings
+
+        #endif
     }
 
     void sync_uart::close(){
