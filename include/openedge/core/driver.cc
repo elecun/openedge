@@ -48,7 +48,7 @@ namespace oe::core::task {
                     /* load profile */
                     if(registry->find(PATH_BIN_DIR)){
                         fs::path _bin = registry->get<string>(PATH_BIN_DIR);
-                        fs::path _task = _bin / fs::path{fmt::format("{}{}",taskname, FILE_EXT_TASK)};
+                        fs::path _task = _bin / fs::path{fmt::format("{}{}",taskname, FILE_EXT_COMPONENT)};
                         fs::path _profile = _bin / fs::path{fmt::format("{}{}",taskname, FILE_EXT_PROFILE)};
 
                         if(fs::exists(_profile)){
@@ -169,12 +169,12 @@ namespace oe::core::task {
         if(registry->find(PATH_BIN_DIR)){
 
             fs::path _bin = registry->get<string>(PATH_BIN_DIR);
-            fs::path _task = _bin / fs::path{fmt::format("{}{}",taskname, FILE_EXT_TASK)};
+            fs::path _task = _bin / fs::path{fmt::format("{}{}",taskname, FILE_EXT_COMPONENT)};
             fs::path _profile = _bin / fs::path{fmt::format("{}{}",taskname, FILE_EXT_PROFILE)};
 
             // 1. check file existance
             if(!fs::exists(_task)){
-                console::error("{}{} doest not exist. please check path or task file.", taskname, FILE_EXT_TASK);
+                console::error("{}{} doest not exist. please check path or task file.", taskname, FILE_EXT_COMPONENT);
                 return false;
             }
 

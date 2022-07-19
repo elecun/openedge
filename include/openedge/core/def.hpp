@@ -29,7 +29,7 @@
 /* File Extensions */
 #define FILE_EXT_CONFIG     ".config"
 #define FILE_EXT_PROFILE    ".profile"
-#define FILE_EXT_TASK       ".task"
+#define FILE_EXT_COMPONENT  ".comp"
 
 
 #endif

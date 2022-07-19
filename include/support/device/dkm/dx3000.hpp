@@ -1,9 +1,12 @@
 /**
- * @file    dkm_dx3000.hpp
- * @brief   DKM DX3000 AC Motor Driver with ModbusRTU (RS485)
- * @author  Byunghun Hwang<bh.hwnag@iae.re.kr>
- * @version 0.0.1
- * @note    
+ * @file dx3000.hpp
+ * @author Byunghun Hwang (bh.hwang@iae.re.kr)
+ * @brief DKM DX3000 AC Motor Driver with ModbusRTU
+ * @version 0.1
+ * @date 2022-07-19
+ * 
+ * @copyright Copyright (c) 2022
+ * 
  */
 
 

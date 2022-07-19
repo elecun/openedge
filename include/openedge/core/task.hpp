@@ -105,7 +105,7 @@ namespace oe {
             } taskOptions;
 
             enum class status_d : int { STOPPED=0, STOPPING, WORKING, PAUSED, IDLE };
-            enum class rtype_d : int { NT = 0, RT, NP }; //runnable task type (NT=Non RT), NR(=Non Periodic)
+            enum class rtype_d : int { NT = 0, RT, NP }; //runnable task type (NT=Non RT), NP(=Non Periodic)
 
             /**
              * @brief Runnable Class Base
@@ -146,6 +146,14 @@ namespace oe {
                     unique_ptr<core::profile> _profile;
                     taskOptions _option;
                     string _taskname = {"noname"};
+            };
+
+            class runnable_np : public runnable {
+                public:
+                    runnable_np(){
+                        this->rtype = rtype_d::NP;
+                    }
+                    virtual ~runnable_np() = default;
             };
 
             /**

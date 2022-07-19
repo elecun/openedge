@@ -1,0 +1,31 @@
+{
+    "md5":"603239CAF2F774498037F944F5592F52",
+    "info":{
+        "taskname":"device.nport5232.adapter",
+        "version":"0.0.1",
+        "cpu_affinity":1,
+        "cycle_ns":500000000,
+        "policy":{
+            "check_jitter":true,
+            "check_overrun":true,
+            "fault_level":0
+        }
+    },
+    "configurations":{
+        "mqtt":{
+            "broker":"192.168.3.130",
+            "port":1883,
+            "pub_topic":"aop/uvlc/1/motor",
+            "pub_qos":2,
+            "sub_topic":["aop/sys/control", "aop/uvlc/1/motor/control", "perf/test"],
+            "keep_alive":60,
+            "method":"on_update"
+        },
+        "dx3000":{
+            "rpm":500,
+            "port":4001,
+            "access":"192.168.3.130",
+            "slave_id":1
+        }
+    }
+}

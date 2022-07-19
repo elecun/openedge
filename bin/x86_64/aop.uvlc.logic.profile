@@ -1,0 +1,41 @@
+{
+    "md5":"603239CAF2F774498037F944F5592F52",
+    "info":{
+        "taskname":"aop.uvlc.logic",
+        "version":"0.0.1",
+        "cpu_affinity":1,
+        "cycle_ns":1000000000,
+        "policy":{
+            "check_jitter":true,
+            "check_overrun":true,
+            "fault_level":0
+        }
+    },
+    "configurations":{
+        "mqtt":{
+            "broker":"192.168.3.130",
+            "port":1883,
+            "pub_topic":"aop/uvlc/control",
+            "pub_qos":2,
+            "sub_topic":["pcan.mqtt.task/sysctrl", "aop/uvlc/sensor"],
+            "keep_alive":60
+        },
+        "io":{
+            "l_proximity_i":"DI2",
+            "r_proximity_i":"DI3",
+            "wipe_once_i":"DI4",
+            "wipe_forward_i":"DI5",
+            "wipe_reverse_i":"DI6",
+            "stop_i":"DI7",
+            "wipe_once_o":"DO4",
+            "wipe_forward_o":"DO5",
+            "wipe_reverse_o":"DO6",
+            "stop_o":"DO7",
+        },
+        "uvlc":{
+            "limit_sensor":"0x600",
+            "intensity_sensor":["0x700", "0x701", "0x702", "0x703"],
+            "intensity_threshold":10.0
+        }
+    }
+}
