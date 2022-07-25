@@ -6,9 +6,11 @@ Open Source Application Gateway Middleware for Edge Computing
 * Runs on Realtime Operating System(Realtime Linux)
 
 # Pre-requisites
-If you build this source on your host (e.g. Ubuntu), you probably should install libraries
+If you build this source on your host (e.g. Ubuntu), you probably should install libraries.
+- default, g++ & gcc version is 8
+- It could be upgrade 9 version, but OSD3358 does not compatible with version 9.
 
-* $ sudo apt-get install make gcc-9-arm-linux-gnueabihf g++-9-arm-linux-gnueabihf libczmq-dev sqlite3 libstdc++-9 sshpass*
+* $ sudo apt-get install make gcc-8-arm-linux-gnueabihf g++-8-arm-linux-gnueabihf libczmq-dev sqlite3 libstdc++-9 sshpass
 
 # Supporting Tasks & Services
 * aop10t.pilot.task

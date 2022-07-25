@@ -16,8 +16,8 @@ CURRENT_DIR_NAME := $(notdir $(patsubst %/,%,$(dir $(CURRENT_DIR))))
 
 #Compilers
 ifeq ($(ARCH),armhf)
-	CC := /usr/bin/arm-linux-gnueabihf-g++-8
-	GCC := /usr/bin/arm-linux-gnueabihf-gcc-8
+	CC := /usr/bin/arm-linux-gnueabihf-g++-9
+	GCC := /usr/bin/arm-linux-gnueabihf-gcc-9
 	LD_LIBRARY_PATH += -L./lib/armhf
 	OUTDIR		= $(CURRENT_DIR)/../../bin/armhf/
 	BUILDDIR		= $(CURRENT_DIR)/../../bin/armhf/
