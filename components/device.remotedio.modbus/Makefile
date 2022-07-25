@@ -26,7 +26,7 @@ ifeq ($(ARCH),armhf)
 	OUTDIR		= $(CURRENT_DIR)/../../bin/armhf/
 	BUILDDIR		= $(CURRENT_DIR)/../../bin/armhf/
 	INCLUDE_DIR = -I./ -I$(CURRENT_DIR)/ -I$(CURRENT_DIR)/../../include/ -I$(CURRENT_DIR)/../../include/3rdparty/
-	LD_LIBRARY_PATH += -L/usr/local/lib -L./lib/armhf
+	LD_LIBRARY_PATH += -L/usr/local/lib -L./lib/armhf -L$(CURRENT_DIR)/../../lib/armhf/
 else
 	CC := g++
 	GCC := gcc
