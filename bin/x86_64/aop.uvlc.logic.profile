@@ -13,14 +13,14 @@
     },
     "configurations":{
         "mqtt":{
-            "broker":"192.168.3.130",
+            "broker":"192.168.3.105",
             "port":1883,
-            "pub_topic":"aop/uvlc/control",
+            "pub_topic":"aop/uvlc/1/control",
             "pub_qos":2,
-            "sub_topic":["pcan.mqtt.task/sysctrl", "aop/uvlc/sensor"],
+            "sub_topic":["aop/uvlc/1/dio"],
             "keep_alive":60
         },
-        "io":{
+        "iomap":{
             "l_proximity_i":"DI2",
             "r_proximity_i":"DI3",
             "wipe_once_i":"DI4",

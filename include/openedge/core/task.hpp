@@ -198,7 +198,7 @@ namespace oe {
                 public:
                     runnable_rt(){
                         this->rtype = rtype_d::RT;
-                        this->databus = make_unique<dbus::connector_zmq>();
+                        //this->databus = make_unique<dbus::connector_zmq>();
                     }
                     virtual ~runnable_rt() = default;
 

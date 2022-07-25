@@ -1,0 +1,30 @@
+{
+    "md5":"603239CAF2F774498037F944F5592F52",
+    "info":{
+        "taskname":"device.remotedio.modbus",
+        "version":"0.0.2",
+        "cpu_affinity":1,
+        "cycle_ns":1000000000,
+        "policy":{
+            "check_jitter":false,
+            "check_overrun":false,
+            "fault_level":0
+        }
+    },
+    "configurations":{
+        "mqtt":{
+            "broker":"192.168.3.105",
+            "port":1883,
+            "pub_topic":"aop/uvlc/1/dio",
+            "pub_qos":2,
+            "sub_topic":["aop/uvlc/1/control"],
+            "keep_alive":60
+        },
+        "dx3000":{
+            "access":"/dev/ttyUSB0",
+            "baudrate":9600,
+            "slave_id":1,
+            "rpm":100
+        }
+    }
+}
