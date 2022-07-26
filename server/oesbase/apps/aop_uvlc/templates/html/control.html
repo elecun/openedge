@@ -56,8 +56,8 @@
             </div>
             <div class="col-auto">
                 <button type="button" class="btn btn-outline-primary" id="btn_uvlc1_wipe_once">Wipe Once(Forward-Backward)</button>
-                <button type="button" class="btn btn-outline-dark" id="btn_uvlc1_wipe_forward">Forward Wipe</button>
-                <button type="button" class="btn btn-outline-dark" id="btn_uvlc1_wipe_backward">Backward Wipe</button>
+                <button type="button" class="btn btn-outline-dark" id="btn_uvlc1_wipe_forward">Forward Wipe(CCW)</button>
+                <button type="button" class="btn btn-outline-dark" id="btn_uvlc1_wipe_backward">Backward Wipe(CW)</button>
                 <button type="button" class="btn btn-outline-danger" id="btn_uvlc1_wipe_stop">Stop</button>
             </div>
         </div>
@@ -83,8 +83,8 @@
             </div>
             <div class="col-auto">
                 <button type="button" class="btn btn-outline-primary" id="btn_uvlc2_wipe_once">Wipe Once(Forward-Backward)</button>
-                <button type="button" class="btn btn-outline-dark" id="btn_uvlc2_wipe_forward">Forward Wipe</button>
-                <button type="button" class="btn btn-outline-dark" id="btn_uvlc2_wipe_backward">Backward Wipe</button>
+                <button type="button" class="btn btn-outline-dark" id="btn_uvlc2_wipe_forward">Forward Wipe(CCW)</button>
+                <button type="button" class="btn btn-outline-dark" id="btn_uvlc2_wipe_backward">Backward Wipe(CW)</button>
                 <button type="button" class="btn btn-outline-danger" id="btn_uvlc2_wipe_stop">Stop</button>
             </div>
         </div>
@@ -132,14 +132,14 @@
         /* wipe forward(cw) */
         document.getElementById('btn_uvlc1_wipe_forward').addEventListener('click', function(){
             if(mqtt_client!=null){
-                let msg = {"command":"move_cw"};
+                let msg = {"command":"move_ccw"};
                 mqtt_client.publish("aop/uvlc/1/control", JSON.stringify(msg), 2, false);
             }
         });
 
         document.getElementById('btn_uvlc2_wipe_forward').addEventListener('click', function(){
             if(mqtt_client!=null){
-                let msg = {"command":"move_cw"};
+                let msg = {"command":"move_ccw"};
                 mqtt_client.publish("aop/uvlc/2/control", JSON.stringify(msg), 2, false);
             }
         });
@@ -147,14 +147,14 @@
         /* wipe backward (ccw) */
         document.getElementById('btn_uvlc1_wipe_backward').addEventListener('click', function(){
             if(mqtt_client!=null){
-                let msg = {"command":"move_ccw"};
+                let msg = {"command":"move_cw"};
                 mqtt_client.publish("aop/uvlc/1/control", JSON.stringify(msg), 2, false);
             }
         });
 
         document.getElementById('btn_uvlc2_wipe_backward').addEventListener('click', function(){
             if(mqtt_client!=null){
-                let msg = {"command":"move_ccw"};
+                let msg = {"command":"move_cw"};
                 mqtt_client.publish("aop/uvlc/2/control", JSON.stringify(msg), 2, false);
             }
         });

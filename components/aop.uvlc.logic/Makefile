@@ -8,8 +8,8 @@
 OS := $(shell uname)
 
 #Set Architecutre
-#ARCH := armhf
-ARCH := x86_64
+ARCH := armhf
+#ARCH := x86_64
 
 CURRENT_DIR:=$(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 CURRENT_DIR_NAME := $(notdir $(patsubst %/,%,$(dir $(CURRENT_DIR))))
@@ -26,7 +26,7 @@ ifeq ($(ARCH),armhf)
 	OUTDIR		= $(CURRENT_DIR)/../../bin/armhf/
 	BUILDDIR		= $(CURRENT_DIR)/../../bin/armhf/
 	INCLUDE_DIR = -I./ -I$(CURRENT_DIR)/ -I$(CURRENT_DIR)/../../include/ -I$(CURRENT_DIR)/../../include/3rdparty/
-	LD_LIBRARY_PATH += -L/usr/local/lib -L./lib/armhf
+	LD_LIBRARY_PATH += -L/usr/local/lib -L./lib/armhf -L$(CURRENT_DIR)/../../lib/armhf/
 else
 	CC := g++
 	GCC := gcc
@@ -60,19 +60,16 @@ SOURCE_FILES = .
 
 
 # Components
-aop.uvlc.logic.comp: $(BUILDDIR)aop.uvlc.logic.o \
-							  $(BUILDDIR)sync_uart.o
-	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS)
+aop.uvlc.logic.comp: $(BUILDDIR)aop.uvlc.logic.o
+	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) -lmosquittopp -lmosquitto
 
 $(BUILDDIR)aop.uvlc.logic.o: $(CURRENT_DIR)/aop.uvlc.logic.cc
 										  $(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
-$(BUILDDIR)sync_uart.o: $(INCLUDE_FILES)/openedge/common/sync_uart.cc
-						$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
 all : components
 components : aop.uvlc.logic.comp
 deploy : FORCE
-	cp $(BUILDDIR)*.task $(BINDIR)
+	cp $(BUILDDIR)*.comp $(BINDIR)
 clean : FORCE 
-		$(RM) $(BUILDDIR)aop.uvlc.logic.o $(BUILDDIR)sync_uart.o $(BUILDDIR)aop.uvlc.logic.comp
+		$(RM) $(BUILDDIR)aop.uvlc.logic.o $(BUILDDIR)aop.uvlc.logic.comp
 FORCE : 

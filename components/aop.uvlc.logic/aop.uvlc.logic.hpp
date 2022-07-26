@@ -47,8 +47,8 @@ class aop_uvlc_logic : public core::task::runnable_rt, private mosqpp::mosquitto
     };
 
     public:
-        aop_uvlc_logic();
-        ~aop_uvlc_logic();
+        aop_uvlc_logic():mosqpp::mosquittopp(){};
+        ~aop_uvlc_logic() = default;
 
         /* basic interface functions for nt */
         virtual void execute() override;
@@ -70,22 +70,20 @@ class aop_uvlc_logic : public core::task::runnable_rt, private mosqpp::mosquitto
 		virtual void on_error() override;
 
     private:
-        string _manage_topic {""};
         bool _connected = false;
         string _broker_address { "127.0.0.1" };
         int _broker_port {1883};
-        string _mqtt_pub_topic = {"undefined"};
-        int _mqtt_pub_qos = 2;
-        int _mqtt_keep_alive = {60};
-        vector<string> _mqtt_sub_topics;
-        PUBLISH_METHOD _pub_method = PUBLISH_METHOD::ON_UPDATE;
+        string _pub_topic = {"undefined"};
+        int _pub_qos = 2;
+        int _keep_alive = {60};
+        vector<string> _sub_topics;
 
-        string _l_proximity_i, _l_proximity_o;
-        string _r_proximity_i, _r_proximity_o;
-        string _wipe_forward_i, _wipe_forward_o;
-        string _wipe_reverse_i, _wipe_reverse_o;
-        string _wipe_once_i, _wipe_once_o;
-        string _stop_i, _stop_o;
+        string _l_proximity_in;   
+        string _r_proximity_in;   //motor-side
+        string _wipe_forward_in, _wipe_forward_out;
+        string _wipe_backward_in, _wipe_backward_out;
+        string _wipe_stop_in, _wipe_stop_out;
+        string _emergency_in, _emergency_out;
         
         bool _l_proximity_value = false;
         bool _r_proximity_value = false;

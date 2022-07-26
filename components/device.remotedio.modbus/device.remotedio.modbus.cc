@@ -122,7 +122,7 @@ bool device_remotedio_modbus::configure(){
             _keep_alive = mqtt_param["keep_alive"].get<int>();
             if(mqtt_param.find("sub_topic")!=mqtt_param.end()){
                 for(json::iterator itr=mqtt_param["sub_topic"].begin(); itr!=mqtt_param["sub_topic"].end(); ++itr){
-                    _mqtt_sub_topics.emplace_back(*itr);
+                    _sub_topics.emplace_back(*itr);
                 }
             }
 
@@ -134,7 +134,7 @@ bool device_remotedio_modbus::configure(){
 
             //connect to MQTT broker
             if(const int conret = this->connect_async(_broker_address.c_str(), _broker_port, _keep_alive)==MOSQ_ERR_SUCCESS){
-                for(string topic:_mqtt_sub_topics){
+                for(string topic:_sub_topics){
                     this->subscribe(nullptr, topic.c_str(), 2);
                     console::info("> Subscribe topic : {}", topic);
                 }

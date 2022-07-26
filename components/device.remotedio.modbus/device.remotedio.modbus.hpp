@@ -70,7 +70,7 @@ class device_remotedio_modbus : public core::task::runnable_rt, private mosqpp::
         string _pub_topic = {"undefined"};
         int _pub_qos = 2;
         int _keep_alive = {60};
-        vector<string> _mqtt_sub_topics;
+        vector<string> _sub_topics;
         
 
 }; /* end class */

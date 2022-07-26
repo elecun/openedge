@@ -205,13 +205,13 @@ void device_dx3000_motor::on_message(const struct mosquitto_message* message){
                         unsigned char frame[8] = {0x00,};
                         int size = motor->move(frame, DKM_DX3000_NATIVE::DIRECTION::CW);
                         ::sendto(_sockfd, frame, sizeof(frame), 0, (struct sockaddr*)&_sockname, sizeof(_sockname));
-                        console::info("Motor moves forward(CW)");
+                        console::info("Motor moves backward(CW)");
                     } break;
                     case 2: { //move ccw
                         unsigned char frame[8] = {0x00,};
                         int size = motor->move(frame, DKM_DX3000_NATIVE::DIRECTION::CCW);
                         ::sendto(_sockfd, frame, sizeof(frame), 0, (struct sockaddr*)&_sockname, sizeof(_sockname));
-                        console::info("Motor moves backward(CCW)");
+                        console::info("Motor moves forward(CCW)");
                     } break;
                     case 3: { //stop
                         unsigned char frame[8] = {0x00,};
