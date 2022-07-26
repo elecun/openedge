@@ -34,5 +34,14 @@
         "name":"IAE AOP Server (External)",
         "info": "IAE AOP Server (External)"
       }
+    },
+    {
+      "model": "aop_uvlc.BrokerAddress",
+      "pk": 5,
+      "fields": {
+        "ip":"192.168.3.8",
+        "name":"IAE AOP Test Server",
+        "info": "IAE AOP Test Server"
+      }
     }
 ]
