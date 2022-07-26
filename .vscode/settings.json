@@ -72,7 +72,9 @@
         "*.ipp": "cpp",
         "bit": "cpp",
         "shared_mutex": "cpp",
-        "filesystem": "cpp"
+        "filesystem": "cpp",
+        "codecvt": "cpp",
+        "source_location": "cpp"
     },
     "cmake.configureOnOpen": false
 }

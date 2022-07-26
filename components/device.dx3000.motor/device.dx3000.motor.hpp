@@ -15,15 +15,20 @@
 #include <openedge/core.hpp>
 #include <openedge/common/bus.hpp>
 #include <openedge/device/controller.hpp>
+#include <3rdparty/mosquitto/cpp/mosquittopp.h>
 #include <memory>
+#include <map>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
 
 using namespace oe;
 using namespace std;
 
 class device_dx3000_motor : public core::task::runnable_rt, private mosqpp::mosquittopp {
     public:
-        device_dx3000_motor();
-        ~device_dx3000_motor();
+        device_dx3000_motor():mosqpp::mosquittopp(){};
+        ~device_dx3000_motor() = default;
 
         /* basic interface functions for nt */
         virtual void execute() override;
@@ -54,12 +59,27 @@ class device_dx3000_motor : public core::task::runnable_rt, private mosqpp::mosq
             {"set_rpm", 4}      //set speed
         };
 
-        string _mqtt_broker {"127.0.0.1"};
-        int _mqtt_port {1883};
-        string _mqtt_pub_topic = {"undefined"};
-        int _mqtt_pub_qos = 2;
-        int _mqtt_keep_alive = {60};
+        /* for mqtt */
+        bool _connected = false;
+        string _broker_address { "127.0.0.1" };
+        int _broker_port {1883};
+        string _pub_topic = {"undefined"};
+        int _pub_qos = 2;
+        int _keep_alive = {60};
         vector<string> _mqtt_sub_topics;
+
+        /* for device */
+        double _gear_ratio = 0.0;
+        int _default_rpm = 0;
+        int _slave_id = 0;
+
+        /* for UDP */
+        int _gateway_port = 4002;
+        string _gateway_ip = "127.0.0.1";
+        long _sockfd = -1;
+        long _sock_optval = 1;
+        sockaddr_in _sockname;
+        struct sockaddr_in targetAddr;
         
 
 }; /* end class */

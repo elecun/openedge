@@ -17,7 +17,7 @@
 #define CONFIG_ENV_KEY "environments"
 #define CONFIG_PATH_KEY "path"
 #define CONFIG_REQ_KEY  "required"
-#define CONFIG_TASKS_KEY "tasks"
+#define CONFIG_COMPONENTS_KEY "components"
 
 #define PROFILE_CONFIGURATIONS_KEY "configurations"
 

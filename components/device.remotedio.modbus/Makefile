@@ -61,7 +61,7 @@ SOURCE_FILES = .
 
 # Components
 device.remotedio.modbus.comp: $(BUILDDIR)device.remotedio.modbus.o
-	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS)
+	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) -lmosquittopp -lmosquitto -lmodbus
 
 $(BUILDDIR)device.remotedio.modbus.o: $(CURRENT_DIR)/device.remotedio.modbus.cc
 										  $(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@

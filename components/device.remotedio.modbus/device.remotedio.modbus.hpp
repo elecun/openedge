@@ -53,13 +53,24 @@ class device_remotedio_modbus : public core::task::runnable_rt, private mosqpp::
         modbus_t* _modbus = nullptr;
         int _modbus_port = 502;
 
+        /* for io map */
         map<int, string> _di_container;
         map<string, bool> _di_value_container;
         map<int, string> _do_container;
         map<string, bool> _do_value_container;
         unsigned short _di_values;
         unsigned short _do_values;
+        int _di_address = -1;
+        int _do_address = -1;
 
+        /* for mqtt */
+        bool _connected = false;
+        string _broker_address { "127.0.0.1" };
+        int _broker_port {1883};
+        string _pub_topic = {"undefined"};
+        int _pub_qos = 2;
+        int _keep_alive = {60};
+        vector<string> _mqtt_sub_topics;
         
 
 }; /* end class */

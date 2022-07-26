@@ -70,8 +70,8 @@ namespace oe::app {
         if(config.find(CONFIG_REQ_KEY)!=config.end()){
 
             /* tasks */
-            if(config[CONFIG_REQ_KEY].find(CONFIG_TASKS_KEY)!=config[CONFIG_REQ_KEY].end()){
-                vector<string> required_tasks = config[CONFIG_REQ_KEY][CONFIG_TASKS_KEY].get<std::vector<string>>();
+            if(config[CONFIG_REQ_KEY].find(CONFIG_COMPONENTS_KEY)!=config[CONFIG_REQ_KEY].end()){
+                vector<string> required_tasks = config[CONFIG_REQ_KEY][CONFIG_COMPONENTS_KEY].get<std::vector<string>>();
                 for(string& task:required_tasks){
                     manager->install(task.c_str());
                 }

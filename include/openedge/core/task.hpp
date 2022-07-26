@@ -237,6 +237,7 @@ namespace oe {
     typedef void(*release_task)(void);
 
     #define EXPORT_TASK_API extern "C" {oe::core::task::runnable* create(void); void release(void);}
+    #define EXPORT_COMPONENT_API extern "C" {oe::core::task::runnable* create(void); void release(void);}
 
 } //namespace oe
 

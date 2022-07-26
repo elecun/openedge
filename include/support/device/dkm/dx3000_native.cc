@@ -1,5 +1,5 @@
 
-#include "dkm_dx3000.hpp"
+#include "dx3000.hpp"
 #include <openedge/log.hpp>
 #include <openedge/device/bus.hpp>
 #include <3rdparty/libmodbus/modbus.h>
