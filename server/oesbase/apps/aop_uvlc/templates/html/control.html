@@ -192,7 +192,7 @@
             let rpm = document.getElementById('text_uvlc1_rpm').value;
             if(mqtt_client!=null){
                 let msg = {"command":"set_rpm", "value":parseInt(rpm)};
-                mqtt_client.publish("aop/uvlc/1/control", JSON.stringify(msg), 2, false);
+                mqtt_client.publish("aop/uvlc/1/motor/control", JSON.stringify(msg), 2, false);
             }
         });
 
@@ -200,7 +200,7 @@
             let rpm = document.getElementById('text_uvlc2_rpm').value;
             if(mqtt_client!=null){
                 let msg = {"command":"set_rpm", "value":parseInt(rpm)};
-                mqtt_client.publish("aop/uvlc/2/control", JSON.stringify(msg), 2, false);
+                mqtt_client.publish("aop/uvlc/2/motor/control", JSON.stringify(msg), 2, false);
             }
         });
     
