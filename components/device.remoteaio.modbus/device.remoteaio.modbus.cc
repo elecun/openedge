@@ -1,47 +1,44 @@
 
-#include "device.remotedio.modbus.hpp"
+#include "device.remoteaio.modbus.hpp"
 #include <openedge/log.hpp>
 
 //static component instance that has only single instance
-static device_remotedio_modbus* _instance = nullptr;
-core::task::runnable* create(){ if(!_instance) _instance = new device_remotedio_modbus(); return _instance; }
+static device_remoteaio_modbus* _instance = nullptr;
+core::task::runnable* create(){ if(!_instance) _instance = new device_remoteaio_modbus(); return _instance; }
 void release(){ if(_instance){ delete _instance; _instance = nullptr; }}
 
-void device_remotedio_modbus::execute(){
+void device_remoteaio_modbus::execute(){
     if(_modbus){
-        /* publish the DI & DO Values (publish if changed) */
-        unsigned short _prev_di_values = _di_values;
+        /* publish the AI Values (publish if changed) */
+        unsigned short _prev_ai_values[CHANNELS*2] = {0x0000, };
+        memcpy(_prev_ai_values, _ai_values, sizeof(unsigned short)*CHANNELS*2);
 
-        //1. read DI data
-        if(modbus_read_input_registers(_modbus, _di_address, 1, &_di_values)!=-1){
+        //1. read AI data
+        if(modbus_read_input_registers(_modbus, _ai_address, CHANNELS*2, _ai_values)!=-1){
             string val = "";
-            for(auto& d:_di_container){
-                _di_value_container[d.second] = static_cast<bool>(_di_values&(0x0001<<d.first));
-                val += fmt::format("[{}]={}\t", d.second, _di_value_container[d.second]?1:0);
+            for(int i=0; i<CHANNELS; i++){
+                u.l = ((unsigned long)_ai_values[i*2+1]<<16 | _ai_values[i*2]);
+                _ai_value_container[_ai_container[i]] = u.f;
+                val += fmt::format("[{}]={}\t", _ai_container[i], u.f);
             }
             console::info("{}", val);
         }
         else
-            console::error("Modbus read DI register error : {}", modbus_strerror(errno));
+            console::error("Modbus read AI register error : {}", modbus_strerror(errno));
 
-        //2. read DO data
-        if(modbus_read_registers(_modbus, _do_address, 1, &_do_values)!=-1){
-            string val = "";
-            for(auto& d:_do_container){
-                _do_value_container[d.second] = static_cast<bool>(_do_values&(0x0001<<d.first));
-                val += fmt::format("[{}]={}\t", d.second, _di_value_container[d.second]?1:0);
+        /* publish data if changed */
+        bool changed = false;
+        for(int i=0;i<CHANNELS;i++){
+            u.l = ((unsigned long)_prev_ai_values[i*2+1]<<16 | _prev_ai_values[i*2]);
+            if(u.f!=_ai_value_container[_ai_container[i]]){
+                changed = true;
+                break;
             }
-            console::info("{}", val);
         }
-        else
-            console::error("Modbus read DO register error : {}", modbus_strerror(errno));
 
-
-        /* publish all data */
-        if(_prev_di_values!=_di_values){
+        if(changed){
             json pubdata;
-            pubdata["di"] = _di_value_container;
-            pubdata["do"] = _do_value_container;
+            pubdata["ai"] = _ai_value_container;
             string str_pubdata = pubdata.dump();
             this->publish(nullptr, _pub_topic.c_str(), strlen(str_pubdata.c_str()), str_pubdata.c_str(), 2, false);   
             console::info("Published@{}", _pub_topic);
@@ -50,11 +47,11 @@ void device_remotedio_modbus::execute(){
  
 }
 
-void device_remotedio_modbus::stop(){
+void device_remoteaio_modbus::stop(){
 
 }
 
-bool device_remotedio_modbus::configure(){
+bool device_remoteaio_modbus::configure(){
     try {
 
         const json& profile = this->get_profile()->raw();
@@ -70,28 +67,20 @@ bool device_remotedio_modbus::configure(){
             json device_param = config["device"];
             string _device_ip = device_param["ip"].get<string>();
 
-            json _device_di = device_param["di"];
+            json _device_di = device_param["ai"];
             for(json::iterator itr=_device_di.begin(); itr!=_device_di.end(); ++itr){
-                console::info("> Config DI : {}({})", (*itr)["name"].get<std::string>(), (*itr)["pin"].get<int>());
-                _di_container.insert(make_pair((*itr)["pin"].get<int>(), (*itr)["name"].get<std::string>()));
-                _di_value_container.insert(make_pair((*itr)["name"].get<std::string>(), false));
-            }
-
-            json _device_do = device_param["do"];
-            for(json::iterator itr=_device_do.begin(); itr!=_device_do.end(); ++itr){
-                console::info("> Config DO : {}({})", (*itr)["name"].get<std::string>(), (*itr)["pin"].get<int>());
-                _do_container.insert(make_pair((*itr)["pin"].get<int>(), (*itr)["name"].get<std::string>()));
-                _do_value_container.insert(make_pair((*itr)["name"].get<std::string>(), false));
+                console::info("> Config AI : {}({})", (*itr)["name"].get<std::string>(), (*itr)["pin"].get<int>());
+                _ai_container.insert(make_pair((*itr)["pin"].get<int>(), (*itr)["name"].get<std::string>()));
+                _ai_value_container.insert(make_pair((*itr)["name"].get<std::string>(), false));
             }
 
             /* modbus configurations */
             json _device_modbus = device_param["modbus_tcp"];
             int _modbus_port = _device_modbus["port"].get<int>();
-            _di_address = _device_modbus["di_address"].get<int>();
-            _do_address = _device_modbus["do_address"].get<int>();
+            _ai_address = _device_modbus["ai_address"].get<int>();
             console::info("> Modbus TCP Port : {}", _modbus_port);
-            console::info("> Modbus DI Address : {}", _di_address);
-            console::info("> Modbus DO Address : {}", _do_address);
+            console::info("> Modbus AI Address : {}", _ai_address);
+
             if(!_modbus){
                 _modbus = modbus_new_tcp(_device_ip.c_str(), _modbus_port);
                 if(!_modbus){
@@ -159,7 +148,7 @@ bool device_remotedio_modbus::configure(){
     return true;
 }
 
-void device_remotedio_modbus::cleanup(){
+void device_remoteaio_modbus::cleanup(){
     /* modbus connection close */
     if(_modbus){
         modbus_close(_modbus);
@@ -174,40 +163,40 @@ void device_remotedio_modbus::cleanup(){
 
 }
 
-void device_remotedio_modbus::pause(){
+void device_remoteaio_modbus::pause(){
     
 }
 
-void device_remotedio_modbus::resume(){
+void device_remoteaio_modbus::resume(){
     
 }
 
-void device_remotedio_modbus::on_connect(int rc){
+void device_remoteaio_modbus::on_connect(int rc){
     if(rc==MOSQ_ERR_SUCCESS)
         console::info("Successfully connected to MQTT Broker({})", rc);
     else
         console::warn("MQTT Broker connection error : {}", rc);
 
 }
-void device_remotedio_modbus::on_disconnect(int rc){
+void device_remoteaio_modbus::on_disconnect(int rc){
 
 }
-void device_remotedio_modbus::on_publish(int mid){
+void device_remoteaio_modbus::on_publish(int mid){
 
 }
-void device_remotedio_modbus::on_message(const struct mosquitto_message* message){
+void device_remoteaio_modbus::on_message(const struct mosquitto_message* message){
 
 }
-void device_remotedio_modbus::on_subscribe(int mid, int qos_count, const int* granted_qos){
+void device_remoteaio_modbus::on_subscribe(int mid, int qos_count, const int* granted_qos){
 
 }
-void device_remotedio_modbus::on_unsubscribe(int mid){
+void device_remoteaio_modbus::on_unsubscribe(int mid){
 
 }
-void device_remotedio_modbus::on_log(int level, const char* str){
+void device_remoteaio_modbus::on_log(int level, const char* str){
 
 }
-void device_remotedio_modbus::on_error(){
+void device_remoteaio_modbus::on_error(){
     
 }
 

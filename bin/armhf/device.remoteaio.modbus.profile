@@ -1,8 +1,8 @@
 {
     "md5":"603239CAF2F774498037F944F5592F52",
     "info":{
-        "taskname":"moxa.analog.service.task",
-        "version":"0.1.0",
+        "taskname":"device.remoteaio.modbus",
+        "version":"0.0.1",
         "cpu_affinity":1,
         "cycle_ns":300000000,
         "policy":{
@@ -13,9 +13,9 @@
     },
     "configurations":{
         "device":{
-            "name":"DCAI01",
+            "name":"DCAIO01",
             "product":"MOXA ioLogik E1240",
-            "ip":"192.168.99.165",
+            "ip":"192.168.3.165",
             "modbus_tcp":{
                 "ai_address":8,
                 "port":502
@@ -30,14 +30,13 @@
                     {"name":"AI6", "pin":6},
                     {"name":"AI7", "pin":7}
                 ]
-
         },
         "mqtt":{
-            "broker":"192.168.99.2",
+            "broker":"192.168.3.8",
             "port":1883,
-            "pub_topic":"perf/ai",
+            "pub_topic":"aop/uvlc/1/aio",
             "pub_qos":2,
-            "sub_topic":["aop/sys/control"],
+            "sub_topic":["aop/uvlc/1/control"],
             "keep_alive":60
         }
     }
