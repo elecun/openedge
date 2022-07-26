@@ -155,8 +155,28 @@ void aop_uvlc_logic::on_message(const struct mosquitto_message* message){
             json di = msg["di"];
             if(di.contains(_l_proximity_in)) _l_proximity_value = di[_l_proximity_in].get<bool>();
             if(di.contains(_r_proximity_in)) _r_proximity_value = di[_r_proximity_in].get<bool>();
+            if(di.contains(_wipe_forward_in)) _wipe_forward_value = di[_wipe_forward_in].get<bool>();
+            if(di.contains(_wipe_backward_in)) _wipe_backward_value = di[_wipe_backward_in].get<bool>();
+            if(di.contains(_wipe_stop_in)) _wipe_stop_value = di[_wipe_stop_in].get<bool>();
+
+            if(is_rising_forward_in(_wipe_forward_value)){
+                move_ccw();
+                console::info("Move forward from HMI");
+            }
+
+            if(is_rising_backward_in(_wipe_backward_value)){
+                move_cw();
+                console::info("Move backward from HMI");
+            }
+
+            if(is_rising_stop_in(_wipe_stop_value)){
+                move_stop();
+                console::info("Move stop from HMI");
+            }
+
         }
 
+        /* manual command process */
         if(msg.contains("command")){
             string cmd = msg["command"].get<string>();
             if(!cmd.compare("stop")) { move_stop(); }
@@ -209,6 +229,36 @@ bool aop_uvlc_logic::is_rising_l_proximity(const bool value){
 }
 
 bool aop_uvlc_logic::is_rising_r_proximity(const bool value){
+    static bool prev_val = false;
+    bool res = false;
+    if(prev_val==false && value==true){
+        res = true;
+    }
+    prev_val = value;
+    return res;
+}
+
+bool aop_uvlc_logic::is_rising_forward_in(const bool value){
+    static bool prev_val = false;
+    bool res = false;
+    if(prev_val==false && value==true){
+        res = true;
+    }
+    prev_val = value;
+    return res;
+}
+
+bool aop_uvlc_logic::is_rising_backward_in(const bool value){
+    static bool prev_val = false;
+    bool res = false;
+    if(prev_val==false && value==true){
+        res = true;
+    }
+    prev_val = value;
+    return res;
+}
+
+bool aop_uvlc_logic::is_rising_stop_in(const bool value){
     static bool prev_val = false;
     bool res = false;
     if(prev_val==false && value==true){

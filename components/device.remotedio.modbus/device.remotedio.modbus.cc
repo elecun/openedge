@@ -99,6 +99,9 @@ bool device_remotedio_modbus::configure(){
                     return false;
                 }
 
+                modbus_set_response_timeout(_modbus, 1, 0); //response time 1s
+                modbus_error_recovery_mode()
+
                 if(modbus_connect(_modbus)==-1){
                     console::error("Device connection failed : {}", modbus_strerror(errno));
                     modbus_free(_modbus);

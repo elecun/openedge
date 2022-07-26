@@ -73,6 +73,9 @@ class aop_uvlc_logic : public core::task::runnable_rt, private mosqpp::mosquitto
         /* check function */
         bool is_rising_l_proximity(const bool value);
         bool is_rising_r_proximity(const bool value);
+        bool is_rising_forward_in(const bool value);
+        bool is_rising_backward_in(const bool value);
+        bool is_rising_stop_in(const bool value);
         void move_cw();
         void move_ccw();
         void move_stop();
@@ -96,9 +99,8 @@ class aop_uvlc_logic : public core::task::runnable_rt, private mosqpp::mosquitto
         bool _l_proximity_value = false;
         bool _r_proximity_value = false;
         bool _wipe_forward_value = false;
-        bool _wipe_reverse_value = false;
-        bool _wipe_once_value = false;
-        bool _stop_value = false;
+        bool _wipe_backward_value = false;
+        bool _wipe_stop_value = false;
         
 
 }; /* end class */
