@@ -70,6 +70,14 @@ class aop_uvlc_logic : public core::task::runnable_rt, private mosqpp::mosquitto
 		virtual void on_error() override;
 
     private:
+        /* check function */
+        bool is_rising_l_proximity(const bool value);
+        bool is_rising_r_proximity(const bool value);
+        void move_cw();
+        void move_ccw();
+        void move_stop();
+
+    private:
         bool _connected = false;
         string _broker_address { "127.0.0.1" };
         int _broker_port {1883};

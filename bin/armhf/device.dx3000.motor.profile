@@ -24,7 +24,7 @@
             "port":1883,
             "pub_topic":"aop/uvlc/1/motor",
             "pub_qos":2,
-            "sub_topic":["aop/uvlc/1/control", "aop/uvlc/1/logic"],
+            "sub_topic":["aop/uvlc/1/motor/control"],
             "keep_alive":60,
             "method":"on_update"
         }

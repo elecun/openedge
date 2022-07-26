@@ -9,11 +9,9 @@ void release(){ if(_instance){ delete _instance; _instance = nullptr; }}
 
 void aop_uvlc_logic::execute(){
 
-    if(_l_proximity_value){
-        json cmd;
-        cmd["command"] = "move_cw"; //backward
-        string msg = cmd.dump();
-        this->publish(nullptr, _pub_topic.c_str(), strlen(msg.c_str()), msg.c_str(), 2, false); //data publish
+    if(is_rising_l_proximity(_l_proximity_value) || is_rising_r_proximity(_r_proximity_value)){
+        move_stop();
+        console::info("Limit is ON. Motor stop. L({}), R({})", _l_proximity_value, _r_proximity_value);
     }
 }
 
@@ -156,6 +154,28 @@ void aop_uvlc_logic::on_message(const struct mosquitto_message* message){
         if(msg.contains("di")){
             json di = msg["di"];
             if(di.contains(_l_proximity_in)) _l_proximity_value = di[_l_proximity_in].get<bool>();
+            if(di.contains(_r_proximity_in)) _r_proximity_value = di[_r_proximity_in].get<bool>();
+        }
+
+        if(msg.contains("command")){
+            string cmd = msg["command"].get<string>();
+            if(!cmd.compare("stop")) { move_stop(); }
+            else if(!cmd.compare("move_cw")){ //backward
+                if(!_r_proximity_value){
+                    move_cw();
+                    console::info("Move Backward(CW)");
+                }
+                else
+                    console::warn("Motor cannot be moved backward. Limit sensor is ON.");
+            }
+            else if(!cmd.compare("move_ccw")){ //forward
+                if(!_l_proximity_value){
+                    move_ccw();
+                    console::info("Move Forward(CCW)");
+                }
+                else
+                    console::warn("Motor cannot be moved forward. Limit sensor is ON.");
+            }
         }
 
     }
@@ -176,4 +196,45 @@ void aop_uvlc_logic::on_log(int level, const char* str){
 }
 void aop_uvlc_logic::on_error(){
     
+}
+
+bool aop_uvlc_logic::is_rising_l_proximity(const bool value){
+    static bool prev_val = false;
+    bool res = false;
+    if(prev_val==false && value==true){
+        res = true;
+    }
+    prev_val = value;
+    return res;
+}
+
+bool aop_uvlc_logic::is_rising_r_proximity(const bool value){
+    static bool prev_val = false;
+    bool res = false;
+    if(prev_val==false && value==true){
+        res = true;
+    }
+    prev_val = value;
+    return res;
+}
+
+void aop_uvlc_logic::move_cw(){
+    json cmd;
+    cmd["command"] = "move_cw"; //backward
+    string msg = cmd.dump();
+    this->publish(nullptr, _pub_topic.c_str(), strlen(msg.c_str()), msg.c_str(), 2, false); //data publish
+}
+
+void aop_uvlc_logic::move_ccw(){
+    json cmd;
+    cmd["command"] = "move_ccw"; //forward
+    string msg = cmd.dump();
+    this->publish(nullptr, _pub_topic.c_str(), strlen(msg.c_str()), msg.c_str(), 2, false); //data publish
+}
+
+void aop_uvlc_logic::move_stop(){
+    json cmd;
+    cmd["command"] = "stop"; //forward
+    string msg = cmd.dump();
+    this->publish(nullptr, _pub_topic.c_str(), strlen(msg.c_str()), msg.c_str(), 2, false); //data publish
 }

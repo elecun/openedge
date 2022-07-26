@@ -53,8 +53,8 @@ class device_dx3000_motor : public core::task::runnable_rt, private mosqpp::mosq
 
         device::controller* _controller = nullptr;
         map<string, int> _dx_command {
-            {"move_cw", 1},     //move clock-wise direction
-            {"move_ccw", 2},    //move counter clock-wise direction
+            {"move_cw", 1},     //move clock-wise direction (backward)
+            {"move_ccw", 2},    //move counter clock-wise direction (forward)
             {"stop", 3},        //stop
             {"set_rpm", 4}      //set speed
         };

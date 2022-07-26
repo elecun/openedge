@@ -96,7 +96,7 @@ static const uint8_t table_crc_lo[] = {
             }
             break;
 
-            // Clockwise : Forward movement
+            // Clockwise : Backward movement
             case DIRECTION::CW: {
 
                 unsigned char frame[8] = {
