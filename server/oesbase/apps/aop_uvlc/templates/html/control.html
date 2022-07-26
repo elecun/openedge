@@ -133,14 +133,14 @@
         document.getElementById('btn_uvlc1_wipe_forward').addEventListener('click', function(){
             if(mqtt_client!=null){
                 let msg = {"command":"move_cw"};
-                mqtt_client.publish("aop/uvlc/1/motor/control", JSON.stringify(msg), 2, false);
+                mqtt_client.publish("aop/uvlc/1/control", JSON.stringify(msg), 2, false);
             }
         });
 
         document.getElementById('btn_uvlc2_wipe_forward').addEventListener('click', function(){
             if(mqtt_client!=null){
                 let msg = {"command":"move_cw"};
-                mqtt_client.publish("aop/uvlc/2/motor/control", JSON.stringify(msg), 2, false);
+                mqtt_client.publish("aop/uvlc/2/control", JSON.stringify(msg), 2, false);
             }
         });
 
@@ -148,14 +148,14 @@
         document.getElementById('btn_uvlc1_wipe_backward').addEventListener('click', function(){
             if(mqtt_client!=null){
                 let msg = {"command":"move_ccw"};
-                mqtt_client.publish("aop/uvlc/1/motor/control", JSON.stringify(msg), 2, false);
+                mqtt_client.publish("aop/uvlc/1/control", JSON.stringify(msg), 2, false);
             }
         });
 
         document.getElementById('btn_uvlc2_wipe_backward').addEventListener('click', function(){
             if(mqtt_client!=null){
                 let msg = {"command":"move_ccw"};
-                mqtt_client.publish("aop/uvlc/2/motor/control", JSON.stringify(msg), 2, false);
+                mqtt_client.publish("aop/uvlc/2/control", JSON.stringify(msg), 2, false);
             }
         });
 
@@ -163,14 +163,14 @@
         document.getElementById('btn_uvlc1_wipe_stop').addEventListener('click', function(){
             if(mqtt_client!=null){
                 let msg = {"command":"stop"};
-                mqtt_client.publish("aop/uvlc/1/motor/control", JSON.stringify(msg), 2, false);
+                mqtt_client.publish("aop/uvlc/1/control", JSON.stringify(msg), 2, false);
             }
         });
 
         document.getElementById('btn_uvlc2_wipe_stop').addEventListener('click', function(){
             if(mqtt_client!=null){
                 let msg = {"command":"stop"};
-                mqtt_client.publish("aop/uvlc/2/motor/control", JSON.stringify(msg), 2, false);
+                mqtt_client.publish("aop/uvlc/2/control", JSON.stringify(msg), 2, false);
             }
         });
 
@@ -192,7 +192,7 @@
             let rpm = document.getElementById('text_uvlc1_rpm').value;
             if(mqtt_client!=null){
                 let msg = {"command":"set_rpm", "value":parseInt(rpm)};
-                mqtt_client.publish("aop/uvlc/1/motor/control", JSON.stringify(msg), 2, false);
+                mqtt_client.publish("aop/uvlc/1/control", JSON.stringify(msg), 2, false);
             }
         });
 
@@ -200,7 +200,7 @@
             let rpm = document.getElementById('text_uvlc2_rpm').value;
             if(mqtt_client!=null){
                 let msg = {"command":"set_rpm", "value":parseInt(rpm)};
-                mqtt_client.publish("aop/uvlc/2/motor/control", JSON.stringify(msg), 2, false);
+                mqtt_client.publish("aop/uvlc/2/control", JSON.stringify(msg), 2, false);
             }
         });
     
