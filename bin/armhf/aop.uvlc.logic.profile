@@ -19,10 +19,10 @@
             "wipe_backward_in":"DI5",
             "wipe_stop_in":"DI6",
             "emergency_in":"DI7",
-            "wipe_forward_out":"DO4",
-            "wipe_backward_out":"DO5",
-            "wipe_stop_out":"DO6",
-            "emergency_out":"DO7"
+            "wipe_forward_out":"DO5",
+            "wipe_backward_out":"DO6",
+            "wipe_stop_out":"DO7",
+            "emergency_out":"DO4"
         },
         "mqtt":{
             "broker":"192.168.3.8",
