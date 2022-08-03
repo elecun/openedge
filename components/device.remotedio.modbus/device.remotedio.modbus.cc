@@ -21,8 +21,14 @@ void device_remotedio_modbus::execute(){
             }
             console::info("{}", val);
         }
-        else
-            console::error("Modbus read DI register error : {}", modbus_strerror(errno));
+        else {
+            if(errno==EMBMDATA){
+                console::warn("Modbus Error : {}", modbus_strerror(errno));
+                return;
+            }
+            console::error("Modbus read DI register error({}) : {}", errno, modbus_strerror(errno));
+        }
+            
 
         //2. read DO data
         if(modbus_read_registers(_modbus, _do_address, 1, &_do_values)!=-1){
@@ -33,8 +39,13 @@ void device_remotedio_modbus::execute(){
             }
             console::info("{}", val);
         }
-        else
-            console::error("Modbus read DO register error : {}", modbus_strerror(errno));
+        else{
+            if(errno==EMBMDATA){
+                console::warn("Modbus Error : {}", modbus_strerror(errno));
+                return;
+            }
+            console::error("Modbus read DO register error({}) : {}", errno, modbus_strerror(errno));
+        }
 
 
         /* publish all data */
@@ -99,7 +110,8 @@ bool device_remotedio_modbus::configure(){
                     return false;
                 }
 
-                modbus_set_response_timeout(_modbus, 1, 0); //response time 1s
+                modbus_set_response_timeout(_modbus, 0, 500000); //response time 1s
+                modbus_set_error_recovery(_modbus, modbus_error_recovery_mode::MODBUS_ERROR_RECOVERY_LINK);
 
                 if(modbus_connect(_modbus)==-1){
                     console::error("Device connection failed : {}", modbus_strerror(errno));

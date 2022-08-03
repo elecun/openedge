@@ -4,7 +4,7 @@
         "taskname":"device.remotedio.modbus",
         "version":"0.0.1",
         "cpu_affinity":1,
-        "cycle_ns":300000000,
+        "cycle_ns":200000000,
         "policy":{
             "check_jitter":true,
             "check_overrun":true,
@@ -15,7 +15,7 @@
         "device":{
             "name":"DCRIO01",
             "product":"MOXA ioLogik E1212",
-            "ip":"192.168.3.163",
+            "ip":"192.168.3.200",
             "modbus_tcp":{
                 "di_address":48,
                 "do_address":32,
@@ -43,7 +43,7 @@
             ]
         },
         "mqtt":{
-            "broker":"192.168.3.8",
+            "broker":"192.168.3.6",
             "port":1883,
             "pub_topic":"aop/uvlc/1/dio",
             "pub_qos":2,
