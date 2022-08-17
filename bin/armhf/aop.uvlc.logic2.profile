@@ -27,9 +27,9 @@
         "mqtt":{
             "broker":"192.168.3.130",
             "port":1883,
-            "pub_topic":"aop/uvlc/1/motor/control",
+            "pub_topic":"aop/uvlc/2/motor/control",
             "pub_qos":2,
-            "sub_topic":["aop/uvlc/1/control", "aop/uvlc/1/dio"],
+            "sub_topic":["aop/uvlc/2/control", "aop/uvlc/2/dio"],
             "keep_alive":60
         }
     }

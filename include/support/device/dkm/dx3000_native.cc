@@ -103,7 +103,7 @@ static const uint8_t table_crc_lo[] = {
                     0x01,   //slave id
                     0x06,   //function code
                     0x00, 0x05, //register offset
-                    0x00, 0x02, //number of registers
+                    0x00, 0x04, //number of registers
                     0x00, 0x00  //crc16
                 };
                 unsigned short crc = _crc16(frame, 6);
@@ -121,7 +121,7 @@ static const uint8_t table_crc_lo[] = {
                     0x01,   //slave id
                     0x06,   //function code
                     0x00, 0x05, //register offset
-                    0x00, 0x04, //number of registers
+                    0x00, 0x02, //number of registers
                     0x00, 0x00  //crc16
                 };
                 unsigned short crc = _crc16(frame, 6);

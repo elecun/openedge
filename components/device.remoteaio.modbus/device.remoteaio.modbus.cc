@@ -88,7 +88,8 @@ bool device_remoteaio_modbus::configure(){
                     return false;
                 }
 
-                modbus_set_response_timeout(_modbus, 1, 0); //response time 1s
+                modbus_set_response_timeout(_modbus, 0, 500000); //response time 1s
+                modbus_set_error_recovery(_modbus, modbus_error_recovery_mode::MODBUS_ERROR_RECOVERY_LINK);
 
                 if(modbus_connect(_modbus)==-1){
                     console::error("Device connection failed : {}", modbus_strerror(errno));

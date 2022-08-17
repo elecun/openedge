@@ -20,13 +20,12 @@
             "slave_id":1
         },
         "mqtt":{
-            "broker":"192.168.3.8",
+            "broker":"192.168.3.130",
             "port":1883,
             "pub_topic":"aop/uvlc/1/motor",
             "pub_qos":2,
             "sub_topic":["aop/uvlc/1/motor/control"],
-            "keep_alive":60,
-            "method":"on_update"
+            "keep_alive":60
         }
     }
 }

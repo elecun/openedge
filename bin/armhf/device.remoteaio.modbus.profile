@@ -32,11 +32,11 @@
                 ]
         },
         "mqtt":{
-            "broker":"192.168.3.8",
+            "broker":"192.168.3.130",
             "port":1883,
-            "pub_topic":"aop/uvlc/1/aio",
+            "pub_topic":"aop/uvlc/aio",
             "pub_qos":2,
-            "sub_topic":["aop/uvlc/1/control"],
+            "sub_topic":["aop/uvlc/control"],
             "keep_alive":60
         }
     }

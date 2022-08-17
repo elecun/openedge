@@ -15,7 +15,7 @@
         "device":{
             "name":"DCRIO01",
             "product":"MOXA ioLogik E1212",
-            "ip":"192.168.3.163",
+            "ip":"192.168.3.164",
             "modbus_tcp":{
                 "di_address":48,
                 "do_address":32,
@@ -45,9 +45,9 @@
         "mqtt":{
             "broker":"192.168.3.130",
             "port":1883,
-            "pub_topic":"aop/uvlc/1/dio",
+            "pub_topic":"aop/uvlc/2/dio",
             "pub_qos":2,
-            "sub_topic":["aop/uvlc/1/control"],
+            "sub_topic":["aop/uvlc/2/control"],
             "keep_alive":60
         }
     }
