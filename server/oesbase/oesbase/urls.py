@@ -19,11 +19,7 @@ from django.urls import path, include
 urlpatterns = [
     path('admin/', admin.site.urls),
 
-    path('', include('base.urls')),
-
-    # apps for aop
-    path('app/aop_uvlc/', include('aop_uvlc.urls')),
-
-    # apps for divelink
-    path('app/divelink/', include('divelink.urls')),
+    #path('', include('base.urls')),    # apps for base
+    #path('app/aop_uvlc/', include('aop_uvlc.urls')),   #apps for aop uvlc
+    path('', include('divelink.urls')),    #apps for divelink
 ]

@@ -1,4 +1,4 @@
 
-{% for i in apps%}
-{{ i }}
+{% for app in installed_apps%}
+<a href="{{app}}">{{app}}</a>
 {% endfor %}

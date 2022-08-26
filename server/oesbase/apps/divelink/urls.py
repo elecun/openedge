@@ -4,5 +4,5 @@ from divelink import views
 
 # api views
 urlpatterns = [
-    path('', views.show_gui, name="divelink_view"),
+    path('', views.index, name="divelink_index"),
 ]

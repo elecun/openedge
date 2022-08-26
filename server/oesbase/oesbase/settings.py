@@ -47,14 +47,14 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     #default apps required
-    'base',
+    #'base',
 
     # addred 3rdpaty apps required
     'rest_framework',
 
-    # custom apps
+    # custom main app
     'divelink', # this is for divelink application
-    'aop_uvlc'  # this is for AOP plant management
+    #'aop_uvlc'  # this is for AOP plant management
 ]
 
 MIDDLEWARE = [
@@ -80,6 +80,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'context.divelink.context_processors', # for divelink, if not necessary, remote comment this
             ],
         },
     },
