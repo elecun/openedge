@@ -1,0 +1,90 @@
+{
+  "name": "oeb",
+  "version": "0.0.2",
+  "description": "Browser for Openedge",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "electron .",
+    "build": "electron-builder build",
+    "build:osx": "electron-builder --mac",
+    "build:win": "npm run build:win32 && npm run build:win64",
+    "build:win32": "electron-builder --win --ia32",
+    "build:win64": "electron-builder --win --x64",
+    "build:linux": "npm run build:linux32 && npm run build:linux64",
+    "build:linux32": "electron-builder --linux --ia32",
+    "build:linux64": "electron-builder --linux --x64",
+    "build:arm64": "electron-builder --linux --armv7l",
+    "build:debx64": "electron-installer-debian --arch amd64",
+    "postinstall": "install-app-deps",
+    "pack": "build --dir",
+    "dist": "build"
+  },
+  "author": "Byunghun Hwang <bh.hwang@iae.re.kr>",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/elecun/openedge.git"
+  },
+  "keywords": [
+    "openedge",
+    "oeb"
+  ],
+  "devDependencies": {
+    "electron": "^20.1.0",
+    "electron-builder": "^23.3.3",
+    "electron-packager": "^16.0.0",
+    "electron-prebuilt": "^1.4.13",
+    "mqtt": "^4.3.7",
+    "python-shell": "^3.0.1"
+  },
+  "dependencies": {
+    "mqtt": "^4.3.7"
+  },
+  "build": {
+    "productName": "oeb",
+    "appId": "com.openedge.oeb",
+    "asar": false,
+    "protocols": {
+      "name": "oeb",
+      "schemes": [
+        "oeb"
+      ]
+    },
+    "mac": {
+      "target": [
+        "default"
+      ],
+      "icon": "./resource/ico.ico"
+    },
+    "dmg": {
+      "title": "oeb",
+      "icon": "./resource/ico.ico"
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb"
+      ],
+      "icon": "./resource/ico.png"
+    },
+    "win": {
+      "target": [
+        "zip",
+        "nsis"
+      ],
+      "icon": "./resource/ico.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "installerIcon": "./resource/ico.ico",
+      "createDesktopShortcut": true
+    },
+    "directories": {
+      "buildResources": "resource/",
+      "output": "dist/",
+      "app": "."
+    }
+  }
+}
