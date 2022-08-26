@@ -1,13 +1,12 @@
 make all --print-data-base --no-builtin-variables --no-builtin-rules --question
-# GNU Make 4.1
+# GNU Make 4.2.1
 # Built for x86_64-pc-linux-gnu
-# Copyright (C) 1988-2014 Free Software Foundation, Inc.
+# Copyright (C) 1988-2016 Free Software Foundation, Inc.
 # License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
- 
 
-# Make data base, printed on Wed Jul 13 13:25:13 2022
+# Make data base, printed on Fri Aug 26 09:33:23 2022
 
 # Variables
 
@@ -18,7 +17,11 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # default
 .SHELLFLAGS := -c
 # environment
+XDG_SESSION_CLASS = user
+# environment
 VSCODE_AGENT_FOLDER = /home/hwang/.vscode-server
+# environment
+XDG_SESSION_TYPE = tty
 # automatic
 ?D = $(patsubst %/,%,$(dir $?))
 # automatic
@@ -26,7 +29,7 @@ VSCODE_AGENT_FOLDER = /home/hwang/.vscode-server
 # automatic
 @F = $(notdir $@)
 # default
-MAKE_VERSION := 4.1
+MAKE_VERSION := 4.2.1
 # makefile
 CURDIR := /home/hwang/dev/openedge
 # makefile
@@ -38,7 +41,7 @@ EXAMPLE_SOURCE_FILES = ./examples/
 # environment
 VSCODE_NLS_CONFIG = {"locale":"en","availableLanguages":{}}
 # environment
-_ = /home/hwang/.vscode-server/bin/92d25e35d9bf1a6b16f7d0758f25d48ace11e5b9/node
+_ = /home/hwang/.vscode-server/bin/e4503b30fc78200f846c62cf8091b76ff5547662/node
 # makefile (from 'Makefile', line 1)
 MAKEFILE_LIST :=  Makefile
 # makefile (from 'Makefile', line 18)
@@ -58,15 +61,17 @@ LESSOPEN = | /usr/bin/lesspipe %s
 # environment
 VSCODE_CWD = /home/hwang
 # environment
-SSH_CONNECTION = 192.168.201.26 59964 192.168.200.99 22
+SSH_CONNECTION = 192.168.201.26 62824 192.168.200.216 22
 # environment
-PATH = /home/hwang/.vscode-server/bin/92d25e35d9bf1a6b16f7d0758f25d48ace11e5b9/bin/remote-cli:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+PATH = /home/hwang/.vscode-server/bin/e4503b30fc78200f846c62cf8091b76ff5547662/bin/remote-cli:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
 # environment
 XDG_RUNTIME_DIR = /run/user/1000
 # makefile (from 'Makefile', line 22)
 INCLUDE_DIR = -I./ -I./include/ -I./include/3rdparty/
 # environment
 ELECTRON_RUN_AS_NODE = 1
+# environment
+VSCODE_IPC_HOOK_CLI = /run/user/1000/vscode-ipc-2dd189c5-cb89-4981-a097-c29e9911bcdc.sock
 # makefile (from 'Makefile', line 36)
 LDFLAGS = -Wl,--export-dynamic -Wl,-rpath=$(LD_LIBRARY_PATH)
 # makefile (from 'Makefile', line 37)
@@ -83,8 +88,8 @@ INCLUDE_FILES = ./include/
 %F = $(notdir $%)
 # environment
 PWD = /home/hwang/dev/openedge
-# environment
-VSCODE_IPC_HOOK_CLI = /run/user/1000/vscode-ipc-8f3cbd87-e6d2-4357-b5a4-9e3a9417420a.sock
+# default
+.LOADED := 
 # automatic
 *D = $(patsubst %/,%,$(dir $*))
 # makefile (from 'Makefile', line 54)
@@ -102,7 +107,7 @@ LESSCLOSE = /usr/bin/lesspipe %s %s
 # environment
 LOGNAME = hwang
 # environment
-APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = 1
+APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = true
 # automatic
 +F = $(notdir $+)
 # environment
@@ -118,11 +123,11 @@ MAKE = $(MAKE_COMMAND)
 # default
 MAKECMDGOALS := all
 # environment
-SHLVL = 3
+SHLVL = 1
 # makefile (from 'Makefile', line 17)
 CC := /usr/bin/arm-linux-gnueabihf-g++-8
 # environment
-XDG_SESSION_ID = 450
+XDG_SESSION_ID = 11
 # environment
 USER = hwang
 # makefile
@@ -146,16 +151,15 @@ MAKEFLAGS = pqrR
 # environment
 MFLAGS = -pqrR
 # environment
-SSH_CLIENT = 192.168.201.26 59964 22
- 
-# environment
-MAIL = /var/mail/hwang
+SSH_CLIENT = 192.168.201.26 62824 22
 # automatic
 +D = $(patsubst %/,%,$(dir $+))
 # environment
-BROWSER = /home/hwang/.vscode-server/bin/92d25e35d9bf1a6b16f7d0758f25d48ace11e5b9/bin/helpers/browser.sh
+BROWSER = /home/hwang/.vscode-server/bin/e4503b30fc78200f846c62cf8091b76ff5547662/bin/helpers/browser.sh
 # environment
 VSCODE_HANDLES_SIGPIPE = true
+# 'override' directive
+.SHELLSTATUS := 0
 # default
 MAKEFILES := 
 # automatic
@@ -180,8 +184,10 @@ INSTALL_DIR = /usr/local/bin/
 MAKE_HOST := x86_64-pc-linux-gnu
 # environment
 LANG = C
+# environment
+MOTD_SHOWN = pam
 # variable set hash-table stats:
-# Load=84/1024=8%, Rehash=0, Collisions=9/286=3%
+# Load=88/1024=9%, Rehash=0, Collisions=10/292=3%
 
 # Pattern-specific Variable Values
 
@@ -189,9 +195,9 @@ LANG = C
 
 # Directories
 
-# . (device 2049, inode 3817017): 21 files, no impossibilities.
+# . (device 2053, inode 10232979): 22 files, no impossibilities.
 
-# 21 files, no impossibilities in 1 directories.
+# 22 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
@@ -284,6 +290,7 @@ bin/armhf/mqtt.o: services/mqtt.publisher.service/mqtt.cc
 #  Modification time never checked.
 #  File has not been updated.
 #  recipe to execute (from 'Makefile', line 311):
+ 
 	$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
 bin/armhf/profile.o: include/openedge/core/profile.cc
@@ -368,7 +375,6 @@ include//support/device/dkm_dx3000_native.cc:
 
 simple2.task: bin/armhf/simple2.task.o
 #  Implicit rule search has not been done.
- 
 #  Modification time never checked.
 #  File has not been updated.
 #  recipe to execute (from 'Makefile', line 131):
@@ -495,7 +501,7 @@ bin/armhf/network.o: include/openedge/sys/network.cc
 # Not a target:
 Makefile:
 #  Implicit rule search has been done.
-#  Last modified 2022-07-04 08:42:02.746336124
+#  Last modified 2022-08-26 09:31:59.055616083
 #  File has been updated.
 #  Successfully updated.
 
@@ -574,6 +580,7 @@ include/openedge/core/rt_timer.cc:
 tasks/rt.perf.test.task/rt.perf.test.task.cc:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
+ 
 #  File has not been updated.
 
 # Not a target:
@@ -629,7 +636,6 @@ bin/armhf/dx3000.motor.service.task.o: tasks/dx3000.motor.service.task/dx3000.mo
 
 bin/armhf/uvlc.ag.control.task.o: tasks/uvlc.ag.control.task/uvlc.ag.control.task.cc
 #  Implicit rule search has not been done.
- 
 #  Modification time never checked.
 #  File has not been updated.
 #  recipe to execute (from 'Makefile', line 162):
@@ -859,6 +865,7 @@ pcan.mqtt.task: bin/armhf/pcan.mqtt.task.o
 bin/armhf/openedge.o:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
+ 
 #  File has not been updated.
 
 bin/armhf/peak.pcan.mqtt.task.o: tasks/peak.pcan.mqtt.task/peak.pcan.mqtt.task.cc
@@ -908,7 +915,6 @@ services/mongodb.connector.service/mongodb.connector.service.cc:
 #  File has not been updated.
 
 bin/armhf/info.o: include/openedge/sys/info.cc
- 
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
@@ -1054,7 +1060,7 @@ qual.dmr.task: bin/armhf/qual.dmr.task.o
 # Not a target:
 apps/edge/edge.cc:
 #  Implicit rule search has been done.
-#  Last modified 2022-07-06 19:00:42.917994712
+#  Last modified 2022-08-26 09:31:59.055616083
 #  File has been updated.
 #  Successfully updated.
 
@@ -1138,6 +1144,7 @@ bin/armhf/pcan.mqtt.task.o: tasks/pcan.mqtt.task/pcan.mqtt.task.cc
 rt.perf.test.task: bin/armhf/rt.perf.test.task.o
 #  Implicit rule search has not been done.
 #  Modification time never checked.
+ 
 #  File has not been updated.
 #  recipe to execute (from 'Makefile', line 281):
 	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) -lmosquittopp -lmosquitto
@@ -1211,7 +1218,6 @@ tasks/agw.manage.task/agw.manage.task.cc:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
- 
 
 # files hash-table stats:
 # Load=150/1024=15%, Rehash=0, Collisions=48/329=15%
@@ -1221,12 +1227,12 @@ tasks/agw.manage.task/agw.manage.task.cc:
 
 # No general ('VPATH' variable) search path.
 
-# strcache buffers: 1 (0) / strings = 171 / storage = 4317 B / avg = 25 B
-# current buf: size = 8162 B / used = 4317 B / count = 171 / avg = 25 B
+# strcache buffers: 1 (0) / strings = 172 / storage = 4328 B / avg = 25 B
+# current buf: size = 8162 B / used = 4328 B / count = 172 / avg = 25 B
 
-# strcache performance: lookups = 337 / hit rate = 49%
+# strcache performance: lookups = 338 / hit rate = 49%
 # hash-table stats:
-# Load=171/8192=2%, Rehash=0, Collisions=6/337=2%
-# Finished Make data base on Wed Jul 13 13:25:13 2022
+# Load=172/8192=2%, Rehash=0, Collisions=6/338=2%
+# Finished Make data base on Fri Aug 26 09:33:23 2022
 
  
