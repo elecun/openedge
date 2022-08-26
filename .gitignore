@@ -39,3 +39,4 @@ wheels/
 *.manifest
 *.spec
 *.log
+node_modules/
