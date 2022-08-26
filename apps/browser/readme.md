@@ -24,3 +24,10 @@ $ source ./venv/bin/activate
 
 * build for linux64 (ubuntu)
 - $ npm run build:linux64
+
+# deploy
+$ sudo apt-get install nodejs 
+$ sudo apt-get install npm
+$ npm install mqtt
+(global) $ npm install mqtt -g
+$ dpkg -i oeb_0.0.2.amd64.deb
