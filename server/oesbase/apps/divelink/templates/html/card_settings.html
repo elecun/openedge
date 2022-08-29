@@ -1,0 +1,109 @@
+
+
+<div class="card card-dark card-tabs shadow" style="height: 775px;">
+    <div class="card-header p-0 pt-1 border-bottom-0">
+
+        <div class="card-tools">
+            <button type="button" class="btn btn-tool" data-card-widget="maximize"><i class="fas fa-expand"></i></button>
+            <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+          </div>
+
+        <!-- navigation tabs -->
+        <ul class="nav nav-tabs" id="tab_settings" role="tablist">
+            <!-- settings general tab title & link -->
+            <li class="nav-item">
+                <a class="nav-link active" id="tab_settings_general_link" data-toggle="pill" href="#tab_settings_general" role="tab" aria-controls="tab_settings_general" aria-selected="true">
+                <i class="fas fa-tools"></i> {{menu_ko.settings_general}}</a>
+            </li>
+
+            <!-- settings details tab title & link -->
+            <li class="nav-item">
+                <a class="nav-link" id="tab_settings_details_link" data-toggle="pill" href="#tab_settings_details" role="tab" aria-controls="tab_settings_details" aria-selected="false">
+                <i class="fas fa-tasks"></i> {{menu_ko.settings_details}}</a>
+            </li>
+
+            <!-- settings load tab title & link -->
+            <li class="nav-item">
+                <a class="nav-link" id="tab_settings_load_link" data-toggle="pill" href="#tab_settings_load" role="tab" aria-controls="tab_settings_load" aria-selected="false">
+                <i class="fas fa-folder-open"></i> {{menu_ko.settings_load}}</a>
+            </li>
+
+            <!-- settings reservation tab title & link -->
+            <li class="nav-item">
+                <a class="nav-link" id="tab_settings_reserve_link" data-toggle="pill" href="#tab_settings_reserve" role="tab" aria-controls="tab_settings_reserve" aria-selected="false">
+                <i class="fas fa-clock"></i> {{menu_ko.settings_reserve}}</a>
+              </li>
+
+            
+        </ul>
+    </div>
+    <div class="card-body p-0">
+        <div class="tab-content" id="tab_settings_contents">
+            <div class="tab-pane show active" id="tab_settings_general" role="tabpanel" aria-labelledby="custom-tabs-four-profile-tab">
+                {% include 'html/card_settings_general.html' %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+/* tab event for side menu display control */
+$('a[data-toggle="pill"]').on('shown.bs.tab', function (e) {
+    var target = $(e.target).attr("href");
+    switch(target){
+        /* settings general tab activated */
+        case "#tab_settings_general": {
+            $('#btn_start_step').addClass("d-none");
+            $('#btn_stop_step').addClass("d-none");
+            $('#btn_pause_step').addClass("d-none");
+            $('#btn_settings_save').removeClass("d-none");
+            $('#btn_settings_new').removeClass("d-none");
+            $('#btn_settings_apply').removeClass("d-none");
+        } break;
+        /* settings details tab activated */
+        case "#tab_settings_details": {
+            $('#btn_start_step').removeClass("d-none");
+            $('#btn_stop_step').removeClass("d-none");
+            $('#btn_pause_step').removeClass("d-none");
+            $('#btn_settings_save').removeClass("d-none");
+            $('#btn_settings_new').removeClass("d-none");
+            $('#btn_settings_apply').addClass("d-none");
+        } break;
+
+        /* settings load tab activated */
+        case "#tab_settings_load": {
+            $('#btn_start_step').addClass("d-none");
+            $('#btn_stop_step').addClass("d-none");
+            $('#btn_pause_step').addClass("d-none");
+            $('#btn_settings_save').addClass("d-none");
+            $('#btn_settings_new').addClass("d-none");
+            $('#btn_settings_apply').addClass("d-none");
+        } break;
+
+        /* settings reserve tab activated */
+        case "#tab_settings_reserve":{
+            $('#btn_start_step').addClass("d-none");
+            $('#btn_stop_step').addClass("d-none");
+            $('#btn_pause_step').addClass("d-none");
+            $('#btn_settings_save').addClass("d-none");
+            $('#btn_settings_new').addClass("d-none");
+            $('#btn_settings_apply').addClass("d-none");
+        }
+    }
+});
+  
+/* page load */
+window.addEventListener('DOMContentLoaded', function(){
+    /* initially hide menu */
+    $('#btn_start_step').addClass("d-none");
+    $('#btn_stop_step').addClass("d-none");
+    $('#btn_pause_step').addClass("d-none");
+});
+
+/* reload event listener */
+document.getElementById('btn_setting_reload').addEventListener('click', function(){
+    
+});
+
+</script>

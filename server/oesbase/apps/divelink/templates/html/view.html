@@ -1,0 +1,86 @@
+
+
+<div class="card card-dark card-tabs" style="height: 775px;">
+    <div class="card-header p-0 pt-1 border-bottom-0" style="background-color:rgb(6, 6, 55)">
+
+        <!-- navigation tabs -->
+        <ul class="nav nav-tabs" id="tab_settings" role="tablist">
+            <!-- view location tab title & link -->
+            <li class="nav-item">
+                <a class="nav-link active" id="tab_menu_location_link" data-toggle="pill" href="#tab_menu_location" role="tab" aria-controls="tab_menu_location" aria-selected="true">
+                <i class="fas fa-globe"></i> {{menu_ko.menu_title_map}}</a>
+            </li>
+
+            
+        </ul>
+    </div>
+    <div class="card-body p-0">
+        <div class="tab-content" id="tab_settings_contents">
+            <div class="tab-pane show active" id="tab_settings_general" role="tabpanel" aria-labelledby="custom-tabs-four-profile-tab">
+                {% include 'html/view_location.html' %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+/* tab event for side menu display control */
+$('a[data-toggle="pill"]').on('shown.bs.tab', function (e) {
+    var target = $(e.target).attr("href");
+    switch(target){
+        /* settings general tab activated */
+        case "#tab_settings_general": {
+            $('#btn_start_step').addClass("d-none");
+            $('#btn_stop_step').addClass("d-none");
+            $('#btn_pause_step').addClass("d-none");
+            $('#btn_settings_save').removeClass("d-none");
+            $('#btn_settings_new').removeClass("d-none");
+            $('#btn_settings_apply').removeClass("d-none");
+        } break;
+        /* settings details tab activated */
+        case "#tab_settings_details": {
+            $('#btn_start_step').removeClass("d-none");
+            $('#btn_stop_step').removeClass("d-none");
+            $('#btn_pause_step').removeClass("d-none");
+            $('#btn_settings_save').removeClass("d-none");
+            $('#btn_settings_new').removeClass("d-none");
+            $('#btn_settings_apply').addClass("d-none");
+        } break;
+
+        /* settings load tab activated */
+        case "#tab_settings_load": {
+            $('#btn_start_step').addClass("d-none");
+            $('#btn_stop_step').addClass("d-none");
+            $('#btn_pause_step').addClass("d-none");
+            $('#btn_settings_save').addClass("d-none");
+            $('#btn_settings_new').addClass("d-none");
+            $('#btn_settings_apply').addClass("d-none");
+        } break;
+
+        /* settings reserve tab activated */
+        case "#tab_settings_reserve":{
+            $('#btn_start_step').addClass("d-none");
+            $('#btn_stop_step').addClass("d-none");
+            $('#btn_pause_step').addClass("d-none");
+            $('#btn_settings_save').addClass("d-none");
+            $('#btn_settings_new').addClass("d-none");
+            $('#btn_settings_apply').addClass("d-none");
+        }
+    }
+});
+  
+/* page load */
+window.addEventListener('DOMContentLoaded', function(){
+    /* initially hide menu */
+    $('#btn_start_step').addClass("d-none");
+    $('#btn_stop_step').addClass("d-none");
+    $('#btn_pause_step').addClass("d-none");
+});
+
+/* reload event listener */
+document.getElementById('btn_setting_reload').addEventListener('click', function(){
+    
+});
+
+</script>

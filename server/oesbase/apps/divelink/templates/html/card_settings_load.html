@@ -1,0 +1,147 @@
+
+<style>
+
+.dataTables_scrollHeadInner {
+  width: 100% !important;
+}
+.dataTables_scrollHeadInner table {
+  width: 100% !important;
+}
+
+</style>
+
+<div class="row m-0 mt-1">
+  <div class="col-sm-12">
+    <table class="table table-sm display compact" id="table_settings_list" width="100%">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>UID</th>
+          <th>Craeted</th>
+          <th>Name</th>
+          <th>Machine</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+      </tbody>
+      <tfoot>
+      </tfoot>
+    </table>
+  </div>
+</div>
+
+
+
+<script type="text/javascript">
+
+/* setting list table */
+var settings_list_table = $('#table_settings_list').DataTable({
+      "autoload":true,
+      "scrollX":false,
+      "scrollY": "250px",
+      "scrollCollapse":true,
+      "paging":false,
+      "ordering":true,
+      "columnDefs": [
+        {
+            "targets": [ 1 ],
+            "visible": false,
+            "searchable": false
+        }]
+});
+
+/* delete settings by id */
+async function request_settings_delete(id){
+  if(confirm("{{menu_ko.message_delete_setting_selected}}")){
+    const req = {"id":id};
+    const response = await REST_POST("{% url 'api_settings_delete' %}", req);
+    if(response.ok){
+      update_settings_list();
+    }
+  }
+}
+
+/* apply the parameters for all forms */
+function apply_settings_data(params){
+  document.getElementById('edit_settings_name').value = params.data.name;
+  document.getElementById('hidden_settings_id').value = params.data.id;
+  document.getElementById('hidden_settings_uid').value = params.data.uid;
+
+  document.getElementById('edit_settings_general_machinename').value = params.data.machine_name;
+  document.getElementById('edit_settings_general_jsno').value = params.data.jsno;
+  document.getElementById('edit_settings_general_productsize').value = params.data.product_size;
+  document.getElementById('edit_settings_general_rollersize').value = params.data.roller_size;
+  document.getElementById('edit_settings_genral_vload').value = params.data.vload;
+  document.getElementById('edit_settings_general_wtime').value = params.data.wtime;
+  document.getElementById('edit_settings_general_update_interval').value = params.data.update_interval;
+  document.getElementById('edit_settings_general_ratio').value = params.data.ratio;
+
+  document.getElementById('edit_settings_general_temp_min').value = params.data.limit_temperature_min;
+  document.getElementById('edit_settings_general_temp_min_count').value = params.data.limit_temperature_min_count;
+  document.getElementById('edit_settings_general_temp_max').value = params.data.limit_temperature_max;
+  document.getElementById('edit_settings_general_temp_max_count').value = params.data.limit_temperature_max_count;
+  document.getElementById('edit_settings_general_rpm_max').value = params.data.limit_rpm_max;
+  document.getElementById('edit_settings_general_rpm_max_count').value = params.data.limit_rpm_max_count;
+  document.getElementById('edit_settings_general_load_min').value = params.data.limit_load_min;
+  document.getElementById('edit_settings_general_load_min_count').value = params.data.limit_load_min_count;
+  document.getElementById('edit_settings_general_load_max').value = params.data.limit_load_max;
+  document.getElementById('edit_settings_general_load_max_count').value = params.data.limit_load_max_count;
+
+  //parse steps & insert items
+  const steps = JSON.parse(params.data.steps);
+  //$("#settings_step_table").jsGrid("option", "data", []); //clear data
+  if(steps){
+    $("#settings_step_table").jsGrid("loadData").done(function() {});
+    steps.forEach(function(element){
+      $("#settings_step_table").jsGrid("insertItem", element).done(function() {});
+    });
+  }
+}
+
+/* load settings by id*/
+async function request_settings_load(id){
+  if(confirm("{{menu_ko.message_load_selected}}")){
+    let url = "{% url 'api_settings_load' 99 %}".replace('99', id);
+    const response = await REST_GET(url);
+    const data = await response.json();
+    if(response.ok){
+      apply_settings_data(data);
+      $('#tab_settings_general_link').tab('show'); //tab move
+    }
+  }
+}
+    
+/* request settings list */
+async function update_settings_list(){
+  settings_list_table.clear();
+
+  const response = await REST_GET("{% url 'api_settings_list' %}");
+
+  if(response.ok && response.status==200){
+    const listdata = await response.json();
+    
+    listdata.data.forEach(function(s){
+      var date_created = new Date(s.created_at);
+      const date = date_created.toLocaleDateString() + date_created.toLocaleTimeString();
+      var manage = '<button type="button" class="btn btn-light btn-sm" onclick=javascript:request_settings_load('+s.id+');><i class="fas fa-folder-open mr-1 text-info"></i> Load</button>\
+                    <button type="button" class="btn btn-light btn-sm" onclick=javascript:request_settings_delete('+s.id+');><i class="fas fa-trash mr-1 text-danger"></i> Delete</button>';
+      settings_list_table.row.add([s.id, s.uid, date, s.name, s.machine_name, manage]);
+    });
+    settings_list_table.draw();
+  }
+  else if(response.status==204){ //no contents
+    settings_list_table.clear();
+    settings_list_table.draw();
+  }
+}
+
+/* page load */
+window.addEventListener('DOMContentLoaded', function(){
+  update_settings_list();
+});    
+
+
+    
+</script>
+    

@@ -1,0 +1,140 @@
+
+<style>
+    .fab {
+       width: 70px;
+       height: 70px;
+       border-radius: 50%;
+       transition: all 0.1s ease-in-out;
+     
+       font-size: 50px;
+       color: white;
+       text-align: center;
+       line-height: 70px;
+     
+       position: fixed;
+       right: 120px;
+       bottom: 120px;
+    }
+     
+    .fab:hover {
+       transform: scale(1.05);
+    }
+    
+    .fab:active {
+       transform: translateY(4px);
+    }
+</style>
+
+{% load static %}
+
+<a class="btn btn-app invisible mb-0" id="btn_empty">
+</a>
+
+<!-- <a class="btn btn-app btn-app-side bg-success shadow" id="btn_chart_open">
+    <i class="fas fa-folder-open"></i> {{menu_ko.chart_open}}
+</a> -->
+
+<a class="btn btn-app btn-app-side bg-dark shadow" id="btn_chart_raw_download">
+   <i class="fas fa-file-csv"></i> {{menu_ko.chart_raw_download}}
+</a>
+
+<a class="btn btn-app btn-app-side bg-dark shadow" id="btn_chart_image_download">
+   <i class="fas fa-image"></i> {{menu_ko.chart_image_download}}
+</a>
+
+<div class="fab"><img src="{% static 'images/emg.png' %}" id="btn_emergency_stop"></div>
+
+
+<script language="javascript">
+
+/* page load */
+window.addEventListener('DOMContentLoaded', function(){
+   
+});
+
+/* emergency stop event */
+document.getElementById("btn_emergency_stop").addEventListener("click", function() {
+   if(mqtt_connected){
+      mqtt_client.publish("mex/step/program", JSON.stringify({"command":"stop"}), 2);
+      mqtt_client.publish("mex/plc/ctrl", JSON.stringify({"command":"move_stop"}), 2);
+      mqtt_client.publish("mex/plc/ctrl", JSON.stringify({"command":"motor_off"}), 2);
+      mqtt_client.publish("mex/relay/ctrl", JSON.stringify({"p1":0}), 2);
+      document.getElementById('modal_error_content').innerText = "{{menu_ko.message_emergency}}";
+      $('#modal_error').modal('show');
+   }
+});
+
+
+
+/* load data */
+// document.getElementById("btn_chart_open").addEventListener("click", function() {
+//    $('#modal_chart_open').modal('show');
+// });
+
+/* image download */
+document.getElementById("btn_chart_image_download").addEventListener("click", function() {
+
+   var img = new Image();
+   img.src = data_chart.getDataURL({
+      pixelRatio: 2,
+      backgroundColor: '#fff'
+   });
+   
+   var a = document.createElement('a');
+   a.style = 'display: none';
+   a.href = img.src;
+   a.download = 'image.png';
+   document.body.appendChild(a);
+   a.click();
+
+   setTimeout(function () { document.body.removeChild(a);}, 100); //protection download fail
+});
+
+/* data csv download */
+document.getElementById("btn_chart_raw_download").addEventListener("click", function(){
+   var _headers = ['time', 'load', 'temperature 1', 'temperature 2', 'temperature 3', 'RPM'];
+   var time = option.xAxis.data;
+   var load = option.series[0].data;
+   var temperature_1 = option.series[1].data;
+   var temperature_2 = option.series[2].data;
+   var temperature_3 = option.series[3].data;
+   var rpm = option.series[4].data;
+
+   // prepare CSV data
+   var csvData = new Array();
+   csvData.push(_headers);
+
+   for(var i=0;i<time.length;i++) {
+      //csvData.push(new Array(time[i], load[i], temperature_1[i], temperature_2[i], temperature_3[i], rpm[i]));
+      csvData.push(new Array(time[i], load[i], temperature_1[i], temperature_2[i], temperature_3[i], rpm[i]));
+   }
+
+   var lineArray = [];
+   csvData.forEach(function (infoArray, index) {
+      var line = infoArray.join(",");
+      lineArray.push(index == 0 ? "\uFEFF" + line : line); 
+   });
+   var csvContent = lineArray.join("\n");
+
+   // download stuff
+   var blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+   var link = document.createElement("a");
+
+   if (link.download !== undefined) { // feature detection
+      // Browsers that support HTML5 download attribute
+      link.setAttribute("href", window.URL.createObjectURL(blob));
+      link.setAttribute("download", "data.csv");
+      link.setAttribute("hidden", true);
+   }
+   else {
+      // it needs to implement server side export
+      console.log('error');
+      link.setAttribute("href", "#");
+   }
+   //link.innerHTML = "Export to CSV";
+   //document.body.appendChild(link);
+   link.click();
+});
+
+
+</script>

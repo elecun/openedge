@@ -1,0 +1,139 @@
+
+<style>
+  .datepicker,
+  .table-condensed {
+    width: 150px;
+    height: auto;
+  }
+</style>
+
+<div class="row m-0 mt-1">
+  <div class="col-sm-12">
+    <div class="form-group">
+      <label>{{menu_ko.settings_reserve_datetime}} :</label>
+      <div class="input-group date" id="settings_reserve_date" data-target-input="nearest">
+        <div class="input-group-append" data-target="#settings_reserve_date" data-toggle="datetimepicker">
+            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+        </div>
+        <input type="text" class="form-control datetimepicker-input" data-target="#settings_reserve_date" id="edit_reserve_datetime">
+        <button id="btn_add_reserve" class="btn btn-sm btn-success ml-2"><i class="fas fa-plus"></i> {{menu_ko.settings_reserve_add}}</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div clsss="row m-0">
+  <div class="col-sm-12">
+    <label>{{menu_ko.settings_reserve_list}}</label>
+
+    <table class="display compact" id="table_reserve_list" width="100%">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>시작 날짜/시각</th>
+          <th>적용 설정#</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+      </tbody>
+      <tfoot>
+      </tfoot>
+    </table>
+  </div>
+</div>
+
+
+<script type="text/javascript">
+
+/* setting list table */
+var settings_reserve_table = $('#table_reserve_list').DataTable({
+  "autoload":true,
+  "scrollX":false,
+  "scrollY": "200px",
+  "scrollCollapse":true,
+  "paging":false,
+  "ordering":true,
+  "searching":false
+});
+
+/* new reservation registration */
+async function request_reserve_new(target_setting){
+  const datetime = document.getElementById('edit_reserve_datetime').value;
+  const req = {"datetime": datetime, "setting_id":target_setting};
+  const response = await REST_POST("{% url 'api_reserve_new' %}", req);
+  if(response.ok){
+    update_reserve_list();
+  }
+}
+
+/* add job reservation */
+document.getElementById("btn_add_reserve").addEventListener("click", function() {
+  const id = document.getElementById('hidden_settings_id').value;
+  if(id)
+    request_reserve_new(id);
+  else{
+    document.getElementById('modal_error_content').innerText = "{{menu_ko.message_reserve_error_no_target}}";
+    $('#modal_error').modal('show');
+  }
+});
+
+/* datetime picker */
+$('#settings_reserve_date').datetimepicker({ 
+  icons: {
+      time: "fas fa-clock",
+      date: "fa fa-calendar",
+      up: "fas fa-arrow-up",
+      down: "fas fa-arrow-down"
+  },
+  autoclose : true,
+  Default:false,
+  locale: "en-GB",
+  format: "YYYY-MM-DD HH:mm"
+});
+
+/* delete by id */
+async function request_reserve_delete(id){
+  if(confirm("{{menu_ko.message_delete_reserve_selected}}")){
+    const req = {"id":id};
+    const response = await REST_POST("{% url 'api_reserve_delete' %}", req);
+    if(response.ok){
+      update_reserve_list();
+    }
+  }
+}
+
+
+/* request reserve list */
+async function update_reserve_list(){
+  settings_reserve_table.clear();
+
+  const response = await REST_GET("{% url 'api_reserve_list' %}");
+
+  if(response.ok && response.status==200){
+    const listdata = await response.json();
+
+    listdata.data.forEach(function(s){
+      var start_date = new Date(s.start_at);
+      const date = start_date.toLocaleDateString() + start_date.toLocaleTimeString();
+
+      var manage = '<button type="button" class="btn btn-light btn-sm" onclick=javascript:request_reserve_delete('+s.id+');><i class="fas fa-trash mr-1 text-danger"></i> Delete</button>';
+      settings_reserve_table.row.add([s.id, date, s.target_setting_id, manage]);
+    });
+    settings_reserve_table.draw();
+
+  }
+  else if(response.status==204){ //no contents
+    settings_reserve_table.clear();
+    settings_reserve_table.draw();
+  }
+}
+      
+/* page load */
+window.addEventListener('DOMContentLoaded', function(){
+  update_reserve_list();
+});
+
+    
+</script>
+    

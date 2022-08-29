@@ -1,0 +1,190 @@
+
+<style>
+    div > #step_table {
+    height: 100%;
+    color: #262626;
+    font-family: 'Helvetica Neue Light', 'Open Sans', Helvetica;
+    font-size: 14px;
+    font-weight: 300;
+    padding: 1px;
+}
+
+tr.jsgrid-row {
+  height: 2rem;
+}
+
+.jsgrid-deactive-row {
+    background-color: #fcfcfc !important;
+}
+
+.jsgrid-active-row {
+    background-color: yellow !important;
+}
+
+
+</style>
+
+{% load static %}
+
+<div id="settings_step_table"></div>
+
+
+<script type="text/javascript">
+
+/* tab event for side menu display control */
+$('a[data-toggle="pill"]').on('shown.bs.tab', function (e) {
+    var target = $(e.target).attr("href");
+    switch(target){
+        /* settings general tab activated */
+        case "#tab_settings_general": {
+            $('#btn_start_step').addClass("d-none");
+            $('#btn_stop_step').addClass("d-none");
+            $('#btn_pause_step').addClass("d-none");
+            $('#btn_settings_save').addClass("d-none");
+        } break;
+        /* settings details tab activated */
+        case "#tab_settings_details": {
+            $('#btn_start_step').removeClass("d-none");
+            $('#btn_stop_step').removeClass("d-none");
+            $('#btn_pause_step').removeClass("d-none");
+            $('#btn_settings_save').removeClass("d-none");
+        } break;
+
+        /* settings load tab activated */
+        case "#tab_settings_load": {
+            $('#btn_start_step').addClass("d-none");
+            $('#btn_stop_step').addClass("d-none");
+            $('#btn_pause_step').addClass("d-none");
+            $('#btn_settings_save').addClass("d-none");
+        } break;
+    }
+});
+
+/* step tables database */
+var step_db = {
+
+    loadData: function(filter) {
+        console.log("loaddata");
+        this.steps = []; //clear when load
+        return [];
+    },
+
+    insertItem: function(insertingStep) {
+        if(!insertingStep.step)
+            insertingStep.step = this.steps.length+1;
+        this.steps.push(insertingStep);
+        step_db.steps = this.steps;
+    },
+
+    updateItem: function(updatingStep) {
+        
+    },
+
+    deleteItem: function(deletingStep) {
+        var stepIndex = $.inArray(deletingStep, this.steps);
+        this.steps.splice(stepIndex, 1);
+    }
+};
+
+
+
+/* Steps Commandset ! important */
+step_db.commands = [
+    { command: "CW", id:1 },
+    { command: "CCW", id:2 },
+    { command: "STOP", id:0 },
+    { command: "GOTO", id:3 }
+];
+
+step_db.steps = [];
+
+$("#settings_step_table").jsGrid({
+    height: "430px",
+    width:"100%",
+
+    editing: true,
+    sorting: false,
+    paging: true,
+    autoload: true,
+    inserting:true,
+
+    pageSize: 15,
+    pageButtonCount: 5,
+
+    deleteConfirm: "Do you really want to delete?",
+    controller: step_db,
+    fields: [
+        { name: "step", type: "number", width: 80, readOnly:false, align:"center", title:"Step"},
+        { name: "command", type: "select", items: step_db.commands, valueField: "id", textField: "command" , title:"Command"},
+        { name: "time", type: "number", readOnly:false, align:"center", title:"시간(sec)"},
+        { name: "speed", type: "number", readOnly:false, align:"center", title:"속도(RPM)"},
+        { name: "sload", type: "checkbox", readOnly:false, align:"center", title:"측면하중(ON/OFF)" },
+        { name: "accdec", type: "number", readOnly:false, align:"center", title:"가감속시간(rpm/sec)"},
+        { name: "goto", type: "number", readOnly:false, align:"center", title:"이동 Step"},
+        { type: "control", editButton: false, modeSwitchButton: false, deleteButtonTooltip: "Delete"}
+    ]
+});
+
+/* row active(color change) */
+function row_active(row_index){   
+
+    let trlist = document.querySelectorAll(".jsgrid-row, .jsgrid-alt-row, .jsgrid-active-row");
+    if(row_index>trlist.length){
+        for(var i=0;i<trlist.length;i++){
+            if(trlist[i].classList.contains('jsgrid-active-row')){
+                trlist[i].classList.replace('jsgrid-active-row', 'jsgrid-row');
+            }
+        }
+        return;
+    }
+
+    for(var i=0;i<trlist.length;i++){
+        if(trlist[i].classList.contains('jsgrid-active-row')){
+            trlist[i].classList.replace('jsgrid-active-row', 'jsgrid-row');
+        }
+
+        if(i==row_index){
+            if(trlist[row_index].classList.contains('jsgrid-row')){
+                trlist[row_index].classList.replace('jsgrid-row', 'jsgrid-active-row');
+            }
+            else if(trlist[row_index].classList.contains('jsgrid-alt-row')){
+                trlist[row_index].classList.replace('jsgrid-alt-row', 'jsgrid-active-row');
+            }
+        }
+    }
+}
+
+/* row deactive(color change) */
+function row_deactive(row_index){
+    let trlist = document.querySelectorAll(".jsgrid-row, .jsgrid-alt-row");
+    trlist[row_index].classList.remove('jsgrid-active-row');
+
+    if(!row_index%2){ //odd
+        trlist[row_index].classList.add('jsgrid-row');    
+    }
+    else { //even
+        trlist[row_index].classList.add('jsgrid-alt-row');
+    }
+}
+
+/* row deactive all */
+function row_deactive_all(){
+    let trlist = document.querySelectorAll(".jsgrid-row, .jsgrid-alt-row, .jsgrid-active-row");
+    for(var i=0;i<trlist.length;i++){
+        if(trlist[i].classList.contains('jsgrid-active-row')){
+            trlist[i].classList.replace('jsgrid-active-row', 'jsgrid-row');
+        }
+    }
+}
+
+  
+/* page load */
+window.addEventListener('DOMContentLoaded', function(){
+    /* initially hide menu */
+    $('#btn_start_step').addClass("d-none");
+    $('#btn_stop_step').addClass("d-none");
+    $('#btn_pause_step').addClass("d-none");
+});
+
+
+</script>

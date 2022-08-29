@@ -1,0 +1,49 @@
+
+<style>
+    .fat {
+       width: 50px;
+       height: 50px;
+       border-radius: 10%;
+       transition: all 0.1s ease-in-out;
+       padding: 0;
+       color: white;
+     
+       font-size: 20px;
+       color: black;
+       text-align: center;
+       line-height: 0px;
+     
+       position: fixed;
+       right: 20px;
+       top: 10px;
+    }
+     
+    .fat:hover {
+       transform: scale(1.05);
+    }
+    
+</style>
+
+{% load static %}
+<a class="btn fat" id="btn_window_close"><i class="fas fa-times-circle fa-2x"></i></a>
+
+<a class="btn btn-app btn-app-side invisible mb-0" id="btn_empty">
+</a>
+
+
+<script language="javascript">
+
+/* page load */
+window.addEventListener('DOMContentLoaded', function(){
+    
+});
+
+
+document.getElementById('btn_window_close').addEventListener('click', function(e){
+   if(mqtt_client){
+      mqtt_client.publish("mex/viewer", JSON.stringify({"command":"close"}), 2);
+   }
+});
+
+
+</script>

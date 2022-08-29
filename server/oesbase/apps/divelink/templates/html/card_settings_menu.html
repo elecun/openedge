@@ -1,0 +1,155 @@
+
+
+<a class="btn btn-app btn-app-side invisible mb-0" id="btn_empty">
+</a>
+
+<a class="btn btn-app btn-app-side bg-success shadow" id="btn_settings_new">
+    <i class="fas fa-plus"></i> {{menu_ko.settings_new}}
+</a>
+
+<a class="btn btn-app btn-app-side bg-primary shadow" id="btn_settings_save">
+    <i class="fas fa-save"></i> {{menu_ko.settings_save}}
+</a>
+
+<!-- <a class="btn btn-app btn-app-side bg-primary shadow" id="btn_settings_apply">
+    <i class="fas fa-check"></i> {{menu_ko.settings_apply}}
+</a> -->
+
+<a class="btn btn-app btn-app-side bg-dark shadow" id="btn_start_step">
+    <i class="fas fa-play"></i> {{menu_ko.start_step}}
+</a>
+
+<a class="btn btn-app btn-app-side bg-dark shadow" id="btn_pause_step">
+    <i class="fas fa-pause"></i> {{menu_ko.pause_step}}
+  </a>
+
+<a class="btn btn-app btn-app-side bg-dark shadow" id="btn_stop_step">
+    <i class="fas fa-stop"></i> {{menu_ko.stop_step}}
+</a>
+
+
+<script language="javascript">
+
+    /* page load */
+    window.addEventListener('DOMContentLoaded', function(){
+        
+    });
+
+    /* getting info from database */
+    async function start_step(id){
+        
+        let step_update_url = "{% url 'api_step_date_update' 99 %}".replace('99', id);
+        const resp = await REST_POST(step_update_url);
+        if(resp.ok){
+            console.log("date updated");
+            let url = "{% url 'api_settings_load' 99 %}".replace('99', id);
+            const response = await REST_GET(url);
+            if(response.ok && response.status==200) {
+                var info = await response.json();
+                info.command = "start";
+                info.data.steps = JSON.parse(info.data.steps); //converting string to json list
+
+                if(mqtt_connected){
+                    mqtt_client.publish("mex/step/program", JSON.stringify(info), 2);
+                    $.notify("Start Steps", {className: "success",position:"bottom left"});
+                }
+            }
+        }
+    }
+
+    /* start step */
+    document.getElementById('btn_start_step').addEventListener('click', function(){
+        if(confirm("{{menu_ko.message_start_steps}}")){
+            const id = document.getElementById('hidden_settings_id').value;
+            if(id){
+                start_step(id);
+            }
+            else {
+                document.getElementById('modal_error_content').innerText = "{{menu_ko.message_start_error_no_target}}";
+                $('#modal_error').modal('show');
+            }
+
+        }
+    });
+
+    /* pause step */
+    document.getElementById('btn_pause_step').addEventListener('click', function(){
+        var steps = {};
+        steps["command"] = "pause";
+        if(mqtt_connected){
+            mqtt_client.publish("mex/step/program", JSON.stringify(steps), 2);
+        }
+    });
+
+    /* stop step */
+    document.getElementById('btn_stop_step').addEventListener('click', function(){
+        var steps = {};
+        steps["command"] = "stop";
+        if(mqtt_connected){
+            mqtt_client.publish("mex/step/program", JSON.stringify(steps), 2);
+        }
+    });
+
+    /* open new settings */
+    document.getElementById("btn_settings_new").addEventListener("click", function() {
+        $('#modal_settings_new').modal('show');
+    });
+
+    /* settings parameters update request */
+    async function request_settings_update(data){
+        let url = "{% url 'api_settings_update' 99 %}".replace('99', data["id"]);
+        const response = await REST_POST(url, data);
+
+        if(response.ok){
+            document.getElementById('modal_notify_content').innerText = "{{menu_ko.message_update_success}}";
+            $('#modal_notify').modal('show');
+        }
+    }
+
+    /* save & update settings */
+    document.getElementById('btn_settings_save').addEventListener('click', function(){
+
+        if(!document.getElementById('hidden_settings_id').value || !document.getElementById('edit_settings_name').value){
+            document.getElementById('modal_error_content').innerText = "{{menu_ko.message_update_error_no_target}}";
+            $('#modal_error').modal('show');
+        }
+        else{
+            var data = {};
+            data["id"] = document.getElementById('hidden_settings_id').value;
+            data["uid"] = document.getElementById('hidden_settings_uid').value;
+            data["name"] = document.getElementById('edit_settings_name').value;
+            data["machine_name"] = document.getElementById('edit_settings_general_machinename').value;
+            data["jsno"] = document.getElementById('edit_settings_general_jsno').value;
+            data["product_size"] = document.getElementById('edit_settings_general_productsize').value;
+            data["vload"] = document.getElementById('edit_settings_genral_vload').value;
+            data["roller_size"] = document.getElementById('edit_settings_general_rollersize').value;
+            data["wtime"] = document.getElementById('edit_settings_general_wtime').value;
+            data["update_interval"] = document.getElementById('edit_settings_general_update_interval').value;
+            data["ratio"] = document.getElementById('edit_settings_general_ratio').value;
+            data["limit_temperature_min"] = document.getElementById('edit_settings_general_temp_min').value;
+            data["limit_temperature_max"] = document.getElementById('edit_settings_general_temp_max').value;
+            data["limit_temperature_min_count"] = document.getElementById('edit_settings_general_temp_min_count').value;
+            data["limit_temperature_max_count"] = document.getElementById('edit_settings_general_temp_max_count').value;
+            data["limit_rpm_max"] = document.getElementById('edit_settings_general_rpm_max').value;
+            data["limit_rpm_max_count"] = document.getElementById('edit_settings_general_rpm_max_count').value;
+            data["limit_load_min"] = document.getElementById('edit_settings_general_load_min').value;
+            data["limit_load_max"] = document.getElementById('edit_settings_general_load_max').value;
+            data["limit_load_min_count"] = document.getElementById('edit_settings_general_load_min_count').value;
+            data["limit_load_max_count"] = document.getElementById('edit_settings_general_load_max_count').value;
+            
+            data["steps"] = JSON.stringify(step_db.steps);
+            request_settings_update(data);
+        }
+    });
+
+    /* apply parameters to PLc*/
+    // document.getElementById('btn_settings_apply').addEventListener('click', function(){
+    //     paramset = {};
+    //     paramset["command"] = "param_set";
+    //     if(mqtt_connected){
+    //         mqtt_client.publish("mex/plc/ctrl", JSON.stringify(paramset), 2);
+    //     }
+
+    // });
+
+</script>

@@ -1,0 +1,248 @@
+
+<div class="card card-outline card-navy shadow">
+  <div class="card-header">
+    <h3 class="card-title">Data View</h3>
+
+    <div class="card-tools">
+      <button type="button" class="btn btn-tool" id="btn_chart_reload"><i class="fas fa-sync"></i></button>
+      <button type="button" class="btn btn-tool" data-card-widget="maximize"><i class="fas fa-expand"></i></button>
+      <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+    </div>
+  </div>
+    
+  <div class="card-body font-weight-lighter">
+    <!-- <div id="main" style="width: 100%;height:400px;"></div> -->
+    
+
+      <div class="position-relative mb-4">
+        <div id="main" style="width: 100%;height:450px;"></div>
+      </div>
+
+      
+  </div>
+</div>
+
+<script type="text/javascript">
+
+
+  // Initialize the echarts instance based on the prepared dom
+  var data_chart = echarts.init(document.getElementById('main'));
+  const colors = ['#D90A27', '#F46124', '#F3C70D', '#017E3D', '#0841B6'];
+
+  // Specify the configuration items and data for the chart
+  var option = {
+    color: colors,
+    title: {
+      text: '{{menu_ko.chart_title}}'
+    },
+
+    legend: {
+      left: 'center',
+      data: ['load', 'temperature 1', 'temperature 2', 'temperature 3', 'rpm']
+    },
+
+    toolbox:{
+      show:true, 
+      feature:{
+        dataView: { readOnly: true },
+      }
+    },
+
+    tooltip: {
+      trigger: 'axis',
+      axisPointer: {
+        type: 'cross'
+      }
+    },
+  
+    xAxis: {
+      type: 'category',
+      boundaryGap: false,
+      data: [],
+      axisTick: {
+        alignWithLabel: true
+      },
+      splitLine: {
+        lineStyle: {
+          type: 'dashed'
+        }
+      }
+    },
+  
+    yAxis: [
+      {
+        type: 'value',
+        name:"load",
+        position:"right",
+        axisLine:{
+          show:true,
+          lineStyle: {
+            //color: colors[0]
+          }
+        },
+        axisLabel:{formatter:'{value} kgf'},
+        offset:120
+      },
+      {
+        type: 'value',
+        position:"right",
+        name:"temp",
+        axisLine:{
+          show:true
+        },
+        axisLabel:{formatter:'{value} ℃'},
+        offset:0,
+        splitLine: {
+          lineStyle: {
+            //type: 'dashed',
+            //color: colors[1]
+          }
+        }
+      },
+      {
+        type: 'value',
+        name:"rpm",
+        position:"right",
+        axisLine:{
+          show:true,
+          lineStyle: {
+            color: colors[4]
+          }
+        },
+        axisLabel:{formatter:'{value}'},
+        offset:60,
+        splitLine: {
+          lineStyle: {
+            //color: colors[2]
+          }
+        }
+      }
+    ],
+
+    grid: {
+      left: '0%',
+      right: '4%',
+      bottom: '3%',
+      containLabel: true
+  },
+    
+    series: []
+};
+
+data_chart.setOption(option);
+
+/* clear series data */
+function clear_series(){
+  var option = {series:[], xAxis:{data:[]}};
+  data_chart.setOption(option);
+}
+
+/* request chart udpate with reference id */
+async function request_chart_data_ref(ref_id){
+  let url = " url 'api_query_date' 99 ".replace('99', ref_id);
+  const response = await REST_GET(url);
+
+  if(response.ok && response.status==200){
+    const result = await response.json();
+    clear_series();
+    var dt = [];
+    result.data.datetime.forEach(function(element){
+      dt.push(secondsToHms(element));
+    });
+    option.xAxis.data = dt;//result.data.datetime;
+
+    option.series = [
+      {
+        name: "load",
+        type:'line',
+        yAxisIndex: 0,
+        data: result.data.load
+      },
+      {
+        name: "temperature 1",
+        type:'line',
+        yAxisIndex: 1,
+        data: result.data.temperature_1
+      },
+      {
+        name: "temperature 2",
+        type:'line',
+        yAxisIndex: 1,
+        data: result.data.temperature_2
+      },
+      {
+        name: "temperature 3",
+        type:'line',
+        yAxisIndex: 1,
+        data: result.data.temperature_3
+      },
+      {
+        name: "rpm",
+        type:'line',
+        yAxisIndex: 2,
+        data: result.data.rpm
+      }
+    ];
+    data_chart.setOption(option);
+  }
+  else if(response.status==204){
+    console.log("No contents");
+  }
+  
+}
+
+/* data load */
+async function request_chart_data(){
+  const response = await REST_GET(" url 'api_query' ");
+  if(response.ok && response.status==200){
+    const result = await response.json();
+    clear_series();
+    option.xAxis.data = result.data.datetime;
+    option.series = [
+      {
+        name: "load",
+        type:'line',
+        data: result.data.load
+      },
+      {
+        name: "temperature 1",
+        type:'line',
+        data: result.data.temperature_1
+      },
+      {
+        name: "temperature 2",
+        type:'line',
+        data: result.data.temperature_2
+      },
+      {
+        name: "temperature 3",
+        type:'line',
+        data: result.data.temperature_3
+      },
+      {
+        name: "RPM",
+        type:'line',
+        data: result.data.rpM
+      }
+    ];
+    data_chart.setOption(option);
+  }
+}
+
+/* char manually update */
+document.getElementById('btn_chart_reload').addEventListener('click', function(){
+  const ref_id = document.getElementById('hidden_settings_id').value;
+  if(ref_id){
+    request_chart_data_ref(ref_id);
+  }
+  else
+    console.log("No Setting Id");
+});
+
+/* page load */
+window.addEventListener('DOMContentLoaded', function(){
+  
+});
+
+
+</script>

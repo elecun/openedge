@@ -9,9 +9,7 @@ def context_processors(request):
         'system':{ 
             'title':'DIVELINK',
             'company':"Insitute for Advanced Engineering",
-            'version':"0.1.0",
-            'mqtt_broker_ip':str(settings.MQTT_BROKER_ADDRESS),
-            'mqtt_broker_port':int(settings.MQTT_BROKER_WEBSCOKET)
+            'version':"0.1.0"
             },
         'frontend':{
             'status_load_min':0,
@@ -30,7 +28,7 @@ def context_processors(request):
         },
         'menu_ko':{
             'settings_details':"상세설정",
-            'settings_general':"일반설정",
+            'menu_title_map':"Location",
             'settings_load':"불러오기",
             'settings_save' : "설정저장",
             'settings_apply' : "PLC 적용",
