@@ -1,11 +1,15 @@
 
 {% load static %}
 
+<style>
+    #map { height: 720px; }
+</style>
+
 <link rel="stylesheet" href="{% static 'plugins/leafletjs/leaflet.css' %}">
 <script type="text/javascript" src="{% static 'plugins/leafletjs/leaflet.js' %}"></script>
 
 <div class="row m-0">
-    <div class="col-sm-12">
+    <div class="col-sm-12 p-1">
 
         <div id="map"></div>
 
@@ -16,21 +20,19 @@
 
 <script language="javascript">
 
-    function show_location(){
-        var map = L.map('map').setView([51.505, -0.09], 13);
-        L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
-            attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-            maxZoom: 18,
-            id: 'mapbox/streets-v11',
-            tileSize: 512,
-            zoomOffset: -1,
-            accessToken: 'pk.eyJ1IjoibWFjOTk5IiwiYSI6ImNrNzdyOXc5cjBhdWozbG9kajlwNDk3NGwifQ.2Z3kIeNZbwtVaKVl5NldaA'
-        }).addTo(map);
-    }
 
     /* page load */
     window.addEventListener('DOMContentLoaded', function(){
-        show_location();
+        var map = L.map('map').setView([37.4939, 129.1572], 13);
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© OpenStreetMap'
+        }).addTo(map);
+
+        var marker1 = L.marker([37.4939, 129.1572]).bindPopup("<b>Recovery Unit 01</b>");
+        var marker2 = L.marker([37.48264, 129.16009]).bindPopup("<b>Recovery Unit 02</b>");
+        var circle = L.circle([37.49, 129.1597], { color: 'red', fillColor: '#f03', fillOpacity: 0.2, radius: 1000 }).bindPopup("Search Area");
+        var group = L.layerGroup([marker1, marker2, circle]);
     });
     
 </script>

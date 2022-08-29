@@ -27,8 +27,12 @@ def context_processors(request):
 
         },
         'menu_ko':{
-            'settings_details':"상세설정",
             'menu_title_map':"Location",
+            'menu_title_device':"Device",
+            'menu_title_message':"Message",
+            'menu_title_setting':"Setting",
+            'menu_title_info':"Info",
+
             'settings_load':"불러오기",
             'settings_save' : "설정저장",
             'settings_apply' : "PLC 적용",

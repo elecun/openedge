@@ -8,78 +8,68 @@
             <!-- view location tab title & link -->
             <li class="nav-item">
                 <a class="nav-link active" id="tab_menu_location_link" data-toggle="pill" href="#tab_menu_location" role="tab" aria-controls="tab_menu_location" aria-selected="true">
-                <i class="fas fa-globe"></i> {{menu_ko.menu_title_map}}</a>
+                <i class="fas fa-globe-asia"></i> {{menu_ko.menu_title_map}}</a>
+            </li>
+
+            <!-- Device -->
+            <li class="nav-item">
+                <a class="nav-link" id="tab_menu_device_link" data-toggle="pill" href="#tab_menu_device" role="tab" aria-controls="tab_menu_device" aria-selected="true">
+                <i class="fas fa-map-pin"></i> {{menu_ko.menu_title_device}}</a>
+            </li>
+
+            <!-- Message -->
+            <li class="nav-item">
+                <a class="nav-link" id="tab_menu_message_link" data-toggle="pill" href="#tab_menu_message" role="tab" aria-controls="tab_menu_message" aria-selected="true">
+                    <i class="fas fa-bacon"></i> {{menu_ko.menu_title_message}}</a>
+            </li>
+
+            <!-- Setting -->
+            <li class="nav-item">
+                <a class="nav-link" id="tab_menu_setting_link" data-toggle="pill" href="#tab_menu_setting" role="tab" aria-controls="tab_menu_setting" aria-selected="true">
+                <i class="fas fa-cogs"></i> {{menu_ko.menu_title_setting}}</a>
+            </li>
+
+            <!-- Info -->
+            <li class="nav-item">
+                <a class="nav-link" id="tab_menu_info_link" data-toggle="pill" href="#tab_menu_info" role="tab" aria-controls="tab_menu_info" aria-selected="true">
+                <i class="fas fa-info-circle"></i> {{menu_ko.menu_title_info}}</a>
             </li>
 
             
         </ul>
     </div>
     <div class="card-body p-0">
-        <div class="tab-content" id="tab_settings_contents">
-            <div class="tab-pane show active" id="tab_settings_general" role="tabpanel" aria-labelledby="custom-tabs-four-profile-tab">
+        <div class="tab-content" id="tab_menu">
+            
+            <!-- tab menu -->
+            <div class="tab-pane show active" id="tab_menu_location" role="tabpanel" aria-labelledby="custom-tabs-four-profile-tab">
                 {% include 'html/view_location.html' %}
             </div>
+
+            <div class="tab-pane" id="tab_menu_device" role="tabpanel" aria-labelledby="custom-tabs-four-profile-tab">
+                {% include 'html/view_device.html' %}
+            </div>
+
+            <div class="tab-pane" id="tab_menu_message" role="tabpanel" aria-labelledby="custom-tabs-four-profile-tab">
+                {% include 'html/view_message.html' %}
+            </div>
+
+            <div class="tab-pane" id="tab_menu_setting" role="tabpanel" aria-labelledby="custom-tabs-four-profile-tab">
+                {% include 'html/view_setting.html' %}
+            </div>
+
+            <div class="tab-pane" id="tab_menu_info" role="tabpanel" aria-labelledby="custom-tabs-four-profile-tab">
+                {% include 'html/view_info.html' %}
+            </div>
+
         </div>
     </div>
 </div>
 
 <script type="text/javascript">
-
-/* tab event for side menu display control */
-$('a[data-toggle="pill"]').on('shown.bs.tab', function (e) {
-    var target = $(e.target).attr("href");
-    switch(target){
-        /* settings general tab activated */
-        case "#tab_settings_general": {
-            $('#btn_start_step').addClass("d-none");
-            $('#btn_stop_step').addClass("d-none");
-            $('#btn_pause_step').addClass("d-none");
-            $('#btn_settings_save').removeClass("d-none");
-            $('#btn_settings_new').removeClass("d-none");
-            $('#btn_settings_apply').removeClass("d-none");
-        } break;
-        /* settings details tab activated */
-        case "#tab_settings_details": {
-            $('#btn_start_step').removeClass("d-none");
-            $('#btn_stop_step').removeClass("d-none");
-            $('#btn_pause_step').removeClass("d-none");
-            $('#btn_settings_save').removeClass("d-none");
-            $('#btn_settings_new').removeClass("d-none");
-            $('#btn_settings_apply').addClass("d-none");
-        } break;
-
-        /* settings load tab activated */
-        case "#tab_settings_load": {
-            $('#btn_start_step').addClass("d-none");
-            $('#btn_stop_step').addClass("d-none");
-            $('#btn_pause_step').addClass("d-none");
-            $('#btn_settings_save').addClass("d-none");
-            $('#btn_settings_new').addClass("d-none");
-            $('#btn_settings_apply').addClass("d-none");
-        } break;
-
-        /* settings reserve tab activated */
-        case "#tab_settings_reserve":{
-            $('#btn_start_step').addClass("d-none");
-            $('#btn_stop_step').addClass("d-none");
-            $('#btn_pause_step').addClass("d-none");
-            $('#btn_settings_save').addClass("d-none");
-            $('#btn_settings_new').addClass("d-none");
-            $('#btn_settings_apply').addClass("d-none");
-        }
-    }
-});
   
 /* page load */
 window.addEventListener('DOMContentLoaded', function(){
-    /* initially hide menu */
-    $('#btn_start_step').addClass("d-none");
-    $('#btn_stop_step').addClass("d-none");
-    $('#btn_pause_step').addClass("d-none");
-});
-
-/* reload event listener */
-document.getElementById('btn_setting_reload').addEventListener('click', function(){
     
 });
 
