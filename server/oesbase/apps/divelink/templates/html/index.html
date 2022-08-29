@@ -34,6 +34,7 @@
 <script type="text/javascript" src="{% static 'plugins/echarts/echarts.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'plugins/datatables/datatables.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/shortcut.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/paho-mqtt-min.js' %}"></script>
 
 
 
@@ -46,8 +47,8 @@ window.addEventListener('DOMContentLoaded', function(){
 
 var _chart_update_timer_id = null;
 
-let mqtt_client_id = "mex-client-"+parseInt(Math.random()*10000, 10);
-var mqtt_client = new Paho.Client("{{system.mqtt_broker_ip}}", Number({{system.mqtt_broker_port}}), mqtt_client_id);
+let mqtt_client_id = "dive-client-"+parseInt(Math.random()*10000, 10);
+var mqtt_client = new Paho.Client("127.0.0.1", 8083), mqtt_client_id);
 var mqtt_connected = false;
 mqtt_client.onConnectionLost = mqtt_onConnectionLost;
 mqtt_client.onMessageArrived = mqtt_onMessageArrived;
@@ -56,7 +57,7 @@ mqtt_client.connect({onSuccess:mqtt_onConnect, onFailure:mqtt_onFailure, reconne
 /* MQTT Connection event callback */
 function mqtt_onConnect(){
   mqtt_connected = true;
-  mqtt_client.subscribe("mex/#");
+  mqtt_client.subscribe("divelink/#");
   $.notify("Successfully connected to system!!", {className: "success",position:"bottom left"});
 }
 
@@ -92,49 +93,6 @@ function mqtt_onMessageArrived(message){
         $("#edit_status_temperature_1").trigger('change');
         $("#edit_status_temperature_2").trigger('change');
         $("#edit_status_temperature_3").trigger('change');
-      } break;
-
-      case "mex/sensor/rpm":{ //rpm data
-        const data = JSON.parse(message.payloadString);
-        document.getElementById('edit_status_rpm').value = data.rpm;
-        $("#edit_status_rpm").trigger('change');
-      } break;
-
-      case "mex/sensor/load":{ //loadcell
-        const data = JSON.parse(message.payloadString);
-        document.getElementById('edit_status_load').value = data.load;
-        $("#edit_status_load").trigger('change');
-      } break;
-
-      case "mex/sensor/relay":{
-        const relay = JSON.parse(message.payloadString);
-        if(relay.relay_emergency && prev_emergency==false){
-          $('#btn_emergency_stop').click();
-          prev_emergency = true;
-        }
-        prev_emergency = relay.relay_emergency;
-
-      } break;
-
-      case "mex/step/program":{
-        const program = JSON.parse(message.payloadString);
-        switch(program.command){
-          case "start": { //program start
-            if(_chart_update_timer_id==null){
-              const ref_id = program.data.id;
-              _chart_update_timer_id = setInterval(chart_update, program.data.update_interval*1000, ref_id);
-            }
-          } break;
-          case "stop": { //program stop
-            if(_chart_update_timer_id!=null){
-              clearInterval(_chart_update_timer_id);
-              _chart_update_timer_id = null;
-              console.log("Stopped chart update");
-            }
-          } break;
-        }
-        
-        
       } break;
 
       case "mex/step/status": {

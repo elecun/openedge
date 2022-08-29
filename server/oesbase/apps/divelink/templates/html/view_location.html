@@ -23,16 +23,14 @@
 
     /* page load */
     window.addEventListener('DOMContentLoaded', function(){
+        
         var map = L.map('map').setView([37.4939, 129.1572], 13);
-        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 19,
-            attribution: '© OpenStreetMap'
-        }).addTo(map);
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
 
-        var marker1 = L.marker([37.4939, 129.1572]).bindPopup("<b>Recovery Unit 01</b>");
-        var marker2 = L.marker([37.48264, 129.16009]).bindPopup("<b>Recovery Unit 02</b>");
-        var circle = L.circle([37.49, 129.1597], { color: 'red', fillColor: '#f03', fillOpacity: 0.2, radius: 1000 }).bindPopup("Search Area");
-        var group = L.layerGroup([marker1, marker2, circle]);
+        L.marker([37.4939, 129.1572],{alt: 'RU-01'}).addTo(map);
+        L.marker([37.48264, 129.16009],{alt: 'RU-02'}).addTo(map);
+        //var circle = L.circle([37.49, 129.1597], { color: 'red', fillColor: '#f03', fillOpacity: 0.2, radius: 1000 }).addTo(map);
+
     });
     
 </script>
