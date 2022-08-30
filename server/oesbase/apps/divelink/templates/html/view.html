@@ -13,20 +13,8 @@
 
             <!-- Device -->
             <li class="nav-item">
-                <a class="nav-link" id="tab_menu_device_link" data-toggle="pill" href="#tab_menu_device" role="tab" aria-controls="tab_menu_device" aria-selected="true">
-                <i class="fas fa-map-pin"></i> {{menu_ko.menu_title_device}}</a>
-            </li>
-
-            <!-- Message -->
-            <li class="nav-item">
-                <a class="nav-link" id="tab_menu_message_link" data-toggle="pill" href="#tab_menu_message" role="tab" aria-controls="tab_menu_message" aria-selected="true">
-                    <i class="fas fa-bacon"></i> {{menu_ko.menu_title_message}}</a>
-            </li>
-
-            <!-- Setting -->
-            <li class="nav-item">
-                <a class="nav-link" id="tab_menu_setting_link" data-toggle="pill" href="#tab_menu_setting" role="tab" aria-controls="tab_menu_setting" aria-selected="true">
-                <i class="fas fa-cogs"></i> {{menu_ko.menu_title_setting}}</a>
+                <a class="nav-link" id="tab_menu_rsu_link" data-toggle="pill" href="#tab_menu_rsu" role="tab" aria-controls="tab_menu_rsu" aria-selected="true">
+                <i class="fas fa-map-pin"></i> {{menu_ko.menu_title_rsu}}</a>
             </li>
 
             <!-- Info -->
@@ -46,16 +34,8 @@
                 {% include 'html/view_location.html' %}
             </div>
 
-            <div class="tab-pane" id="tab_menu_device" role="tabpanel" aria-labelledby="custom-tabs-four-profile-tab">
-                {% include 'html/view_device.html' %}
-            </div>
-
-            <div class="tab-pane" id="tab_menu_message" role="tabpanel" aria-labelledby="custom-tabs-four-profile-tab">
-                {% include 'html/view_message.html' %}
-            </div>
-
-            <div class="tab-pane" id="tab_menu_setting" role="tabpanel" aria-labelledby="custom-tabs-four-profile-tab">
-                {% include 'html/view_setting.html' %}
+            <div class="tab-pane" id="tab_menu_rsu" role="tabpanel" aria-labelledby="custom-tabs-four-profile-tab">
+                {% include 'html/view_rsu.html' %}
             </div>
 
             <div class="tab-pane" id="tab_menu_info" role="tabpanel" aria-labelledby="custom-tabs-four-profile-tab">

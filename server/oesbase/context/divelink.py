@@ -28,7 +28,7 @@ def context_processors(request):
         },
         'menu_ko':{
             'menu_title_map':"Location",
-            'menu_title_device':"Device",
+            'menu_title_rsu':"RSU",
             'menu_title_message':"Message",
             'menu_title_setting':"Setting",
             'menu_title_info':"Info",
