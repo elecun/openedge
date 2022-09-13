@@ -45,16 +45,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
-    #default apps required
     #'base',
 
     # addred 3rdpaty apps required
     'rest_framework',
 
     # custom main app
-    'divelink', # this is for divelink application
-    #'aop_uvlc'  # this is for AOP plant management
+    'divelink', # link management for Dive
+    #'aoplink'  # link management for AOP
 ]
 
 MIDDLEWARE = [
@@ -72,7 +70,7 @@ ROOT_URLCONF = 'oesbase.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

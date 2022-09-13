@@ -2,8 +2,7 @@ from django.shortcuts import render
 
 
 '''
-Index page
+Show User Interface
 '''
 def index(request):
-    print("divelink index")
     return render(request, "html/index.html")
