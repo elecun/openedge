@@ -20,6 +20,26 @@ bool device_ulory_control::configure(){
     try {
         const json& profile = this->get_profile()->raw();
 
+        if(!profile.contains("device")){
+            console::error("Device Configurations does not exist");
+            return false;
+        }
+
+        json device_param = profile["device"];
+        _port = device_param["port"].get<string>();
+        _baudrate = device_param["baudrate"].get<int>();
+        _timeout_s = device_param["timeout"].get<double>();
+
+        console::info("> Device Port : {}", _port);
+        console::info("> Device Buadrate : {}", _baudrate);
+        console::info("> Communication Timeout(sec) : {}", _timeout_s);
+
+        _source_id = device_param["source_id"].get<int>();
+        _target_id = device_param["target_id"].get<int>();
+        console::info("> Source ID : {}", _source_id);
+        console::info("> Target(Destination) ID : {}", _target_id);
+
+
     }
     catch(const json::exception& e){
         console::error("Profile read/access error : {}", e.what());
