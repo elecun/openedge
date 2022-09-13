@@ -1,0 +1,29 @@
+{
+    "md5":"603239CAF2F774498037F944F5592F52",
+    "info":{
+        "taskname":"device.m64.control",
+        "version":"0.0.1",
+        "cpu_affinity":1,
+        "cycle_ns":1000000000,
+        "policy":{
+            "check_jitter":false,
+            "check_overrun":false,
+            "fault_level":0
+        }
+    },
+    "configurations":{
+        "device":{
+            "port":"/dev/ttyUSB0",
+            "baudrate":9600,
+            "timeout":1.0
+        },
+        "mqtt":{
+            "broker":"192.168.3.130",
+            "port":1883,
+            "pub_topic":"aop/uvlc/1/motor",
+            "pub_qos":2,
+            "sub_topic":["aop/uvlc/1/motor/control"],
+            "keep_alive":60
+        }
+    }
+}

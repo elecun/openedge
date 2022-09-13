@@ -8,8 +8,8 @@
 OS := $(shell uname)
 
 #Set Architecutre
-ARCH := armhf
-#ARCH := x86_64
+#ARCH := armhf
+ARCH := x86_64
 
 CURRENT_DIR:=$(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 CURRENT_DIR_NAME := $(notdir $(patsubst %/,%,$(dir $(CURRENT_DIR))))

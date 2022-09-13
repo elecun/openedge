@@ -15,6 +15,7 @@
 #include <openedge/core.hpp>
 #include <memory>
 #include <3rdparty/mosquitto/cpp/mosquittopp.h>
+#include <include/support/device/systembase/ulory.hpp>
 
 using namespace oe;
 using namespace std;
@@ -43,9 +44,14 @@ class device_ulory_control : public core::task::runnable_rt, private mosqpp::mos
 		virtual void on_unsubscribe(int mid) override;
 		virtual void on_log(int level, const char* str) override;
 		virtual void on_error() override;
-
-    private:
         
+    private:
+        device::systembase::ulory* _device = nullptr;
+        string _port = "/dev/ttyS0";
+        int _baudrate = 9600;
+        double _timeout_s = 1.0;
+        int _source_id = 0;
+        int _target_id = 0;
 
     private:
         bool _connected = false;
