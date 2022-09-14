@@ -13,6 +13,9 @@
 #include <csignal>
 #include <sys/mman.h>
 #include <iostream>
+#include <iostream>
+#include <iomanip>
+#include <ctime>
 #include <openedge/log.hpp>
 #include <openedge/core.hpp>
 #include <stdexcept>
@@ -51,9 +54,9 @@ int main(int argc, char* argv[])
     cxxopts::Options options("OpenEdge Framework Engine", desc.c_str());
     options.add_options()
         ("c,config", "Application start with configuration file(*.conf)", cxxopts::value<string>())
-        ("i,install", "Install Component(Task)", cxxopts::value<vector<string>>())
-        ("u,uninstall", "Uninstall Component(Task)", cxxopts::value<vector<string>>())
-        ("l,list", "Show list of installed components(Task)")
+        ("i,install", "Install Components", cxxopts::value<vector<string>>())
+        ("u,uninstall", "Uninstall Components", cxxopts::value<vector<string>>())
+        ("l,logfile", "Logging to file", cxxopts::value<string>())
         ("h,help", "Print usage");
 
     auto optval = options.parse(argc, argv);
@@ -62,7 +65,7 @@ int main(int argc, char* argv[])
         exit(EXIT_SUCCESS);
     }
 
-    console::stdout_color_st("console");
+    console::stdout_color_mt("console");
 
     const int signals[] = { SIGINT, SIGTERM, SIGBUS, SIGKILL, SIGABRT, SIGSEGV };
     for(const int& s:signals)
@@ -89,6 +92,7 @@ int main(int argc, char* argv[])
     /* option arguments */
     string _config {""};
     vector<string> _comps;
+    string _logfile {"default.txt"};
     if(optval.count("config")){
         _config = optval["config"].as<string>();
     }
@@ -97,6 +101,9 @@ int main(int argc, char* argv[])
     }
     else if(optval.count("uninstall")){
         _comps = optval["uninstall"].as<vector<string>>();
+    }
+    else if(optval.count("logfile")){
+        logfile
     }
 
     try{
