@@ -9,6 +9,13 @@ void release(){ if(_instance){ delete _instance; _instance = nullptr; }}
 
 void device_ulory_control::execute(){
 
+    if(_device->is_open()){
+        char data[1024] = {0, };
+        _device->read_async();
+    }
+    else {
+        console::error("Device {} is not opened.", _port);
+    }
     
 }
 
@@ -20,26 +27,31 @@ bool device_ulory_control::configure(){
     try {
         const json& profile = this->get_profile()->raw();
 
-        if(!profile.contains("device")){
+        if(profile.contains(PROFILE_CONFIGURATIONS_KEY)){
+            json config = profile[PROFILE_CONFIGURATIONS_KEY];
+
+            json device_param = config["device"];
+            _port = device_param["port"].get<string>();
+            _baudrate = device_param["baudrate"].get<int>();
+            _timeout_s = device_param["timeout"].get<double>();
+
+            console::info("> Device Port : {}", _port);
+            console::info("> Device Buadrate : {}", _baudrate);
+            console::info("> Communication Timeout(sec) : {}", _timeout_s);
+
+            // _source_id = device_param["source_id"].get<int>();
+            // _target_id = device_param["target_id"].get<int>();
+            // console::info("> Source ID : {}", _source_id);
+            // console::info("> Target(Destination) ID : {}", _target_id);
+
+            if(!_device){
+                _device = new oe::device::systembase::ulory(_port.c_str(), _baudrate);
+            }
+        }
+        else{
             console::error("Device Configurations does not exist");
             return false;
         }
-
-        json device_param = profile["device"];
-        _port = device_param["port"].get<string>();
-        _baudrate = device_param["baudrate"].get<int>();
-        _timeout_s = device_param["timeout"].get<double>();
-
-        console::info("> Device Port : {}", _port);
-        console::info("> Device Buadrate : {}", _baudrate);
-        console::info("> Communication Timeout(sec) : {}", _timeout_s);
-
-        _source_id = device_param["source_id"].get<int>();
-        _target_id = device_param["target_id"].get<int>();
-        console::info("> Source ID : {}", _source_id);
-        console::info("> Target(Destination) ID : {}", _target_id);
-
-
     }
     catch(const json::exception& e){
         console::error("Profile read/access error : {}", e.what());
@@ -50,6 +62,10 @@ bool device_ulory_control::configure(){
 }
 
 void device_ulory_control::cleanup(){
+    if(_device){
+        _device->close();
+        delete _device;
+    }
 
     /* mqtt connection close */
     this->mosqpp::mosquittopp::disconnect();

@@ -14,7 +14,7 @@
     "configurations":{
         "device":{
             "port":"/dev/ttyUSB0",
-            "baudrate":115200,
+            "baudrate":9600,
             "timeout":1.0
         },
         "lora":{

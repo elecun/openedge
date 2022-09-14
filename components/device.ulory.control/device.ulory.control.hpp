@@ -15,7 +15,7 @@
 #include <openedge/core.hpp>
 #include <memory>
 #include <3rdparty/mosquitto/cpp/mosquittopp.h>
-#include <include/support/device/systembase/ulory.hpp>
+#include "ulory.hpp"
 
 using namespace oe;
 using namespace std;

@@ -13,7 +13,8 @@
 #include <csignal>
 #include <sys/mman.h>
 #include <iostream>
-#include <iostream>
+#include <string>
+#include <vector>
 #include <iomanip>
 #include <ctime>
 #include <openedge/log.hpp>
@@ -24,6 +25,7 @@
 #include <3rdparty/cxxopts.hpp>
 #include <vector>
 #include "instance.hpp"
+
 
 using namespace std;
 using namespace oe;
@@ -65,7 +67,7 @@ int main(int argc, char* argv[])
         exit(EXIT_SUCCESS);
     }
 
-    console::stdout_color_mt("console");
+    console::stdout_color_st("console");
 
     const int signals[] = { SIGINT, SIGTERM, SIGBUS, SIGKILL, SIGABRT, SIGSEGV };
     for(const int& s:signals)
@@ -92,7 +94,8 @@ int main(int argc, char* argv[])
     /* option arguments */
     string _config {""};
     vector<string> _comps;
-    string _logfile {"default.txt"};
+    string _logfile = {""};
+
     if(optval.count("config")){
         _config = optval["config"].as<string>();
     }
@@ -103,14 +106,16 @@ int main(int argc, char* argv[])
         _comps = optval["uninstall"].as<vector<string>>();
     }
     else if(optval.count("logfile")){
-        logfile
+        _logfile = optval["logfile"].as<string>();
+        console::info("Logging to file : {}, but not support yet.", _logfile);
     }
 
     try{
-        if(!_config.empty())
-        if(app::initialize(_config.c_str())){
-            app::run();
-            pause(); //wait until getting SIGINT
+        if(!_config.empty()){
+            if(app::initialize(_config.c_str())){
+                app::run();
+                pause(); //wait until getting SIGINT
+            }
         }
     }
     catch(const std::exception& e){
