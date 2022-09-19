@@ -1,0 +1,47 @@
+
+{% load static %}
+
+
+<div class="row m-0">
+    <div class="col-sm-12 p-1">
+
+      <canvas id="myChart" width="100%" class="p-0"></canvas>
+
+    </div>
+</div>
+
+<script type="text/javascript">
+
+
+/* page load */
+window.addEventListener('DOMContentLoaded', function(){
+
+  const ctx = document.getElementById('myChart').getContext('2d');
+  const startDate = new Date(2022, 8, 31);
+  const labels = [];
+  for (let i = 0; i < 10; i++) {
+    const date = moment(startDate).add(i, 'minutes').format('YYYY-MM-DD hh:mm:ss');
+    labels.push(date.toString());
+  }
+
+  const chart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [{
+        label: 'Depth',
+        data: [0, 2, 3, 5, 9, 11, 12, 13, 13, 14],
+        borderWidth: 3,
+        fill: true,
+        borderColor: 'blue'
+      }]
+    },
+    options: {}
+  });
+
+
+
+});
+
+
+</script>

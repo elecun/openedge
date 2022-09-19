@@ -27,10 +27,12 @@ def context_processors(request):
 
         },
         'menu_ko':{
-            'menu_title_map':"Location",
+            'menu_title_map':"Map",
             'menu_title_rsu':"RSU",
+            'menu_title_monitor':"Monitor",
             'menu_title_message':"Message",
             'menu_title_setting':"Setting",
+            'menu_title_datalog':"Data Log",
             'menu_title_info':"Info",
 
             'settings_load':"불러오기",

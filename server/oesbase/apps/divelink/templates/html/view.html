@@ -7,14 +7,32 @@
         <ul class="nav nav-tabs" id="tab_settings" role="tablist">
             <!-- view location tab title & link -->
             <li class="nav-item">
-                <a class="nav-link active" id="tab_menu_location_link" data-toggle="pill" href="#tab_menu_location" role="tab" aria-controls="tab_menu_location" aria-selected="true">
+                <a class="nav-link active" id="tab_menu_map_link" data-toggle="pill" href="#tab_menu_map" role="tab" aria-controls="tab_menu_map" aria-selected="true">
                 <i class="fas fa-globe-asia"></i> {{menu_ko.menu_title_map}}</a>
             </li>
 
-            <!-- Device -->
+            <!-- RSU(Recovery Sensor Unit) Device -->
             <li class="nav-item">
                 <a class="nav-link" id="tab_menu_rsu_link" data-toggle="pill" href="#tab_menu_rsu" role="tab" aria-controls="tab_menu_rsu" aria-selected="true">
                 <i class="fas fa-map-pin"></i> {{menu_ko.menu_title_rsu}}</a>
+            </li>
+
+            <!-- Monitor -->
+            <li class="nav-item">
+                <a class="nav-link" id="tab_menu_monitor_link" data-toggle="pill" href="#tab_menu_monitor" role="tab" aria-controls="tab_menu_monitor" aria-selected="true">
+                <i class="fas fa-chart-area"></i> {{menu_ko.menu_title_monitor}}</a>
+            </li>
+
+            <!-- RSU Data Log Monitor -->
+            <li class="nav-item">
+                <a class="nav-link" id="tab_menu_datalog_link" data-toggle="pill" href="#tab_menu_datalog" role="tab" aria-controls="tab_menu_datalog" aria-selected="true">
+                <i class="fas fa-database"></i> {{menu_ko.menu_title_datalog}}</a>
+            </li>
+
+            <!-- Setting -->
+            <li class="nav-item">
+                <a class="nav-link" id="tab_menu_setting_link" data-toggle="pill" href="#tab_menu_setting" role="tab" aria-controls="tab_menu_setting" aria-selected="true">
+                <i class="fas fa-cog"></i> {{menu_ko.menu_title_setting}}</a>
             </li>
 
             <!-- Info -->
@@ -30,12 +48,24 @@
         <div class="tab-content" id="tab_menu">
             
             <!-- tab menu -->
-            <div class="tab-pane show active" id="tab_menu_location" role="tabpanel" aria-labelledby="custom-tabs-four-profile-tab">
-                {% include 'html/view_location.html' %}
+            <div class="tab-pane show active" id="tab_menu_map" role="tabpanel" aria-labelledby="custom-tabs-four-profile-tab">
+                {% include 'html/view_map.html' %}
             </div>
 
             <div class="tab-pane" id="tab_menu_rsu" role="tabpanel" aria-labelledby="custom-tabs-four-profile-tab">
                 {% include 'html/view_rsu.html' %}
+            </div>
+
+            <div class="tab-pane" id="tab_menu_monitor" role="tabpanel" aria-labelledby="custom-tabs-four-profile-tab">
+                {% include 'html/view_monitor.html' %}
+            </div>
+
+            <div class="tab-pane" id="tab_menu_datalog" role="tabpanel" aria-labelledby="custom-tabs-four-profile-tab">
+                {% include 'html/view_datalog.html' %}
+            </div>
+
+            <div class="tab-pane" id="tab_menu_setting" role="tabpanel" aria-labelledby="custom-tabs-four-profile-tab">
+                {% include 'html/view_setting.html' %}
             </div>
 
             <div class="tab-pane" id="tab_menu_info" role="tabpanel" aria-labelledby="custom-tabs-four-profile-tab">
