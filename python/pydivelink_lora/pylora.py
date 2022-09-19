@@ -155,6 +155,10 @@ class rawProtocal(Protocol):
             # 매핑된 키의 문자열 출력
             print(Keymap[data][1])
             
+
+
+
+            
             # Keymap[data][0]은 키 인덱스
             # 매칭되는 key 인덱스 가져옴
             key = Keymap[data][0]

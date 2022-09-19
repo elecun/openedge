@@ -69,13 +69,13 @@ namespace oe::app {
         /* required */
         if(config.find(CONFIG_REQ_KEY)!=config.end()){
 
-            /* tasks */
+            /* components */
             if(config[CONFIG_REQ_KEY].find(CONFIG_COMPONENTS_KEY)!=config[CONFIG_REQ_KEY].end()){
-                vector<string> required_tasks = config[CONFIG_REQ_KEY][CONFIG_COMPONENTS_KEY].get<std::vector<string>>();
-                for(string& task:required_tasks){
-                    manager->install(task.c_str());
+                vector<string> required_components = config[CONFIG_REQ_KEY][CONFIG_COMPONENTS_KEY].get<std::vector<string>>();
+                for(string& component:required_components){
+                    manager->install(component.c_str());
                 }
-                spdlog::info("Totally installed : {}", manager->size());
+                console::info("Totally installed : {}", manager->size());
             }
         }
         return true;
