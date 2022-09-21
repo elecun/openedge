@@ -10,8 +10,10 @@ void release(){ if(_instance){ delete _instance; _instance = nullptr; }}
 void device_ulory_control::execute(){
 
     if(_device->is_open()){
-        char data[1024] = {0, };
-        _device->read_async();
+        char* buffer = new char[2048];
+        int bytes = _device->async_read(buffer, sizeof(char)*2048);
+
+        delete []buffer;
     }
     else {
         console::error("Device {} is not opened.", _port);
@@ -30,22 +32,20 @@ bool device_ulory_control::configure(){
         if(profile.contains(PROFILE_CONFIGURATIONS_KEY)){
             json config = profile[PROFILE_CONFIGURATIONS_KEY];
 
-            json device_param = config["device"];
-            _port = device_param["port"].get<string>();
-            _baudrate = device_param["baudrate"].get<int>();
-            _timeout_s = device_param["timeout"].get<double>();
+            if(config.contains("device")){
+                json device_param = config["device"];
 
-            console::info("> Device Port : {}", _port);
-            console::info("> Device Buadrate : {}", _baudrate);
-            console::info("> Communication Timeout(sec) : {}", _timeout_s);
+                _port = device_param["port"].get<string>();
+                _baudrate = device_param["baudrate"].get<int>();
+                _timeout_ms = device_param["timeout"].get<int>();
 
-            // _source_id = device_param["source_id"].get<int>();
-            // _target_id = device_param["target_id"].get<int>();
-            // console::info("> Source ID : {}", _source_id);
-            // console::info("> Target(Destination) ID : {}", _target_id);
+                console::info("> Device Port : {}", _port);
+                console::info("> Device Buadrate : {}", _baudrate);
+                console::info("> Communication Timeout(msec) : {}", _timeout_ms);
 
-            if(!_device){
-                _device = new oe::device::systembase::ulory(_port.c_str(), _baudrate);
+                if(!_device){
+                    _device = new oe::device::systembase::ulory(_port.c_str(), _baudrate, _timeout_ms);
+                }
             }
         }
         else{

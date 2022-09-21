@@ -61,7 +61,7 @@ SOURCE_FILES = .
 
 # Components
 device.ulory.control.comp: $(BUILDDIR)device.ulory.control.o
-	$(CC) $(CXXFLAGS) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) -lmosquittopp -lmosquitto -lCppLinuxSerial
+	$(CC) $(CXXFLAGS) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) -lmosquittopp -lmosquitto
 
 $(BUILDDIR)device.ulory.control.o: $(CURRENT_DIR)/device.ulory.control.cc
 									$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@

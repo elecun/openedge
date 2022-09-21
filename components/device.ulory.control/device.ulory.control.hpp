@@ -47,9 +47,9 @@ class device_ulory_control : public core::task::runnable_rt, private mosqpp::mos
         
     private:
         device::systembase::ulory* _device = nullptr;
-        string _port = "/dev/ttyS0";
+        string _port = "/dev/ttyUSB0";
         int _baudrate = 9600;
-        double _timeout_s = 1.0;
+        int _timeout_ms = 1;
         int _source_id = 0;
         int _target_id = 0;
 
