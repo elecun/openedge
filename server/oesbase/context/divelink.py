@@ -35,10 +35,12 @@ def context_processors(request):
             'menu_title_datalog':"Data Log",
             'menu_title_info':"Info",
 
+            'rsu_add_new':"Add New RSU",
+
             'settings_load':"불러오기",
             'settings_save' : "설정저장",
             'settings_apply' : "PLC 적용",
-            'settings_new' : "새 설정",
+            'settings_new' : "New",
             'settings_reserve' : "시험예약",
             'start_step' : "시험시작",
             'pause_step' : "시험일시정지",
