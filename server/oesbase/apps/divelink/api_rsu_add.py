@@ -30,8 +30,9 @@ class API(APIView):
                 # new settings
                 _new_rsu = RSU()
                 _new_rsu.uid = uuid.uuid4().hex
-                _new_rsu.csid = request.data["csid"]
-                _new_rsu.cdid = request.data["cdid"]
+                _new_rsu.lsid = request.data["lsid"]
+                _new_rsu.ldid = request.data["ldid"]
+                _new_rsu.activate = request.data["activate"]
                 _new_rsu.save()
                 print("Added New RSU Device : ", _new_rsu.uid)
                 _new_rsu_object = model_to_dict(_new_rsu)

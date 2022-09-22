@@ -49,12 +49,29 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary" id="btn_settings_new_create">Create</button>
+        <button type="button" class="btn btn-primary" id="btn_add_new_rsu">Create</button>
       </div>
     </div>
   </div>
 </div>
 
 <script language="javascript">
+
+  /* async request to add new RSU device */
+  async function request_add_new_rsu(){
+    let uid = document.getElementById('new_rsu_uid').value;
+    let lsid = document.getElementById('new_rsu_lsid').value;
+    let ldid = document.getElementById('new_rsu_ldid').value;
+    let activate = document.getElementById('new_rsu_activate').value;
+    console.log(uid, lsid, ldid, activate);
+  }
+
+  /* create event listener */
+  document.getElementById('btn_add_new_rsu').addEventListener('click', function(){
+    
+    document.getElementById('new_rsu_uid')
+    $('#modal_new_rsu').modal('hide');
+    request_add_new_rsu();
+  });
     
 </script>
