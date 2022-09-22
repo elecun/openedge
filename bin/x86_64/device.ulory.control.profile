@@ -4,7 +4,7 @@
         "taskname":"device.ulory.control",
         "version":"0.0.1",
         "cpu_affinity":1,
-        "cycle_ns":5000000000,
+        "cycle_ns":1000000000,
         "policy":{
             "check_jitter":false,
             "check_overrun":false,
@@ -15,7 +15,7 @@
         "device":{
             "port":"/dev/ttyUSB0",
             "baudrate":9600,
-            "timeout":1.0
+            "timeout":1
         },
         "lora":{
             "source_id":163,

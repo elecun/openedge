@@ -9,9 +9,15 @@ void release(){ if(_instance){ delete _instance; _instance = nullptr; }}
 
 void device_ulory_control::execute(){
 
+    const int buffer_size = 1024*8;
+
     if(_device->is_open()){
-        char* buffer = new char[2048];
-        int bytes = _device->async_read(buffer, sizeof(char)*2048);
+        char* buffer = new char[buffer_size];
+        int bytes = _device->read(buffer, sizeof(char)*buffer_size);
+
+
+        //protocol process
+        
 
         delete []buffer;
     }
@@ -37,14 +43,15 @@ bool device_ulory_control::configure(){
 
                 _port = device_param["port"].get<string>();
                 _baudrate = device_param["baudrate"].get<int>();
-                _timeout_ms = device_param["timeout"].get<int>();
+                _timeout_s = device_param["timeout"].get<int>();
 
                 console::info("> Device Port : {}", _port);
                 console::info("> Device Buadrate : {}", _baudrate);
-                console::info("> Communication Timeout(msec) : {}", _timeout_ms);
+                console::info("> Communication Timeout(sec) : {}", _timeout_s);
 
                 if(!_device){
-                    _device = new oe::device::systembase::ulory(_port.c_str(), _baudrate, _timeout_ms);
+                    _device = new oe::device::systembase::ulory(_port.c_str(), _baudrate, _timeout_s);
+                    _device->open();
                 }
             }
         }

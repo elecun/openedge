@@ -60,11 +60,15 @@ SOURCE_FILES = .
 
 
 # Components
-device.ulory.control.comp: $(BUILDDIR)device.ulory.control.o
+device.ulory.control.comp: $(BUILDDIR)device.ulory.control.o \
+							$(BUILDDIR)sync_uart.o
 	$(CC) $(CXXFLAGS) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) -lmosquittopp -lmosquitto
 
 $(BUILDDIR)device.ulory.control.o: $(CURRENT_DIR)/device.ulory.control.cc
 									$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
+$(BUILDDIR)sync_uart.o:	$(INCLUDE_FILES)/openedge/common/sync_uart.cc
+						$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
 all : components
 components : device.ulory.control.comp
