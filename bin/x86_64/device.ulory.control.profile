@@ -20,6 +20,14 @@
         "lora":{
             "source_id":163,
             "target_id":164
+        },
+        "mqtt":{
+            "broker":"127.0.0.1",
+            "port":1883,
+            "pub_topic":"divelink/rsu",
+            "pub_qos":0,
+            "sub_topic":["divelink/rsu/control"],
+            "keep_alive":60
         }
     }
 }

@@ -1,6 +1,7 @@
 
 #include "device.ulory.control.hpp"
 #include <openedge/log.hpp>
+#include <bits/stdc++.h>
 
 //static component instance that has only single instance
 static device_ulory_control* _instance = nullptr;
@@ -10,15 +11,66 @@ void release(){ if(_instance){ delete _instance; _instance = nullptr; }}
 void device_ulory_control::execute(){
 
     const int buffer_size = 1024*8;
+    const int packet_size = 30;
 
     if(_device->is_open()){
         char* buffer = new char[buffer_size];
         int bytes = _device->read(buffer, sizeof(char)*buffer_size);
 
+        //1. append to q
+        _dq.insert(_dq.end(), buffer, buffer + sizeof(char)*bytes);
+        //console::info("insert to dq : {}", _dq.size());
 
-        //protocol process
+        if(_dq.size()<packet_size)
+            return;
+
+        //2. alignment (start with 0x49)
+        while(1){
+            if(_dq[0]==0x49) break;
+            else _dq.pop_front();
+
+            if(_dq.empty()) break;
+        }
+
+        //show raw data
+        string test;
+        for(char q:_dq){
+            test+=fmt::format("{0:x} ",q);
+        }
+        console::info(test);
+
+        if(_dq.size()>=packet_size){
+            string str_data = "";
+            if(_dq[0]=='I' && _dq[29]==0x0a){
+
+                //parse counter
+                //3. data parse
+                string counter(_dq.begin()+1, _dq.begin()+6);
+                str_data += fmt::format("({})", counter);
+
+                //parse gps
+                string gps(_dq.begin()+7, _dq.begin()+29);
+                str_data += fmt::format("\t{}", gps);
+
+                /* publish gps data */
+                if(_mqtt_connected){
+                    json pubdata;
+                    pubdata["lsid"] = _source_id;
+                    pubdata["ldid"] = _target_id;
+                    pubdata["location"] = gps;
+                    string str_pubdata = pubdata.dump();
+                    this->publish(nullptr, _pub_topic.c_str(), strlen(str_pubdata.c_str()), str_pubdata.c_str(), _pub_qos, false);
+                    //console::info("Published@{}", _pub_topic);
+                }               
+
+                //erase data
+                console::info(str_data);                
+                for(int i=0;i<packet_size;i++){
+                    _dq.pop_front();
+                }
+            }
+        }
         
-
         delete []buffer;
     }
     else {
@@ -38,6 +90,7 @@ bool device_ulory_control::configure(){
         if(profile.contains(PROFILE_CONFIGURATIONS_KEY)){
             json config = profile[PROFILE_CONFIGURATIONS_KEY];
 
+            /* UART device configurations  */
             if(config.contains("device")){
                 json device_param = config["device"];
 
@@ -53,6 +106,50 @@ bool device_ulory_control::configure(){
                     _device = new oe::device::systembase::ulory(_port.c_str(), _baudrate, _timeout_s);
                     _device->open();
                 }
+            }
+
+            /* LoRa Configuration */
+            if(config.contains("lora")){
+                json lora_param = config["lora"];
+
+                _source_id = lora_param["source_id"].get<int>();
+                _target_id = lora_param["target_id"].get<int>();
+
+                console::info("> LoRa Source ID : {}", _source_id);
+                console::info("> LoRa Target ID : {}", _target_id);
+            }
+
+            if(config.contains("mqtt")){
+                json mqtt_param = config["mqtt"];
+                _broker_address = mqtt_param["broker"].get<string>();
+                _broker_port = mqtt_param["port"].get<int>();
+                _pub_topic = mqtt_param["pub_topic"].get<string>();
+                _pub_qos = mqtt_param["pub_qos"].get<int>();
+                _keep_alive = mqtt_param["keep_alive"].get<int>();
+                if(mqtt_param.find("sub_topic")!=mqtt_param.end()){
+                    for(json::iterator itr=mqtt_param["sub_topic"].begin(); itr!=mqtt_param["sub_topic"].end(); ++itr){
+                        _sub_topics.emplace_back(*itr);
+                    }
+                }
+
+                console::info("> set MQTT Broker : {}", _broker_address);
+                console::info("> set MQTT Port : {}", _broker_port);
+                console::info("> set MQTT Pub. Topic : {}", _pub_topic);
+                console::info("> set MQTT Pub. QoS : {}", _pub_qos);
+                console::info("> set MQTT Keep-alive : {}", _keep_alive);
+
+                //connect to MQTT broker
+                if(const int conret = this->connect_async(_broker_address.c_str(), _broker_port, _keep_alive)==MOSQ_ERR_SUCCESS){
+                    for(string topic:_sub_topics){
+                        this->subscribe(nullptr, topic.c_str(), 2);
+                        console::info("> Subscribe topic : {}", topic);
+                    }
+                        
+                    if(const int ret = this->loop_start()!=MOSQ_ERR_SUCCESS)
+                        console::warn("({}){}", ret, mosqpp::strerror(ret));
+                }
+                else
+                    console::warn("({}){}", conret, mosqpp::strerror(conret));
             }
         }
         else{
@@ -91,13 +188,11 @@ void device_ulory_control::resume(){
 
 
 void device_ulory_control::on_connect(int rc){
-    if(rc==MOSQ_ERR_SUCCESS)
-        console::info("Successfully connected to MQTT Broker({})", rc);
-    else
-        console::warn("MQTT Broker connection error : {}", rc);
+    _mqtt_connected = true;
 
 }
 void device_ulory_control::on_disconnect(int rc){
+    _mqtt_connected = false;
 
 }
 void device_ulory_control::on_publish(int mid){
@@ -113,13 +208,13 @@ void device_ulory_control::on_message(const struct mosquitto_message* message){
     string strmsg = buffer;
     delete []buffer;
 
-    try{
-        json msg = json::parse(strmsg);
+    // try{
+    //     json msg = json::parse(strmsg);
 
-    }
-    catch(json::exception& e){
-        console::error("Message Error : {}", e.what());
-    }
+    // }
+    // catch(json::exception& e){
+    //     console::error("Message Error : {}", e.what());
+    // }
     console::info("mqtt data({}) : {}",message->payloadlen, strmsg);
 
 }

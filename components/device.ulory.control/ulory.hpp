@@ -59,17 +59,12 @@ namespace oe::device {
                     uint8_t* data = new uint8_t[1024*8];
                     int rcv_len = _uart->read(data, sizeof(uint8_t)*1024*8);
 
-                    if(rcv_len>0){
-                        console::info("read bytes : {}", rcv_len);
-                        string concat_data;
-                        for(int i=0; i<rcv_len; i++){
-                            concat_data += fmt::format("{0:x}\t", data[i]);
-                        }
-                        console::info("read : {}", concat_data);
-                    }
-
                     if(buffer_len<rcv_len){
                          console::warn("Buffer size is less than read bytes");
+                         rcv_len = -1;
+                    }
+                    else {
+                        memcpy(buffer, data, sizeof(char)*rcv_len); //copy to destination
                     }
                     delete []data;
 

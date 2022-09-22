@@ -15,6 +15,7 @@
 #include <openedge/core.hpp>
 #include <memory>
 #include <3rdparty/mosquitto/cpp/mosquittopp.h>
+#include <deque>
 #include "ulory.hpp"
 
 using namespace oe;
@@ -54,7 +55,10 @@ class device_ulory_control : public core::task::runnable_rt, private mosqpp::mos
         int _target_id = 0;
 
     private:
-        bool _connected = false;
+        deque<char> _dq;
+
+    private:
+    bool _mqtt_connected = false;
         string _broker_address { "127.0.0.1" };
         int _broker_port {1883};
         string _pub_topic = {"undefined"};
