@@ -83,6 +83,7 @@ void device_ulory_control::stop(){
 }
 
 bool device_ulory_control::configure(){
+
     try {
         const json& profile = this->get_profile()->raw();
 

@@ -17,7 +17,7 @@
 #include <algorithm>
 #include <string>
 #include <sstream>
-#include <openedge/common/bus.hpp> //for sync_bus
+#include <openedge/common/uart.hpp>
 #include <openedge/log.hpp>
 
 using namespace oe;
@@ -25,6 +25,8 @@ using namespace std;
 
 namespace oe::device {
     namespace waterlink {
+
+        #define MAX_BUFFER_SIZE (1024*8)
 
         #define _M64_START_     'w'
         #define _M64_COMMAND_   'c'
@@ -132,9 +134,17 @@ namespace oe::device {
 
         class m64 {
             public:
-                m64(bus::sync_bus* bus):_bus(bus){ }
-                virtual ~m64() = default;
+                m64(const char* dev_name, int baudrate, int timeout_s = 1)
+                :_device_name(dev_name), _baudrate(baudrate), _timeout_s(timeout_s){
+                    _uart = new oe::bus::sync_uart(dev_name, baudrate);
+                }
+                
+                virtual ~m64(){
+                    if(_uart)
+                        delete _uart;
+                }
 
+                /* version structure */
                 typedef struct _version {
                     int _major, _minor, _patch;
                     string str(){
@@ -143,21 +153,40 @@ namespace oe::device {
                     _version(int mj, int mi, int pt):_major(mj),_minor(mi),_patch(pt){}
                 } version;
 
-                /**
-                 * @brief protocol version response
-                 * @return version
-                 */
-                version get_version(){
-                    if(_bus){
-                        if(_bus->is_open()){
-                            const unsigned char packet[] = {'w', 'c', 'v', '*'};
-                            _bus->write(packet, sizeof(packet));
-                        }
+                /* if open */
+                bool is_open(){
+                    return _uart->is_open();
+                }
+
+                /* open */
+                void open(){
+                    if(_uart->open()){
+                        _uart->set_timeout(_timeout_s);
+                    }
+                }
+
+                /* close */
+                void close(){
+                    if(_uart->is_open()){
+                        _uart->close();
+                    }
+                }
+
+                /* read */
+                int read(char* buffer, int buffer_len){
+                    uint8_t* data = new uint8_t[MAX_BUFFER_SIZE];
+                    int rcv_len = _uart->read(data, sizeof(uint8_t)*MAX_BUFFER_SIZE);
+
+                    if(buffer_len<rcv_len){
+                         console::warn("Buffer size is less than read bytes");
+                         rcv_len = -1;
                     }
                     else {
-                        console::warn("Waterlinked M64 interface is not working...");
+                        memcpy(buffer, data, sizeof(char)*rcv_len); //copy to destination
                     }
-                    return version(0,0,1);
+                    delete []data;
+
+                    return rcv_len;
                 }
 
             private:
@@ -221,7 +250,11 @@ namespace oe::device {
                 }
 
             private:
-                bus::sync_bus* _bus = nullptr;
+                oe::bus::sync_bus* _uart = nullptr;
+
+                string _device_name;
+                int _baudrate = 9600;
+                int _timeout_s = 1; //sec
             
         }; /* class */
 

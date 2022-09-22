@@ -58,7 +58,7 @@ class device_ulory_control : public core::task::runnable_rt, private mosqpp::mos
         deque<char> _dq;
 
     private:
-    bool _mqtt_connected = false;
+        bool _mqtt_connected = false;
         string _broker_address { "127.0.0.1" };
         int _broker_port {1883};
         string _pub_topic = {"undefined"};

@@ -16,6 +16,7 @@
 #include <memory>
 #include <3rdparty/mosquitto/cpp/mosquittopp.h>
 #include <include/support/device/waterlinked/m64.hpp>
+#include <deque>
 
 using namespace oe;
 using namespace std;
@@ -46,13 +47,17 @@ class device_m64_control : public core::task::runnable_rt, private mosqpp::mosqu
 		virtual void on_error() override;
 
     private:
-        string _port = "/dev/ttyS0";
+        device::waterlink::m64* _device = nullptr;
+        string _port = "/dev/ttyUSB1";
         int _baudrate = 9600;
-        double _timeout_s = 1.0;
+        int _timeout_s = 1;
+
+    private:
+        deque<char> _dq;
         
 
     private:
-        bool _connected = false;
+        bool _mqtt_connected = false;
         string _broker_address { "127.0.0.1" };
         int _broker_port {1883};
         string _pub_topic = {"undefined"};
