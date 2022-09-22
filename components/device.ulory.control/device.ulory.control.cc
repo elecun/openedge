@@ -60,7 +60,6 @@ void device_ulory_control::execute(){
                     pubdata["location"] = gps;
                     string str_pubdata = pubdata.dump();
                     this->publish(nullptr, _pub_topic.c_str(), strlen(str_pubdata.c_str()), str_pubdata.c_str(), _pub_qos, false);
-                    //console::info("Published@{}", _pub_topic);
                 }               
 
                 //erase data
