@@ -22,9 +22,9 @@ class API(APIView):
     permission_classes = [AllowAny]
 
     def get(self, request, *args, **kwargs):
-        print("get rsu list")
         try :
-            _list = RSU.objects.all().order_by("pk").values()
+            _list = RSU.objects.all().values()
+            print(_list)
             if not _list.exists():                
                 return Response({}, status=status.HTTP_204_NO_CONTENT)
             else:

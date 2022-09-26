@@ -18,19 +18,19 @@
             <div class="form-group row">
                 <label for="new_rsu_uid" class="col-sm-2 col-form-label text-right">UID</label>
                 <div class="col-sm-9">
-                    <input type="text" class="form-control" id="new_rsu_uid" required>
+                    <input type="number" class="form-control" id="new_rsu_uid" required>
                 </div>
             </div>
             <div class="form-group row">
                 <label for="new_rsu_lsid" class="col-sm-2 col-form-label text-right">LSID</label>
                 <div class="col-sm-9">
-                  <input type="text" class="form-control" id="new_rsu_lsid" required>
+                  <input type="number" class="form-control" id="new_rsu_lsid" required>
                 </div>
             </div>
             <div class="form-group row">
               <label for="new_rsu_ldid" class="col-sm-2 col-form-label text-right">LDID</label>
               <div class="col-sm-9">
-                <input type="text" class="form-control" id="new_rsu_ldid" required>
+                <input type="number" class="form-control" id="new_rsu_ldid" required>
               </div>
             </div>
             <div class="form-group row">
@@ -63,15 +63,32 @@
     let lsid = document.getElementById('new_rsu_lsid').value;
     let ldid = document.getElementById('new_rsu_ldid').value;
     let activate = document.getElementById('new_rsu_activate').value;
-    console.log(uid, lsid, ldid, activate);
+    
+    const response = await REST_POST("{% url 'api_rsu_add' %}", {"uid":uid, "lsid":lsid, "ldid":ldid, "activate":activate});
+    const rdata = await response.json();
+
+    if(response.ok){
+      console.log("added");
+      update_rsu_list();
+    }
+
   }
 
   /* create event listener */
   document.getElementById('btn_add_new_rsu').addEventListener('click', function(){
+    let uid = document.getElementById('new_rsu_uid').value;
+    let lsid = document.getElementById('new_rsu_lsid').value;
+    let ldid = document.getElementById('new_rsu_ldid').value;
+    if(uid && lsid && ldid){
+      $('#modal_new_rsu').modal('hide');
+      console.log("add new rsu device");
+      request_add_new_rsu();
+    }
+    else {
+      alert("All elements are required.");
+    }
     
-    document.getElementById('new_rsu_uid')
-    $('#modal_new_rsu').modal('hide');
-    request_add_new_rsu();
+    
   });
     
 </script>

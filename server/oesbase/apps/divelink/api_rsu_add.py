@@ -15,6 +15,7 @@ import json
 from django.http import HttpResponse
 import mimetypes
 from .models import RSU
+from django.db.models import Q
 
 class API(APIView):
 
@@ -26,10 +27,18 @@ class API(APIView):
 
     def post(self, request, *args, **kwargs):
         try :
+
+            if 'uid' in request.data:
+                _uid = request.data["uid"]
+                if RSU.onjects.get(uid=_uid).exists():
+                    return Response({}, status=status.HTTP_400_BAD_REQUEST) 
+            else:
+
+                
             if 'name' in request.data:
                 # new settings
                 _new_rsu = RSU()
-                _new_rsu.uid = uuid.uuid4().hex
+                _new_rsu.uid = request.data["uid"]
                 _new_rsu.lsid = request.data["lsid"]
                 _new_rsu.ldid = request.data["ldid"]
                 _new_rsu.activate = request.data["activate"]
