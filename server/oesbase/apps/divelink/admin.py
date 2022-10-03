@@ -1,3 +1,4 @@
 from django.contrib import admin
+from divelink.models import RSU
 
-# Register your models here.
+admin.site.register(RSU)
