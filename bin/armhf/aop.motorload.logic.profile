@@ -1,0 +1,30 @@
+{
+    "md5":"603239CAF2F774498037F944F5592F52",
+    "info":{
+        "taskname":"aop.motorload.logic",
+        "version":"0.0.1",
+        "cpu_affinity":1,
+        "cycle_ns":1000000000,
+        "policy":{
+            "check_jitter":true,
+            "check_overrun":true,
+            "fault_level":0
+        }
+    },
+    "configurations":{
+        "boundary":{
+            "lower_bound":4.0,
+            "upper_bound":20.0,
+            "mean_filter":5,
+            "aio":"AI0"
+        },
+        "mqtt":{
+            "broker":"192.168.3.130",
+            "port":1883,
+            "pub_topic":"aop/uvlc/1/motor/control",
+            "pub_qos":2,
+            "sub_topic":["aop/uvlc/1/control", "aop/uvlc/1/sensor/motor/current"],
+            "keep_alive":60
+        }
+    }
+}

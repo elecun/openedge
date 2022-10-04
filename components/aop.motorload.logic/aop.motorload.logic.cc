@@ -1,25 +1,24 @@
 
-#include "aop.uvlc.logic.hpp"
+#include "aop.motorload.logic.hpp"
 #include <openedge/log.hpp>
 
 //static component instance that has only single instance
-static aop_uvlc_logic* _instance = nullptr;
-core::task::runnable* create(){ if(!_instance) _instance = new aop_uvlc_logic(); return _instance; }
+static aop_motorload_logic* _instance = nullptr;
+core::task::runnable* create(){ if(!_instance) _instance = new aop_motorload_logic(); return _instance; }
 void release(){ if(_instance){ delete _instance; _instance = nullptr; }}
 
-void aop_uvlc_logic::execute(){
+void aop_motorload_logic::execute(){
 
-    if(is_rising_l_proximity(_l_proximity_value) || is_rising_r_proximity(_r_proximity_value)){
+    if(is_over_current()){
         move_stop();
-        console::info("Limit is ON. Motor stop. L({}), R({})", _l_proximity_value, _r_proximity_value);
     }
 }
 
-void aop_uvlc_logic::stop(){
+void aop_motorload_logic::stop(){
 
 }
 
-bool aop_uvlc_logic::configure(){
+bool aop_motorload_logic::configure(){
     try {
         const json& profile = this->get_profile()->raw();
 
@@ -64,37 +63,25 @@ bool aop_uvlc_logic::configure(){
                 console::warn("({}){}", conret, mosqpp::strerror(conret));
 
             /* logic parameters configurations */
-            if(!config.contains("iomap")){
-                console::error("UVLC Control IO Map configurations does not exist");
+            if(!config.contains("boundary")){
+                console::error("UVLC Motor Current Boundary does not defined.");
                 return false;
             }
 
-            json iomap = config["iomap"];
-            console::info("IOMap : {}", iomap.dump());
-            _l_proximity_in = iomap["l_proximity_in"].get<string>();
-            _r_proximity_in = iomap["r_proximity_in"].get<string>();
-            _wipe_forward_in = iomap["wipe_forward_in"].get<string>();
-            _wipe_backward_in = iomap["wipe_backward_in"].get<string>();
-            _wipe_stop_in = iomap["wipe_stop_in"].get<string>();
-            _emergency_in = iomap["emergency_in"].get<string>();
+            json bound = config["boundary"];
+            console::info("Current Sensor Bound : {}", bound.dump());
+            _lower_bound = bound["lower_bound"].get<double>();
+            _upper_bound = bound["upper_bound"].get<double>();
+            _mean_filter = bound["mean_filter"].get<int>();
+            _aio_name = bound["aio"].get<string>();
 
-            console::info("> set IO Map Left Proimity Sensor In : {}", _l_proximity_in);
-            console::info("> set IO Map Right Proimity Sensor In : {}", _r_proximity_in);
-            console::info("> set IO Map Wipe Forward Operation In : {}", _wipe_forward_in);
-            console::info("> set IO Map Wipe Backward Operation In : {}", _wipe_backward_in);
-            console::info("> set IO Map Wipe Stop In : {}", _wipe_stop_in);
-            console::info("> set IO Map Emergency In : {}", _emergency_in);
+            console::info("> set Motor Current Lower Bound : {}", _lower_bound);
+            console::info("> set Motor Current Upper Bound : {}", _upper_bound);
+            console::info("> set Current Mean Filter size : {}", _mean_filter);
+            console::info("> set Target AIO Name : {}", _aio_name);
 
-            _wipe_forward_out = iomap["wipe_forward_out"].get<string>();
-            _wipe_backward_out = iomap["wipe_backward_out"].get<string>();
-            _wipe_stop_out = iomap["wipe_stop_out"].get<string>();
-            _emergency_out = iomap["emergency_out"].get<string>();
-
-            console::info("> set IO Map Wipe Forward Operation Out : {}", _wipe_forward_out);
-            console::info("> set IO Map Wipe Backward Operation Out : {}", _wipe_backward_out);
-            console::info("> set IO Map Wipe Stop Out : {}", _wipe_stop_out);
-            console::info("> set IO Map Emergency Out : {}", _emergency_out);
-
+            /* set initial value */
+            _mean_value = _lower_bound;
         }
         else
             return false;
@@ -107,7 +94,7 @@ bool aop_uvlc_logic::configure(){
     return true;
 }
 
-void aop_uvlc_logic::cleanup(){
+void aop_motorload_logic::cleanup(){
 
     /* mqtt connection close */
     this->mosqpp::mosquittopp::disconnect();
@@ -116,29 +103,29 @@ void aop_uvlc_logic::cleanup(){
 
 }
 
-void aop_uvlc_logic::pause(){
+void aop_motorload_logic::pause(){
     
 }
 
-void aop_uvlc_logic::resume(){
+void aop_motorload_logic::resume(){
     
 }
 
 
-void aop_uvlc_logic::on_connect(int rc){
+void aop_motorload_logic::on_connect(int rc){
     if(rc==MOSQ_ERR_SUCCESS)
         console::info("Successfully connected to MQTT Broker({})", rc);
     else
         console::warn("MQTT Broker connection error : {}", rc);
 
 }
-void aop_uvlc_logic::on_disconnect(int rc){
+void aop_motorload_logic::on_disconnect(int rc){
 
 }
-void aop_uvlc_logic::on_publish(int mid){
+void aop_motorload_logic::on_publish(int mid){
 
 }
-void aop_uvlc_logic::on_message(const struct mosquitto_message* message){
+void aop_motorload_logic::on_message(const struct mosquitto_message* message){
 
     #define MAX_BUFFER_SIZE     1024
     char* buffer = new char[MAX_BUFFER_SIZE];
@@ -151,53 +138,22 @@ void aop_uvlc_logic::on_message(const struct mosquitto_message* message){
     try{
         json msg = json::parse(strmsg);
         
-        if(msg.contains("di")){
-            json di = msg["di"];
-            if(di.contains(_l_proximity_in)) _l_proximity_value = di[_l_proximity_in].get<bool>();
-            if(di.contains(_r_proximity_in)) _r_proximity_value = di[_r_proximity_in].get<bool>();
-            if(di.contains(_wipe_forward_in)) _wipe_forward_value = di[_wipe_forward_in].get<bool>();
-            if(di.contains(_wipe_backward_in)) _wipe_backward_value = di[_wipe_backward_in].get<bool>();
-            if(di.contains(_wipe_stop_in)) _wipe_stop_value = di[_wipe_stop_in].get<bool>();
-
-            if(is_rising_forward_in(_wipe_forward_value)){
-                move_ccw();
-                console::info("Move forward from HMI");
-            }
-
-            if(is_rising_backward_in(_wipe_backward_value)){
-                move_cw();
-                console::info("Move backward from HMI");
-            }
-
-            if(is_rising_stop_in(_wipe_stop_value)){
-                move_stop();
-                console::info("Move stop from HMI");
-            }
-
-        }
-
-        /* manual command process */
-        if(msg.contains("command")){
-            string cmd = msg["command"].get<string>();
-            if(!cmd.compare("stop")) { move_stop(); }
-            else if(!cmd.compare("move_cw")){ //backward
-                if(!_r_proximity_value){
-                    move_cw();
-                    console::info("Move Backward(CW)");
+        if(msg.contains("ai")){
+            json ai = msg["ai"];
+            if(ai.contains(_aio_name)){
+                double value = ai[_aio_name].get<double>();
+                _ai_buffer.push_back(value);
+                
+                if(_ai_buffer.size()>=_mean_filter){
+                    double sum = 0;
+                    for(double v:_ai_buffer)
+                        sum+=v;
+                    _mean_value = sum/(double)_mean_filter;
                 }
-                else
-                    console::warn("Motor cannot be moved backward. Limit sensor is ON.");
-            }
-            else if(!cmd.compare("move_ccw")){ //forward
-                if(!_l_proximity_value){
-                    move_ccw();
-                    console::info("Move Forward(CCW)");
-                }
-                else
-                    console::warn("Motor cannot be moved forward. Limit sensor is ON.");
+                console::info("Mean Current Value({}) : {}", _ai_buffer.size(), _mean_value);
+                _ai_buffer.pop_front();
             }
         }
-
     }
     catch(json::exception& e){
         console::error("Message Error : {}", e.what());
@@ -205,84 +161,30 @@ void aop_uvlc_logic::on_message(const struct mosquitto_message* message){
     console::info("mqtt data({}) : {}",message->payloadlen, strmsg);
 
 }
-void aop_uvlc_logic::on_subscribe(int mid, int qos_count, const int* granted_qos){
+void aop_motorload_logic::on_subscribe(int mid, int qos_count, const int* granted_qos){
 
 }
-void aop_uvlc_logic::on_unsubscribe(int mid){
+void aop_motorload_logic::on_unsubscribe(int mid){
 
 }
-void aop_uvlc_logic::on_log(int level, const char* str){
+void aop_motorload_logic::on_log(int level, const char* str){
 
 }
-void aop_uvlc_logic::on_error(){
+void aop_motorload_logic::on_error(){
     
 }
 
-bool aop_uvlc_logic::is_rising_l_proximity(const bool value){
-    static bool prev_val = false;
-    bool res = false;
-    if(prev_val==false && value==true){
-        res = true;
+bool aop_motorload_logic::is_over_current(){
+
+    if(_mean_value<_lower_bound || _mean_value>_upper_bound){
+        console::info("Detect Over Current!");
+        return true;
     }
-    prev_val = value;
-    return res;
+    
+    return false;
 }
 
-bool aop_uvlc_logic::is_rising_r_proximity(const bool value){
-    static bool prev_val = false;
-    bool res = false;
-    if(prev_val==false && value==true){
-        res = true;
-    }
-    prev_val = value;
-    return res;
-}
-
-bool aop_uvlc_logic::is_rising_forward_in(const bool value){
-    static bool prev_val = false;
-    bool res = false;
-    if(prev_val==false && value==true){
-        res = true;
-    }
-    prev_val = value;
-    return res;
-}
-
-bool aop_uvlc_logic::is_rising_backward_in(const bool value){
-    static bool prev_val = false;
-    bool res = false;
-    if(prev_val==false && value==true){
-        res = true;
-    }
-    prev_val = value;
-    return res;
-}
-
-bool aop_uvlc_logic::is_rising_stop_in(const bool value){
-    static bool prev_val = false;
-    bool res = false;
-    if(prev_val==false && value==true){
-        res = true;
-    }
-    prev_val = value;
-    return res;
-}
-
-void aop_uvlc_logic::move_cw(){
-    json cmd;
-    cmd["command"] = "move_cw"; //backward
-    string msg = cmd.dump();
-    this->publish(nullptr, _pub_topic.c_str(), strlen(msg.c_str()), msg.c_str(), 2, false); //data publish
-}
-
-void aop_uvlc_logic::move_ccw(){
-    json cmd;
-    cmd["command"] = "move_ccw"; //forward
-    string msg = cmd.dump();
-    this->publish(nullptr, _pub_topic.c_str(), strlen(msg.c_str()), msg.c_str(), 2, false); //data publish
-}
-
-void aop_uvlc_logic::move_stop(){
+void aop_motorload_logic::move_stop(){
     json cmd;
     cmd["command"] = "stop"; //forward
     string msg = cmd.dump();
