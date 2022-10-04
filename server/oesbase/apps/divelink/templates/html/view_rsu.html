@@ -85,8 +85,8 @@
           console.log(listdata);
         
           listdata.data.forEach(function(s){
-              var manage = '<button type="button" class="btn btn-light btn-sm" onclick=javascript:request_settings_load('+s.id+');><i class="fas fa-folder-open mr-1 text-info"></i> Load</button>\
-                          <button type="button" class="btn btn-light btn-sm" onclick=javascript:request_settings_delete('+s.id+');><i class="fas fa-trash mr-1 text-danger"></i> Delete</button>';
+              var manage = '<button type="button" class="btn btn-light btn-sm" onclick=javascript:request_settings_load('+s.uid+');><i class="fas fa-folder-open mr-1 text-info"></i> Load</button>\
+                          <button type="button" class="btn btn-light btn-sm" onclick=javascript:request_settings_delete('+s.uid+');><i class="fas fa-trash mr-1 text-danger"></i> Delete</button>';
                           rsu_list_table.row.add([s.uid, s.lsid, s.ldid, s.tagname, manage]);
           });
           rsu_list_table.draw();
