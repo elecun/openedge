@@ -24,7 +24,6 @@ class API(APIView):
     def get(self, request, *args, **kwargs):
         try :
             _list = RSU.objects.all().values()
-            print(_list)
             if not _list.exists():                
                 return Response({}, status=status.HTTP_204_NO_CONTENT)
             else:

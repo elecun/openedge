@@ -37,6 +37,9 @@ def context_processors(request):
 
             'rsu_add_new':"Add New RSU",
 
+            'message_delete_rsu_selected':"선택한 장치를 삭제하시겠습니까?",
+
+
             'settings_load':"불러오기",
             'settings_save' : "설정저장",
             'settings_apply' : "PLC 적용",

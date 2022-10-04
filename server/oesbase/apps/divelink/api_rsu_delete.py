@@ -29,25 +29,15 @@ class API(APIView):
         try :
 
             if 'uid' in request.data:
-                _uid = request.data["uid"]
-                if RSU.objects.get(uid=_uid).exists():
-                    if 'name' in request.data:
-                        # new settings
-                        _new_rsu = RSU()
-                        _new_rsu.uid = request.data["uid"]
-                        _new_rsu.lsid = request.data["lsid"]
-                        _new_rsu.ldid = request.data["ldid"]
-                        _new_rsu.activate = request.data["activate"]
-                        _new_rsu.save()
-                        print("Added New RSU Device : ", _new_rsu.uid)
-                        _new_rsu_object = model_to_dict(_new_rsu)
-                        return Response({"data":_new_rsu_object}, status=status.HTTP_200_OK)
-                    else:
-                        return Response({}, status=status.HTTP_400_BAD_REQUEST)
+                _device = RSU.objects.get(uid=request.data["uid"])
+                _device.delete()
+                print("Successfully deleted the RSU device : ", request.data["uid"])
+                return Response({}, status=status.HTTP_200_OK)
             else:
-                return Response({}, status=status.HTTP_400_BAD_REQUEST) 
+                return Response({"message":"Invalid UID"}, status=status.HTTP_400_BAD_REQUEST) 
 
-
+        except RSU.DoesNotExist:
+            return Response({"message":"RSU does not exist."}, status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
             print("Exception : Regist new rsu ", str(e))
             return Response({"message":str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

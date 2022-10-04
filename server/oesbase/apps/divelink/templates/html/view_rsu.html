@@ -53,53 +53,65 @@
 
 <script language="javascript">
     
-    /* open new rsu */
-    document.getElementById("btn_new_rsu").addEventListener("click", function() {
-        $('#modal_new_rsu').modal('show');
-    });
+  /* open new rsu */
+  document.getElementById("btn_new_rsu").addEventListener("click", function() {
+      $('#modal_new_rsu').modal('show');
+  });
 
-    /* rsu device list table */
-    var rsu_list_table = $('#table_rsu_list').DataTable({
-        "autoload":true,
-        "scrollX":false,
-        "scrollY": "250px",
-        "scrollCollapse":true,
-        "paging":false,
-        "ordering":true,
-        "columnDefs": [
-        {
-            "targets": [ 1 ],
-            "visible": false,
-            "searchable": false
-        }]
-    });
+  /* rsu device list table */
+  var rsu_list_table = $('#table_rsu_list').DataTable({
+      "autoload":true,
+      "scrollX":false,
+      "scrollY": "250px",
+      "scrollCollapse":true,
+      "paging":false,
+      "ordering":false,
+      "columnDefs": [
+      {
+          "targets": [ 1 ],
+          "visible": true,
+          "searchable": false
+      }]
+  });
 
-    /* request rsu list */
-    async function update_rsu_list(){
-        rsu_list_table.clear();
-    
-        const response = await REST_GET("{% url 'api_rsu_list' %}");
-    
-        if(response.ok && response.status==200){
-          const listdata = await response.json();
-          console.log(listdata);
-        
-          listdata.data.forEach(function(s){
-              var manage = '<button type="button" class="btn btn-light btn-sm" onclick=javascript:request_settings_load('+s.uid+');><i class="fas fa-folder-open mr-1 text-info"></i> Load</button>\
-                          <button type="button" class="btn btn-light btn-sm" onclick=javascript:request_settings_delete('+s.uid+');><i class="fas fa-trash mr-1 text-danger"></i> Delete</button>';
-                          rsu_list_table.row.add([s.uid, s.lsid, s.ldid, s.tagname, manage]);
-          });
+  /* request rsu list */
+  async function update_rsu_list(){
+      rsu_list_table.clear();
+  
+      const response = await REST_GET("{% url 'api_rsu_list' %}");
+  
+      if(response.ok && response.status==200){
+        const listdata = await response.json();
+        console.log(listdata);
+      
+        listdata.data.forEach(function(s){
+          console.log(s);
+            var manage = '<button type="button" class="btn btn-light btn-sm" onclick=javascript:request_rsu_delete('+s.uid+');><i class="fas fa-trash mr-1 text-danger"></i> Delete</button>';
+            
+            rsu_list_table.row.add([s.uid, s.lsid, s.ldid, s.tagname, manage]);
+        });
+        rsu_list_table.draw();
+      }
+      else if(response.status==204){ //no contents
+          rsu_list_table.clear();
           rsu_list_table.draw();
-        }
-        else if(response.status==204){ //no contents
-            rsu_list_table.clear();
-            rsu_list_table.draw();
-        }
-    }
+      }
+  }
 
-    /* page load */
-    window.addEventListener('DOMContentLoaded', function(){
+  /* delete by id */
+  async function request_rsu_delete(uid){
+    if(confirm("{{menu_ko.message_delete_rsu_selected}}")){
+      const req = {"uid":uid};
+      const response = await REST_POST("{% url 'api_rsu_delete' %}", req);
+      if(response.ok){
         update_rsu_list();
-    });   
+      }
+    }
+  }
+
+  /* page load */
+  window.addEventListener('DOMContentLoaded', function(){
+      update_rsu_list();
+  });   
 
 </script>
