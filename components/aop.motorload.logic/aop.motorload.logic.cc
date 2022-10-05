@@ -149,9 +149,9 @@ void aop_motorload_logic::on_message(const struct mosquitto_message* message){
                     for(double v:_ai_buffer)
                         sum+=v;
                     _mean_value = sum/(double)_mean_filter;
+                    console::info("Mean Current Value({}) : {}", _ai_buffer.size(), _mean_value);
+                    _ai_buffer.pop_front();
                 }
-                console::info("Mean Current Value({}) : {}", _ai_buffer.size(), _mean_value);
-                _ai_buffer.pop_front();
             }
         }
     }
