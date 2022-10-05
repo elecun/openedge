@@ -14,7 +14,7 @@
     "configurations":{
         "boundary":{
             "lower_bound":4.0,
-            "upper_bound":20.0,
+            "upper_bound":19.5,
             "mean_filter":5,
             "aio":"AI0"
         },
@@ -23,7 +23,7 @@
             "port":1883,
             "pub_topic":"aop/uvlc/1/motor/control",
             "pub_qos":2,
-            "sub_topic":["aop/uvlc/1/control", "aop/uvlc/1/sensor/motor/current"],
+            "sub_topic":["aop/uvlc/motorload"],
             "keep_alive":60
         }
     }

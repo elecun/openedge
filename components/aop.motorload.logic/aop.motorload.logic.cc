@@ -176,7 +176,7 @@ void aop_motorload_logic::on_error(){
 
 bool aop_motorload_logic::is_over_current(){
 
-    if(_mean_value<_lower_bound || _mean_value>_upper_bound){
+    if(_mean_value>_upper_bound){
         console::info("Detect Over Current!");
         return true;
     }
