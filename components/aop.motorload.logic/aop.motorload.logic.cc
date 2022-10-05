@@ -158,7 +158,6 @@ void aop_motorload_logic::on_message(const struct mosquitto_message* message){
     catch(json::exception& e){
         console::error("Message Error : {}", e.what());
     }
-    console::info("mqtt data({}) : {}",message->payloadlen, strmsg);
 
 }
 void aop_motorload_logic::on_subscribe(int mid, int qos_count, const int* granted_qos){
