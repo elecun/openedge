@@ -10,7 +10,11 @@ void release(){ if(_instance){ delete _instance; _instance = nullptr; }}
 void aop_motorload_logic::execute(){
 
     if(is_over_current()){
+        console::info("Over current is detected! - Mean({}<{})", _mean_value, _upper_bound);
         move_stop();
+    }
+    else {
+        console::info("Over current is not detected - Mean({}>={})", _mean_value, _upper_bound);
     }
 }
 
@@ -149,7 +153,6 @@ void aop_motorload_logic::on_message(const struct mosquitto_message* message){
                     for(double v:_ai_buffer)
                         sum+=v;
                     _mean_value = sum/(double)_mean_filter;
-                    console::info("Mean Current Value({}) : {}", _ai_buffer.size(), _mean_value);
                     _ai_buffer.pop_front();
                 }
             }
