@@ -10,11 +10,11 @@ void release(){ if(_instance){ delete _instance; _instance = nullptr; }}
 void aop_motorload_logic::execute(){
 
     if(is_over_current()){
-        console::info("Over current is detected! - Mean({}<{})", _mean_value, _upper_bound);
+        console::info("Over current is detected! - Mean({}>={})", _mean_value, _upper_bound);
         move_stop();
     }
     else {
-        console::info("Over current is not detected - Mean({}>={})", _mean_value, _upper_bound);
+        console::info("Over current is not detected - Mean({}<{})", _mean_value, _upper_bound);
     }
 }
 
