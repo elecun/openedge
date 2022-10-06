@@ -38,6 +38,7 @@ def context_processors(request):
             'rsu_add_new':"Add New RSU",
 
             'message_delete_rsu_selected':"선택한 장치를 삭제하시겠습니까?",
+            'message_activate_rsu_selected':"선택한 장치를 활성화하시겠습니까?",
 
 
             'settings_load':"불러오기",

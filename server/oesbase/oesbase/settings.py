@@ -51,9 +51,9 @@ INSTALLED_APPS = [
     'rest_framework',
 
     # custom main app
-    #'divelink', # link management for Dive
+    'divelink', # link management for Dive
     #'aoplink'  # link management for AOP
-    'aop_uvlc',
+    #'aop_uvlc',
 ]
 
 MIDDLEWARE = [
@@ -79,7 +79,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                #'context.divelink.context_processors', # for divelink, if not necessary, remote comment this
+                'context.divelink.context_processors', # for divelink, if not necessary, remote comment this
             ],
         },
     },

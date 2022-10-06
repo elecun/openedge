@@ -70,25 +70,29 @@
 
 <script language="javascript">
 
+  /* page load */
+  window.addEventListener('DOMContentLoaded', function(){
+    //check the map is already initialized
+    var container = L.DomUtil.get('map');
+    if(container != null){
+      container._leaflet_id = null;
+    }
+      
+    var map = L.map('map').setView([37.4939, 129.1572], 14);
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
 
-    /* page load */
-    window.addEventListener('DOMContentLoaded', function(){
-        
-        var map = L.map('map').setView([37.4939, 129.1572], 14);
-        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
-
-        //L.marker([37.4939, 129.1572],{alt: 'RSU-01'}).bindTooltip("RSU-01", { permanent: true, direction: 'right' }).addTo(map);
-        //L.marker([37.48264, 129.16009],{alt: 'RSU-02'}).bindTooltip("RSU-02", { permanent: true, direction: 'right' }).addTo(map);
-        //L.marker([37.4939, 129.1572],{alt: 'RSU-01'}).bindPopup("<b>RSU-01</b><br><li>Depth : 40m<br><li>Temperature : 20°C<p><a class='btn btn-sm btn-block btn-success' href='#'' role='button'>View History</a>").addTo(map);
-        //L.marker([37.48264, 129.16009],{alt: 'RSU-02'}).bindPopup("<b>RSU-02</b><br><li>Depth : 37m<br><li>Temperature : 22°C<p><a class='btn btn-sm btn-block btn-success' href='#'' role='button'>View History</a>").addTo(map);
-        //L.marker([37.4939, 129.1572], {icon: L.divIcon({ iconSize:null, html:'<div class="map-label"><div class="map-label-content">RSU-01</div></div>' })}).addTo(map);
-        //L.marker([37.48264, 129.16009], {icon: L.divIcon({ iconSize:null, html:'<div class="map-label"><div class="map-label-content">RSU-02</div></div>' })}).addTo(map);
+    //L.marker([37.4939, 129.1572],{alt: 'RSU-01'}).bindTooltip("RSU-01", { permanent: true, direction: 'right' }).addTo(map);
+    //L.marker([37.48264, 129.16009],{alt: 'RSU-02'}).bindTooltip("RSU-02", { permanent: true, direction: 'right' }).addTo(map);
+    //L.marker([37.4939, 129.1572],{alt: 'RSU-01'}).bindPopup("<b>RSU-01</b><br><li>Depth : 40m<br><li>Temperature : 20°C<p><a class='btn btn-sm btn-block btn-success' href='#'' role='button'>View History</a>").addTo(map);
+    //L.marker([37.48264, 129.16009],{alt: 'RSU-02'}).bindPopup("<b>RSU-02</b><br><li>Depth : 37m<br><li>Temperature : 22°C<p><a class='btn btn-sm btn-block btn-success' href='#'' role='button'>View History</a>").addTo(map);
+    //L.marker([37.4939, 129.1572], {icon: L.divIcon({ iconSize:null, html:'<div class="map-label"><div class="map-label-content">RSU-01</div></div>' })}).addTo(map);
+    //L.marker([37.48264, 129.16009], {icon: L.divIcon({ iconSize:null, html:'<div class="map-label"><div class="map-label-content">RSU-02</div></div>' })}).addTo(map);
 
 
-        //L.circle([37.49, 129.1597], { color: 'red', fillColor: '#f03', fillOpacity: 0.1, radius: 1000}).addTo(map);
+    //L.circle([37.49, 129.1597], { color: 'red', fillColor: '#f03', fillOpacity: 0.1, radius: 1000}).addTo(map);
 
 
 
-        });
+      });
     
 </script>

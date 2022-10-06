@@ -75,7 +75,6 @@
     const rdata = await response.json();
 
     if(response.ok){
-      console.log("added");
       update_rsu_list();
     }
 
@@ -88,8 +87,14 @@
     let lsid = document.getElementById('new_rsu_lsid').value;
     let ldid = document.getElementById('new_rsu_ldid').value;
     if(tagname && uid && lsid && ldid){
-      $('#modal_new_rsu').modal('hide');
       request_add_new_rsu();
+      $('#modal_new_rsu').modal('hide');
+
+      //clear elements
+      document.getElementById('new_rsu_tagname').value = "";
+      document.getElementById('new_rsu_uid').value = "";
+      document.getElementById('new_rsu_lsid').value = "";
+      document.getElementById('new_rsu_ldid').value = "";
     }
     else {
       alert("All elements are required.");

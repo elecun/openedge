@@ -85,8 +85,8 @@
         console.log(listdata);
       
         listdata.data.forEach(function(s){
-          console.log(s);
-            var manage = '<button type="button" class="btn btn-light btn-sm" onclick=javascript:request_rsu_delete('+s.uid+');><i class="fas fa-trash mr-1 text-danger"></i> Delete</button>';
+            var manage = '<button type="button" class="btn btn-light btn-sm btn-outline-dark" onclick=javascript:request_rsu_activate('+s.uid+');><i class="fas fa-trash mr-1 text-danger"></i> Activate</button>\
+                          <button type="button" class="btn btn-light btn-sm btn-outline-dark" onclick=javascript:request_rsu_delete('+s.uid+');><i class="fas fa-trash mr-1 text-danger"></i> Delete</button>';
             
             rsu_list_table.row.add([s.uid, s.lsid, s.ldid, s.tagname, manage]);
         });
@@ -101,6 +101,17 @@
   /* delete by id */
   async function request_rsu_delete(uid){
     if(confirm("{{menu_ko.message_delete_rsu_selected}}")){
+      const req = {"uid":uid};
+      const response = await REST_POST("{% url 'api_rsu_delete' %}", req);
+      if(response.ok){
+        update_rsu_list();
+      }
+    }
+  }
+
+  /* activate by id */
+  async function request_rsu_activate(uid){
+    if(confirm("{{menu_ko.message_activate_rsu_selected}}")){
       const req = {"uid":uid};
       const response = await REST_POST("{% url 'api_rsu_delete' %}", req);
       if(response.ok){
