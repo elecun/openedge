@@ -83,10 +83,17 @@
       if(response.ok && response.status==200){
         const listdata = await response.json();
         console.log(listdata);
-      
+
         listdata.data.forEach(function(s){
-            var manage = '<button type="button" class="btn btn-light btn-sm btn-outline-dark" onclick=javascript:request_rsu_activate('+s.uid+');><i class="fas fa-trash mr-1 text-danger"></i> Activate</button>\
-                          <button type="button" class="btn btn-light btn-sm btn-outline-dark" onclick=javascript:request_rsu_delete('+s.uid+');><i class="fas fa-trash mr-1 text-danger"></i> Delete</button>';
+          var manage = "";
+          if(!s.activate){
+            manage += '<button type="button" class="btn btn-light btn-sm btn-outline-dark mr-1" onclick=javascript:request_rsu_activate('+s.uid+');><i class="fas fa-check mr-1 text-success"></i> Activate</button>';
+          }
+          else {
+            manage += '<button type="button" class="btn btn-light btn-sm btn-outline-dark mr-1" onclick=javascript:request_rsu_deactivate('+s.uid+');><i class="fas fa-ban mr-1 text-success"></i> Deactivate</button>';
+          }
+
+          manage+='<button type="button" class="btn btn-light btn-sm btn-outline-dark" onclick=javascript:request_rsu_delete('+s.uid+');><i class="fas fa-trash mr-1 text-danger"></i> Delete</button>';
             
             rsu_list_table.row.add([s.uid, s.lsid, s.ldid, s.tagname, manage]);
         });
@@ -113,7 +120,18 @@
   async function request_rsu_activate(uid){
     if(confirm("{{menu_ko.message_activate_rsu_selected}}")){
       const req = {"uid":uid};
-      const response = await REST_POST("{% url 'api_rsu_delete' %}", req);
+      const response = await REST_POST("{% url 'api_rsu_activate' %}", req);
+      if(response.ok){
+        update_rsu_list();
+      }
+    }
+  }
+
+  /* activate by id */
+  async function request_rsu_deactivate(uid){
+    if(confirm("{{menu_ko.message_deactivate_rsu_selected}}")){
+      const req = {"uid":uid};
+      const response = await REST_POST("{% url 'api_rsu_deactivate' %}", req);
       if(response.ok){
         update_rsu_list();
       }
