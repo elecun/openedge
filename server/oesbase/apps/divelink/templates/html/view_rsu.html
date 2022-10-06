@@ -118,6 +118,7 @@
 
   /* activate by id */
   async function request_rsu_activate(uid){
+    play_notify();
     if(confirm("{{menu_ko.message_activate_rsu_selected}}")){
       const req = {"uid":uid};
       const response = await REST_POST("{% url 'api_rsu_activate' %}", req);

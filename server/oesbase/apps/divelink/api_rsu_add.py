@@ -31,9 +31,10 @@ class API(APIView):
                 _uid = request.data["uid"]
                 _lsid = request.data["lsid"]
                 _ldid = request.data["ldid"]
+                _tagname = request.data["tagname"]
                 _activate = request.data["activate"]
 
-                obj, created = RSU.objects.get_or_create(uid=_uid, lsid=_lsid, ldid=_ldid, activate=_activate)
+                obj, created = RSU.objects.get_or_create(uid=_uid, lsid=_lsid, ldid=_ldid, tagname=_tagname, activate=_activate)
                 if created:
                     print("Added New RSU Device : ", obj.uid)
                     return Response({"message":"New RSU device is created"}, status=status.HTTP_200_OK)

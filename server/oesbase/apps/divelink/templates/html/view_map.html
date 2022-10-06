@@ -2,7 +2,7 @@
 {% load static %}
 
 <style>
-    #map { height: 720px; }
+    #map { height: 810px; }
 </style>
 
 <link rel="stylesheet" href="{% static 'plugins/leafletjs/leaflet.css' %}">
@@ -19,7 +19,6 @@
 
 <style>
 
-/*Wraperclass for the divicon*/
 .map-label {
   position: absolute;
   bottom: 0;left: -50%;
@@ -28,7 +27,7 @@
   text-align: center;
   margin-bottom: 40px;
 }
-/*Wrap the content of the divicon (text) in this class*/
+
 .map-label-content {
   order: 1;
   position: relative; left: -50%;
@@ -40,17 +39,15 @@
   padding: 3px;
   white-space: nowrap;
 }
-/*Add this arrow*/
+
 .map-label-arrow {
   order: 2;
   width: 0px; height: 0px; left: 50%;
   border-style: solid;
   border-color: #444 transparent transparent transparent;
-  border-width: 10px 6px 0 6px; /*[first number is height, second/fourth are rigth/left width]*/
+  border-width: 10px 6px 0 6px; 
   margin-left: -6px;
 }
-
-
 
 .map-label.redborder > .map-label-content {
   border-color: #e00;
@@ -73,10 +70,10 @@
   /* page load */
   window.addEventListener('DOMContentLoaded', function(){
     //check the map is already initialized
-    var container = L.DomUtil.get('map');
-    if(container != null){
-      container._leaflet_id = null;
-    }
+    // var container = L.DomUtil.get('map');
+    // if(container != null){
+    //   container._leaflet_id = null;
+    // }
       
     var map = L.map('map').setView([37.4939, 129.1572], 14);
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);

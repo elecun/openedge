@@ -20,6 +20,8 @@ If you build this source on your host (e.g. Ubuntu), you probably should install
 * lsis.fenet.connector.service
   - this service would be required for aop10t.pilot.task to connect with LSIS PLC using its dedicated communication protocol
 
+# for divelink server
+  - $ sudo apt-get install gdal-bin libgdal-dev
 
 # Dependency
 This software will be required other open source libraries for some tasks and services.
