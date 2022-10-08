@@ -22,7 +22,7 @@
                 <ul class="navbar-nav">
                     <!-- new rsu device -->
                     <li class="nav-item">
-                    <a class="btn btn-success nav-link" href="#"><i class="fa fa-plus"></i> Add New RSU</a>
+                    <a class="btn btn-outline-dark nav-link" href="#"><i class="fa fa-plus text-primary"></i> Add New RSU</a>
                     </li>
                 </ul>
             </div>
@@ -36,10 +36,10 @@
       <table class="table table-sm display compact" id="table_rsu_list" width="100%">
         <thead>
           <tr>
-            <th width="10%">UID</th>
-            <th width="10%">LSID</th>
-            <th width="10%">LDID</th>
-            <th width="15%">Tag Name</th>
+            <th>UID</th>
+            <th>LSID</th>
+            <th>LDID</th>
+            <th>Tag Name</th>
             <th>Manage</th>
           </tr>
         </thead>
@@ -60,18 +60,10 @@
 
   /* rsu device list table */
   var rsu_list_table = $('#table_rsu_list').DataTable({
-      "autoload":true,
-      "scrollX":false,
-      "scrollY": "250px",
-      "scrollCollapse":true,
-      "paging":false,
-      "ordering":false,
-      "columnDefs": [
-      {
-          "targets": [ 1 ],
-          "visible": true,
-          "searchable": false
-      }]
+      scrollX:true,
+      scrollY: "500px",
+      scrollCollapse:true,
+      paging:false
   });
 
   /* request rsu list */
@@ -118,7 +110,6 @@
 
   /* activate by id */
   async function request_rsu_activate(uid){
-    play_notify();
     if(confirm("{{menu_ko.message_activate_rsu_selected}}")){
       const req = {"uid":uid};
       const response = await REST_POST("{% url 'api_rsu_activate' %}", req);

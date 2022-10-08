@@ -18,11 +18,11 @@
             "timeout":1.0
         },
         "mqtt":{
-            "broker":"192.168.3.130",
+            "broker":"127.0.0.1",
             "port":1883,
-            "pub_topic":"aop/uvlc/1/motor",
-            "pub_qos":2,
-            "sub_topic":["aop/uvlc/1/motor/control"],
+            "pub_topic":"divelink/rsu",
+            "pub_qos":0,
+            "sub_topic":["divelink/rsu/control"],
             "keep_alive":60
         }
     }
