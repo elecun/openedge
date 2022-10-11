@@ -71,12 +71,13 @@
   var map = L.map('map').setView([37.4939, 129.1572], 14);
   var markers = new Map();
 
-  function update_layers(uid, name, location, depth, temp){
+  function update_layers(uid, name, location, lng, lat, depth, temp){
 
     if(markers.has(uid)){
-      const lng = String(location[1]);
-      const lat = String(location[0]);
-      markers.get(uid).setLatLng(L.latLng(lat, lng)).update();
+      //const lng2 = String(location).substring(1,11);
+      //const lat2 = String(location).substring(13,23);
+      console.log(lng, lat);
+      markers.get(uid).setLatLng(L.latLng(String(lat), String(lng))).update();
     }
     else {
       var marker = new L.marker(location,{alt: uid});

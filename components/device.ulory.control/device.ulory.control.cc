@@ -58,8 +58,8 @@ void device_ulory_control::execute(){
                     pubdata["lsid"] = _source_id;
                     pubdata["ldid"] = _target_id;
                     pubdata["location"] = gps;
-                    pubdata["longitude"] = gps.substr(1, 8);
-                    pubdata["latitude"] = gps.substr(11, 8);
+                    pubdata["longitude"] = gps.substr(1, 10);
+                    pubdata["latitude"] = gps.substr(13, 10);
                     string str_pubdata = pubdata.dump();
                     this->publish(nullptr, _pub_topic.c_str(), strlen(str_pubdata.c_str()), str_pubdata.c_str(), _pub_qos, false);
                 }               
