@@ -88,7 +88,7 @@ function mqtt_onMessageArrived(message){
     switch(message.topic){
       case "divelink/rsu/lora": { 
         const data = JSON.parse(message.payloadString);
-        console.log(data);
+        play_notify();
         update_layers(data.lsid, data.lsid, [data.longitude, data.latitude], "-", "-");
         // document.getElementById('edit_status_temperature_1').value = data.location;
         // document.getElementById('edit_status_temperature_2').value = data.lsid;

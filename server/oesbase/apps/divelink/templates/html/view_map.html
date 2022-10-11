@@ -72,6 +72,7 @@
   var markers = new Map();
 
   function update_layers(uid, name, location, depth, temp){
+
     if(markers.has(uid)){
       const lng = String(location[1]);
       const lat = String(location[0]);
