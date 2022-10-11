@@ -5,4 +5,4 @@ tzdata
 context-compose
 context.api
 django-leaflet
-GDAL==3.0.4
+influxdb_client
