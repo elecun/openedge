@@ -60,11 +60,15 @@ SOURCE_FILES = .
 
 
 # Components
-device.m64.control.comp: $(BUILDDIR)device.m64.control.o
+device.m64.control.comp: $(BUILDDIR)device.m64.control.o \
+						$(BUILDDIR)sync_uart.o
 	$(CC) $(LDFLAGS) $(LD_LIBRARY_PATH) -shared -o $(BUILDDIR)$@ $^ $(LDLIBS) -lmosquittopp -lmosquitto
 
 $(BUILDDIR)device.m64.control.o: $(CURRENT_DIR)/device.m64.control.cc
-										  $(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+								$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
+
+$(BUILDDIR)sync_uart.o:	$(INCLUDE_FILES)/openedge/common/sync_uart.cc
+						$(CC) $(CXXFLAGS) $(INCLUDE_DIR) -c $^ -o $@
 
 all : components
 components : device.m64.control.comp
