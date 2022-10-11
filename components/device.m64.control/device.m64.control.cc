@@ -47,8 +47,8 @@ void device_m64_control::execute(){
                 //3. data parse
                 //str_data += fmt::format("({})", _dq[4]);
 
-                double water_depth = (double)((int)((_dq[7]<<8)+_dq[6]))/100;
-                double water_temp = (double)((int)((_dq[9]<<8)+_dq[8]))/100;
+                double water_temp = (double)((int)((_dq[7]<<8)+_dq[6]))/100;
+                double water_depth = (double)((int)((_dq[9]<<8)+_dq[8]))/100;
 
                 console::info("water depth : {}\t water temperature : {}", water_depth, water_temp);
 
@@ -62,7 +62,6 @@ void device_m64_control::execute(){
                 }               
 
                 //erase data
-                console::info(str_data);
                 for(int i=0;i<packet_size;i++){
                     _dq.pop_front();
                 }

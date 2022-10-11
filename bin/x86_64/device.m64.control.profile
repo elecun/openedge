@@ -13,7 +13,7 @@
     },
     "configurations":{
         "device":{
-            "port":"/dev/ttyUSB0",
+            "port":"/dev/ttyUSB1",
             "baudrate":115200,
             "timeout":1.0
         },
