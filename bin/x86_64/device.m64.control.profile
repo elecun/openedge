@@ -20,7 +20,7 @@
         "mqtt":{
             "broker":"127.0.0.1",
             "port":1883,
-            "pub_topic":"divelink/rsu",
+            "pub_topic":"divelink/rsu/m64",
             "pub_qos":0,
             "sub_topic":["divelink/rsu/control"],
             "keep_alive":60
