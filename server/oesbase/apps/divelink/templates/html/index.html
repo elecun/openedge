@@ -44,7 +44,7 @@
 var _chart_update_timer_id = null;
 
 let mqtt_client_id = "dive-client-"+parseInt(Math.random()*10000, 10);
-var mqtt_client = new Paho.Client("127.0.0.1", 8083, mqtt_client_id);
+var mqtt_client = new Paho.Client("192.168.100.154", 8083, mqtt_client_id);
 var mqtt_connected = false;
 mqtt_client.onConnectionLost = mqtt_onConnectionLost;
 mqtt_client.onMessageArrived = mqtt_onMessageArrived;
@@ -86,32 +86,21 @@ function mqtt_onMessageArrived(message){
     
     /* status data update */
     switch(message.topic){
-      case "divelink/rsu": { //temperature data
+      case "divelink/rsu/lora": { 
         const data = JSON.parse(message.payloadString);
-        document.getElementById('edit_status_temperature_1').value = data.location;
-        document.getElementById('edit_status_temperature_2').value = data.lsid;
-        document.getElementById('edit_status_temperature_3').value = data.ldid;
-        $("#edit_status_temperature_1").trigger('change');
-        $("#edit_status_temperature_2").trigger('change');
-        $("#edit_status_temperature_3").trigger('change');
+        console.log(data);
+        update_layers(data.lsid, data.lsid, [data.longitude, data.latitude], "-", "-");
+        // document.getElementById('edit_status_temperature_1').value = data.location;
+        // document.getElementById('edit_status_temperature_2').value = data.lsid;
+        // document.getElementById('edit_status_temperature_3').value = data.ldid;
+        // $("#edit_status_temperature_1").trigger('change');
+        // $("#edit_status_temperature_2").trigger('change');
+        // $("#edit_status_temperature_3").trigger('change');
       } break;
 
-      case "mex/step/status": {
+      case "divelink/rsu/m64": {
         const data = JSON.parse(message.payloadString);
-        if(data.state=="start"){ //running
-          update_progress_step_current(data.step_current, data.step_size);
-          row_active(data.step_current-1); //from 0
-          update_progress_step_elapsed(data.current_elapsed, data.total_time);
-        }
-        else if(data.state=="stop"){ //stop
-          row_deactive_all();
-          document.getElementById('modal_notify_content').innerText = "{{menu_ko.message_stopped_steps}}";
-          $('#modal_notify').modal('show');
-        }
-        else if(data.state=="pause"){ //pause
-          document.getElementById('modal_notify_content').innerText = "{{menu_ko.message_paused_steps}}";
-          $('#modal_notify').modal('show');
-        }
+        console.log(data);
       } break;
 
       
