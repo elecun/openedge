@@ -14,7 +14,7 @@
     "configurations":{
         "device":{
             "port":"/dev/ttyUSB0",
-            "baudrate":9600,
+            "baudrate":115200,
             "timeout":1.0
         },
         "mqtt":{

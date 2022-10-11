@@ -50,11 +50,10 @@ mqtt_client.onConnectionLost = mqtt_onConnectionLost;
 mqtt_client.onMessageArrived = mqtt_onMessageArrived;
 mqtt_client.connect({onSuccess:mqtt_onConnect, onFailure:mqtt_onFailure, reconnect: true, useSSL:false});
 
-var ding_sound = new Audio("{% static 'sound/ding.mp3' %}");
-var notify_sound = new Audio("{% static 'sound/notify.mp3' %}");
+var sound_received = new Audio("{% static 'sound/received.mp3' %}");
 
-function play_ding(){  ding_sound.play();}
-function play_notify(){  notify_sound.play();}
+
+function play_notify(){  sound_received.play(); }
 
 /* MQTT Connection event callback */
 function mqtt_onConnect(){
@@ -87,11 +86,11 @@ function mqtt_onMessageArrived(message){
     
     /* status data update */
     switch(message.topic){
-      case "mex/sensor/temperature": { //temperature data
+      case "divelink/rsu": { //temperature data
         const data = JSON.parse(message.payloadString);
-        document.getElementById('edit_status_temperature_1').value = data.temperature_1;
-        document.getElementById('edit_status_temperature_2').value = data.temperature_2;
-        document.getElementById('edit_status_temperature_3').value = data.temperature_3;
+        document.getElementById('edit_status_temperature_1').value = data.location;
+        document.getElementById('edit_status_temperature_2').value = data.lsid;
+        document.getElementById('edit_status_temperature_3').value = data.ldid;
         $("#edit_status_temperature_1").trigger('change');
         $("#edit_status_temperature_2").trigger('change');
         $("#edit_status_temperature_3").trigger('change');

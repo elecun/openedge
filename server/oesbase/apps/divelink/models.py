@@ -20,9 +20,10 @@ Data Log
 '''
 class Datalog(models.Model):
     uid = models.CharField(max_length=64, blank=False, null=False, default=uuid.uuid4().hex, unique=True)
-    created_at = models.DateTimeField()
-    date_from = models.DateTimeField()
-    date_to = models.DateTimeField()
+    note = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    date_from = models.DateTimeField(auto_now=False, blank=True, null=True)
+    data_to = models.DateTimeField(auto_now=False, blank=True, null=True)
     
     def __str__(self):
         return self.uid

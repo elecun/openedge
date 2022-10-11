@@ -67,6 +67,26 @@
 
 <script language="javascript">
 
+  var layers = new Map();
+
+  function update_layers(uid, name, location, depth, temp, map){
+    layers.set(1, 
+    L.marker(location,{alt: name}).bindPopup("<b>RSU-02</b><br><li>Depth : 37m<br><li>Temperature : 22°C<p><a class='btn btn-sm btn-block btn-success' href='#'' role='button'>View History</a>").addTo(map)
+    );
+  }
+
+  /* remove specific layer */
+  function remove_layers(uid){
+    if(layers.has(uid)){
+      layers.delete(uid);
+    }
+  }
+
+  /* remove all layers */
+  function removel_layers_all(){
+    layers.clear();
+  }
+
   /* page load */
   window.addEventListener('DOMContentLoaded', function(){
     //check the map is already initialized
@@ -77,6 +97,16 @@
       
     var map = L.map('map').setView([37.4939, 129.1572], 14);
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
+
+    //const v = L.marker([37.48264, 129.16009],{alt: name}).bindPopup("<b>RSU-02</b><br><li>Depth : 37m<br><li>Temperature : 22°C<p><a class='btn btn-sm btn-block btn-success' href='#'' role='button'>View History</a>").addTo(map);
+    /*layers.set(1, 
+    L.marker([37.48264, 129.16009],{alt: name}).bindPopup("<b>RSU-02</b><br><li>Depth : 37m<br><li>Temperature : 22°C<p><a class='btn btn-sm btn-block btn-success' href='#'' role='button'>View History</a>").addTo(map)
+    );*/
+
+    update_layers(1, "test", [37.48264, 129.16009], 1, 1, map);
+
+    layers.get(1).openPopup();
+    //layer.openPopup();
 
     //L.marker([37.4939, 129.1572],{alt: 'RSU-01'}).bindTooltip("RSU-01", { permanent: true, direction: 'right' }).addTo(map);
     //L.marker([37.48264, 129.16009],{alt: 'RSU-02'}).bindTooltip("RSU-02", { permanent: true, direction: 'right' }).addTo(map);
