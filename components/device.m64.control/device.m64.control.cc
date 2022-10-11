@@ -106,17 +106,6 @@ bool device_m64_control::configure(){
                 }
             }
 
-            /* LoRa Configuration */
-            if(config.contains("lora")){
-                json lora_param = config["lora"];
-
-                _source_id = lora_param["source_id"].get<int>();
-                _target_id = lora_param["target_id"].get<int>();
-
-                console::info("> LoRa Source ID : {}", _source_id);
-                console::info("> LoRa Target ID : {}", _target_id);
-            }
-
             if(config.contains("mqtt")){
                 json mqtt_param = config["mqtt"];
                 _broker_address = mqtt_param["broker"].get<string>();

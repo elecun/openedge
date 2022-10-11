@@ -15,7 +15,7 @@
 #include <openedge/core.hpp>
 #include <memory>
 #include <3rdparty/mosquitto/cpp/mosquittopp.h>
-#include <include/support/device/waterlinked/m64.hpp>
+#include <support/device/waterlinked/m64.hpp>
 #include <deque>
 
 using namespace oe;
