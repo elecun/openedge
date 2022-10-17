@@ -27,19 +27,18 @@ class API(APIView):
 
     def post(self, request, *args, **kwargs):
         try :
-            if 'uid' in request.data:
-                _uid = request.data["uid"]
+            if 'lsid' in request.data:
                 _lsid = request.data["lsid"]
                 _ldid = request.data["ldid"]
                 _tagname = request.data["tagname"]
                 _activate = request.data["activate"]
 
-                obj, created = RSU.objects.get_or_create(uid=_uid, lsid=_lsid, ldid=_ldid, tagname=_tagname, activate=_activate)
+                obj, created = RSU.objects.get_or_create(lsid=_lsid, ldid=_ldid, tagname=_tagname, activate=_activate)
                 if created:
                     print("Added New RSU Device : ", obj.uid)
                     return Response({"message":"New RSU device is created"}, status=status.HTTP_200_OK)
                 else:
-                    print("RSU device is already exist : ", obj.uid)
+                    print("RSU device is already exist : ", obj.id)
                     return Response({"message":"RSU device is already exist"}, status=status.HTTP_200_OK)
             else:
                 return Response({}, status=status.HTTP_400_BAD_REQUEST) 

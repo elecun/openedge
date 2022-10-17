@@ -1,9 +1,11 @@
 from django.shortcuts import render
+from .models import UnitType, RSU
 
 
 '''
 Index page
 '''
 def index(request):
-    print("divelink index")
-    return render(request, "html/index.html")
+    types = UnitType.objects.all().values("ip", "name")
+    context = {"types":types}
+    return render(request, "html/index.html", context)

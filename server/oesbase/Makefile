@@ -9,6 +9,9 @@ loaddata:
 	@python3 manage.py loaddata aop_uvlc_commandset.json
 	@python3 manage.py loaddata aop_uvlc_broker.json
 
+loaddata-divelink:
+	@python3 manage.py loaddata divelink_type.json
+
 superuser:
 	@python3 manage.py createsuperuser
 

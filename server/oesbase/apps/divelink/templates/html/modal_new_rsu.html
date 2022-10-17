@@ -16,16 +16,26 @@
         <form>
             {% csrf_token %}
             <div class="form-group row">
+              <label for="new_rsu_unittype" class="col-sm-3 col-form-label text-right">Unit Type</label>
+              <div class="col-sm-8">
+                  <select class="custom-select d-block w-100" id="new_rsu_unittype" required>
+                    <option value="">Choose...</option>
+                    <option></option>
+                  </select>
+
+                  <select class="form-select" id="new_rsu_unittype" required>
+                    {% for type in types %}
+                    <option value="{{type.typename}}">{{type.typename}}</option>
+                    {% endfor %}
+                  </select>
+
+              </div>
+            </div>
+            <div class="form-group row">
               <label for="new_rsu_tagname" class="col-sm-3 col-form-label text-right">Tag Name</label>
               <div class="col-sm-8">
                   <input type="text" class="form-control" id="new_rsu_tagname" required>
               </div>
-          </div>
-            <div class="form-group row">
-                <label for="new_rsu_uid" class="col-sm-3 col-form-label text-right">UID</label>
-                <div class="col-sm-8">
-                    <input type="number" class="form-control" id="new_rsu_uid" required>
-                </div>
             </div>
             <div class="form-group row">
                 <label for="new_rsu_lsid" class="col-sm-3 col-form-label text-right">LSID</label>
@@ -66,12 +76,11 @@
   /* async request to add new RSU device */
   async function request_add_new_rsu(){
     let tagname = document.getElementById('new_rsu_tagname').value;
-    let uid = document.getElementById('new_rsu_uid').value;
     let lsid = document.getElementById('new_rsu_lsid').value;
     let ldid = document.getElementById('new_rsu_ldid').value;
     let activate = document.getElementById('new_rsu_activate').value;
     
-    const response = await REST_POST("{% url 'api_rsu_add' %}", {"tagname":tagname, "uid":uid, "lsid":lsid, "ldid":ldid, "activate":activate});
+    const response = await REST_POST("{% url 'api_rsu_add' %}", {"tagname":tagname, "lsid":lsid, "ldid":ldid, "activate":activate});
     const rdata = await response.json();
 
     if(response.ok){
@@ -83,16 +92,14 @@
   /* create event listener */
   document.getElementById('btn_add_new_rsu').addEventListener('click', function(){
     let tagname = document.getElementById('new_rsu_tagname').value;
-    let uid = document.getElementById('new_rsu_uid').value;
     let lsid = document.getElementById('new_rsu_lsid').value;
     let ldid = document.getElementById('new_rsu_ldid').value;
-    if(tagname && uid && lsid && ldid){
+    if(tagname && lsid && ldid){
       request_add_new_rsu();
       $('#modal_new_rsu').modal('hide');
 
       //clear elements
       document.getElementById('new_rsu_tagname').value = "";
-      document.getElementById('new_rsu_uid').value = "";
       document.getElementById('new_rsu_lsid').value = "";
       document.getElementById('new_rsu_ldid').value = "";
     }

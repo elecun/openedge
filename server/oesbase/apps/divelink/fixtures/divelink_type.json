@@ -1,0 +1,23 @@
+[
+    {
+      "model": "divelink.UnitType",
+      "pk": 1,
+      "fields": {
+        "typename":"Fixed Spot"
+      }
+    },
+    {
+        "model": "divelink.UnitType",
+        "pk": 2,
+        "fields": {
+          "typename":"Area"
+        }
+    },
+    {
+      "model": "divelink.UnitType",
+      "pk": 3,
+      "fields": {
+        "typename":"Sensor Unit"
+      }
+    }
+]
