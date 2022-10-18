@@ -2,7 +2,7 @@
 {% load static %}
 
 <style>
-    #map { height: 810px; }
+    #map { height: 540px; }
 </style>
 
 <link rel="stylesheet" href="{% static 'plugins/leafletjs/leaflet.css' %}">
@@ -70,6 +70,17 @@
   var layers = new Map();
   var map = L.map('map').setView([37.4939, 129.1572], 14);
   var markers = new Map();
+
+  // map.on('contextmenu', (e) => {
+  //   $('#modal_new_rsu').modal('show');
+  //   $('#modal_new_rsu').scrollTop(0);
+  //   //alert("Lat, Lon : " + e.latlng.lat + ", " + e.latlng.lng)
+  // });
+
+  // map.on('contextmenu', (e) => {
+  //   $('#modal_new_rsu').modal('show');
+  //   //alert("Lat, Lon : " + e.latlng.lat + ", " + e.latlng.lng)
+  // });  
 
   function update_layers(uid, name, location, lng, lat, depth, temp){
 

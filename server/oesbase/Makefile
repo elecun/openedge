@@ -5,12 +5,13 @@ migrate:
 	@python3 manage.py makemigrations
 	@python3 manage.py migrate --run-syncdb
 
-loaddata:
+loaddata-aop:
 	@python3 manage.py loaddata aop_uvlc_commandset.json
 	@python3 manage.py loaddata aop_uvlc_broker.json
 
 loaddata-divelink:
 	@python3 manage.py loaddata divelink_type.json
+	@python3 manage.py loaddata divelink_broker.json
 
 superuser:
 	@python3 manage.py createsuperuser

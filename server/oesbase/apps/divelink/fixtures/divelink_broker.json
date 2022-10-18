@@ -1,0 +1,11 @@
+[
+    {
+        "model": "divelink.BrokerAddress",
+        "pk": 1,
+        "fields": {
+          "ip":"127.0.0.1",
+          "name":"Localhost",
+          "info": "Localhost"
+        }
+      }
+]

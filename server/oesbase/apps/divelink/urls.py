@@ -1,7 +1,7 @@
 
 from django.urls import path, include
 from divelink import views
-#from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from divelink import api_rsu_list
 from divelink import api_rsu_add
 from divelink import api_rsu_delete
@@ -28,4 +28,4 @@ urlpatterns = [
 
 
 ]
-#urlpatterns += staticfiles_urlpatterns()
+urlpatterns += staticfiles_urlpatterns()

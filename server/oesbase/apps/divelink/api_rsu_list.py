@@ -14,7 +14,7 @@ import uuid
 import json
 from django.http import HttpResponse
 import mimetypes
-from .models import RSU
+from .models import RSU, UnitType
 
 
 class API(APIView):
@@ -24,6 +24,8 @@ class API(APIView):
     def get(self, request, *args, **kwargs):
         try :
             _list = RSU.objects.all().values()
+            #_typename = UnitType.objects.get(_list)
+            print(_list)
             if not _list.exists():                
                 return Response({}, status=status.HTTP_204_NO_CONTENT)
             else:

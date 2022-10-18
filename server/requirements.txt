@@ -6,3 +6,4 @@ context-compose
 context.api
 django-leaflet
 influxdb_client
+requests

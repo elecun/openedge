@@ -18,14 +18,14 @@
     <div class="col-sm-12 p-1">
 
         <nav class="navbar navbar-expand-lg">    
-            <div class="collapse navbar-collapse" id="btn_new_rsu">
-                <ul class="navbar-nav">
-                    <!-- new rsu device -->
-                    <li class="nav-item">
-                    <a class="btn btn-outline-dark nav-link" href="#"><i class="fa fa-plus text-primary"></i> Add New RSU</a>
-                    </li>
-                </ul>
-            </div>
+            
+          <ul class="navbar-nav">
+              <!-- new rsu device -->
+              <li class="nav-item">
+                <button class="btn btn-outline-dark nav-link pl-2 pr-2" href="#" id="btn_new_rsu"><i class="fa fa-plus text-primary"></i> Add New RSU</a>
+              </li>
+          </ul>
+            
         </nav>
 
     </div>
@@ -36,9 +36,9 @@
       <table class="table table-sm display compact" id="table_rsu_list" width="100%">
         <thead>
           <tr>
-            <th>UID</th>
-            <th>LSID</th>
-            <th>LDID</th>
+            <th>Unit Type</th>
+            <th>LoRa ID</th>
+            <th>Location</th>
             <th>Tag Name</th>
             <th>Manage</th>
           </tr>
@@ -63,7 +63,8 @@
       scrollX:true,
       scrollY: "500px",
       scrollCollapse:true,
-      paging:false
+      paging:false,
+      searching:false
   });
 
   /* request rsu list */
@@ -86,8 +87,9 @@
           }
 
           manage+='<button type="button" class="btn btn-light btn-sm btn-outline-dark" onclick=javascript:request_rsu_delete('+s.uid+');><i class="fas fa-trash mr-1 text-danger"></i> Delete</button>';
+          manage+='<input type="hidden" id=rsu_"'+s.uid+'" value="'+s.uid+'">';
             
-            rsu_list_table.row.add([s.uid, s.lsid, s.ldid, s.tagname, manage]);
+            rsu_list_table.row.add([s.unittype, s.loraid, s.location, s.tagname, manage]);
         });
         rsu_list_table.draw();
       }
