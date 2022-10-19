@@ -23,13 +23,16 @@ class API(APIView):
 
     def get(self, request, *args, **kwargs):
         try :
-            _list = RSU.objects.all().values()
-            #_typename = UnitType.objects.get(_list)
-            print(_list)
-            if not _list.exists():                
+            _rsu_list = RSU.objects.all().values()
+
+            # append Unittype Name
+            for _q in _rsu_list:
+                _q['unittype_name'] = UnitType.objects.get(id=_q['unittype_id']).typename
+            print(_rsu_list)
+            if not _rsu_list.exists():                
                 return Response({}, status=status.HTTP_204_NO_CONTENT)
             else:
-                return Response({"data":_list}, status=status.HTTP_200_OK)
+                return Response({"data":_rsu_list}, status=status.HTTP_200_OK)
 
         except Exception as e:
             print("Exception : ", str(e))

@@ -14,7 +14,7 @@ import uuid
 import json
 from django.http import HttpResponse
 import mimetypes
-from .models import RSU
+from .models import Datalog
 
 
 class API(APIView):
@@ -23,7 +23,7 @@ class API(APIView):
 
     def get(self, request, *args, **kwargs):
         try :
-            _list = RSU.objects.all().values()
+            _list = Datalog.objects.all().values()
             if not _list.exists():                
                 return Response({}, status=status.HTTP_204_NO_CONTENT)
             else:

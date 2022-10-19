@@ -44,9 +44,9 @@ void device_ulory_control::execute(){
             if(_dq[0]=='I' && _dq[29]==0x0a){
 
                 //parse counter
-                //3. data parse
-                string counter(_dq.begin()+1, _dq.begin()+6);
-                str_data += fmt::format("({})", counter);
+                //3. parse id
+                string loraid(_dq.begin()+1, _dq.begin()+6);
+                str_data += fmt::format("({})", loraid);
 
                 //parse gps
                 string gps(_dq.begin()+7, _dq.begin()+29);
@@ -55,6 +55,7 @@ void device_ulory_control::execute(){
                 /* publish gps data */
                 if(_mqtt_connected){
                     json pubdata;
+                    pubdata["id"] = stoi(loraid);
                     pubdata["lsid"] = _source_id;
                     pubdata["ldid"] = _target_id;
                     pubdata["location"] = gps;

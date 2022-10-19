@@ -27,14 +27,14 @@ class API(APIView):
 
     def post(self, request, *args, **kwargs):
         try :
-            if 'uid' in request.data:
-                _device = RSU.objects.get(uid=request.data["uid"])
+            if 'id' in request.data:
+                _device = RSU.objects.get(id=request.data["id"])
                 _device.activate = False
                 _device.save()
-                print("Successfully deactivated : ", request.data["uid"])
+                print("Successfully deactivated : ", request.data["id"])
                 return Response({}, status=status.HTTP_200_OK)
             else:
-                return Response({"message":"Invalid UID"}, status=status.HTTP_400_BAD_REQUEST) 
+                return Response({"message":"Invalid ID"}, status=status.HTTP_400_BAD_REQUEST) 
 
         except RSU.DoesNotExist:
             return Response({"message":"RSU does not exist."}, status=status.HTTP_404_NOT_FOUND)

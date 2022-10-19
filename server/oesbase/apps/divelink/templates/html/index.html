@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="{% static 'plugins/daterangepicker/daterangepicker.css' %}">
   <link rel="stylesheet" href="{% static 'plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css' %}"></script>
   <link rel="stylesheet" href="{% static 'plugins/datatables/jquery.dataTables.min.css' %}"></script>
+
   <style>
 
     /* display alignment with padding */
@@ -44,7 +45,7 @@
 var _chart_update_timer_id = null;
 
 let mqtt_client_id = "dive-client-"+parseInt(Math.random()*10000, 10);
-var mqtt_client = new Paho.Client("127.0.0.1", 8083, mqtt_client_id);
+var mqtt_client = new Paho.Client("192.168.100.154", 8083, mqtt_client_id);
 var mqtt_connected = false;
 mqtt_client.onConnectionLost = mqtt_onConnectionLost;
 mqtt_client.onMessageArrived = mqtt_onMessageArrived;
@@ -82,28 +83,23 @@ var prev_emergency = false;
 
 /* MQTT message arrived event callback */
 function mqtt_onMessageArrived(message){
-    const payload = JSON.parse(message.payloadString);
     
     /* status data update */
     switch(message.topic){
       case "divelink/rsu/lora": { 
         const data = JSON.parse(message.payloadString);
-        //console.log(data);
-        update_layers(data.lsid, data.lsid, [data.longitude, data.latitude],data.longitude, data.latitude, "-", "-");
-        // document.getElementById('edit_status_temperature_1').value = data.location;
-        // document.getElementById('edit_status_temperature_2').value = data.lsid;
-        // document.getElementById('edit_status_temperature_3').value = data.ldid;
-        // $("#edit_status_temperature_1").trigger('change');
-        // $("#edit_status_temperature_2").trigger('change');
-        // $("#edit_status_temperature_3").trigger('change');
+        if(data.hasOwnProperty('loraid')){
+          update_layer(data.loraid, data.longitude, data.latitude);
+        }
+        else {
+          console.log("Received data from unknown RSU ID")
+        }
       } break;
 
       case "divelink/rsu/m64": {
         const data = JSON.parse(message.payloadString);
         console.log(data);
       } break;
-
-      
       
     }
 

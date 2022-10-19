@@ -3,79 +3,66 @@
 
 <style>
 
-    .dataTables_scrollHeadInner {
-      width: 100% !important;
-    }
-    .dataTables_scrollHeadInner table {
-      width: 100% !important;
-    }
+
     
-    </style>
+</style>
+
+<div class="row m-0">
+  <div class="col-sm-12 p-1">
+      <nav class="navbar navbar-expand-lg">    
+        <ul class="navbar-nav">
+            <!-- log start or stop -->
+            <li class="nav-item">  
+              <button class="btn btn-outline-dark pl-2 pr-2 mr-2" id="btn_new_datalog"><i class="fa fa-plus-circle mr-1 text-danger"></i> Add New Log</button>
+              <button class="btn btn-outline-dark pl-2 pr-2 mr-2" id="btn_refresh_datalog"><i class="fa fa-retweet text-success"></i> Refresh</button>
+            </li>
+        </ul>
+      </nav>
+  </div>
+</div>
+
 
 <div class="row m-0 mt-1">
-    <div class="col-sm-12">
-      <table class="table table-sm display compact" id="table_datalog_list" width="100%">
-        <thead>
-          <tr>
-            <th width="205%">Created Date</th>
-            <th>Manage</th>
-          </tr>
-        </thead>
-        <tbody>
-        </tbody>
-        <tfoot>
-        </tfoot>
-      </table>
-    </div>
+  <div class="col-sm-12">
+    <table class="table table-sm display compact" id="table_datalog_list" width="100%">
+      <thead>
+        <tr>
+          <th>Start Date</th>
+          <th>End Date</th>
+          <th>Manage</th>
+        </tr>
+      </thead>
+      <tbody>
+      </tbody>
+      <tfoot>
+      </tfoot>
+    </table>
   </div>
+</div>
 
 <script language="javascript">
     
   /* datalog list table */
   var datalog_list_table = $('#table_datalog_list').DataTable({
       autoload:true,
+      autoWidth: false,
       scrollX:false,
-      scrollY: "250px",
+      scrollY: "320px",
       scrollCollapse:true,
       paging:false,
-      ordering:false,
-      columnDefs: [
-      {
-          targets: [ 1 ],
-          visible: true,
-          searchable: false
-      }]
+      ordering:true,
+      columnDefs: [ { "width": "210px", "targets": 0 }, { "width": "210px", "targets": 1 } ]
   });
 
-  /* request datalog list */
-  async function update_datalog_list(){
-      datalog_list_table.clear();
-  
-      const response = await REST_GET("{% url 'api_datalog_list' %}");
-  
-      if(response.ok && response.status==200){
-        const listdata = await response.json();
-        console.log(listdata);
-
-        listdata.data.forEach(function(s){
-          var manage = "";
-
-          manage+='<button type="button" class="btn btn-light btn-sm btn-outline-dark" onclick=javascript:request_datalog_delete('+s.uid+');><i class="fas fa-trash mr-1 text-danger"></i> Delete</button>';
-            
-            datalog_list_table.row.add([s.uid, s.lsid, s.ldid, s.tagname, manage]);
-        });
-        datalog_list_table.draw();
-      }
-      else if(response.status==204){ //no contents
-          datalog_list_table.clear();
-          datalog_list_table.draw();
-      }
-  }
+  /* refresh rsu list */
+  document.getElementById("btn_refresh_datalog").addEventListener("click", function(){
+    update_datalog_list();
+  });
 
   /* delete by id */
-  async function request_datalog_delete(uid){
+  async function request_datalog_delete(id){
     if(confirm("{{menu_ko.message_delete_datalog_selected}}")){
-      const req = {"uid":uid};
+      const req = {"id":id};
       const response = await REST_POST("{% url 'api_datalog_delete' %}", req);
       if(response.ok){
         update_datalog_list();
@@ -83,9 +70,73 @@
     }
   }
 
+  /* close log time by id */
+  async function request_datalog_close(id){
+    if(confirm("{{menu_ko.message_close_datalog_selected}}")){
+      const req = {"id":id};
+      const response = await REST_POST("{% url 'api_datalog_close' %}", req);
+      if(response.ok){
+        update_datalog_list();
+      }
+    }
+  }
+
+  /* view log by id */
+  async function request_datalog_view(id){
+    let url = "{% url 'api_datalog_view' 99 %}".replace('99', id);
+    const response = await REST_GET(url);
+    if(response.ok && response.status==200){
+      const data = await response.json();
+      const parse_data = JSON.parse(data.data);
+      update_monitor(parse_data.datetime, parse_data.water_depth, parse_data.water_temperature);
+    }
+  }
+
+  /* request datalog list */
+  async function update_datalog_list(){
+    datalog_list_table.clear();
+    const response = await REST_GET("{% url 'api_datalog_list' %}");
+    if(response.ok && response.status==200){
+      const listdata = await response.json();
+
+      listdata.data.forEach(function(s){
+        if(s.date_to==null){
+          s.date_to = "Empty";
+        }
+        var manage = "";
+        manage+='<button type="button" class="btn btn-light btn-sm btn-outline-dark mr-2" onclick=javascript:request_datalog_close('+s.id+');><i class="fa fa-stopwatch mr-1 text-primary"></i> Close</button>';
+        manage+='<button type="button" class="btn btn-light btn-sm btn-outline-dark mr-2" onclick=javascript:request_datalog_view('+s.id+');><i class="fa fa-eye mr-1 text-primary"></i> View</button>';
+        manage+='<button type="button" class="btn btn-light btn-sm btn-outline-dark mr-2" onclick=javascript:request_datalog_delete('+s.id+');><i class="fas fa-trash mr-1 text-danger"></i> Delete</button>';
+          
+        datalog_list_table.row.add([s.date_from, s.date_to, manage]);
+      });
+      datalog_list_table.draw();
+    }
+    else if(response.status==204){ //no contents
+      datalog_list_table.clear();
+      datalog_list_table.draw();
+    }
+  }
+
+  /* async request to add new datalog */
+  async function request_add_new_datalog(){ 
+    const response = await REST_POST("{% url 'api_datalog_add' %}", {"note":""});
+    const rdata = await response.json();
+
+    if(response.ok && response.status==200){
+      update_datalog_list();
+    }
+
+  }
+
+  /* open new rsu */
+  document.getElementById("btn_new_datalog").addEventListener("click", function() {
+    request_add_new_datalog();
+  });
+
   /* page load */
   window.addEventListener('DOMContentLoaded', function(){
-      update_datalog_list();
+    update_datalog_list();
   });   
 
 </script>

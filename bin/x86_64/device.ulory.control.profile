@@ -18,7 +18,7 @@
             "timeout":1
         },
         "lora":{
-            "source_id":163,
+            "source_id":164,
             "target_id":164
         },
         "mqtt":{

@@ -14,8 +14,9 @@ import uuid
 import json
 from django.http import HttpResponse
 import mimetypes
-from .models import RSU
+from .models import Datalog
 from django.db.models import Q
+from datetime import datetime, timedelta
 
 class API(APIView):
 
@@ -28,16 +29,16 @@ class API(APIView):
     def post(self, request, *args, **kwargs):
         try :
             if 'id' in request.data:
-                _device = RSU.objects.get(id=request.data["id"])
-                _device.activate = True
-                _device.save()
-                print("Successfully activated : ", request.data["id"])
-                return Response({}, status=status.HTTP_200_OK)
+                _log = Datalog.objects.get(id=request.data["id"])
+                _log.date_to = datetime.now()
+                _log.save()
+                return Response({"message":"New Datalog is created"}, status=status.HTTP_200_OK)
             else:
-                return Response({"message":"Invalid ID"}, status=status.HTTP_400_BAD_REQUEST) 
+                return Response({"message":"Invalid Request"}, status=status.HTTP_400_BAD_REQUEST)
 
-        except RSU.DoesNotExist:
-            return Response({"message":"RSU does not exist."}, status=status.HTTP_404_NOT_FOUND)
+        except Datalog.DoesNotExist:
+            return Response({"message":"Log does not exist."}, status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
+            print("Exception : Close timestamp for log ", str(e))
             return Response({"message":str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 

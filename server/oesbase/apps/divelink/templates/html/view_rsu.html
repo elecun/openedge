@@ -5,14 +5,14 @@
 
 <style>
 
-    .dataTables_scrollHeadInner {
-      width: 100% !important;
-    }
-    .dataTables_scrollHeadInner table {
-      width: 100% !important;
-    }
+  .dataTables_scrollHeadInner {
+    width: 100% !important;
+  }
+  .dataTables_scrollHeadInner table {
+    width: 100% !important;
+  }
     
-    </style>
+</style>
 
 <div class="row m-0">
     <div class="col-sm-12 p-1">
@@ -22,7 +22,8 @@
           <ul class="navbar-nav">
               <!-- new rsu device -->
               <li class="nav-item">
-                <button class="btn btn-outline-dark nav-link pl-2 pr-2" href="#" id="btn_new_rsu"><i class="fa fa-plus text-primary"></i> Add New RSU</a>
+                <button class="btn btn-outline-dark pl-2 pr-2" id="btn_new_rsu"><i class="fa fa-plus-circle text-primary"></i> Add New RSU</button>
+                <button class="btn btn-outline-dark pl-2 pr-2" id="btn_refresh_rsu"><i class="fa fa-retweet text-success"></i> Refresh</button>
               </li>
           </ul>
             
@@ -58,51 +59,51 @@
       $('#modal_new_rsu').modal('show');
   });
 
+  /* refresh rsu list */
+  document.getElementById("btn_refresh_rsu").addEventListener("click", function(){
+    update_rsu_list();
+  });
+
   /* rsu device list table */
   var rsu_list_table = $('#table_rsu_list').DataTable({
-      scrollX:true,
-      scrollY: "500px",
-      scrollCollapse:true,
-      paging:false,
-      searching:false
+    scrollX:true,
+    autoWidth:false,
+    scrollY: "500px",
+    scrollCollapse:true,
+    paging:false,
+    searching:false,
+    columnDefs: [ { "width": "100px", "targets": 0 }, { "width": "80px", "targets": 1 }, { "width": "100px", "targets": 2 }, { "width": "100px", "targets": 3 } ]
   });
 
   /* request rsu list */
   async function update_rsu_list(){
-      rsu_list_table.clear();
-  
-      const response = await REST_GET("{% url 'api_rsu_list' %}");
-  
-      if(response.ok && response.status==200){
-        const listdata = await response.json();
-        console.log(listdata);
+    rsu_list_table.clear();
 
-        listdata.data.forEach(function(s){
-          var manage = "";
-          if(!s.activate){
-            manage += '<button type="button" class="btn btn-light btn-sm btn-outline-dark mr-1" onclick=javascript:request_rsu_activate('+s.uid+');><i class="fas fa-check mr-1 text-success"></i> Activate</button>';
-          }
-          else {
-            manage += '<button type="button" class="btn btn-light btn-sm btn-outline-dark mr-1" onclick=javascript:request_rsu_deactivate('+s.uid+');><i class="fas fa-ban mr-1 text-success"></i> Deactivate</button>';
-          }
+    const response = await REST_GET("{% url 'api_rsu_list' %}");
+    if(response.ok && response.status==200){
+      const listdata = await response.json();
 
-          manage+='<button type="button" class="btn btn-light btn-sm btn-outline-dark" onclick=javascript:request_rsu_delete('+s.uid+');><i class="fas fa-trash mr-1 text-danger"></i> Delete</button>';
-          manage+='<input type="hidden" id=rsu_"'+s.uid+'" value="'+s.uid+'">';
-            
-            rsu_list_table.row.add([s.unittype, s.loraid, s.location, s.tagname, manage]);
-        });
+      listdata.data.forEach(function(s){
+        var manage = "";
+        if(!s.activate){ manage += '<button type="button" class="btn btn-light btn-sm btn-outline-dark mr-1" onclick=javascript:request_rsu_activate('+s.id+');><i class="fas fa-check mr-1 text-success"></i> Activate</button>'; }
+        else { manage += '<button type="button" class="btn btn-light btn-sm btn-outline-dark mr-1" onclick=javascript:request_rsu_deactivate('+s.id+');><i class="fas fa-ban mr-1 text-success"></i> Deactivate</button>'; }
+
+        manage+='<button type="button" class="btn btn-light btn-sm btn-outline-dark" onclick=javascript:request_rsu_delete('+s.id+');><i class="fas fa-trash mr-1 text-danger"></i> Delete</button>';
+          
+        rsu_list_table.row.add([s.unittype_name, s.loraid, s.location, s.tagname, manage]);
+      });
+      rsu_list_table.draw();
+    }
+    else if(response.status==204){ //no contents
+        rsu_list_table.clear();
         rsu_list_table.draw();
-      }
-      else if(response.status==204){ //no contents
-          rsu_list_table.clear();
-          rsu_list_table.draw();
-      }
+    }
   }
 
   /* delete by id */
-  async function request_rsu_delete(uid){
+  async function request_rsu_delete(id){
     if(confirm("{{menu_ko.message_delete_rsu_selected}}")){
-      const req = {"uid":uid};
+      const req = {"id":id};
       const response = await REST_POST("{% url 'api_rsu_delete' %}", req);
       if(response.ok){
         update_rsu_list();
@@ -111,9 +112,9 @@
   }
 
   /* activate by id */
-  async function request_rsu_activate(uid){
+  async function request_rsu_activate(id){
     if(confirm("{{menu_ko.message_activate_rsu_selected}}")){
-      const req = {"uid":uid};
+      const req = {"id":id};
       const response = await REST_POST("{% url 'api_rsu_activate' %}", req);
       if(response.ok){
         update_rsu_list();
@@ -122,9 +123,9 @@
   }
 
   /* activate by id */
-  async function request_rsu_deactivate(uid){
+  async function request_rsu_deactivate(id){
     if(confirm("{{menu_ko.message_deactivate_rsu_selected}}")){
-      const req = {"uid":uid};
+      const req = {"id":id};
       const response = await REST_POST("{% url 'api_rsu_deactivate' %}", req);
       if(response.ok){
         update_rsu_list();

@@ -2,7 +2,7 @@
 {% load static %}
 
 <style>
-    #map { height: 540px; }
+    #map { height: 532px; }
 </style>
 
 <link rel="stylesheet" href="{% static 'plugins/leafletjs/leaflet.css' %}">
@@ -68,49 +68,31 @@
 <script language="javascript">
 
   var layers = new Map();
-  var map = L.map('map').setView([37.4939, 129.1572], 14);
-  var markers = new Map();
+  var map = L.map('map').setView([37.4939, 129.1572], 14);  //default map
 
-  // map.on('contextmenu', (e) => {
-  //   $('#modal_new_rsu').modal('show');
-  //   $('#modal_new_rsu').scrollTop(0);
-  //   //alert("Lat, Lon : " + e.latlng.lat + ", " + e.latlng.lng)
-  // });
+  var markers = new Map(); //marker layer container
 
-  // map.on('contextmenu', (e) => {
-  //   $('#modal_new_rsu').modal('show');
-  //   //alert("Lat, Lon : " + e.latlng.lat + ", " + e.latlng.lng)
-  // });  
+  /* Getting Current Location Info. */
+  map.on('contextmenu', (e) => {
+    alert("Location (Lat, Lng) : " + e.latlng.lat + ", " + e.latlng.lng)
+  });  
 
-  function update_layers(uid, name, location, lng, lat, depth, temp){
+  /* Update marker on map */
+  function update_layer(loraid, longitude, latitude){
 
-    if(markers.has(uid)){
-      //const lng2 = String(location).substring(1,11);
-      //const lat2 = String(location).substring(13,23);
-      console.log(lng, lat);
-      markers.get(uid).setLatLng(L.latLng(String(lat), String(lng))).update();
+    if(markers.has(loraid)){
+      console.log(longitude, latitude);
+      markers.get(loraid).setLatLng(L.latLng(String(latitude), String(longitude))).update();
     }
     else {
-      var marker = new L.marker(location,{alt: uid});
-      markers.set(uid, marker);
-      markers.get(uid).bindPopup("<b>"+name+"</b><br><li>"+location+"<br><li>Depth : "+depth+"m<br><li>Temperature : "+temp+"°C<p>").addTo(map).openPopup();
-      //layers.set(uid, marker.addTo(map));
-      map.addLayer(markers.get(uid));
+      var marker = new L.marker([latitude, longitude],{alt: loraid});
+      markers.set(loraid, marker);
+      markers.get(loraid).bindPopup("<b> LoRa ID : "+loraid+"</b><br><li>Longitude : "+longitude+"<br><li>Latitude : "+latitude+"<p>", {'maxWidth':250}).addTo(map).openPopup();
+      map.addLayer(markers.get(loraid));
     }
 
   }
 
-  /* remove specific layer */
-  function remove_layers(uid){
-    if(layers.has(uid)){
-      layers.delete(uid);
-    }
-  }
-
-  /* remove all layers */
-  function removel_layers_all(){
-    layers.clear();
-  }
 
   /* page load */
   window.addEventListener('DOMContentLoaded', function(){

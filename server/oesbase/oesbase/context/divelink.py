@@ -36,10 +36,14 @@ def context_processors(request):
             'menu_title_info':"Info",
 
             'rsu_add_new':"Add New RSU",
+            'log_add_new':"Add New Log",
 
             'message_delete_rsu_selected':"선택한 장치를 삭제하시겠습니까?",
             'message_activate_rsu_selected':"선택한 장치를 활성화하시겠습니까?",
             'message_deactivate_rsu_selected':"선택한 장치를 비활성화하시겠습니까?",
+
+            'message_delete_datalog_selected':"선택한 로그를 삭제하시겠습니까?",
+            'message_close_datalog_selected':"현재 로그 종료 시각을 저장하겠습니까?",
 
 
             'settings_load':"불러오기",

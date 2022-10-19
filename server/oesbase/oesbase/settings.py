@@ -124,7 +124,7 @@ AUTH_PASSWORD_VALIDATORS = [
 LANGUAGE_CODE = 'ko'
 TIME_ZONE = 'Asia/Seoul'
 USE_I18N = True
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)
@@ -140,3 +140,8 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+INFLUXDB_V2_TOKEN = "KEnIkWYOdtapL6R3l34JclItJboaw4AI2lLapUURY2O_Zm3_XTvn8VHcYAHZbwd-GDU5GY9-CJygJdUONlIzlw=="
+INFLUXDB_V2_ORG = "iae"
+INFLUXDB_V2_URL = "http://127.0.0.1:8086"
+INFLUXDB_V2_BUCKET = "divelink_db"

@@ -10,6 +10,8 @@ from divelink import api_rsu_deactivate
 from divelink import api_datalog_list
 from divelink import api_datalog_add
 from divelink import api_datalog_delete
+from divelink import api_datalog_close
+from divelink import api_datalog_view
 
 # api views
 urlpatterns = [
@@ -25,6 +27,8 @@ urlpatterns = [
     path("log/list/", api_datalog_list.API.as_view(), name="api_datalog_list"),
     path("log/add/", api_datalog_add.API.as_view(), name="api_datalog_add"),
     path("log/delete/", api_datalog_delete.API.as_view(), name="api_datalog_delete"),
+    path("log/close/", api_datalog_close.API.as_view(), name="api_datalog_close"),
+    path("log/view/<int:id>/", api_datalog_view.API.as_view(), name="api_datalog_view"),
 
 
 ]

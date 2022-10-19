@@ -14,7 +14,7 @@ import uuid
 import json
 from django.http import HttpResponse
 import mimetypes
-from .models import RSU
+from .models import Datalog
 from django.db.models import Q
 
 class API(APIView):
@@ -27,23 +27,11 @@ class API(APIView):
 
     def post(self, request, *args, **kwargs):
         try :
-            if 'uid' in request.data:
-                _uid = request.data["uid"]
-                _lsid = request.data["lsid"]
-                _ldid = request.data["ldid"]
-                _tagname = request.data["tagname"]
-                _activate = request.data["activate"]
-
-                obj, created = RSU.objects.get_or_create(uid=_uid, lsid=_lsid, ldid=_ldid, tagname=_tagname, activate=_activate)
-                if created:
-                    print("Added New RSU Device : ", obj.uid)
-                    return Response({"message":"New RSU device is created"}, status=status.HTTP_200_OK)
-                else:
-                    print("RSU device is already exist : ", obj.uid)
-                    return Response({"message":"RSU device is already exist"}, status=status.HTTP_200_OK)
-            else:
-                return Response({}, status=status.HTTP_400_BAD_REQUEST) 
-
+            _new_datalog = Datalog()
+            _new_datalog.uid = uuid.uuid4().hex
+            _new_datalog.save()
+            print("Added new Datalog")
+            return Response({"message":"New Datalog is created"}, status=status.HTTP_200_OK)
 
         except Exception as e:
             print("Exception : Regist new rsu ", str(e))
