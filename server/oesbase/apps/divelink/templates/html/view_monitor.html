@@ -5,37 +5,30 @@
   #monitor{
     width: 872px;
     position: relative;
-    height: 510px;
+    height: 495px;
     
   }
 </style>
 
-<div class="row m-0">
-  <div class="col-sm-12 p-1">
-
-      <nav class="navbar navbar-expand-lg">    
-          <div class="collapse navbar-collapse" id="btn_new_rsu">
-              <ul class="navbar-nav mr-auto">
-                  <!-- timer update -->
-                  <li class="nav-item mr-2">
-                    <div class="form-check">
-                      <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                      <label class="form-check-label" for="flexCheckDefault">
-                        Auto Update
-                      </label>
-                  </div>
-                  </li>
-              </ul>
-          </div>
-      </nav>
-
+<div class="row m-0 p-0 mt-1">
+  <div class="col-sm-12">
+    <div id="monitor" class="p-1"></div>
   </div>
 </div>
 
-<div class="row align-items-start m-0">
-    <div class="col-sm-12 p-1">
-        <div id="monitor" class="p-1"></div>
-    </div>
+<div class="row m-0 p-0">
+  <div class="col-sm-12">
+      <nav class="navbar navbar-expand-lg p-2">    
+        <ul class="navbar-nav">
+            <li class="nav-item">
+              <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="check_auto_update">
+                <label class="form-check-label" for="check_auto_update">Auto Update</label>
+              </div>
+            </li>
+        </ul>
+      </nav>
+  </div>
 </div>
 
 
@@ -45,9 +38,6 @@
 
   // prettier-ignore
   var timeData = [];
-  // timeData = timeData.map(function (str) {
-  //   return str.replace('2009/', '');
-  // });
   var option = {
     tooltip: {
       trigger: 'axis',
@@ -66,31 +56,15 @@
         }
       ]
     },
-    dataZoom: [
-      {
-        show: true,
-        realtime: true,
-        start: 30,
-        end: 70,
-        xAxisIndex: [0, 1]
-      },
-      {
-        type: 'inside',
-        realtime: true,
-        start: 30,
-        end: 70,
-        xAxisIndex: [0, 1]
-      }
-    ],
     grid: [
       {
-        left: 70,
-        right: 70,
+        left: 50,
+        right: 50,
         height: '30%'
       },
       {
-        left: 70,
-        right: 70,
+        left: 50,
+        right: 50,
         top: '55%',
         height: '30%'
       }
@@ -113,14 +87,18 @@
     ],
     yAxis: [
       {
-        name: 'Temperature(deg)',
-        type: 'value'
+        name: 'Temperature(°C)',
+        type: 'value',
+        position: 'left',
+        axisLabel:{ margin:0 }
       },
       {
+        position:'left',
         gridIndex: 1,
         name: 'Depth(m)',
         type: 'value',
-        inverse: true
+        inverse: true,
+        axisLabel:{ margin:0 }
       }
     ],
     series: [
