@@ -5,6 +5,7 @@
         "fields": {
           "loraid":164,
           "auto_interval":5,
+          "monitor_time":5,
           "sound_notify": false
         }
       }

@@ -45,7 +45,7 @@
 var _chart_update_timer_id = null;
 
 let mqtt_client_id = "dive-client-"+parseInt(Math.random()*10000, 10);
-var mqtt_client = new Paho.Client("127.0.0.1", 8083, mqtt_client_id);
+var mqtt_client = new Paho.Client("192.168.100.154", 8083, mqtt_client_id);
 var mqtt_connected = false;
 mqtt_client.onConnectionLost = mqtt_onConnectionLost;
 mqtt_client.onMessageArrived = mqtt_onMessageArrived;

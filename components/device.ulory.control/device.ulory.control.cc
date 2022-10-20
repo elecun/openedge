@@ -55,7 +55,7 @@ void device_ulory_control::execute(){
                 /* publish gps data */
                 if(_mqtt_connected){
                     json pubdata;
-                    pubdata["id"] = stoi(loraid);
+                    pubdata["loraid"] = stoi(loraid);
                     pubdata["lsid"] = _source_id;
                     pubdata["ldid"] = _target_id;
                     pubdata["location"] = gps;

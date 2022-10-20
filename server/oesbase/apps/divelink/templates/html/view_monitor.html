@@ -147,8 +147,9 @@ function update_monitor(time, depth, temperature){
 }
 
 /* update live */
-async function request_datalog_live_view(){
-  let url = "{% url 'api_datalog_live' 99 %}".replace('99', 10);
+async function request_datalog_live_view(time){
+
+  let url = "{% url 'api_datalog_live' 99 %}".replace('99', monitor_time);
     const response = await REST_GET(url);
 
   if(response.ok && response.status==200){
@@ -163,10 +164,12 @@ var auto_update_timer_id;
 /* event auto update */
 document.getElementById("check_auto_update").addEventListener("click", function(){
   let checked = document.getElementById("check_auto_update").checked;
+  const monitor_time = Number(document.getElementById('edit_monitor_time').value);
+
   let interval = Number(document.getElementById('edit_auto_update_interval').value);
 
   if(checked){
-    auto_update_timer_id = setInterval(() => request_datalog_live_view(), interval*1000);
+    auto_update_timer_id = setInterval(() => request_datalog_live_view(monitor_time), interval*1000);
   }
   else {
     clearInterval(auto_update_timer_id);

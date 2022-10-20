@@ -44,6 +44,7 @@ Station Setting
 class SystemSetting(models.Model):
     loraid = models.PositiveIntegerField(blank=True, null=True, default=0)
     auto_interval = models.PositiveIntegerField(blank=True, null=True, default=5)
+    monitor_time = models.PositiveIntegerField(blank=True, null=True, default=5)
     sound_notify = models.BooleanField(blank=True, null=True, default=False)
 
     def __str__(self):

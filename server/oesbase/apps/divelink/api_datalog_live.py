@@ -32,7 +32,7 @@ class API(APIView):
     def get(self, request, *args, **kwargs):
         try :
             if 'time' in kwargs:
-                _time_s = kwargs["time"]
+                _time_m = kwargs["time"]
 
                 client = InfluxDBClient(url=settings.INFLUXDB_V2_URL, token=settings.INFLUXDB_V2_TOKEN, org=settings.INFLUXDB_V2_ORG)
                 query_api = client.query_api()
@@ -44,7 +44,7 @@ class API(APIView):
                     |> filter(fn: (r) => r["_field"] == "water_depth" or r["_field"] == "water_temperature")
                     |> aggregateWindow(every: {i}s, fn: mean, createEmpty: false)
                     |> yield(name: "mean")
-                    '''.format(s=_time_s, i=5)
+                    '''.format(s=_time_m, i=5)
 
                 tables = query_api.query(q)
                 results = {"water_depth":[], "water_temperature":[], "datetime":[]}
