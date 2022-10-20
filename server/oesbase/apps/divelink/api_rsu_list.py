@@ -28,7 +28,7 @@ class API(APIView):
             # append Unittype Name
             for _q in _rsu_list:
                 _q['unittype_name'] = UnitType.objects.get(id=_q['unittype_id']).typename
-            print(_rsu_list)
+            
             if not _rsu_list.exists():                
                 return Response({}, status=status.HTTP_204_NO_CONTENT)
             else:
