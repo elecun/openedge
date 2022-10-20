@@ -12,6 +12,9 @@ from divelink import api_datalog_add
 from divelink import api_datalog_delete
 from divelink import api_datalog_close
 from divelink import api_datalog_view
+from divelink import api_datalog_live
+from divelink import api_setting_load
+from divelink import api_setting_apply
 
 # api views
 urlpatterns = [
@@ -29,6 +32,10 @@ urlpatterns = [
     path("log/delete/", api_datalog_delete.API.as_view(), name="api_datalog_delete"),
     path("log/close/", api_datalog_close.API.as_view(), name="api_datalog_close"),
     path("log/view/<int:id>/", api_datalog_view.API.as_view(), name="api_datalog_view"),
+    path("log/live/<int:time>/", api_datalog_live.API.as_view(), name="api_datalog_live"),
+
+    path("setting/load/", api_setting_load.API.as_view(), name="api_setting_load"),
+    path("setting/apply/", api_setting_apply.API.as_view(), name="api_setting_apply"),
 
 
 ]

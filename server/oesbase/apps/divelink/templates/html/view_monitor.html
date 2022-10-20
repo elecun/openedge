@@ -146,6 +146,31 @@ function update_monitor(time, depth, temperature){
     data_chart.setOption(option);
 }
 
+/* update live */
+async function request_datalog_live_view(){
+  const response = await REST_GET("{% url 'api_datalog_live' %}");
+  if(response.ok && response.status==200){
+    const data = await response.json();
+    const parse_data = JSON.parse(data.data);
+    update_monitor(parse_data.datetime, parse_data.water_depth, parse_data.water_temperature);
+  }
+}
+
+
+var auto_update_timer_id;
+/* event auto update */
+document.getElementById("check_auto_update").addEventListener("click", function(){
+  let checked = document.getElementById("check_auto_update").checked;
+  let interval = Number(document.getElementById('edit_auto_update_interval').value);
+
+  if(checked){
+    auto_update_timer_id = setInterval(() => request_datalog_live_view(), interval*1000);
+  }
+  else {
+    clearInterval(auto_update_timer_id);
+  }
+});
+
 
 /* page load */
 window.addEventListener('DOMContentLoaded', function(){

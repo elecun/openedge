@@ -12,6 +12,7 @@ loaddata-aop:
 loaddata-divelink:
 	@python3 manage.py loaddata divelink_type.json
 	@python3 manage.py loaddata divelink_broker.json
+	@python3 manage.py loaddata divelink_setting.json
 
 superuser:
 	@python3 manage.py createsuperuser

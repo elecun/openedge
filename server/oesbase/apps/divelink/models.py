@@ -41,11 +41,13 @@ class Datalog(models.Model):
 '''
 Station Setting
 '''
-class Settings(models.Model):
-    lora_id = models.PositiveIntegerField(blank=False, null=False, unique=True)
+class SystemSetting(models.Model):
+    loraid = models.PositiveIntegerField(blank=True, null=True, default=0)
+    auto_interval = models.PositiveIntegerField(blank=True, null=True, default=5)
+    sound_notify = models.BooleanField(blank=True, null=True, default=False)
 
     def __str__(self):
-        return str(lora_id)
+        return str(self.loraid)
 
 
 '''

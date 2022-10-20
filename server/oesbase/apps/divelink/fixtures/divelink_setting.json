@@ -1,0 +1,11 @@
+[
+    {
+        "model": "divelink.SystemSetting",
+        "pk": 1,
+        "fields": {
+          "loraid":164,
+          "auto_interval":5,
+          "sound_notify": false
+        }
+      }
+]

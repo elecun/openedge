@@ -45,6 +45,8 @@ def context_processors(request):
             'message_delete_datalog_selected':"선택한 로그를 삭제하시겠습니까?",
             'message_close_datalog_selected':"현재 로그 종료 시각을 저장하겠습니까?",
 
+            'message_setting_apply':"시스템 설정을 적용하시겠습니까?",
+
 
             'settings_load':"불러오기",
             'settings_save' : "설정저장",
