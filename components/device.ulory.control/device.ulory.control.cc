@@ -2,6 +2,8 @@
 #include "device.ulory.control.hpp"
 #include <openedge/log.hpp>
 #include <bits/stdc++.h>
+#include<vector>
+#include<sstream>
 
 //static component instance that has only single instance
 static device_ulory_control* _instance = nullptr;
@@ -50,7 +52,25 @@ void device_ulory_control::execute(){
 
                 //parse gps
                 string gps(_dq.begin()+7, _dq.begin()+29);
-                str_data += fmt::format("\t{}", gps);
+
+                //split by comma
+                vector<string> gps_split;
+                stringstream gps_stream(gps);
+                while(gps_stream.good()) {
+                    string substr;
+                    getline(gps_stream, substr, ',');
+                    gps_split.push_back(substr);
+                }
+
+                double longitude = 0.0;
+                double latitude = 0.0;
+                if(gps_split.size()==2){
+                    longitude = stod(gps_split[0].substr(1));
+                    latitude = stod(gps_split[1].substr(1));
+                }
+                else 
+                    console::warn("Splitted GPS size : {}", gps_split.size());
+                str_data += fmt::format(" - {}", gps);
 
                 /* publish gps data */
                 if(_mqtt_connected){
@@ -59,8 +79,8 @@ void device_ulory_control::execute(){
                     pubdata["lsid"] = _source_id;
                     pubdata["ldid"] = _target_id;
                     pubdata["location"] = gps;
-                    pubdata["longitude"] = stod(gps.substr(1, 10));
-                    pubdata["latitude"] = stod(gps.substr(12, 10));
+                    pubdata["longitude"] = longitude;
+                    pubdata["latitude"] = latitude;
                     string str_pubdata = pubdata.dump();
                     this->publish(nullptr, _pub_topic.c_str(), strlen(str_pubdata.c_str()), str_pubdata.c_str(), _pub_qos, false);
                 }               
