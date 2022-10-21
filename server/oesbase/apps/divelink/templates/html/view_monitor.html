@@ -149,7 +149,7 @@ function update_monitor(time, depth, temperature){
 /* update live */
 async function request_datalog_live_view(time){
 
-  let url = "{% url 'api_datalog_live' 99 %}".replace('99', monitor_time);
+  let url = "{% url 'api_datalog_live' 99 %}".replace('99', time);
     const response = await REST_GET(url);
 
   if(response.ok && response.status==200){
