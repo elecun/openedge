@@ -81,8 +81,9 @@
   function update_layer(loraid, longitude, latitude){
 
     if(markers.has(loraid)){
-      console.log(longitude, latitude);
+      console.log("gps location : ", longitude, latitude);
       markers.get(loraid).setLatLng(L.latLng(String(latitude), String(longitude))).update();
+      markers.get(loraid)._popup.setContent("<b> LoRa ID : "+loraid+"</b><br><li>Longitude : "+longitude+"<br><li>Latitude : "+latitude+"<p>", {'maxWidth':250});
       
       const sound_notify = document.getElementById('check_sound_notify').checked;
       if(sound_notify){
