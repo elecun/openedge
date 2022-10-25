@@ -39,4 +39,3 @@ wheels/
 *.spec
 *.log
 node_modules/
-*.comp
