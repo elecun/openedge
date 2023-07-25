@@ -9,8 +9,8 @@
 OS := $(shell uname)
 
 #Set Architecutre
-ARCH := armhf
-# ARCH := x86_64
+#ARCH := armhf
+ARCH := x86_64
 
 #Compilers
 ifeq ($(ARCH),armhf)
